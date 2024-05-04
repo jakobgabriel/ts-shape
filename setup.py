@@ -5,13 +5,13 @@ with open("README.md", "r", encoding = "utf-8") as fh:
 
 setuptools.setup(
     name = "timeseries-shaper",
-    version = "0.0.2",
+    version = "0.0.0.2",
     author = "Jakob Gabriel",
     author_email = "jakob.gabriel5@googlemail.com",
     description = "timeseries-shaper filters, transforms and abstracts your timeseries dataframe",
     long_description = long_description,
     long_description_content_type = "text/markdown",
-    url = "https://jakobgabriel.github.io/timeseries-shaper/timeseries-shaper.html",
+    url = "https://jakobgabriel.github.io/timeseries-shaper/",
     project_urls = {
         "Bug Tracker": "https://github.com/jakobgabriel/timeseries-shaper",
     },

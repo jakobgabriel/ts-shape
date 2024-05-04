@@ -3,9 +3,22 @@ from ..base import Base
 
 class DateTimeFilter(Base):
     """
-    
+    Provides methods for filtering time columns in a pandas DataFrame,
+    Allows specification of which column to operate on.
+
+    Inherits from:
+        Base (class): Base class with common initializations for DataFrame handling.
+
+    Attributes:
+        dataframe (DataFrame): The DataFrame to perform operations on.
+        column_name (str): The name of the column to filter, defaulting to 'systime'.
     """
-    def filter_after_date(self, date):
+    def __init__(self, dataframe: pd.DataFrame, column_name: str = 'systime') -> None:
+        """Initializes the StringFilter with a DataFrame and column name."""
+        super().__init__(dataframe)
+        self.column_name = column_name
+
+    def filter_after_date(self, date) -> pd.DataFrame:
         """
         Filters the DataFrame to include only rows after the specified date.
 
@@ -21,9 +34,9 @@ class DateTimeFilter(Base):
         >>> filtered_data = sf.filter_after_date("2023-01-01")
         >>> print(filtered_data)
         """
-        return self.dataframe[self.dataframe['systime'] > pd.to_datetime(date)]
+        return self.dataframe[self.dataframe[self.column_name] > pd.to_datetime(date)]
 
-    def filter_before_date(self, date):
+    def filter_before_date(self, date) -> pd.DataFrame:
         """
         Filters the DataFrame to include only rows before the specified date.
 
@@ -39,7 +52,7 @@ class DateTimeFilter(Base):
         >>> filtered_data = sf.filter_before_date("2023-01-01")
         >>> print(filtered_data)
         """
-        return self.dataframe[self.dataframe['systime'] < pd.to_datetime(date)]
+        return self.dataframe[self.dataframe[self.column_name] < pd.to_datetime(date)]
 
     def filter_between_dates(self, start_date, end_date):
         """
@@ -58,10 +71,10 @@ class DateTimeFilter(Base):
         >>> filtered_data = sf.filter_between_dates("2023-01-01", "2023-02-01")
         >>> print(filtered_data)
         """
-        mask = (self.dataframe['systime'] > pd.to_datetime(start_date)) & (self.dataframe['systime'] < pd.to_datetime(end_date))
+        mask = (self.dataframe[self.column_name] > pd.to_datetime(start_date)) & (self.dataframe[self.column_name] < pd.to_datetime(end_date))
         return self.dataframe[mask]
 
-    def filter_after_datetime(self, datetime):
+    def filter_after_datetime(self, datetime) -> pd.DataFrame:
         """
         Filters the DataFrame to include only rows after the specified datetime.
 
@@ -77,9 +90,9 @@ class DateTimeFilter(Base):
         >>> filtered_data = sf.filter_after_datetime("2023-01-01 12:00:00")
         >>> print(filtered_data)
         """
-        return self.dataframe[self.dataframe['systime'] > pd.to_datetime(datetime)]
+        return self.dataframe[self.dataframe[self.column_name] > pd.to_datetime(datetime)]
 
-    def filter_before_datetime(self, datetime):
+    def filter_before_datetime(self, datetime) -> pd.DataFrame:
         """
         Filters the DataFrame to include only rows before the specified datetime.
 
@@ -95,9 +108,9 @@ class DateTimeFilter(Base):
         >>> filtered_data = sf.filter_before_datetime("2023-01-01 12:00:00")
         >>> print(filtered_data)
         """
-        return self.dataframe[self.dataframe['systime'] < pd.to_datetime(datetime)]
+        return self.dataframe[self.dataframe[self.column_name] < pd.to_datetime(datetime)]
 
-    def filter_between_datetimes(self, start_datetime, end_datetime):
+    def filter_between_datetimes(self, start_datetime, end_datetime) -> pd.DataFrame:
         """
         Filters the DataFrame to include only rows between the specified start and end datetimes.
 
@@ -114,5 +127,5 @@ class DateTimeFilter(Base):
         >>> filtered_data = sf.filter_between_datetimes("2023-01-01 12:00:00", "2023-02-01 12:00:00")
         >>> print(filtered_data)
         """
-        mask = (self.dataframe['systime'] > pd.to_datetime(start_datetime)) & (self.dataframe['systime'] < pd.to_datetime(end_datetime))
+        mask = (self.dataframe[self.column_name] > pd.to_datetime(start_datetime)) & (self.dataframe[self.column_name] < pd.to_datetime(end_datetime))
         return self.dataframe[mask]

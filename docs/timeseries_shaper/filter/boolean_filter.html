@@ -31,19 +31,37 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
-                    <a class="class" href="#BooleanFilters">BooleanFilters</a>
+                    <a class="class" href="#IsDeltaFilter">IsDeltaFilter</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#BooleanFilters.filter_is_delta_true">filter_is_delta_true</a>
+                                <a class="function" href="#IsDeltaFilter.__init__">IsDeltaFilter</a>
                         </li>
                         <li>
-                                <a class="function" href="#BooleanFilters.filter_is_delta_false">filter_is_delta_false</a>
+                                <a class="variable" href="#IsDeltaFilter.column_name">column_name</a>
                         </li>
                         <li>
-                                <a class="function" href="#BooleanFilters.filter_falling_value_bool">filter_falling_value_bool</a>
+                                <a class="function" href="#IsDeltaFilter.filter_is_delta_true">filter_is_delta_true</a>
                         </li>
                         <li>
-                                <a class="function" href="#BooleanFilters.filter_raising_value_bool">filter_raising_value_bool</a>
+                                <a class="function" href="#IsDeltaFilter.filter_is_delta_false">filter_is_delta_false</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#BooleanFilter">BooleanFilter</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#BooleanFilter.__init__">BooleanFilter</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#BooleanFilter.column_name">column_name</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#BooleanFilter.filter_falling_value_bool">filter_falling_value_bool</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#BooleanFilter.filter_raising_value_bool">filter_raising_value_bool</a>
                         </li>
                 </ul>
 
@@ -69,94 +87,161 @@
 
                         <label class="view-source-button" for="mod-boolean_filter-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">Base</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="k">class</span> <span class="nc">BooleanFilters</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">    </span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_true</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is True.&quot;&quot;&quot;</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="k">if</span> <span class="s1">&#39;is_delta&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;is_delta&#39; does not exist in the DataFrame&quot;</span><span class="p">)</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;is_delta&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_false</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is False.&quot;&quot;&quot;</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">if</span> <span class="s1">&#39;is_delta&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;is_delta&#39; does not exist in the DataFrame&quot;</span><span class="p">)</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;is_delta&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="k">def</span> <span class="nf">filter_falling_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from True to False.&quot;&quot;&quot;</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)]</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="k">def</span> <span class="nf">filter_raising_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from False to True.&quot;&quot;&quot;</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)]</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">Base</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="k">class</span> <span class="nc">IsDeltaFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">    Provides methods for filtering is_delta columns in a pandas DataFrame,</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">    Allows specification of which column to operate on.</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    Inherits from:</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">        Base (class): Base class with common initializations for DataFrame handling.</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">    Attributes:</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">        dataframe (DataFrame): The DataFrame to perform operations on.</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">        column_name (str): The name of the column to filter, defaulting to &#39;is_delta&#39;.</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;is_delta&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the StringFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_true</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is True.&quot;&quot;&quot;</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_false</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is False.&quot;&quot;&quot;</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="k">class</span> <span class="nc">BooleanFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="sd">    Provides methods for filtering boolean columns in a pandas DataFrame,</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">    particularly focusing on e.g. status changes. Allows specification of which column to operate on.</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="sd">    Inherits from:</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">        Base (class): Base class with common initializations for DataFrame handling.</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">    Attributes:</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">        dataframe (DataFrame): The DataFrame to perform operations on.</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="sd">        column_name (str): The name of the column to filter, defaulting to &#39;value_bool&#39;.</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_bool&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the StringFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="k">def</span> <span class="nf">filter_falling_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from True to False.&quot;&quot;&quot;</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)]</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">filter_raising_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from False to True.&quot;&quot;&quot;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)]</span>
 </span></pre></div>
 
 
             </section>
-                <section id="BooleanFilters">
-                            <input id="BooleanFilters-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="IsDeltaFilter">
+                            <input id="IsDeltaFilter-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">BooleanFilters</span><wbr>(<span class="base"><a href="../base.html#Base">timeseries_shaper.base.Base</a></span>):
+    <span class="name">IsDeltaFilter</span><wbr>(<span class="base"><a href="../base.html#Base">timeseries_shaper.base.Base</a></span>):
 
-                <label class="view-source-button" for="BooleanFilters-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="IsDeltaFilter-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#BooleanFilters"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BooleanFilters-4"><a href="#BooleanFilters-4"><span class="linenos"> 4</span></a><span class="k">class</span> <span class="nc">BooleanFilters</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
-</span><span id="BooleanFilters-5"><a href="#BooleanFilters-5"><span class="linenos"> 5</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="BooleanFilters-6"><a href="#BooleanFilters-6"><span class="linenos"> 6</span></a><span class="sd">    </span>
-</span><span id="BooleanFilters-7"><a href="#BooleanFilters-7"><span class="linenos"> 7</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="BooleanFilters-8"><a href="#BooleanFilters-8"><span class="linenos"> 8</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_true</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BooleanFilters-9"><a href="#BooleanFilters-9"><span class="linenos"> 9</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is True.&quot;&quot;&quot;</span>
-</span><span id="BooleanFilters-10"><a href="#BooleanFilters-10"><span class="linenos">10</span></a>        <span class="k">if</span> <span class="s1">&#39;is_delta&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-</span><span id="BooleanFilters-11"><a href="#BooleanFilters-11"><span class="linenos">11</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;is_delta&#39; does not exist in the DataFrame&quot;</span><span class="p">)</span>
-</span><span id="BooleanFilters-12"><a href="#BooleanFilters-12"><span class="linenos">12</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;is_delta&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
-</span><span id="BooleanFilters-13"><a href="#BooleanFilters-13"><span class="linenos">13</span></a>
-</span><span id="BooleanFilters-14"><a href="#BooleanFilters-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_false</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BooleanFilters-15"><a href="#BooleanFilters-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is False.&quot;&quot;&quot;</span>
-</span><span id="BooleanFilters-16"><a href="#BooleanFilters-16"><span class="linenos">16</span></a>        <span class="k">if</span> <span class="s1">&#39;is_delta&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-</span><span id="BooleanFilters-17"><a href="#BooleanFilters-17"><span class="linenos">17</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;is_delta&#39; does not exist in the DataFrame&quot;</span><span class="p">)</span>
-</span><span id="BooleanFilters-18"><a href="#BooleanFilters-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;is_delta&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
-</span><span id="BooleanFilters-19"><a href="#BooleanFilters-19"><span class="linenos">19</span></a>    
-</span><span id="BooleanFilters-20"><a href="#BooleanFilters-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="nf">filter_falling_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BooleanFilters-21"><a href="#BooleanFilters-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from True to False.&quot;&quot;&quot;</span>
-</span><span id="BooleanFilters-22"><a href="#BooleanFilters-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="BooleanFilters-23"><a href="#BooleanFilters-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)]</span>
-</span><span id="BooleanFilters-24"><a href="#BooleanFilters-24"><span class="linenos">24</span></a>
-</span><span id="BooleanFilters-25"><a href="#BooleanFilters-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">filter_raising_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BooleanFilters-26"><a href="#BooleanFilters-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from False to True.&quot;&quot;&quot;</span>
-</span><span id="BooleanFilters-27"><a href="#BooleanFilters-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="BooleanFilters-28"><a href="#BooleanFilters-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)]</span>
+    <a class="headerlink" href="#IsDeltaFilter"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="IsDeltaFilter-5"><a href="#IsDeltaFilter-5"><span class="linenos"> 5</span></a><span class="k">class</span> <span class="nc">IsDeltaFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+</span><span id="IsDeltaFilter-6"><a href="#IsDeltaFilter-6"><span class="linenos"> 6</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="IsDeltaFilter-7"><a href="#IsDeltaFilter-7"><span class="linenos"> 7</span></a><span class="sd">    Provides methods for filtering is_delta columns in a pandas DataFrame,</span>
+</span><span id="IsDeltaFilter-8"><a href="#IsDeltaFilter-8"><span class="linenos"> 8</span></a><span class="sd">    Allows specification of which column to operate on.</span>
+</span><span id="IsDeltaFilter-9"><a href="#IsDeltaFilter-9"><span class="linenos"> 9</span></a>
+</span><span id="IsDeltaFilter-10"><a href="#IsDeltaFilter-10"><span class="linenos">10</span></a><span class="sd">    Inherits from:</span>
+</span><span id="IsDeltaFilter-11"><a href="#IsDeltaFilter-11"><span class="linenos">11</span></a><span class="sd">        Base (class): Base class with common initializations for DataFrame handling.</span>
+</span><span id="IsDeltaFilter-12"><a href="#IsDeltaFilter-12"><span class="linenos">12</span></a>
+</span><span id="IsDeltaFilter-13"><a href="#IsDeltaFilter-13"><span class="linenos">13</span></a><span class="sd">    Attributes:</span>
+</span><span id="IsDeltaFilter-14"><a href="#IsDeltaFilter-14"><span class="linenos">14</span></a><span class="sd">        dataframe (DataFrame): The DataFrame to perform operations on.</span>
+</span><span id="IsDeltaFilter-15"><a href="#IsDeltaFilter-15"><span class="linenos">15</span></a><span class="sd">        column_name (str): The name of the column to filter, defaulting to &#39;is_delta&#39;.</span>
+</span><span id="IsDeltaFilter-16"><a href="#IsDeltaFilter-16"><span class="linenos">16</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="IsDeltaFilter-17"><a href="#IsDeltaFilter-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;is_delta&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="IsDeltaFilter-18"><a href="#IsDeltaFilter-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the StringFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
+</span><span id="IsDeltaFilter-19"><a href="#IsDeltaFilter-19"><span class="linenos">19</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+</span><span id="IsDeltaFilter-20"><a href="#IsDeltaFilter-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span id="IsDeltaFilter-21"><a href="#IsDeltaFilter-21"><span class="linenos">21</span></a>    
+</span><span id="IsDeltaFilter-22"><a href="#IsDeltaFilter-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_true</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="IsDeltaFilter-23"><a href="#IsDeltaFilter-23"><span class="linenos">23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is True.&quot;&quot;&quot;</span>
+</span><span id="IsDeltaFilter-24"><a href="#IsDeltaFilter-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
+</span><span id="IsDeltaFilter-25"><a href="#IsDeltaFilter-25"><span class="linenos">25</span></a>
+</span><span id="IsDeltaFilter-26"><a href="#IsDeltaFilter-26"><span class="linenos">26</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_false</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="IsDeltaFilter-27"><a href="#IsDeltaFilter-27"><span class="linenos">27</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is False.&quot;&quot;&quot;</span>
+</span><span id="IsDeltaFilter-28"><a href="#IsDeltaFilter-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
 </span></pre></div>
 
 
+            <div class="docstring"><p>Provides methods for filtering is_delta columns in a pandas DataFrame,
+Allows specification of which column to operate on.</p>
+
+<p>Inherits from:
+    Base (class): Base class with common initializations for DataFrame handling.</p>
+
+<p>Attributes:
+    dataframe (DataFrame): The DataFrame to perform operations on.
+    column_name (str): The name of the column to filter, defaulting to 'is_delta'.</p>
+</div>
+
+
+                            <div id="IsDeltaFilter.__init__" class="classattr">
+                                        <input id="IsDeltaFilter.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">IsDeltaFilter</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;is_delta&#39;</span></span>)</span>
+
+                <label class="view-source-button" for="IsDeltaFilter.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#IsDeltaFilter.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="IsDeltaFilter.__init__-17"><a href="#IsDeltaFilter.__init__-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;is_delta&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="IsDeltaFilter.__init__-18"><a href="#IsDeltaFilter.__init__-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the StringFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
+</span><span id="IsDeltaFilter.__init__-19"><a href="#IsDeltaFilter.__init__-19"><span class="linenos">19</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+</span><span id="IsDeltaFilter.__init__-20"><a href="#IsDeltaFilter.__init__-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Initializes the StringFilter with a DataFrame and column name.</p>
+</div>
+
+
+                            </div>
+                            <div id="IsDeltaFilter.column_name" class="classattr">
+                                <div class="attr variable">
+            <span class="name">column_name</span>
+
+        
+    </div>
+    <a class="headerlink" href="#IsDeltaFilter.column_name"></a>
+    
     
 
-                            <div id="BooleanFilters.filter_is_delta_true" class="classattr">
-                                        <input id="BooleanFilters.filter_is_delta_true-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            </div>
+                            <div id="IsDeltaFilter.filter_is_delta_true" class="classattr">
+                                        <input id="IsDeltaFilter.filter_is_delta_true-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">filter_is_delta_true</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">filter_is_delta_true</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
-                <label class="view-source-button" for="BooleanFilters.filter_is_delta_true-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="IsDeltaFilter.filter_is_delta_true-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#BooleanFilters.filter_is_delta_true"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BooleanFilters.filter_is_delta_true-8"><a href="#BooleanFilters.filter_is_delta_true-8"><span class="linenos"> 8</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_true</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BooleanFilters.filter_is_delta_true-9"><a href="#BooleanFilters.filter_is_delta_true-9"><span class="linenos"> 9</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is True.&quot;&quot;&quot;</span>
-</span><span id="BooleanFilters.filter_is_delta_true-10"><a href="#BooleanFilters.filter_is_delta_true-10"><span class="linenos">10</span></a>        <span class="k">if</span> <span class="s1">&#39;is_delta&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-</span><span id="BooleanFilters.filter_is_delta_true-11"><a href="#BooleanFilters.filter_is_delta_true-11"><span class="linenos">11</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;is_delta&#39; does not exist in the DataFrame&quot;</span><span class="p">)</span>
-</span><span id="BooleanFilters.filter_is_delta_true-12"><a href="#BooleanFilters.filter_is_delta_true-12"><span class="linenos">12</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;is_delta&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
+    <a class="headerlink" href="#IsDeltaFilter.filter_is_delta_true"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="IsDeltaFilter.filter_is_delta_true-22"><a href="#IsDeltaFilter.filter_is_delta_true-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_true</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="IsDeltaFilter.filter_is_delta_true-23"><a href="#IsDeltaFilter.filter_is_delta_true-23"><span class="linenos">23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is True.&quot;&quot;&quot;</span>
+</span><span id="IsDeltaFilter.filter_is_delta_true-24"><a href="#IsDeltaFilter.filter_is_delta_true-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -165,22 +250,20 @@
 
 
                             </div>
-                            <div id="BooleanFilters.filter_is_delta_false" class="classattr">
-                                        <input id="BooleanFilters.filter_is_delta_false-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="IsDeltaFilter.filter_is_delta_false" class="classattr">
+                                        <input id="IsDeltaFilter.filter_is_delta_false-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">filter_is_delta_false</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">filter_is_delta_false</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
-                <label class="view-source-button" for="BooleanFilters.filter_is_delta_false-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="IsDeltaFilter.filter_is_delta_false-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#BooleanFilters.filter_is_delta_false"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BooleanFilters.filter_is_delta_false-14"><a href="#BooleanFilters.filter_is_delta_false-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_false</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BooleanFilters.filter_is_delta_false-15"><a href="#BooleanFilters.filter_is_delta_false-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is False.&quot;&quot;&quot;</span>
-</span><span id="BooleanFilters.filter_is_delta_false-16"><a href="#BooleanFilters.filter_is_delta_false-16"><span class="linenos">16</span></a>        <span class="k">if</span> <span class="s1">&#39;is_delta&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-</span><span id="BooleanFilters.filter_is_delta_false-17"><a href="#BooleanFilters.filter_is_delta_false-17"><span class="linenos">17</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;is_delta&#39; does not exist in the DataFrame&quot;</span><span class="p">)</span>
-</span><span id="BooleanFilters.filter_is_delta_false-18"><a href="#BooleanFilters.filter_is_delta_false-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;is_delta&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
+    <a class="headerlink" href="#IsDeltaFilter.filter_is_delta_false"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="IsDeltaFilter.filter_is_delta_false-26"><a href="#IsDeltaFilter.filter_is_delta_false-26"><span class="linenos">26</span></a>    <span class="k">def</span> <span class="nf">filter_is_delta_false</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="IsDeltaFilter.filter_is_delta_false-27"><a href="#IsDeltaFilter.filter_is_delta_false-27"><span class="linenos">27</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;is_delta&#39; is False.&quot;&quot;&quot;</span>
+</span><span id="IsDeltaFilter.filter_is_delta_false-28"><a href="#IsDeltaFilter.filter_is_delta_false-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -189,21 +272,116 @@
 
 
                             </div>
-                            <div id="BooleanFilters.filter_falling_value_bool" class="classattr">
-                                        <input id="BooleanFilters.filter_falling_value_bool-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="../base.html#Base">timeseries_shaper.base.Base</a></dt>
+                                <dd id="IsDeltaFilter.dataframe" class="variable"><a href="../base.html#Base.dataframe">dataframe</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="BooleanFilter">
+                            <input id="BooleanFilter-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">BooleanFilter</span><wbr>(<span class="base"><a href="../base.html#Base">timeseries_shaper.base.Base</a></span>):
+
+                <label class="view-source-button" for="BooleanFilter-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#BooleanFilter"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BooleanFilter-30"><a href="#BooleanFilter-30"><span class="linenos">30</span></a><span class="k">class</span> <span class="nc">BooleanFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+</span><span id="BooleanFilter-31"><a href="#BooleanFilter-31"><span class="linenos">31</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="BooleanFilter-32"><a href="#BooleanFilter-32"><span class="linenos">32</span></a><span class="sd">    Provides methods for filtering boolean columns in a pandas DataFrame,</span>
+</span><span id="BooleanFilter-33"><a href="#BooleanFilter-33"><span class="linenos">33</span></a><span class="sd">    particularly focusing on e.g. status changes. Allows specification of which column to operate on.</span>
+</span><span id="BooleanFilter-34"><a href="#BooleanFilter-34"><span class="linenos">34</span></a>
+</span><span id="BooleanFilter-35"><a href="#BooleanFilter-35"><span class="linenos">35</span></a><span class="sd">    Inherits from:</span>
+</span><span id="BooleanFilter-36"><a href="#BooleanFilter-36"><span class="linenos">36</span></a><span class="sd">        Base (class): Base class with common initializations for DataFrame handling.</span>
+</span><span id="BooleanFilter-37"><a href="#BooleanFilter-37"><span class="linenos">37</span></a>
+</span><span id="BooleanFilter-38"><a href="#BooleanFilter-38"><span class="linenos">38</span></a><span class="sd">    Attributes:</span>
+</span><span id="BooleanFilter-39"><a href="#BooleanFilter-39"><span class="linenos">39</span></a><span class="sd">        dataframe (DataFrame): The DataFrame to perform operations on.</span>
+</span><span id="BooleanFilter-40"><a href="#BooleanFilter-40"><span class="linenos">40</span></a><span class="sd">        column_name (str): The name of the column to filter, defaulting to &#39;value_bool&#39;.</span>
+</span><span id="BooleanFilter-41"><a href="#BooleanFilter-41"><span class="linenos">41</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="BooleanFilter-42"><a href="#BooleanFilter-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_bool&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="BooleanFilter-43"><a href="#BooleanFilter-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the StringFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
+</span><span id="BooleanFilter-44"><a href="#BooleanFilter-44"><span class="linenos">44</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+</span><span id="BooleanFilter-45"><a href="#BooleanFilter-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span id="BooleanFilter-46"><a href="#BooleanFilter-46"><span class="linenos">46</span></a>    
+</span><span id="BooleanFilter-47"><a href="#BooleanFilter-47"><span class="linenos">47</span></a>    <span class="k">def</span> <span class="nf">filter_falling_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="BooleanFilter-48"><a href="#BooleanFilter-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from True to False.&quot;&quot;&quot;</span>
+</span><span id="BooleanFilter-49"><a href="#BooleanFilter-49"><span class="linenos">49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="BooleanFilter-50"><a href="#BooleanFilter-50"><span class="linenos">50</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)]</span>
+</span><span id="BooleanFilter-51"><a href="#BooleanFilter-51"><span class="linenos">51</span></a>
+</span><span id="BooleanFilter-52"><a href="#BooleanFilter-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">filter_raising_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="BooleanFilter-53"><a href="#BooleanFilter-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from False to True.&quot;&quot;&quot;</span>
+</span><span id="BooleanFilter-54"><a href="#BooleanFilter-54"><span class="linenos">54</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="BooleanFilter-55"><a href="#BooleanFilter-55"><span class="linenos">55</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)]</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Provides methods for filtering boolean columns in a pandas DataFrame,
+particularly focusing on e.g. status changes. Allows specification of which column to operate on.</p>
+
+<p>Inherits from:
+    Base (class): Base class with common initializations for DataFrame handling.</p>
+
+<p>Attributes:
+    dataframe (DataFrame): The DataFrame to perform operations on.
+    column_name (str): The name of the column to filter, defaulting to 'value_bool'.</p>
+</div>
+
+
+                            <div id="BooleanFilter.__init__" class="classattr">
+                                        <input id="BooleanFilter.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">BooleanFilter</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_bool&#39;</span></span>)</span>
+
+                <label class="view-source-button" for="BooleanFilter.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#BooleanFilter.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BooleanFilter.__init__-42"><a href="#BooleanFilter.__init__-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_bool&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="BooleanFilter.__init__-43"><a href="#BooleanFilter.__init__-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the StringFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
+</span><span id="BooleanFilter.__init__-44"><a href="#BooleanFilter.__init__-44"><span class="linenos">44</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+</span><span id="BooleanFilter.__init__-45"><a href="#BooleanFilter.__init__-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Initializes the StringFilter with a DataFrame and column name.</p>
+</div>
+
+
+                            </div>
+                            <div id="BooleanFilter.column_name" class="classattr">
+                                <div class="attr variable">
+            <span class="name">column_name</span>
+
+        
+    </div>
+    <a class="headerlink" href="#BooleanFilter.column_name"></a>
+    
+    
+
+                            </div>
+                            <div id="BooleanFilter.filter_falling_value_bool" class="classattr">
+                                        <input id="BooleanFilter.filter_falling_value_bool-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">filter_falling_value_bool</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">filter_falling_value_bool</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
-                <label class="view-source-button" for="BooleanFilters.filter_falling_value_bool-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="BooleanFilter.filter_falling_value_bool-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#BooleanFilters.filter_falling_value_bool"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BooleanFilters.filter_falling_value_bool-20"><a href="#BooleanFilters.filter_falling_value_bool-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="nf">filter_falling_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BooleanFilters.filter_falling_value_bool-21"><a href="#BooleanFilters.filter_falling_value_bool-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from True to False.&quot;&quot;&quot;</span>
-</span><span id="BooleanFilters.filter_falling_value_bool-22"><a href="#BooleanFilters.filter_falling_value_bool-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="BooleanFilters.filter_falling_value_bool-23"><a href="#BooleanFilters.filter_falling_value_bool-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)]</span>
+    <a class="headerlink" href="#BooleanFilter.filter_falling_value_bool"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BooleanFilter.filter_falling_value_bool-47"><a href="#BooleanFilter.filter_falling_value_bool-47"><span class="linenos">47</span></a>    <span class="k">def</span> <span class="nf">filter_falling_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="BooleanFilter.filter_falling_value_bool-48"><a href="#BooleanFilter.filter_falling_value_bool-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from True to False.&quot;&quot;&quot;</span>
+</span><span id="BooleanFilter.filter_falling_value_bool-49"><a href="#BooleanFilter.filter_falling_value_bool-49"><span class="linenos">49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="BooleanFilter.filter_falling_value_bool-50"><a href="#BooleanFilter.filter_falling_value_bool-50"><span class="linenos">50</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)]</span>
 </span></pre></div>
 
 
@@ -212,21 +390,21 @@
 
 
                             </div>
-                            <div id="BooleanFilters.filter_raising_value_bool" class="classattr">
-                                        <input id="BooleanFilters.filter_raising_value_bool-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="BooleanFilter.filter_raising_value_bool" class="classattr">
+                                        <input id="BooleanFilter.filter_raising_value_bool-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">filter_raising_value_bool</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">filter_raising_value_bool</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
-                <label class="view-source-button" for="BooleanFilters.filter_raising_value_bool-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="BooleanFilter.filter_raising_value_bool-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#BooleanFilters.filter_raising_value_bool"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BooleanFilters.filter_raising_value_bool-25"><a href="#BooleanFilters.filter_raising_value_bool-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">filter_raising_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BooleanFilters.filter_raising_value_bool-26"><a href="#BooleanFilters.filter_raising_value_bool-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from False to True.&quot;&quot;&quot;</span>
-</span><span id="BooleanFilters.filter_raising_value_bool-27"><a href="#BooleanFilters.filter_raising_value_bool-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="BooleanFilters.filter_raising_value_bool-28"><a href="#BooleanFilters.filter_raising_value_bool-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)]</span>
+    <a class="headerlink" href="#BooleanFilter.filter_raising_value_bool"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BooleanFilter.filter_raising_value_bool-52"><a href="#BooleanFilter.filter_raising_value_bool-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">filter_raising_value_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="BooleanFilter.filter_raising_value_bool-53"><a href="#BooleanFilter.filter_raising_value_bool-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_bool&#39; changes from False to True.&quot;&quot;&quot;</span>
+</span><span id="BooleanFilter.filter_raising_value_bool-54"><a href="#BooleanFilter.filter_raising_value_bool-54"><span class="linenos">54</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="BooleanFilter.filter_raising_value_bool-55"><a href="#BooleanFilter.filter_raising_value_bool-55"><span class="linenos">55</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;previous_value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;value_bool&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)]</span>
 </span></pre></div>
 
 
@@ -239,8 +417,7 @@
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="../base.html#Base">timeseries_shaper.base.Base</a></dt>
-                                <dd id="BooleanFilters.__init__" class="function"><a href="../base.html#Base.__init__">Base</a></dd>
-                <dd id="BooleanFilters.dataframe" class="variable"><a href="../base.html#Base.dataframe">dataframe</a></dd>
+                                <dd id="BooleanFilter.dataframe" class="variable"><a href="../base.html#Base.dataframe">dataframe</a></dd>
 
             </div>
                                 </dl>

@@ -66,13 +66,13 @@
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="k">class</span> <span class="nc">Base</span><span class="p">:</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">):</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">        Initializes the Base with a DataFrame.</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">        Args:</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">        - dataframe (pd.DataFrame): The DataFrame to be processed.</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;systime&#39;</span><span class="p">)</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">column_name</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -89,13 +89,13 @@
     </div>
     <a class="headerlink" href="#Base"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Base-4"><a href="#Base-4"><span class="linenos"> 4</span></a><span class="k">class</span> <span class="nc">Base</span><span class="p">:</span>
-</span><span id="Base-5"><a href="#Base-5"><span class="linenos"> 5</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">):</span>
+</span><span id="Base-5"><a href="#Base-5"><span class="linenos"> 5</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 </span><span id="Base-6"><a href="#Base-6"><span class="linenos"> 6</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="Base-7"><a href="#Base-7"><span class="linenos"> 7</span></a><span class="sd">        Initializes the Base with a DataFrame.</span>
 </span><span id="Base-8"><a href="#Base-8"><span class="linenos"> 8</span></a><span class="sd">        Args:</span>
 </span><span id="Base-9"><a href="#Base-9"><span class="linenos"> 9</span></a><span class="sd">        - dataframe (pd.DataFrame): The DataFrame to be processed.</span>
 </span><span id="Base-10"><a href="#Base-10"><span class="linenos">10</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Base-11"><a href="#Base-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;systime&#39;</span><span class="p">)</span>
+</span><span id="Base-11"><a href="#Base-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">column_name</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -105,19 +105,19 @@
                                         <input id="Base.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">Base</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">dataframe</span></span>)</span>
+        <span class="name">Base</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span></span>)</span>
 
                 <label class="view-source-button" for="Base.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Base.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Base.__init__-5"><a href="#Base.__init__-5"><span class="linenos"> 5</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Base.__init__-5"><a href="#Base.__init__-5"><span class="linenos"> 5</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 </span><span id="Base.__init__-6"><a href="#Base.__init__-6"><span class="linenos"> 6</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="Base.__init__-7"><a href="#Base.__init__-7"><span class="linenos"> 7</span></a><span class="sd">        Initializes the Base with a DataFrame.</span>
 </span><span id="Base.__init__-8"><a href="#Base.__init__-8"><span class="linenos"> 8</span></a><span class="sd">        Args:</span>
 </span><span id="Base.__init__-9"><a href="#Base.__init__-9"><span class="linenos"> 9</span></a><span class="sd">        - dataframe (pd.DataFrame): The DataFrame to be processed.</span>
 </span><span id="Base.__init__-10"><a href="#Base.__init__-10"><span class="linenos">10</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Base.__init__-11"><a href="#Base.__init__-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;systime&#39;</span><span class="p">)</span>
+</span><span id="Base.__init__-11"><a href="#Base.__init__-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">column_name</span><span class="p">)</span>
 </span></pre></div>
 
 
