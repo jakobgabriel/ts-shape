@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the source and documentation directories
-SRC_DIR="./src/timeseries-shaper"
+SRC_DIR="./src/timeseries_shaper"
 DOCS_DIR="./docs"
 
 # Ensure the docs directory exists
