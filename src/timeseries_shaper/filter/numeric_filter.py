@@ -17,7 +17,7 @@ class IntegerFilter(Base):
         column_name (str): The name of the column to apply the filters to; defaults to 'value_integer'.
     """
     def __init__(self, dataframe: pd.DataFrame, column_name: str = 'value_integer') -> None:
-        """Initializes the StringFilter with a DataFrame and column name."""
+        """Initializes the IntegerFilter with a DataFrame and column name."""
         super().__init__(dataframe)
         self.column_name = column_name
 
@@ -28,8 +28,13 @@ class IntegerFilter(Base):
     def filter_value_integer_not_match(self, integer_value: int) -> pd.DataFrame:
         """Filters rows where 'value_integer' does not match the specified integer."""
         return self.dataframe[self.dataframe[self.column_name] != integer_value]
+    
+    def filter_value_integer_between(self, min_value: int, max_value: int) -> pd.DataFrame:
+        """Filters rows where 'value_integer' is between the specified min and max values (inclusive)."""
+        return self.dataframe[(self.dataframe[self.column_name] >= min_value) & (self.dataframe[self.column_name] <= max_value)]
 
-class DoubleFilte(Base):
+
+class DoubleFilter(Base):
     """
     Provides methods for filtering double (floating-point) columns in a pandas DataFrame,
     particularly focusing on NaN values.
@@ -46,10 +51,14 @@ class DoubleFilte(Base):
         column_name (str): The name of the column to apply the filters to; defaults to 'value_double'.
     """
     def __init__(self, dataframe: pd.DataFrame, column_name: str = 'value_double') -> None:
-        """Initializes the StringFilter with a DataFrame and column name."""
+        """Initializes the DoubleFilter with a DataFrame and column name."""
         super().__init__(dataframe)
         self.column_name = column_name
 
     def filter_nan_value_double(self) -> pd.DataFrame:
         """Filters out rows where 'value_double' is NaN."""
         return self.dataframe[self.dataframe[self.column_name].notna()]
+
+    def filter_value_double_between(self, min_value: float, max_value: float) -> pd.DataFrame:
+        """Filters rows where 'value_double' is between the specified min and max values (inclusive)."""
+        return self.dataframe[(self.dataframe[self.column_name] >= min_value) & (self.dataframe[self.column_name] <= max_value)]
