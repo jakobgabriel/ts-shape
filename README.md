@@ -4,10 +4,35 @@ Timeseries-Shaper is a Python library for efficiently filtering and preprocessin
 
 ## Features
 
+### Load 
+
+- **Load Parquet**: Load parquet files for further processing
+
+
+### Transform
+
+
+
+#### Filter
+
 - **Filter Missing Values**: Quickly filter out or fill missing values in your time series data.
 - **Boolean Filters**: Apply boolean logic to filter data based on specific conditions.
 - **Integer and Double Filters**: Perform numeric operations and filters specific to integer and double data types.
 - **String Filters**: Manipulate and filter data based on string operations.
+
+
+#### Calculation 
+
+- 
+
+
+#### Descriptive Statistics
+
+- **Boolean Stats**: 
+- **Numeric Stats**: 
+- **String Stats**: 
+- **Timeseries Stats**: 
+
 
 ## Installation
 

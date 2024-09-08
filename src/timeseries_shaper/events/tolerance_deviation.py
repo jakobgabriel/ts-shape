@@ -1,60 +1,41 @@
+from ..base import Base
 import pandas as pd
 import numpy as np
 import operator
+from typing import Callable
 
-class ToleranceDeviationEvents:
+class ToleranceDeviationEvents(Base):
     """
-    A class to process DataFrame data for specific events, comparing tolerance and actual values.
-
-    Attributes:
-        tolerance_column (str): The column name containing tolerance values.
-        actual_column (str): The column name containing actual values to be compared against tolerances.
-        tolerance_uuid (str): UUID identifier for rows that set tolerance values.
-        actual_uuid (str): UUID identifier for rows containing actual values.
-        event_uuid (str): UUID to assign to generated event rows.
-        compare_func (callable): Function to compare tolerance and actual values (default: operator.ge).
-        time_threshold (str): Time difference threshold to group close events (default: '5min').
-
-    Methods:
-        process_and_group_data_with_events(df):
-            Processes a DataFrame to compare values, group events based on time threshold, and filter based on UUIDs.
+    Inherits from Base and processes DataFrame data for specific events, comparing tolerance and actual values.
     """
 
-    def __init__(self, tolerance_column, actual_column, tolerance_uuid, actual_uuid, event_uuid, compare_func=operator.ge, time_threshold='5min'):
+    def __init__(self, dataframe: pd.DataFrame, tolerance_column: str, actual_column: str, 
+                 tolerance_uuid: str, actual_uuid: str, event_uuid: str, 
+                 compare_func: Callable[[pd.Series, pd.Series], pd.Series] = operator.ge, 
+                 time_threshold: str = '5min') -> None:
         """
-        Constructs all the necessary attributes for the DataProcessor object.
-
-        Parameters:
-            tolerance_column (str): The name of the column from which to read the tolerance values.
-            actual_column (str): The name of the column from which to read the actual values.
-            tolerance_uuid (str): UUID for tolerance data rows.
-            actual_uuid (str): UUID for actual data rows.
-            event_uuid (str): UUID to assign to generated events.
-            compare_func (callable, optional): Function to use for comparing actual values against tolerance values.
-            time_threshold (str, optional): Threshold for time difference to group events.
+        Initializes the ToleranceDeviationEvents with specific event attributes.
+        Inherits the sorted dataframe from the Base class.
         """
-        self.tolerance_column = tolerance_column
-        self.actual_column = actual_column
-        self.tolerance_uuid = tolerance_uuid
-        self.actual_uuid = actual_uuid
-        self.event_uuid = event_uuid
-        self.compare_func = compare_func
-        self.time_threshold = time_threshold
+        super().__init__(dataframe)  # Inherit and initialize Base class
 
-    def process_and_group_data_with_events(self, df):
+        self.tolerance_column: str = tolerance_column
+        self.actual_column: str = actual_column
+        self.tolerance_uuid: str = tolerance_uuid
+        self.actual_uuid: str = actual_uuid
+        self.event_uuid: str = event_uuid
+        self.compare_func: Callable[[pd.Series, pd.Series], pd.Series] = compare_func
+        self.time_threshold: str = time_threshold
+
+    def process_and_group_data_with_events(self) -> pd.DataFrame:
         """
         Processes DataFrame to apply tolerance checks, group events by time, and generate an events DataFrame.
-
-        The function first sets tolerance values for comparison, removes non-relevant rows,
-        and applies the specified comparison function. It then groups these events based on the defined time threshold and
-        filters the events based on the actual_uuid. Events are aggregated to form a summary per group.
-
-        Parameters:
-            df (pd.DataFrame): DataFrame containing the data to process.
 
         Returns:
             pd.DataFrame: A DataFrame of processed and grouped event data.
         """
+        df = self.dataframe  # Inherited from Base class
+
         # Convert 'systime' to datetime and sort the DataFrame by 'systime' in descending order
         df['systime'] = pd.to_datetime(df['systime'])
         df = df.sort_values(by='systime', ascending=False)
