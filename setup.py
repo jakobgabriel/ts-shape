@@ -5,7 +5,7 @@ with open("README.md", "r", encoding = "utf-8") as fh:
 
 setuptools.setup(
     name = "timeseries-shaper",
-    version = "0.0.0.7",
+    version = "0.0.0.8",
     author = "Jakob Gabriel",
     author_email = "jakob.gabriel5@googlemail.com",
     description = "timeseries-shaper filters, transforms and abstracts your timeseries dataframe",
