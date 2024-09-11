@@ -1,7 +1,9 @@
 from ..base import Base
+import pandas as pd
 
 class CustomFilter(Base):
-    def filter_custom_conditions(self, conditions):
+    @classmethod
+    def filter_custom_conditions(cls, dataframe: pd.DataFrame, conditions: str) -> pd.DataFrame:
         """
         Filters the DataFrame based on a set of user-defined conditions passed as a string.
 
@@ -10,22 +12,21 @@ class CustomFilter(Base):
         that can be interpreted by pandas' DataFrame.query() method.
 
         Args:
+        - dataframe (pd.DataFrame): The DataFrame to apply the filter on.
         - conditions (str): A string representing the conditions to filter the DataFrame.
-                                                The string should be formatted according to pandas query syntax.
+                            The string should be formatted according to pandas query syntax.
 
         Returns:
         - pd.DataFrame: A DataFrame containing only the rows that meet the specified conditions.
 
         Example:
         --------
-        # Given a DataFrame 'df' initialized with CustomFilter and containing columns 'age' and 'score':
-        >>> sf = CustomFilter(df)
-        >>> # To filter rows where 'age' is greater than 30 and 'score' is above 80
-        >>> filtered_data = sf.filter_custom_conditions("age > 30 and score > 80")
+        # Given a DataFrame 'df' containing columns 'age' and 'score':
+        >>> filtered_data = CustomFilter.filter_custom_conditions(df, "age > 30 and score > 80")
         >>> print(filtered_data)
 
         Note:
         - Ensure that the column names and values used in conditions match those in the DataFrame.
         - Complex expressions and functions available in pandas query syntax can also be used.
         """
-        return self.dataframe.query(conditions)
+        return dataframe.query(conditions)

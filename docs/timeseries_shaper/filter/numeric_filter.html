@@ -34,12 +34,6 @@
                     <a class="class" href="#IntegerFilter">IntegerFilter</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#IntegerFilter.__init__">IntegerFilter</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#IntegerFilter.column_name">column_name</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#IntegerFilter.filter_value_integer_match">filter_value_integer_match</a>
                         </li>
                         <li>
@@ -54,12 +48,6 @@
             <li>
                     <a class="class" href="#DoubleFilter">DoubleFilter</a>
                             <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#DoubleFilter.__init__">DoubleFilter</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#DoubleFilter.column_name">column_name</a>
-                        </li>
                         <li>
                                 <a class="function" href="#DoubleFilter.filter_nan_value_double">filter_nan_value_double</a>
                         </li>
@@ -83,7 +71,7 @@
     <main class="pdoc">
             <section class="module-info">
                     <h1 class="modulename">
-timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.numeric_filter    </h1>
+<a href="./../../timeseries_shaper.html">timeseries_shaper</a><wbr>.<a href="./../filter.html">filter</a><wbr>.numeric_filter    </h1>
 
                 
                         <input id="mod-numeric_filter-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -95,65 +83,40 @@ timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.numeric_filter
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="k">class</span> <span class="nc">IntegerFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">    Provides filtering methods for integer columns in a pandas DataFrame.</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">    Inherits from:</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">        Base (class): Base class with common initializations for DataFrame handling.</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    Attributes:</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">        dataframe (pd.DataFrame): The DataFrame to perform operations on.</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">        column_name (str): The name of the column to apply the filters to; defaults to &#39;value_integer&#39;.</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    </span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    Args:</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">        dataframe (pd.DataFrame): The DataFrame to perform operations on.</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">        column_name (str): The name of the column to apply the filters to; defaults to &#39;value_integer&#39;.</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the IntegerFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">    Provides class methods for filtering integer columns in a pandas DataFrame.</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; matches the specified integer.&quot;&quot;&quot;</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">integer_value</span><span class="p">]</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_not_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; does not match the specified integer.&quot;&quot;&quot;</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">integer_value</span><span class="p">]</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_between</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; matches the specified integer.&quot;&quot;&quot;</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">integer_value</span><span class="p">]</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_not_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; does not match the specified integer.&quot;&quot;&quot;</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">integer_value</span><span class="p">]</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_between</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="k">class</span> <span class="nc">DoubleFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">    Provides class methods for filtering double (floating-point) columns in a pandas DataFrame,</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">    particularly focusing on NaN values.</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">filter_nan_value_double</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters out rows where &#39;value_double&#39; is NaN.&quot;&quot;&quot;</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="k">class</span> <span class="nc">DoubleFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="sd">    Provides methods for filtering double (floating-point) columns in a pandas DataFrame,</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="sd">    particularly focusing on NaN values.</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">    Inherits from:</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="sd">        Base (class): Base class with common initializations for DataFrame handling.</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">    Attributes:</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="sd">        dataframe (pd.DataFrame): The DataFrame to perform operations on.</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="sd">        column_name (str): The name of the column to apply the filters to; defaults to &#39;value_double&#39;.</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="sd">    </span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="sd">    Args:</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="sd">        dataframe (pd.DataFrame): The DataFrame to perform operations on.</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">        column_name (str): The name of the column to apply the filters to; defaults to &#39;value_double&#39;.</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the DoubleFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="k">def</span> <span class="nf">filter_nan_value_double</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters out rows where &#39;value_double&#39; is NaN.&quot;&quot;&quot;</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="nf">filter_value_double_between</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_double&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="k">def</span> <span class="nf">filter_value_double_between</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_double&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
 </span></pre></div>
 
 
@@ -163,7 +126,7 @@ timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.numeric_filter
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">IntegerFilter</span><wbr>(<span class="base">timeseries_shaper.base.Base</span>):
+    <span class="name">IntegerFilter</span><wbr>(<span class="base"><a href="../base.html#Base">timeseries_shaper.base.Base</a></span>):
 
                 <label class="view-source-button" for="IntegerFilter-view-source"><span>View Source</span></label>
 
@@ -171,100 +134,46 @@ timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.numeric_filter
     <a class="headerlink" href="#IntegerFilter"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="IntegerFilter-5"><a href="#IntegerFilter-5"><span class="linenos"> 5</span></a><span class="k">class</span> <span class="nc">IntegerFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
 </span><span id="IntegerFilter-6"><a href="#IntegerFilter-6"><span class="linenos"> 6</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="IntegerFilter-7"><a href="#IntegerFilter-7"><span class="linenos"> 7</span></a><span class="sd">    Provides filtering methods for integer columns in a pandas DataFrame.</span>
-</span><span id="IntegerFilter-8"><a href="#IntegerFilter-8"><span class="linenos"> 8</span></a>
-</span><span id="IntegerFilter-9"><a href="#IntegerFilter-9"><span class="linenos"> 9</span></a><span class="sd">    Inherits from:</span>
-</span><span id="IntegerFilter-10"><a href="#IntegerFilter-10"><span class="linenos">10</span></a><span class="sd">        Base (class): Base class with common initializations for DataFrame handling.</span>
-</span><span id="IntegerFilter-11"><a href="#IntegerFilter-11"><span class="linenos">11</span></a>
-</span><span id="IntegerFilter-12"><a href="#IntegerFilter-12"><span class="linenos">12</span></a><span class="sd">    Attributes:</span>
-</span><span id="IntegerFilter-13"><a href="#IntegerFilter-13"><span class="linenos">13</span></a><span class="sd">        dataframe (pd.DataFrame): The DataFrame to perform operations on.</span>
-</span><span id="IntegerFilter-14"><a href="#IntegerFilter-14"><span class="linenos">14</span></a><span class="sd">        column_name (str): The name of the column to apply the filters to; defaults to &#39;value_integer&#39;.</span>
-</span><span id="IntegerFilter-15"><a href="#IntegerFilter-15"><span class="linenos">15</span></a><span class="sd">    </span>
-</span><span id="IntegerFilter-16"><a href="#IntegerFilter-16"><span class="linenos">16</span></a><span class="sd">    Args:</span>
-</span><span id="IntegerFilter-17"><a href="#IntegerFilter-17"><span class="linenos">17</span></a><span class="sd">        dataframe (pd.DataFrame): The DataFrame to perform operations on.</span>
-</span><span id="IntegerFilter-18"><a href="#IntegerFilter-18"><span class="linenos">18</span></a><span class="sd">        column_name (str): The name of the column to apply the filters to; defaults to &#39;value_integer&#39;.</span>
-</span><span id="IntegerFilter-19"><a href="#IntegerFilter-19"><span class="linenos">19</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="IntegerFilter-20"><a href="#IntegerFilter-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="IntegerFilter-21"><a href="#IntegerFilter-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the IntegerFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
-</span><span id="IntegerFilter-22"><a href="#IntegerFilter-22"><span class="linenos">22</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="IntegerFilter-23"><a href="#IntegerFilter-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
-</span><span id="IntegerFilter-24"><a href="#IntegerFilter-24"><span class="linenos">24</span></a>
-</span><span id="IntegerFilter-25"><a href="#IntegerFilter-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="IntegerFilter-26"><a href="#IntegerFilter-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; matches the specified integer.&quot;&quot;&quot;</span>
-</span><span id="IntegerFilter-27"><a href="#IntegerFilter-27"><span class="linenos">27</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">integer_value</span><span class="p">]</span>
-</span><span id="IntegerFilter-28"><a href="#IntegerFilter-28"><span class="linenos">28</span></a>
-</span><span id="IntegerFilter-29"><a href="#IntegerFilter-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_not_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="IntegerFilter-30"><a href="#IntegerFilter-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; does not match the specified integer.&quot;&quot;&quot;</span>
-</span><span id="IntegerFilter-31"><a href="#IntegerFilter-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">integer_value</span><span class="p">]</span>
-</span><span id="IntegerFilter-32"><a href="#IntegerFilter-32"><span class="linenos">32</span></a>    
-</span><span id="IntegerFilter-33"><a href="#IntegerFilter-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_between</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="IntegerFilter-34"><a href="#IntegerFilter-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
-</span><span id="IntegerFilter-35"><a href="#IntegerFilter-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
+</span><span id="IntegerFilter-7"><a href="#IntegerFilter-7"><span class="linenos"> 7</span></a><span class="sd">    Provides class methods for filtering integer columns in a pandas DataFrame.</span>
+</span><span id="IntegerFilter-8"><a href="#IntegerFilter-8"><span class="linenos"> 8</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="IntegerFilter-9"><a href="#IntegerFilter-9"><span class="linenos"> 9</span></a>
+</span><span id="IntegerFilter-10"><a href="#IntegerFilter-10"><span class="linenos">10</span></a>    <span class="nd">@classmethod</span>
+</span><span id="IntegerFilter-11"><a href="#IntegerFilter-11"><span class="linenos">11</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="IntegerFilter-12"><a href="#IntegerFilter-12"><span class="linenos">12</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; matches the specified integer.&quot;&quot;&quot;</span>
+</span><span id="IntegerFilter-13"><a href="#IntegerFilter-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">integer_value</span><span class="p">]</span>
+</span><span id="IntegerFilter-14"><a href="#IntegerFilter-14"><span class="linenos">14</span></a>
+</span><span id="IntegerFilter-15"><a href="#IntegerFilter-15"><span class="linenos">15</span></a>    <span class="nd">@classmethod</span>
+</span><span id="IntegerFilter-16"><a href="#IntegerFilter-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_not_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="IntegerFilter-17"><a href="#IntegerFilter-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; does not match the specified integer.&quot;&quot;&quot;</span>
+</span><span id="IntegerFilter-18"><a href="#IntegerFilter-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">integer_value</span><span class="p">]</span>
+</span><span id="IntegerFilter-19"><a href="#IntegerFilter-19"><span class="linenos">19</span></a>
+</span><span id="IntegerFilter-20"><a href="#IntegerFilter-20"><span class="linenos">20</span></a>    <span class="nd">@classmethod</span>
+</span><span id="IntegerFilter-21"><a href="#IntegerFilter-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_between</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="IntegerFilter-22"><a href="#IntegerFilter-22"><span class="linenos">22</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
+</span><span id="IntegerFilter-23"><a href="#IntegerFilter-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Provides filtering methods for integer columns in a pandas DataFrame.</p>
-
-<p>Inherits from:
-    Base (class): Base class with common initializations for DataFrame handling.</p>
-
-<p>Attributes:
-    dataframe (pd.DataFrame): The DataFrame to perform operations on.
-    column_name (str): The name of the column to apply the filters to; defaults to 'value_integer'.</p>
-
-<p>Args:
-    dataframe (pd.DataFrame): The DataFrame to perform operations on.
-    column_name (str): The name of the column to apply the filters to; defaults to 'value_integer'.</p>
+            <div class="docstring"><p>Provides class methods for filtering integer columns in a pandas DataFrame.</p>
 </div>
 
 
-                            <div id="IntegerFilter.__init__" class="classattr">
-                                        <input id="IntegerFilter.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="name">IntegerFilter</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span></span>)</span>
-
-                <label class="view-source-button" for="IntegerFilter.__init__-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#IntegerFilter.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="IntegerFilter.__init__-20"><a href="#IntegerFilter.__init__-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="IntegerFilter.__init__-21"><a href="#IntegerFilter.__init__-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the IntegerFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
-</span><span id="IntegerFilter.__init__-22"><a href="#IntegerFilter.__init__-22"><span class="linenos">22</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="IntegerFilter.__init__-23"><a href="#IntegerFilter.__init__-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Initializes the IntegerFilter with a DataFrame and column name.</p>
-</div>
-
-
-                            </div>
-                            <div id="IntegerFilter.column_name" class="classattr">
-                                <div class="attr variable">
-            <span class="name">column_name</span>
-
-        
-    </div>
-    <a class="headerlink" href="#IntegerFilter.column_name"></a>
-    
-    
-
-                            </div>
                             <div id="IntegerFilter.filter_value_integer_match" class="classattr">
                                         <input id="IntegerFilter.filter_value_integer_match-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_value_integer_match</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">filter_value_integer_match</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span>,</span><span class="param">	<span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="IntegerFilter.filter_value_integer_match-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#IntegerFilter.filter_value_integer_match"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="IntegerFilter.filter_value_integer_match-25"><a href="#IntegerFilter.filter_value_integer_match-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="IntegerFilter.filter_value_integer_match-26"><a href="#IntegerFilter.filter_value_integer_match-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; matches the specified integer.&quot;&quot;&quot;</span>
-</span><span id="IntegerFilter.filter_value_integer_match-27"><a href="#IntegerFilter.filter_value_integer_match-27"><span class="linenos">27</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">integer_value</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="IntegerFilter.filter_value_integer_match-10"><a href="#IntegerFilter.filter_value_integer_match-10"><span class="linenos">10</span></a>    <span class="nd">@classmethod</span>
+</span><span id="IntegerFilter.filter_value_integer_match-11"><a href="#IntegerFilter.filter_value_integer_match-11"><span class="linenos">11</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="IntegerFilter.filter_value_integer_match-12"><a href="#IntegerFilter.filter_value_integer_match-12"><span class="linenos">12</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; matches the specified integer.&quot;&quot;&quot;</span>
+</span><span id="IntegerFilter.filter_value_integer_match-13"><a href="#IntegerFilter.filter_value_integer_match-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">integer_value</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -276,17 +185,19 @@ timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.numeric_filter
                             <div id="IntegerFilter.filter_value_integer_not_match" class="classattr">
                                         <input id="IntegerFilter.filter_value_integer_not_match-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_value_integer_not_match</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">filter_value_integer_not_match</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span>,</span><span class="param">	<span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="IntegerFilter.filter_value_integer_not_match-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#IntegerFilter.filter_value_integer_not_match"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="IntegerFilter.filter_value_integer_not_match-29"><a href="#IntegerFilter.filter_value_integer_not_match-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_not_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="IntegerFilter.filter_value_integer_not_match-30"><a href="#IntegerFilter.filter_value_integer_not_match-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; does not match the specified integer.&quot;&quot;&quot;</span>
-</span><span id="IntegerFilter.filter_value_integer_not_match-31"><a href="#IntegerFilter.filter_value_integer_not_match-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">integer_value</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="IntegerFilter.filter_value_integer_not_match-15"><a href="#IntegerFilter.filter_value_integer_not_match-15"><span class="linenos">15</span></a>    <span class="nd">@classmethod</span>
+</span><span id="IntegerFilter.filter_value_integer_not_match-16"><a href="#IntegerFilter.filter_value_integer_not_match-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_not_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">,</span> <span class="n">integer_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="IntegerFilter.filter_value_integer_not_match-17"><a href="#IntegerFilter.filter_value_integer_not_match-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; does not match the specified integer.&quot;&quot;&quot;</span>
+</span><span id="IntegerFilter.filter_value_integer_not_match-18"><a href="#IntegerFilter.filter_value_integer_not_match-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">integer_value</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -298,17 +209,19 @@ timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.numeric_filter
                             <div id="IntegerFilter.filter_value_integer_between" class="classattr">
                                         <input id="IntegerFilter.filter_value_integer_between-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_value_integer_between</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">min_value</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">max_value</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">filter_value_integer_between</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span>,</span><span class="param">	<span class="n">min_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">max_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="IntegerFilter.filter_value_integer_between-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#IntegerFilter.filter_value_integer_between"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="IntegerFilter.filter_value_integer_between-33"><a href="#IntegerFilter.filter_value_integer_between-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_between</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="IntegerFilter.filter_value_integer_between-34"><a href="#IntegerFilter.filter_value_integer_between-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
-</span><span id="IntegerFilter.filter_value_integer_between-35"><a href="#IntegerFilter.filter_value_integer_between-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="IntegerFilter.filter_value_integer_between-20"><a href="#IntegerFilter.filter_value_integer_between-20"><span class="linenos">20</span></a>    <span class="nd">@classmethod</span>
+</span><span id="IntegerFilter.filter_value_integer_between-21"><a href="#IntegerFilter.filter_value_integer_between-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">filter_value_integer_between</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_integer&#39;</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="IntegerFilter.filter_value_integer_between-22"><a href="#IntegerFilter.filter_value_integer_between-22"><span class="linenos">22</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_integer&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
+</span><span id="IntegerFilter.filter_value_integer_between-23"><a href="#IntegerFilter.filter_value_integer_between-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
 </span></pre></div>
 
 
@@ -320,8 +233,10 @@ timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.numeric_filter
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>timeseries_shaper.base.Base</dt>
-                                <dd id="IntegerFilter.dataframe" class="variable">dataframe</dd>
+                                    <div><dt><a href="../base.html#Base">timeseries_shaper.base.Base</a></dt>
+                                <dd id="IntegerFilter.__init__" class="function"><a href="../base.html#Base.__init__">Base</a></dd>
+                <dd id="IntegerFilter.dataframe" class="variable"><a href="../base.html#Base.dataframe">dataframe</a></dd>
+                <dd id="IntegerFilter.get_dataframe" class="function"><a href="../base.html#Base.get_dataframe">get_dataframe</a></dd>
 
             </div>
                                 </dl>
@@ -332,106 +247,51 @@ timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.numeric_filter
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">DoubleFilter</span><wbr>(<span class="base">timeseries_shaper.base.Base</span>):
+    <span class="name">DoubleFilter</span><wbr>(<span class="base"><a href="../base.html#Base">timeseries_shaper.base.Base</a></span>):
 
                 <label class="view-source-button" for="DoubleFilter-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DoubleFilter"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DoubleFilter-38"><a href="#DoubleFilter-38"><span class="linenos">38</span></a><span class="k">class</span> <span class="nc">DoubleFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
-</span><span id="DoubleFilter-39"><a href="#DoubleFilter-39"><span class="linenos">39</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DoubleFilter-40"><a href="#DoubleFilter-40"><span class="linenos">40</span></a><span class="sd">    Provides methods for filtering double (floating-point) columns in a pandas DataFrame,</span>
-</span><span id="DoubleFilter-41"><a href="#DoubleFilter-41"><span class="linenos">41</span></a><span class="sd">    particularly focusing on NaN values.</span>
-</span><span id="DoubleFilter-42"><a href="#DoubleFilter-42"><span class="linenos">42</span></a>
-</span><span id="DoubleFilter-43"><a href="#DoubleFilter-43"><span class="linenos">43</span></a><span class="sd">    Inherits from:</span>
-</span><span id="DoubleFilter-44"><a href="#DoubleFilter-44"><span class="linenos">44</span></a><span class="sd">        Base (class): Base class with common initializations for DataFrame handling.</span>
-</span><span id="DoubleFilter-45"><a href="#DoubleFilter-45"><span class="linenos">45</span></a>
-</span><span id="DoubleFilter-46"><a href="#DoubleFilter-46"><span class="linenos">46</span></a><span class="sd">    Attributes:</span>
-</span><span id="DoubleFilter-47"><a href="#DoubleFilter-47"><span class="linenos">47</span></a><span class="sd">        dataframe (pd.DataFrame): The DataFrame to perform operations on.</span>
-</span><span id="DoubleFilter-48"><a href="#DoubleFilter-48"><span class="linenos">48</span></a><span class="sd">        column_name (str): The name of the column to apply the filters to; defaults to &#39;value_double&#39;.</span>
-</span><span id="DoubleFilter-49"><a href="#DoubleFilter-49"><span class="linenos">49</span></a><span class="sd">    </span>
-</span><span id="DoubleFilter-50"><a href="#DoubleFilter-50"><span class="linenos">50</span></a><span class="sd">    Args:</span>
-</span><span id="DoubleFilter-51"><a href="#DoubleFilter-51"><span class="linenos">51</span></a><span class="sd">        dataframe (pd.DataFrame): The DataFrame to perform operations on.</span>
-</span><span id="DoubleFilter-52"><a href="#DoubleFilter-52"><span class="linenos">52</span></a><span class="sd">        column_name (str): The name of the column to apply the filters to; defaults to &#39;value_double&#39;.</span>
-</span><span id="DoubleFilter-53"><a href="#DoubleFilter-53"><span class="linenos">53</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="DoubleFilter-54"><a href="#DoubleFilter-54"><span class="linenos">54</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="DoubleFilter-55"><a href="#DoubleFilter-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the DoubleFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
-</span><span id="DoubleFilter-56"><a href="#DoubleFilter-56"><span class="linenos">56</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="DoubleFilter-57"><a href="#DoubleFilter-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
-</span><span id="DoubleFilter-58"><a href="#DoubleFilter-58"><span class="linenos">58</span></a>
-</span><span id="DoubleFilter-59"><a href="#DoubleFilter-59"><span class="linenos">59</span></a>    <span class="k">def</span> <span class="nf">filter_nan_value_double</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DoubleFilter-60"><a href="#DoubleFilter-60"><span class="linenos">60</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters out rows where &#39;value_double&#39; is NaN.&quot;&quot;&quot;</span>
-</span><span id="DoubleFilter-61"><a href="#DoubleFilter-61"><span class="linenos">61</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
-</span><span id="DoubleFilter-62"><a href="#DoubleFilter-62"><span class="linenos">62</span></a>
-</span><span id="DoubleFilter-63"><a href="#DoubleFilter-63"><span class="linenos">63</span></a>    <span class="k">def</span> <span class="nf">filter_value_double_between</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DoubleFilter-64"><a href="#DoubleFilter-64"><span class="linenos">64</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_double&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
-</span><span id="DoubleFilter-65"><a href="#DoubleFilter-65"><span class="linenos">65</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DoubleFilter-26"><a href="#DoubleFilter-26"><span class="linenos">26</span></a><span class="k">class</span> <span class="nc">DoubleFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+</span><span id="DoubleFilter-27"><a href="#DoubleFilter-27"><span class="linenos">27</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DoubleFilter-28"><a href="#DoubleFilter-28"><span class="linenos">28</span></a><span class="sd">    Provides class methods for filtering double (floating-point) columns in a pandas DataFrame,</span>
+</span><span id="DoubleFilter-29"><a href="#DoubleFilter-29"><span class="linenos">29</span></a><span class="sd">    particularly focusing on NaN values.</span>
+</span><span id="DoubleFilter-30"><a href="#DoubleFilter-30"><span class="linenos">30</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="DoubleFilter-31"><a href="#DoubleFilter-31"><span class="linenos">31</span></a>    
+</span><span id="DoubleFilter-32"><a href="#DoubleFilter-32"><span class="linenos">32</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DoubleFilter-33"><a href="#DoubleFilter-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">filter_nan_value_double</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DoubleFilter-34"><a href="#DoubleFilter-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters out rows where &#39;value_double&#39; is NaN.&quot;&quot;&quot;</span>
+</span><span id="DoubleFilter-35"><a href="#DoubleFilter-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
+</span><span id="DoubleFilter-36"><a href="#DoubleFilter-36"><span class="linenos">36</span></a>
+</span><span id="DoubleFilter-37"><a href="#DoubleFilter-37"><span class="linenos">37</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DoubleFilter-38"><a href="#DoubleFilter-38"><span class="linenos">38</span></a>    <span class="k">def</span> <span class="nf">filter_value_double_between</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DoubleFilter-39"><a href="#DoubleFilter-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_double&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
+</span><span id="DoubleFilter-40"><a href="#DoubleFilter-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Provides methods for filtering double (floating-point) columns in a pandas DataFrame,
+            <div class="docstring"><p>Provides class methods for filtering double (floating-point) columns in a pandas DataFrame,
 particularly focusing on NaN values.</p>
-
-<p>Inherits from:
-    Base (class): Base class with common initializations for DataFrame handling.</p>
-
-<p>Attributes:
-    dataframe (pd.DataFrame): The DataFrame to perform operations on.
-    column_name (str): The name of the column to apply the filters to; defaults to 'value_double'.</p>
-
-<p>Args:
-    dataframe (pd.DataFrame): The DataFrame to perform operations on.
-    column_name (str): The name of the column to apply the filters to; defaults to 'value_double'.</p>
 </div>
 
 
-                            <div id="DoubleFilter.__init__" class="classattr">
-                                        <input id="DoubleFilter.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="name">DoubleFilter</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span></span>)</span>
-
-                <label class="view-source-button" for="DoubleFilter.__init__-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#DoubleFilter.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DoubleFilter.__init__-54"><a href="#DoubleFilter.__init__-54"><span class="linenos">54</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="DoubleFilter.__init__-55"><a href="#DoubleFilter.__init__-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the DoubleFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
-</span><span id="DoubleFilter.__init__-56"><a href="#DoubleFilter.__init__-56"><span class="linenos">56</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="DoubleFilter.__init__-57"><a href="#DoubleFilter.__init__-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Initializes the DoubleFilter with a DataFrame and column name.</p>
-</div>
-
-
-                            </div>
-                            <div id="DoubleFilter.column_name" class="classattr">
-                                <div class="attr variable">
-            <span class="name">column_name</span>
-
-        
-    </div>
-    <a class="headerlink" href="#DoubleFilter.column_name"></a>
-    
-    
-
-                            </div>
                             <div id="DoubleFilter.filter_nan_value_double" class="classattr">
                                         <input id="DoubleFilter.filter_nan_value_double-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_nan_value_double</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">filter_nan_value_double</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="DoubleFilter.filter_nan_value_double-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DoubleFilter.filter_nan_value_double"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DoubleFilter.filter_nan_value_double-59"><a href="#DoubleFilter.filter_nan_value_double-59"><span class="linenos">59</span></a>    <span class="k">def</span> <span class="nf">filter_nan_value_double</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DoubleFilter.filter_nan_value_double-60"><a href="#DoubleFilter.filter_nan_value_double-60"><span class="linenos">60</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters out rows where &#39;value_double&#39; is NaN.&quot;&quot;&quot;</span>
-</span><span id="DoubleFilter.filter_nan_value_double-61"><a href="#DoubleFilter.filter_nan_value_double-61"><span class="linenos">61</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DoubleFilter.filter_nan_value_double-32"><a href="#DoubleFilter.filter_nan_value_double-32"><span class="linenos">32</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DoubleFilter.filter_nan_value_double-33"><a href="#DoubleFilter.filter_nan_value_double-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">filter_nan_value_double</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DoubleFilter.filter_nan_value_double-34"><a href="#DoubleFilter.filter_nan_value_double-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters out rows where &#39;value_double&#39; is NaN.&quot;&quot;&quot;</span>
+</span><span id="DoubleFilter.filter_nan_value_double-35"><a href="#DoubleFilter.filter_nan_value_double-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()]</span>
 </span></pre></div>
 
 
@@ -443,17 +303,19 @@ particularly focusing on NaN values.</p>
                             <div id="DoubleFilter.filter_value_double_between" class="classattr">
                                         <input id="DoubleFilter.filter_value_double_between-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_value_double_between</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span>, </span><span class="param"><span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">filter_value_double_between</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span>,</span><span class="param">	<span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>,</span><span class="param">	<span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">100.0</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="DoubleFilter.filter_value_double_between-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DoubleFilter.filter_value_double_between"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DoubleFilter.filter_value_double_between-63"><a href="#DoubleFilter.filter_value_double_between-63"><span class="linenos">63</span></a>    <span class="k">def</span> <span class="nf">filter_value_double_between</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DoubleFilter.filter_value_double_between-64"><a href="#DoubleFilter.filter_value_double_between-64"><span class="linenos">64</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_double&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
-</span><span id="DoubleFilter.filter_value_double_between-65"><a href="#DoubleFilter.filter_value_double_between-65"><span class="linenos">65</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DoubleFilter.filter_value_double_between-37"><a href="#DoubleFilter.filter_value_double_between-37"><span class="linenos">37</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DoubleFilter.filter_value_double_between-38"><a href="#DoubleFilter.filter_value_double_between-38"><span class="linenos">38</span></a>    <span class="k">def</span> <span class="nf">filter_value_double_between</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;value_double&#39;</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DoubleFilter.filter_value_double_between-39"><a href="#DoubleFilter.filter_value_double_between-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters rows where &#39;value_double&#39; is between the specified min and max values (inclusive).&quot;&quot;&quot;</span>
+</span><span id="DoubleFilter.filter_value_double_between-40"><a href="#DoubleFilter.filter_value_double_between-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_value</span><span class="p">)]</span>
 </span></pre></div>
 
 
@@ -465,8 +327,10 @@ particularly focusing on NaN values.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>timeseries_shaper.base.Base</dt>
-                                <dd id="DoubleFilter.dataframe" class="variable">dataframe</dd>
+                                    <div><dt><a href="../base.html#Base">timeseries_shaper.base.Base</a></dt>
+                                <dd id="DoubleFilter.__init__" class="function"><a href="../base.html#Base.__init__">Base</a></dd>
+                <dd id="DoubleFilter.dataframe" class="variable"><a href="../base.html#Base.dataframe">dataframe</a></dd>
+                <dd id="DoubleFilter.get_dataframe" class="function"><a href="../base.html#Base.get_dataframe">get_dataframe</a></dd>
 
             </div>
                                 </dl>

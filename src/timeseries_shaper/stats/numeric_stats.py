@@ -2,49 +2,56 @@ import pandas as pd
 from ..base import Base
 
 class NumericStatistics(Base):
-    def __init__(self, dataframe: pd.DataFrame, column_name: str) -> None:
-        """
-        Initialize the NumericStatistics class by using the Base class initialization.
-        """
-        super().__init__(dataframe)
-        self.column_name = column_name
+    """
+    Provides class methods to calculate statistics on numeric columns in a pandas DataFrame.
+    """
 
-    def column_mean(self):
+    @classmethod
+    def column_mean(cls, dataframe: pd.DataFrame, column_name: str) -> float:
         """Calculate the mean of a specified column."""
-        return self.dataframe[self.column_name].mean()
+        return dataframe[column_name].mean()
 
-    def column_median(self):
+    @classmethod
+    def column_median(cls, dataframe: pd.DataFrame, column_name: str) -> float:
         """Calculate the median of a specified column."""
-        return self.dataframe[self.column_name].median()
+        return dataframe[column_name].median()
 
-    def column_std(self):
+    @classmethod
+    def column_std(cls, dataframe: pd.DataFrame, column_name: str) -> float:
         """Calculate the standard deviation of a specified column."""
-        return self.dataframe[self.column_name].std()
+        return dataframe[column_name].std()
 
-    def column_variance(self):
+    @classmethod
+    def column_variance(cls, dataframe: pd.DataFrame, column_name: str) -> float:
         """Calculate the variance of a specified column."""
-        return self.dataframe[self.column_name].var()
+        return dataframe[column_name].var()
 
-    def column_min(self):
+    @classmethod
+    def column_min(cls, dataframe: pd.DataFrame, column_name: str) -> float:
         """Calculate the minimum value of a specified column."""
-        return self.dataframe[self.column_name].min()
+        return dataframe[column_name].min()
 
-    def column_max(self):
+    @classmethod
+    def column_max(cls, dataframe: pd.DataFrame, column_name: str) -> float:
         """Calculate the maximum value of a specified column."""
-        return self.dataframe[self.column_name].max()
+        return dataframe[column_name].max()
 
-    def column_sum(self):
+    @classmethod
+    def column_sum(cls, dataframe: pd.DataFrame, column_name: str) -> float:
         """Calculate the sum of a specified column."""
-        return self.dataframe[self.column_name].sum()
+        return dataframe[column_name].sum()
 
-    def column_kurtosis(self):
+    @classmethod
+    def column_kurtosis(cls, dataframe: pd.DataFrame, column_name: str) -> float:
         """Calculate the kurtosis of a specified column."""
-        return self.dataframe[self.column_name].kurt()
+        return dataframe[column_name].kurt()
 
-    def column_skewness(self):
+    @classmethod
+    def column_skewness(cls, dataframe: pd.DataFrame, column_name: str) -> float:
         """Calculate the skewness of a specified column."""
-        return self.dataframe[self.column_name].skew()
+        return dataframe[column_name].skew()
 
-    def describe(self) -> pd.DataFrame:
+    @classmethod
+    def describe(cls, dataframe: pd.DataFrame) -> pd.DataFrame:
         """Provide a statistical summary for numeric columns in the DataFrame."""
-        return self.dataframe.describe()
+        return dataframe.describe()

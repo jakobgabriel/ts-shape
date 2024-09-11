@@ -34,12 +34,6 @@
                     <a class="class" href="#DateTimeFilter">DateTimeFilter</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#DateTimeFilter.__init__">DateTimeFilter</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#DateTimeFilter.column_name">column_name</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#DateTimeFilter.filter_after_date">filter_after_date</a>
                         </li>
                         <li>
@@ -74,7 +68,7 @@
     <main class="pdoc">
             <section class="module-info">
                     <h1 class="modulename">
-timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.datetime_filter    </h1>
+<a href="./../../timeseries_shaper.html">timeseries_shaper</a><wbr>.<a href="./../filter.html">filter</a><wbr>.datetime_filter    </h1>
 
                 
                         <input id="mod-datetime_filter-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -86,132 +80,124 @@ timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.datetime_filte
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="k">class</span> <span class="nc">DateTimeFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">    Provides methods for filtering time columns in a pandas DataFrame,</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">    Provides class methods for filtering time columns in a pandas DataFrame.</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="sd">    Allows specification of which column to operate on.</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">    </span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="sd">    Inherits from:</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="sd">        Base (class): Base class with common initializations for DataFrame handling.</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="sd">    Attributes:</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">        dataframe (DataFrame): The DataFrame to perform operations on.</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">        column_name (str): The name of the column to filter, defaulting to &#39;systime&#39;.</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the StringFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>    <span class="k">def</span> <span class="nf">filter_after_date</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified date.</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">        Args:</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>    <span class="k">def</span> <span class="nf">filter_after_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified date.</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">        Args:</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">        Returns:</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified date.</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">        Returns:</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified date.</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">        Example:</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">        --------</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_after_date(df, &quot;systime&quot;, &quot;2023-01-01&quot;)</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">        Example:</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">        --------</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_after_date(&quot;2023-01-01&quot;)</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>    <span class="k">def</span> <span class="nf">filter_before_date</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified date.</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">        Args:</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>    <span class="k">def</span> <span class="nf">filter_before_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified date.</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">        Args:</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">        Returns:</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified date.</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">        Returns:</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified date.</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">        Example:</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">        --------</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_before_date(df, &quot;systime&quot;, &quot;2023-01-01&quot;)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
 </span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">        Example:</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="sd">        --------</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_before_date(&quot;2023-01-01&quot;)</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>    <span class="k">def</span> <span class="nf">filter_between_dates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end dates.</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>    <span class="k">def</span> <span class="nf">filter_between_dates</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end dates.</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">        Args:</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">        - start_date (str): The start date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        - end_date (str): The end date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">        Returns:</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified dates.</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">        Args:</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">        - start_date (str): The start date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">        - end_date (str): The end date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">        Returns:</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified dates.</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">        Example:</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">        --------</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_between_dates(&quot;2023-01-01&quot;, &quot;2023-02-01&quot;)</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_date</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_date</span><span class="p">))</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">        Example:</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">        --------</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_between_dates(df, &quot;systime&quot;, &quot;2023-01-01&quot;, &quot;2023-02-01&quot;)</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_date</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_date</span><span class="p">))</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>    <span class="k">def</span> <span class="nf">filter_after_datetime</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified datetime.</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">        Args:</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
 </span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>    <span class="k">def</span> <span class="nf">filter_after_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified datetime.</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">        Args:</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">        Returns:</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified datetime.</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">        Returns:</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified datetime.</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">        Example:</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">        --------</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_after_datetime(df, &quot;systime&quot;, &quot;2023-01-01 12:00:00&quot;)</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
 </span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">        Example:</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">        --------</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_after_datetime(&quot;2023-01-01 12:00:00&quot;)</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="k">def</span> <span class="nf">filter_before_datetime</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified datetime.</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">        Args:</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="k">def</span> <span class="nf">filter_before_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified datetime.</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">        Args:</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">        Returns:</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified datetime.</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">        Returns:</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified datetime.</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">        Example:</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">        --------</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_before_datetime(df, &quot;systime&quot;, &quot;2023-01-01 12:00:00&quot;)</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">        Example:</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">        --------</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_before_datetime(&quot;2023-01-01 12:00:00&quot;)</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>    <span class="k">def</span> <span class="nf">filter_between_datetimes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_datetime</span><span class="p">,</span> <span class="n">end_datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end datetimes.</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="k">def</span> <span class="nf">filter_between_datetimes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">start_datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end datetimes.</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">        Args:</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">        - start_datetime (str): The start datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">        - end_datetime (str): The end datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">        Returns:</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified datetimes.</span>
 </span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">        Args:</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">        - start_datetime (str): The start datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="sd">        - end_datetime (str): The end datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="sd">        Returns:</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified datetimes.</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="sd">        Example:</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="sd">        --------</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_between_datetimes(&quot;2023-01-01 12:00:00&quot;, &quot;2023-02-01 12:00:00&quot;)</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_datetime</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_datetime</span><span class="p">))</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">        Example:</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">        --------</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_between_datetimes(df, &quot;systime&quot;, &quot;2023-01-01 12:00:00&quot;, &quot;2023-02-01 12:00:00&quot;)</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_datetime</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_datetime</span><span class="p">))</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -221,7 +207,7 @@ timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.datetime_filte
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">DateTimeFilter</span><wbr>(<span class="base">timeseries_shaper.base.Base</span>):
+    <span class="name">DateTimeFilter</span><wbr>(<span class="base"><a href="../base.html#Base">timeseries_shaper.base.Base</a></span>):
 
                 <label class="view-source-button" for="DateTimeFilter-view-source"><span>View Source</span></label>
 
@@ -229,208 +215,164 @@ timeseries_shaper<wbr>.<a href="./../filter.html">filter</a><wbr>.datetime_filte
     <a class="headerlink" href="#DateTimeFilter"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter-5"><a href="#DateTimeFilter-5"><span class="linenos">  5</span></a><span class="k">class</span> <span class="nc">DateTimeFilter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
 </span><span id="DateTimeFilter-6"><a href="#DateTimeFilter-6"><span class="linenos">  6</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-7"><a href="#DateTimeFilter-7"><span class="linenos">  7</span></a><span class="sd">    Provides methods for filtering time columns in a pandas DataFrame,</span>
+</span><span id="DateTimeFilter-7"><a href="#DateTimeFilter-7"><span class="linenos">  7</span></a><span class="sd">    Provides class methods for filtering time columns in a pandas DataFrame.</span>
 </span><span id="DateTimeFilter-8"><a href="#DateTimeFilter-8"><span class="linenos">  8</span></a><span class="sd">    Allows specification of which column to operate on.</span>
-</span><span id="DateTimeFilter-9"><a href="#DateTimeFilter-9"><span class="linenos">  9</span></a>
+</span><span id="DateTimeFilter-9"><a href="#DateTimeFilter-9"><span class="linenos">  9</span></a><span class="sd">    </span>
 </span><span id="DateTimeFilter-10"><a href="#DateTimeFilter-10"><span class="linenos"> 10</span></a><span class="sd">    Inherits from:</span>
 </span><span id="DateTimeFilter-11"><a href="#DateTimeFilter-11"><span class="linenos"> 11</span></a><span class="sd">        Base (class): Base class with common initializations for DataFrame handling.</span>
-</span><span id="DateTimeFilter-12"><a href="#DateTimeFilter-12"><span class="linenos"> 12</span></a>
-</span><span id="DateTimeFilter-13"><a href="#DateTimeFilter-13"><span class="linenos"> 13</span></a><span class="sd">    Attributes:</span>
-</span><span id="DateTimeFilter-14"><a href="#DateTimeFilter-14"><span class="linenos"> 14</span></a><span class="sd">        dataframe (DataFrame): The DataFrame to perform operations on.</span>
-</span><span id="DateTimeFilter-15"><a href="#DateTimeFilter-15"><span class="linenos"> 15</span></a><span class="sd">        column_name (str): The name of the column to filter, defaulting to &#39;systime&#39;.</span>
-</span><span id="DateTimeFilter-16"><a href="#DateTimeFilter-16"><span class="linenos"> 16</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-17"><a href="#DateTimeFilter-17"><span class="linenos"> 17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="DateTimeFilter-18"><a href="#DateTimeFilter-18"><span class="linenos"> 18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the StringFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-19"><a href="#DateTimeFilter-19"><span class="linenos"> 19</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="DateTimeFilter-20"><a href="#DateTimeFilter-20"><span class="linenos"> 20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+</span><span id="DateTimeFilter-12"><a href="#DateTimeFilter-12"><span class="linenos"> 12</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-13"><a href="#DateTimeFilter-13"><span class="linenos"> 13</span></a>
+</span><span id="DateTimeFilter-14"><a href="#DateTimeFilter-14"><span class="linenos"> 14</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter-15"><a href="#DateTimeFilter-15"><span class="linenos"> 15</span></a>    <span class="k">def</span> <span class="nf">filter_after_date</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter-16"><a href="#DateTimeFilter-16"><span class="linenos"> 16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-17"><a href="#DateTimeFilter-17"><span class="linenos"> 17</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified date.</span>
+</span><span id="DateTimeFilter-18"><a href="#DateTimeFilter-18"><span class="linenos"> 18</span></a>
+</span><span id="DateTimeFilter-19"><a href="#DateTimeFilter-19"><span class="linenos"> 19</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter-20"><a href="#DateTimeFilter-20"><span class="linenos"> 20</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
 </span><span id="DateTimeFilter-21"><a href="#DateTimeFilter-21"><span class="linenos"> 21</span></a>
-</span><span id="DateTimeFilter-22"><a href="#DateTimeFilter-22"><span class="linenos"> 22</span></a>    <span class="k">def</span> <span class="nf">filter_after_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DateTimeFilter-23"><a href="#DateTimeFilter-23"><span class="linenos"> 23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-24"><a href="#DateTimeFilter-24"><span class="linenos"> 24</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified date.</span>
-</span><span id="DateTimeFilter-25"><a href="#DateTimeFilter-25"><span class="linenos"> 25</span></a>
-</span><span id="DateTimeFilter-26"><a href="#DateTimeFilter-26"><span class="linenos"> 26</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter-27"><a href="#DateTimeFilter-27"><span class="linenos"> 27</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="DateTimeFilter-28"><a href="#DateTimeFilter-28"><span class="linenos"> 28</span></a>
-</span><span id="DateTimeFilter-29"><a href="#DateTimeFilter-29"><span class="linenos"> 29</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter-30"><a href="#DateTimeFilter-30"><span class="linenos"> 30</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified date.</span>
+</span><span id="DateTimeFilter-22"><a href="#DateTimeFilter-22"><span class="linenos"> 22</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter-23"><a href="#DateTimeFilter-23"><span class="linenos"> 23</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified date.</span>
+</span><span id="DateTimeFilter-24"><a href="#DateTimeFilter-24"><span class="linenos"> 24</span></a>
+</span><span id="DateTimeFilter-25"><a href="#DateTimeFilter-25"><span class="linenos"> 25</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter-26"><a href="#DateTimeFilter-26"><span class="linenos"> 26</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter-27"><a href="#DateTimeFilter-27"><span class="linenos"> 27</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_after_date(df, &quot;systime&quot;, &quot;2023-01-01&quot;)</span>
+</span><span id="DateTimeFilter-28"><a href="#DateTimeFilter-28"><span class="linenos"> 28</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter-29"><a href="#DateTimeFilter-29"><span class="linenos"> 29</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-30"><a href="#DateTimeFilter-30"><span class="linenos"> 30</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
 </span><span id="DateTimeFilter-31"><a href="#DateTimeFilter-31"><span class="linenos"> 31</span></a>
-</span><span id="DateTimeFilter-32"><a href="#DateTimeFilter-32"><span class="linenos"> 32</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter-33"><a href="#DateTimeFilter-33"><span class="linenos"> 33</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter-34"><a href="#DateTimeFilter-34"><span class="linenos"> 34</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter-35"><a href="#DateTimeFilter-35"><span class="linenos"> 35</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_after_date(&quot;2023-01-01&quot;)</span>
-</span><span id="DateTimeFilter-36"><a href="#DateTimeFilter-36"><span class="linenos"> 36</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter-37"><a href="#DateTimeFilter-37"><span class="linenos"> 37</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-38"><a href="#DateTimeFilter-38"><span class="linenos"> 38</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
+</span><span id="DateTimeFilter-32"><a href="#DateTimeFilter-32"><span class="linenos"> 32</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter-33"><a href="#DateTimeFilter-33"><span class="linenos"> 33</span></a>    <span class="k">def</span> <span class="nf">filter_before_date</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter-34"><a href="#DateTimeFilter-34"><span class="linenos"> 34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-35"><a href="#DateTimeFilter-35"><span class="linenos"> 35</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified date.</span>
+</span><span id="DateTimeFilter-36"><a href="#DateTimeFilter-36"><span class="linenos"> 36</span></a>
+</span><span id="DateTimeFilter-37"><a href="#DateTimeFilter-37"><span class="linenos"> 37</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter-38"><a href="#DateTimeFilter-38"><span class="linenos"> 38</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
 </span><span id="DateTimeFilter-39"><a href="#DateTimeFilter-39"><span class="linenos"> 39</span></a>
-</span><span id="DateTimeFilter-40"><a href="#DateTimeFilter-40"><span class="linenos"> 40</span></a>    <span class="k">def</span> <span class="nf">filter_before_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DateTimeFilter-41"><a href="#DateTimeFilter-41"><span class="linenos"> 41</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-42"><a href="#DateTimeFilter-42"><span class="linenos"> 42</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified date.</span>
-</span><span id="DateTimeFilter-43"><a href="#DateTimeFilter-43"><span class="linenos"> 43</span></a>
-</span><span id="DateTimeFilter-44"><a href="#DateTimeFilter-44"><span class="linenos"> 44</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter-45"><a href="#DateTimeFilter-45"><span class="linenos"> 45</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="DateTimeFilter-46"><a href="#DateTimeFilter-46"><span class="linenos"> 46</span></a>
-</span><span id="DateTimeFilter-47"><a href="#DateTimeFilter-47"><span class="linenos"> 47</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter-48"><a href="#DateTimeFilter-48"><span class="linenos"> 48</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified date.</span>
+</span><span id="DateTimeFilter-40"><a href="#DateTimeFilter-40"><span class="linenos"> 40</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter-41"><a href="#DateTimeFilter-41"><span class="linenos"> 41</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified date.</span>
+</span><span id="DateTimeFilter-42"><a href="#DateTimeFilter-42"><span class="linenos"> 42</span></a>
+</span><span id="DateTimeFilter-43"><a href="#DateTimeFilter-43"><span class="linenos"> 43</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter-44"><a href="#DateTimeFilter-44"><span class="linenos"> 44</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter-45"><a href="#DateTimeFilter-45"><span class="linenos"> 45</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_before_date(df, &quot;systime&quot;, &quot;2023-01-01&quot;)</span>
+</span><span id="DateTimeFilter-46"><a href="#DateTimeFilter-46"><span class="linenos"> 46</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter-47"><a href="#DateTimeFilter-47"><span class="linenos"> 47</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-48"><a href="#DateTimeFilter-48"><span class="linenos"> 48</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
 </span><span id="DateTimeFilter-49"><a href="#DateTimeFilter-49"><span class="linenos"> 49</span></a>
-</span><span id="DateTimeFilter-50"><a href="#DateTimeFilter-50"><span class="linenos"> 50</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter-51"><a href="#DateTimeFilter-51"><span class="linenos"> 51</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter-52"><a href="#DateTimeFilter-52"><span class="linenos"> 52</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter-53"><a href="#DateTimeFilter-53"><span class="linenos"> 53</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_before_date(&quot;2023-01-01&quot;)</span>
-</span><span id="DateTimeFilter-54"><a href="#DateTimeFilter-54"><span class="linenos"> 54</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter-55"><a href="#DateTimeFilter-55"><span class="linenos"> 55</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-56"><a href="#DateTimeFilter-56"><span class="linenos"> 56</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
-</span><span id="DateTimeFilter-57"><a href="#DateTimeFilter-57"><span class="linenos"> 57</span></a>
-</span><span id="DateTimeFilter-58"><a href="#DateTimeFilter-58"><span class="linenos"> 58</span></a>    <span class="k">def</span> <span class="nf">filter_between_dates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
-</span><span id="DateTimeFilter-59"><a href="#DateTimeFilter-59"><span class="linenos"> 59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-60"><a href="#DateTimeFilter-60"><span class="linenos"> 60</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end dates.</span>
+</span><span id="DateTimeFilter-50"><a href="#DateTimeFilter-50"><span class="linenos"> 50</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter-51"><a href="#DateTimeFilter-51"><span class="linenos"> 51</span></a>    <span class="k">def</span> <span class="nf">filter_between_dates</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter-52"><a href="#DateTimeFilter-52"><span class="linenos"> 52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-53"><a href="#DateTimeFilter-53"><span class="linenos"> 53</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end dates.</span>
+</span><span id="DateTimeFilter-54"><a href="#DateTimeFilter-54"><span class="linenos"> 54</span></a>
+</span><span id="DateTimeFilter-55"><a href="#DateTimeFilter-55"><span class="linenos"> 55</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter-56"><a href="#DateTimeFilter-56"><span class="linenos"> 56</span></a><span class="sd">        - start_date (str): The start date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
+</span><span id="DateTimeFilter-57"><a href="#DateTimeFilter-57"><span class="linenos"> 57</span></a><span class="sd">        - end_date (str): The end date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
+</span><span id="DateTimeFilter-58"><a href="#DateTimeFilter-58"><span class="linenos"> 58</span></a>
+</span><span id="DateTimeFilter-59"><a href="#DateTimeFilter-59"><span class="linenos"> 59</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter-60"><a href="#DateTimeFilter-60"><span class="linenos"> 60</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified dates.</span>
 </span><span id="DateTimeFilter-61"><a href="#DateTimeFilter-61"><span class="linenos"> 61</span></a>
-</span><span id="DateTimeFilter-62"><a href="#DateTimeFilter-62"><span class="linenos"> 62</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter-63"><a href="#DateTimeFilter-63"><span class="linenos"> 63</span></a><span class="sd">        - start_date (str): The start date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="DateTimeFilter-64"><a href="#DateTimeFilter-64"><span class="linenos"> 64</span></a><span class="sd">        - end_date (str): The end date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="DateTimeFilter-65"><a href="#DateTimeFilter-65"><span class="linenos"> 65</span></a>
-</span><span id="DateTimeFilter-66"><a href="#DateTimeFilter-66"><span class="linenos"> 66</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter-67"><a href="#DateTimeFilter-67"><span class="linenos"> 67</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified dates.</span>
-</span><span id="DateTimeFilter-68"><a href="#DateTimeFilter-68"><span class="linenos"> 68</span></a>
-</span><span id="DateTimeFilter-69"><a href="#DateTimeFilter-69"><span class="linenos"> 69</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter-70"><a href="#DateTimeFilter-70"><span class="linenos"> 70</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter-71"><a href="#DateTimeFilter-71"><span class="linenos"> 71</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter-72"><a href="#DateTimeFilter-72"><span class="linenos"> 72</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_between_dates(&quot;2023-01-01&quot;, &quot;2023-02-01&quot;)</span>
-</span><span id="DateTimeFilter-73"><a href="#DateTimeFilter-73"><span class="linenos"> 73</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter-74"><a href="#DateTimeFilter-74"><span class="linenos"> 74</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-75"><a href="#DateTimeFilter-75"><span class="linenos"> 75</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_date</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_date</span><span class="p">))</span>
-</span><span id="DateTimeFilter-76"><a href="#DateTimeFilter-76"><span class="linenos"> 76</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</span><span id="DateTimeFilter-62"><a href="#DateTimeFilter-62"><span class="linenos"> 62</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter-63"><a href="#DateTimeFilter-63"><span class="linenos"> 63</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter-64"><a href="#DateTimeFilter-64"><span class="linenos"> 64</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_between_dates(df, &quot;systime&quot;, &quot;2023-01-01&quot;, &quot;2023-02-01&quot;)</span>
+</span><span id="DateTimeFilter-65"><a href="#DateTimeFilter-65"><span class="linenos"> 65</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter-66"><a href="#DateTimeFilter-66"><span class="linenos"> 66</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-67"><a href="#DateTimeFilter-67"><span class="linenos"> 67</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_date</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_date</span><span class="p">))</span>
+</span><span id="DateTimeFilter-68"><a href="#DateTimeFilter-68"><span class="linenos"> 68</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</span><span id="DateTimeFilter-69"><a href="#DateTimeFilter-69"><span class="linenos"> 69</span></a>
+</span><span id="DateTimeFilter-70"><a href="#DateTimeFilter-70"><span class="linenos"> 70</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter-71"><a href="#DateTimeFilter-71"><span class="linenos"> 71</span></a>    <span class="k">def</span> <span class="nf">filter_after_datetime</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter-72"><a href="#DateTimeFilter-72"><span class="linenos"> 72</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-73"><a href="#DateTimeFilter-73"><span class="linenos"> 73</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified datetime.</span>
+</span><span id="DateTimeFilter-74"><a href="#DateTimeFilter-74"><span class="linenos"> 74</span></a>
+</span><span id="DateTimeFilter-75"><a href="#DateTimeFilter-75"><span class="linenos"> 75</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter-76"><a href="#DateTimeFilter-76"><span class="linenos"> 76</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
 </span><span id="DateTimeFilter-77"><a href="#DateTimeFilter-77"><span class="linenos"> 77</span></a>
-</span><span id="DateTimeFilter-78"><a href="#DateTimeFilter-78"><span class="linenos"> 78</span></a>    <span class="k">def</span> <span class="nf">filter_after_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DateTimeFilter-79"><a href="#DateTimeFilter-79"><span class="linenos"> 79</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-80"><a href="#DateTimeFilter-80"><span class="linenos"> 80</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified datetime.</span>
-</span><span id="DateTimeFilter-81"><a href="#DateTimeFilter-81"><span class="linenos"> 81</span></a>
-</span><span id="DateTimeFilter-82"><a href="#DateTimeFilter-82"><span class="linenos"> 82</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter-83"><a href="#DateTimeFilter-83"><span class="linenos"> 83</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="DateTimeFilter-84"><a href="#DateTimeFilter-84"><span class="linenos"> 84</span></a>
-</span><span id="DateTimeFilter-85"><a href="#DateTimeFilter-85"><span class="linenos"> 85</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter-86"><a href="#DateTimeFilter-86"><span class="linenos"> 86</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified datetime.</span>
+</span><span id="DateTimeFilter-78"><a href="#DateTimeFilter-78"><span class="linenos"> 78</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter-79"><a href="#DateTimeFilter-79"><span class="linenos"> 79</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified datetime.</span>
+</span><span id="DateTimeFilter-80"><a href="#DateTimeFilter-80"><span class="linenos"> 80</span></a>
+</span><span id="DateTimeFilter-81"><a href="#DateTimeFilter-81"><span class="linenos"> 81</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter-82"><a href="#DateTimeFilter-82"><span class="linenos"> 82</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter-83"><a href="#DateTimeFilter-83"><span class="linenos"> 83</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_after_datetime(df, &quot;systime&quot;, &quot;2023-01-01 12:00:00&quot;)</span>
+</span><span id="DateTimeFilter-84"><a href="#DateTimeFilter-84"><span class="linenos"> 84</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter-85"><a href="#DateTimeFilter-85"><span class="linenos"> 85</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-86"><a href="#DateTimeFilter-86"><span class="linenos"> 86</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
 </span><span id="DateTimeFilter-87"><a href="#DateTimeFilter-87"><span class="linenos"> 87</span></a>
-</span><span id="DateTimeFilter-88"><a href="#DateTimeFilter-88"><span class="linenos"> 88</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter-89"><a href="#DateTimeFilter-89"><span class="linenos"> 89</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter-90"><a href="#DateTimeFilter-90"><span class="linenos"> 90</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter-91"><a href="#DateTimeFilter-91"><span class="linenos"> 91</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_after_datetime(&quot;2023-01-01 12:00:00&quot;)</span>
-</span><span id="DateTimeFilter-92"><a href="#DateTimeFilter-92"><span class="linenos"> 92</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter-93"><a href="#DateTimeFilter-93"><span class="linenos"> 93</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-94"><a href="#DateTimeFilter-94"><span class="linenos"> 94</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
+</span><span id="DateTimeFilter-88"><a href="#DateTimeFilter-88"><span class="linenos"> 88</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter-89"><a href="#DateTimeFilter-89"><span class="linenos"> 89</span></a>    <span class="k">def</span> <span class="nf">filter_before_datetime</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter-90"><a href="#DateTimeFilter-90"><span class="linenos"> 90</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-91"><a href="#DateTimeFilter-91"><span class="linenos"> 91</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified datetime.</span>
+</span><span id="DateTimeFilter-92"><a href="#DateTimeFilter-92"><span class="linenos"> 92</span></a>
+</span><span id="DateTimeFilter-93"><a href="#DateTimeFilter-93"><span class="linenos"> 93</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter-94"><a href="#DateTimeFilter-94"><span class="linenos"> 94</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
 </span><span id="DateTimeFilter-95"><a href="#DateTimeFilter-95"><span class="linenos"> 95</span></a>
-</span><span id="DateTimeFilter-96"><a href="#DateTimeFilter-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="nf">filter_before_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DateTimeFilter-97"><a href="#DateTimeFilter-97"><span class="linenos"> 97</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-98"><a href="#DateTimeFilter-98"><span class="linenos"> 98</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified datetime.</span>
-</span><span id="DateTimeFilter-99"><a href="#DateTimeFilter-99"><span class="linenos"> 99</span></a>
-</span><span id="DateTimeFilter-100"><a href="#DateTimeFilter-100"><span class="linenos">100</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter-101"><a href="#DateTimeFilter-101"><span class="linenos">101</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="DateTimeFilter-102"><a href="#DateTimeFilter-102"><span class="linenos">102</span></a>
-</span><span id="DateTimeFilter-103"><a href="#DateTimeFilter-103"><span class="linenos">103</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter-104"><a href="#DateTimeFilter-104"><span class="linenos">104</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified datetime.</span>
+</span><span id="DateTimeFilter-96"><a href="#DateTimeFilter-96"><span class="linenos"> 96</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter-97"><a href="#DateTimeFilter-97"><span class="linenos"> 97</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified datetime.</span>
+</span><span id="DateTimeFilter-98"><a href="#DateTimeFilter-98"><span class="linenos"> 98</span></a>
+</span><span id="DateTimeFilter-99"><a href="#DateTimeFilter-99"><span class="linenos"> 99</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter-100"><a href="#DateTimeFilter-100"><span class="linenos">100</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter-101"><a href="#DateTimeFilter-101"><span class="linenos">101</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_before_datetime(df, &quot;systime&quot;, &quot;2023-01-01 12:00:00&quot;)</span>
+</span><span id="DateTimeFilter-102"><a href="#DateTimeFilter-102"><span class="linenos">102</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter-103"><a href="#DateTimeFilter-103"><span class="linenos">103</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-104"><a href="#DateTimeFilter-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
 </span><span id="DateTimeFilter-105"><a href="#DateTimeFilter-105"><span class="linenos">105</span></a>
-</span><span id="DateTimeFilter-106"><a href="#DateTimeFilter-106"><span class="linenos">106</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter-107"><a href="#DateTimeFilter-107"><span class="linenos">107</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter-108"><a href="#DateTimeFilter-108"><span class="linenos">108</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter-109"><a href="#DateTimeFilter-109"><span class="linenos">109</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_before_datetime(&quot;2023-01-01 12:00:00&quot;)</span>
-</span><span id="DateTimeFilter-110"><a href="#DateTimeFilter-110"><span class="linenos">110</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter-111"><a href="#DateTimeFilter-111"><span class="linenos">111</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-112"><a href="#DateTimeFilter-112"><span class="linenos">112</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
-</span><span id="DateTimeFilter-113"><a href="#DateTimeFilter-113"><span class="linenos">113</span></a>
-</span><span id="DateTimeFilter-114"><a href="#DateTimeFilter-114"><span class="linenos">114</span></a>    <span class="k">def</span> <span class="nf">filter_between_datetimes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_datetime</span><span class="p">,</span> <span class="n">end_datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DateTimeFilter-115"><a href="#DateTimeFilter-115"><span class="linenos">115</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-116"><a href="#DateTimeFilter-116"><span class="linenos">116</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end datetimes.</span>
+</span><span id="DateTimeFilter-106"><a href="#DateTimeFilter-106"><span class="linenos">106</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter-107"><a href="#DateTimeFilter-107"><span class="linenos">107</span></a>    <span class="k">def</span> <span class="nf">filter_between_datetimes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">start_datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter-108"><a href="#DateTimeFilter-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-109"><a href="#DateTimeFilter-109"><span class="linenos">109</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end datetimes.</span>
+</span><span id="DateTimeFilter-110"><a href="#DateTimeFilter-110"><span class="linenos">110</span></a>
+</span><span id="DateTimeFilter-111"><a href="#DateTimeFilter-111"><span class="linenos">111</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter-112"><a href="#DateTimeFilter-112"><span class="linenos">112</span></a><span class="sd">        - start_datetime (str): The start datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
+</span><span id="DateTimeFilter-113"><a href="#DateTimeFilter-113"><span class="linenos">113</span></a><span class="sd">        - end_datetime (str): The end datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
+</span><span id="DateTimeFilter-114"><a href="#DateTimeFilter-114"><span class="linenos">114</span></a>
+</span><span id="DateTimeFilter-115"><a href="#DateTimeFilter-115"><span class="linenos">115</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter-116"><a href="#DateTimeFilter-116"><span class="linenos">116</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified datetimes.</span>
 </span><span id="DateTimeFilter-117"><a href="#DateTimeFilter-117"><span class="linenos">117</span></a>
-</span><span id="DateTimeFilter-118"><a href="#DateTimeFilter-118"><span class="linenos">118</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter-119"><a href="#DateTimeFilter-119"><span class="linenos">119</span></a><span class="sd">        - start_datetime (str): The start datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="DateTimeFilter-120"><a href="#DateTimeFilter-120"><span class="linenos">120</span></a><span class="sd">        - end_datetime (str): The end datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="DateTimeFilter-121"><a href="#DateTimeFilter-121"><span class="linenos">121</span></a>
-</span><span id="DateTimeFilter-122"><a href="#DateTimeFilter-122"><span class="linenos">122</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter-123"><a href="#DateTimeFilter-123"><span class="linenos">123</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified datetimes.</span>
-</span><span id="DateTimeFilter-124"><a href="#DateTimeFilter-124"><span class="linenos">124</span></a>
-</span><span id="DateTimeFilter-125"><a href="#DateTimeFilter-125"><span class="linenos">125</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter-126"><a href="#DateTimeFilter-126"><span class="linenos">126</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter-127"><a href="#DateTimeFilter-127"><span class="linenos">127</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter-128"><a href="#DateTimeFilter-128"><span class="linenos">128</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_between_datetimes(&quot;2023-01-01 12:00:00&quot;, &quot;2023-02-01 12:00:00&quot;)</span>
-</span><span id="DateTimeFilter-129"><a href="#DateTimeFilter-129"><span class="linenos">129</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter-130"><a href="#DateTimeFilter-130"><span class="linenos">130</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter-131"><a href="#DateTimeFilter-131"><span class="linenos">131</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_datetime</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_datetime</span><span class="p">))</span>
-</span><span id="DateTimeFilter-132"><a href="#DateTimeFilter-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</span><span id="DateTimeFilter-118"><a href="#DateTimeFilter-118"><span class="linenos">118</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter-119"><a href="#DateTimeFilter-119"><span class="linenos">119</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter-120"><a href="#DateTimeFilter-120"><span class="linenos">120</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_between_datetimes(df, &quot;systime&quot;, &quot;2023-01-01 12:00:00&quot;, &quot;2023-02-01 12:00:00&quot;)</span>
+</span><span id="DateTimeFilter-121"><a href="#DateTimeFilter-121"><span class="linenos">121</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter-122"><a href="#DateTimeFilter-122"><span class="linenos">122</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter-123"><a href="#DateTimeFilter-123"><span class="linenos">123</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_datetime</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_datetime</span><span class="p">))</span>
+</span><span id="DateTimeFilter-124"><a href="#DateTimeFilter-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Provides methods for filtering time columns in a pandas DataFrame,
+            <div class="docstring"><p>Provides class methods for filtering time columns in a pandas DataFrame.
 Allows specification of which column to operate on.</p>
 
 <p>Inherits from:
     Base (class): Base class with common initializations for DataFrame handling.</p>
-
-<p>Attributes:
-    dataframe (DataFrame): The DataFrame to perform operations on.
-    column_name (str): The name of the column to filter, defaulting to 'systime'.</p>
 </div>
 
 
-                            <div id="DateTimeFilter.__init__" class="classattr">
-                                        <input id="DateTimeFilter.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="name">DateTimeFilter</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span></span>)</span>
-
-                <label class="view-source-button" for="DateTimeFilter.__init__-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#DateTimeFilter.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.__init__-17"><a href="#DateTimeFilter.__init__-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="DateTimeFilter.__init__-18"><a href="#DateTimeFilter.__init__-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the StringFilter with a DataFrame and column name.&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.__init__-19"><a href="#DateTimeFilter.__init__-19"><span class="linenos">19</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="DateTimeFilter.__init__-20"><a href="#DateTimeFilter.__init__-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Initializes the StringFilter with a DataFrame and column name.</p>
-</div>
-
-
-                            </div>
-                            <div id="DateTimeFilter.column_name" class="classattr">
-                                <div class="attr variable">
-            <span class="name">column_name</span>
-
-        
-    </div>
-    <a class="headerlink" href="#DateTimeFilter.column_name"></a>
-    
-    
-
-                            </div>
                             <div id="DateTimeFilter.filter_after_date" class="classattr">
                                         <input id="DateTimeFilter.filter_after_date-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_after_date</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">date</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">filter_after_date</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span>,</span><span class="param">	<span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="DateTimeFilter.filter_after_date-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DateTimeFilter.filter_after_date"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_after_date-22"><a href="#DateTimeFilter.filter_after_date-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="nf">filter_after_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DateTimeFilter.filter_after_date-23"><a href="#DateTimeFilter.filter_after_date-23"><span class="linenos">23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_after_date-24"><a href="#DateTimeFilter.filter_after_date-24"><span class="linenos">24</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified date.</span>
-</span><span id="DateTimeFilter.filter_after_date-25"><a href="#DateTimeFilter.filter_after_date-25"><span class="linenos">25</span></a>
-</span><span id="DateTimeFilter.filter_after_date-26"><a href="#DateTimeFilter.filter_after_date-26"><span class="linenos">26</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter.filter_after_date-27"><a href="#DateTimeFilter.filter_after_date-27"><span class="linenos">27</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="DateTimeFilter.filter_after_date-28"><a href="#DateTimeFilter.filter_after_date-28"><span class="linenos">28</span></a>
-</span><span id="DateTimeFilter.filter_after_date-29"><a href="#DateTimeFilter.filter_after_date-29"><span class="linenos">29</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter.filter_after_date-30"><a href="#DateTimeFilter.filter_after_date-30"><span class="linenos">30</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified date.</span>
-</span><span id="DateTimeFilter.filter_after_date-31"><a href="#DateTimeFilter.filter_after_date-31"><span class="linenos">31</span></a>
-</span><span id="DateTimeFilter.filter_after_date-32"><a href="#DateTimeFilter.filter_after_date-32"><span class="linenos">32</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter.filter_after_date-33"><a href="#DateTimeFilter.filter_after_date-33"><span class="linenos">33</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter.filter_after_date-34"><a href="#DateTimeFilter.filter_after_date-34"><span class="linenos">34</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter.filter_after_date-35"><a href="#DateTimeFilter.filter_after_date-35"><span class="linenos">35</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_after_date(&quot;2023-01-01&quot;)</span>
-</span><span id="DateTimeFilter.filter_after_date-36"><a href="#DateTimeFilter.filter_after_date-36"><span class="linenos">36</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter.filter_after_date-37"><a href="#DateTimeFilter.filter_after_date-37"><span class="linenos">37</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_after_date-38"><a href="#DateTimeFilter.filter_after_date-38"><span class="linenos">38</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_after_date-14"><a href="#DateTimeFilter.filter_after_date-14"><span class="linenos">14</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter.filter_after_date-15"><a href="#DateTimeFilter.filter_after_date-15"><span class="linenos">15</span></a>    <span class="k">def</span> <span class="nf">filter_after_date</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter.filter_after_date-16"><a href="#DateTimeFilter.filter_after_date-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_after_date-17"><a href="#DateTimeFilter.filter_after_date-17"><span class="linenos">17</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified date.</span>
+</span><span id="DateTimeFilter.filter_after_date-18"><a href="#DateTimeFilter.filter_after_date-18"><span class="linenos">18</span></a>
+</span><span id="DateTimeFilter.filter_after_date-19"><a href="#DateTimeFilter.filter_after_date-19"><span class="linenos">19</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter.filter_after_date-20"><a href="#DateTimeFilter.filter_after_date-20"><span class="linenos">20</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
+</span><span id="DateTimeFilter.filter_after_date-21"><a href="#DateTimeFilter.filter_after_date-21"><span class="linenos">21</span></a>
+</span><span id="DateTimeFilter.filter_after_date-22"><a href="#DateTimeFilter.filter_after_date-22"><span class="linenos">22</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter.filter_after_date-23"><a href="#DateTimeFilter.filter_after_date-23"><span class="linenos">23</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified date.</span>
+</span><span id="DateTimeFilter.filter_after_date-24"><a href="#DateTimeFilter.filter_after_date-24"><span class="linenos">24</span></a>
+</span><span id="DateTimeFilter.filter_after_date-25"><a href="#DateTimeFilter.filter_after_date-25"><span class="linenos">25</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter.filter_after_date-26"><a href="#DateTimeFilter.filter_after_date-26"><span class="linenos">26</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter.filter_after_date-27"><a href="#DateTimeFilter.filter_after_date-27"><span class="linenos">27</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_after_date(df, &quot;systime&quot;, &quot;2023-01-01&quot;)</span>
+</span><span id="DateTimeFilter.filter_after_date-28"><a href="#DateTimeFilter.filter_after_date-28"><span class="linenos">28</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter.filter_after_date-29"><a href="#DateTimeFilter.filter_after_date-29"><span class="linenos">29</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_after_date-30"><a href="#DateTimeFilter.filter_after_date-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
 </span></pre></div>
 
 
@@ -451,8 +393,7 @@ Allows specification of which column to operate on.</p>
 <h2 id="example">Example:</h2>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">DateTimeFilter</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">filter_after_date</span><span class="p">(</span><span class="s2">&quot;2023-01-01&quot;</span><span class="p">)</span>
+<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n"><a href="#DateTimeFilter.filter_after_date">DateTimeFilter.filter_after_date</a></span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;systime&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-01-01&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">filtered_data</span><span class="p">)</span>
 </code></pre>
 </div>
@@ -463,31 +404,32 @@ Allows specification of which column to operate on.</p>
                             <div id="DateTimeFilter.filter_before_date" class="classattr">
                                         <input id="DateTimeFilter.filter_before_date-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_before_date</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">date</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">filter_before_date</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span>,</span><span class="param">	<span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="DateTimeFilter.filter_before_date-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DateTimeFilter.filter_before_date"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_before_date-40"><a href="#DateTimeFilter.filter_before_date-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">filter_before_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DateTimeFilter.filter_before_date-41"><a href="#DateTimeFilter.filter_before_date-41"><span class="linenos">41</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_before_date-42"><a href="#DateTimeFilter.filter_before_date-42"><span class="linenos">42</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified date.</span>
-</span><span id="DateTimeFilter.filter_before_date-43"><a href="#DateTimeFilter.filter_before_date-43"><span class="linenos">43</span></a>
-</span><span id="DateTimeFilter.filter_before_date-44"><a href="#DateTimeFilter.filter_before_date-44"><span class="linenos">44</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter.filter_before_date-45"><a href="#DateTimeFilter.filter_before_date-45"><span class="linenos">45</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="DateTimeFilter.filter_before_date-46"><a href="#DateTimeFilter.filter_before_date-46"><span class="linenos">46</span></a>
-</span><span id="DateTimeFilter.filter_before_date-47"><a href="#DateTimeFilter.filter_before_date-47"><span class="linenos">47</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter.filter_before_date-48"><a href="#DateTimeFilter.filter_before_date-48"><span class="linenos">48</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified date.</span>
-</span><span id="DateTimeFilter.filter_before_date-49"><a href="#DateTimeFilter.filter_before_date-49"><span class="linenos">49</span></a>
-</span><span id="DateTimeFilter.filter_before_date-50"><a href="#DateTimeFilter.filter_before_date-50"><span class="linenos">50</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter.filter_before_date-51"><a href="#DateTimeFilter.filter_before_date-51"><span class="linenos">51</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter.filter_before_date-52"><a href="#DateTimeFilter.filter_before_date-52"><span class="linenos">52</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter.filter_before_date-53"><a href="#DateTimeFilter.filter_before_date-53"><span class="linenos">53</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_before_date(&quot;2023-01-01&quot;)</span>
-</span><span id="DateTimeFilter.filter_before_date-54"><a href="#DateTimeFilter.filter_before_date-54"><span class="linenos">54</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter.filter_before_date-55"><a href="#DateTimeFilter.filter_before_date-55"><span class="linenos">55</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_before_date-56"><a href="#DateTimeFilter.filter_before_date-56"><span class="linenos">56</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_before_date-32"><a href="#DateTimeFilter.filter_before_date-32"><span class="linenos">32</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter.filter_before_date-33"><a href="#DateTimeFilter.filter_before_date-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">filter_before_date</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter.filter_before_date-34"><a href="#DateTimeFilter.filter_before_date-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_before_date-35"><a href="#DateTimeFilter.filter_before_date-35"><span class="linenos">35</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified date.</span>
+</span><span id="DateTimeFilter.filter_before_date-36"><a href="#DateTimeFilter.filter_before_date-36"><span class="linenos">36</span></a>
+</span><span id="DateTimeFilter.filter_before_date-37"><a href="#DateTimeFilter.filter_before_date-37"><span class="linenos">37</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter.filter_before_date-38"><a href="#DateTimeFilter.filter_before_date-38"><span class="linenos">38</span></a><span class="sd">        - date (str): The cutoff date in &#39;YYYY-MM-DD&#39; format.</span>
+</span><span id="DateTimeFilter.filter_before_date-39"><a href="#DateTimeFilter.filter_before_date-39"><span class="linenos">39</span></a>
+</span><span id="DateTimeFilter.filter_before_date-40"><a href="#DateTimeFilter.filter_before_date-40"><span class="linenos">40</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter.filter_before_date-41"><a href="#DateTimeFilter.filter_before_date-41"><span class="linenos">41</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified date.</span>
+</span><span id="DateTimeFilter.filter_before_date-42"><a href="#DateTimeFilter.filter_before_date-42"><span class="linenos">42</span></a>
+</span><span id="DateTimeFilter.filter_before_date-43"><a href="#DateTimeFilter.filter_before_date-43"><span class="linenos">43</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter.filter_before_date-44"><a href="#DateTimeFilter.filter_before_date-44"><span class="linenos">44</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter.filter_before_date-45"><a href="#DateTimeFilter.filter_before_date-45"><span class="linenos">45</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_before_date(df, &quot;systime&quot;, &quot;2023-01-01&quot;)</span>
+</span><span id="DateTimeFilter.filter_before_date-46"><a href="#DateTimeFilter.filter_before_date-46"><span class="linenos">46</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter.filter_before_date-47"><a href="#DateTimeFilter.filter_before_date-47"><span class="linenos">47</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_before_date-48"><a href="#DateTimeFilter.filter_before_date-48"><span class="linenos">48</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">)]</span>
 </span></pre></div>
 
 
@@ -508,8 +450,7 @@ Allows specification of which column to operate on.</p>
 <h2 id="example">Example:</h2>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">DateTimeFilter</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">filter_before_date</span><span class="p">(</span><span class="s2">&quot;2023-01-01&quot;</span><span class="p">)</span>
+<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n"><a href="#DateTimeFilter.filter_before_date">DateTimeFilter.filter_before_date</a></span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;systime&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-01-01&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">filtered_data</span><span class="p">)</span>
 </code></pre>
 </div>
@@ -520,33 +461,34 @@ Allows specification of which column to operate on.</p>
                             <div id="DateTimeFilter.filter_between_dates" class="classattr">
                                         <input id="DateTimeFilter.filter_between_dates-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_between_dates</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">start_date</span>, </span><span class="param"><span class="n">end_date</span></span><span class="return-annotation">):</span></span>
+        <span class="name">filter_between_dates</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span>,</span><span class="param">	<span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="DateTimeFilter.filter_between_dates-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DateTimeFilter.filter_between_dates"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_between_dates-58"><a href="#DateTimeFilter.filter_between_dates-58"><span class="linenos">58</span></a>    <span class="k">def</span> <span class="nf">filter_between_dates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
-</span><span id="DateTimeFilter.filter_between_dates-59"><a href="#DateTimeFilter.filter_between_dates-59"><span class="linenos">59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_between_dates-60"><a href="#DateTimeFilter.filter_between_dates-60"><span class="linenos">60</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end dates.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_between_dates-50"><a href="#DateTimeFilter.filter_between_dates-50"><span class="linenos">50</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter.filter_between_dates-51"><a href="#DateTimeFilter.filter_between_dates-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">filter_between_dates</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter.filter_between_dates-52"><a href="#DateTimeFilter.filter_between_dates-52"><span class="linenos">52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_between_dates-53"><a href="#DateTimeFilter.filter_between_dates-53"><span class="linenos">53</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end dates.</span>
+</span><span id="DateTimeFilter.filter_between_dates-54"><a href="#DateTimeFilter.filter_between_dates-54"><span class="linenos">54</span></a>
+</span><span id="DateTimeFilter.filter_between_dates-55"><a href="#DateTimeFilter.filter_between_dates-55"><span class="linenos">55</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter.filter_between_dates-56"><a href="#DateTimeFilter.filter_between_dates-56"><span class="linenos">56</span></a><span class="sd">        - start_date (str): The start date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
+</span><span id="DateTimeFilter.filter_between_dates-57"><a href="#DateTimeFilter.filter_between_dates-57"><span class="linenos">57</span></a><span class="sd">        - end_date (str): The end date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
+</span><span id="DateTimeFilter.filter_between_dates-58"><a href="#DateTimeFilter.filter_between_dates-58"><span class="linenos">58</span></a>
+</span><span id="DateTimeFilter.filter_between_dates-59"><a href="#DateTimeFilter.filter_between_dates-59"><span class="linenos">59</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter.filter_between_dates-60"><a href="#DateTimeFilter.filter_between_dates-60"><span class="linenos">60</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified dates.</span>
 </span><span id="DateTimeFilter.filter_between_dates-61"><a href="#DateTimeFilter.filter_between_dates-61"><span class="linenos">61</span></a>
-</span><span id="DateTimeFilter.filter_between_dates-62"><a href="#DateTimeFilter.filter_between_dates-62"><span class="linenos">62</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter.filter_between_dates-63"><a href="#DateTimeFilter.filter_between_dates-63"><span class="linenos">63</span></a><span class="sd">        - start_date (str): The start date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="DateTimeFilter.filter_between_dates-64"><a href="#DateTimeFilter.filter_between_dates-64"><span class="linenos">64</span></a><span class="sd">        - end_date (str): The end date of the interval in &#39;YYYY-MM-DD&#39; format.</span>
-</span><span id="DateTimeFilter.filter_between_dates-65"><a href="#DateTimeFilter.filter_between_dates-65"><span class="linenos">65</span></a>
-</span><span id="DateTimeFilter.filter_between_dates-66"><a href="#DateTimeFilter.filter_between_dates-66"><span class="linenos">66</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter.filter_between_dates-67"><a href="#DateTimeFilter.filter_between_dates-67"><span class="linenos">67</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified dates.</span>
-</span><span id="DateTimeFilter.filter_between_dates-68"><a href="#DateTimeFilter.filter_between_dates-68"><span class="linenos">68</span></a>
-</span><span id="DateTimeFilter.filter_between_dates-69"><a href="#DateTimeFilter.filter_between_dates-69"><span class="linenos">69</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter.filter_between_dates-70"><a href="#DateTimeFilter.filter_between_dates-70"><span class="linenos">70</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter.filter_between_dates-71"><a href="#DateTimeFilter.filter_between_dates-71"><span class="linenos">71</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter.filter_between_dates-72"><a href="#DateTimeFilter.filter_between_dates-72"><span class="linenos">72</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_between_dates(&quot;2023-01-01&quot;, &quot;2023-02-01&quot;)</span>
-</span><span id="DateTimeFilter.filter_between_dates-73"><a href="#DateTimeFilter.filter_between_dates-73"><span class="linenos">73</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter.filter_between_dates-74"><a href="#DateTimeFilter.filter_between_dates-74"><span class="linenos">74</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_between_dates-75"><a href="#DateTimeFilter.filter_between_dates-75"><span class="linenos">75</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_date</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_date</span><span class="p">))</span>
-</span><span id="DateTimeFilter.filter_between_dates-76"><a href="#DateTimeFilter.filter_between_dates-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</span><span id="DateTimeFilter.filter_between_dates-62"><a href="#DateTimeFilter.filter_between_dates-62"><span class="linenos">62</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter.filter_between_dates-63"><a href="#DateTimeFilter.filter_between_dates-63"><span class="linenos">63</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter.filter_between_dates-64"><a href="#DateTimeFilter.filter_between_dates-64"><span class="linenos">64</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_between_dates(df, &quot;systime&quot;, &quot;2023-01-01&quot;, &quot;2023-02-01&quot;)</span>
+</span><span id="DateTimeFilter.filter_between_dates-65"><a href="#DateTimeFilter.filter_between_dates-65"><span class="linenos">65</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter.filter_between_dates-66"><a href="#DateTimeFilter.filter_between_dates-66"><span class="linenos">66</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_between_dates-67"><a href="#DateTimeFilter.filter_between_dates-67"><span class="linenos">67</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_date</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_date</span><span class="p">))</span>
+</span><span id="DateTimeFilter.filter_between_dates-68"><a href="#DateTimeFilter.filter_between_dates-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -568,8 +510,7 @@ Allows specification of which column to operate on.</p>
 <h2 id="example">Example:</h2>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">DateTimeFilter</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">filter_between_dates</span><span class="p">(</span><span class="s2">&quot;2023-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-02-01&quot;</span><span class="p">)</span>
+<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n"><a href="#DateTimeFilter.filter_between_dates">DateTimeFilter.filter_between_dates</a></span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;systime&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-02-01&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">filtered_data</span><span class="p">)</span>
 </code></pre>
 </div>
@@ -580,31 +521,32 @@ Allows specification of which column to operate on.</p>
                             <div id="DateTimeFilter.filter_after_datetime" class="classattr">
                                         <input id="DateTimeFilter.filter_after_datetime-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_after_datetime</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">datetime</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">filter_after_datetime</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span>,</span><span class="param">	<span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="DateTimeFilter.filter_after_datetime-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DateTimeFilter.filter_after_datetime"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_after_datetime-78"><a href="#DateTimeFilter.filter_after_datetime-78"><span class="linenos">78</span></a>    <span class="k">def</span> <span class="nf">filter_after_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DateTimeFilter.filter_after_datetime-79"><a href="#DateTimeFilter.filter_after_datetime-79"><span class="linenos">79</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_after_datetime-80"><a href="#DateTimeFilter.filter_after_datetime-80"><span class="linenos">80</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified datetime.</span>
-</span><span id="DateTimeFilter.filter_after_datetime-81"><a href="#DateTimeFilter.filter_after_datetime-81"><span class="linenos">81</span></a>
-</span><span id="DateTimeFilter.filter_after_datetime-82"><a href="#DateTimeFilter.filter_after_datetime-82"><span class="linenos">82</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter.filter_after_datetime-83"><a href="#DateTimeFilter.filter_after_datetime-83"><span class="linenos">83</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="DateTimeFilter.filter_after_datetime-84"><a href="#DateTimeFilter.filter_after_datetime-84"><span class="linenos">84</span></a>
-</span><span id="DateTimeFilter.filter_after_datetime-85"><a href="#DateTimeFilter.filter_after_datetime-85"><span class="linenos">85</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter.filter_after_datetime-86"><a href="#DateTimeFilter.filter_after_datetime-86"><span class="linenos">86</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified datetime.</span>
-</span><span id="DateTimeFilter.filter_after_datetime-87"><a href="#DateTimeFilter.filter_after_datetime-87"><span class="linenos">87</span></a>
-</span><span id="DateTimeFilter.filter_after_datetime-88"><a href="#DateTimeFilter.filter_after_datetime-88"><span class="linenos">88</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter.filter_after_datetime-89"><a href="#DateTimeFilter.filter_after_datetime-89"><span class="linenos">89</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter.filter_after_datetime-90"><a href="#DateTimeFilter.filter_after_datetime-90"><span class="linenos">90</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter.filter_after_datetime-91"><a href="#DateTimeFilter.filter_after_datetime-91"><span class="linenos">91</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_after_datetime(&quot;2023-01-01 12:00:00&quot;)</span>
-</span><span id="DateTimeFilter.filter_after_datetime-92"><a href="#DateTimeFilter.filter_after_datetime-92"><span class="linenos">92</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter.filter_after_datetime-93"><a href="#DateTimeFilter.filter_after_datetime-93"><span class="linenos">93</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_after_datetime-94"><a href="#DateTimeFilter.filter_after_datetime-94"><span class="linenos">94</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_after_datetime-70"><a href="#DateTimeFilter.filter_after_datetime-70"><span class="linenos">70</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter.filter_after_datetime-71"><a href="#DateTimeFilter.filter_after_datetime-71"><span class="linenos">71</span></a>    <span class="k">def</span> <span class="nf">filter_after_datetime</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter.filter_after_datetime-72"><a href="#DateTimeFilter.filter_after_datetime-72"><span class="linenos">72</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_after_datetime-73"><a href="#DateTimeFilter.filter_after_datetime-73"><span class="linenos">73</span></a><span class="sd">        Filters the DataFrame to include only rows after the specified datetime.</span>
+</span><span id="DateTimeFilter.filter_after_datetime-74"><a href="#DateTimeFilter.filter_after_datetime-74"><span class="linenos">74</span></a>
+</span><span id="DateTimeFilter.filter_after_datetime-75"><a href="#DateTimeFilter.filter_after_datetime-75"><span class="linenos">75</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter.filter_after_datetime-76"><a href="#DateTimeFilter.filter_after_datetime-76"><span class="linenos">76</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
+</span><span id="DateTimeFilter.filter_after_datetime-77"><a href="#DateTimeFilter.filter_after_datetime-77"><span class="linenos">77</span></a>
+</span><span id="DateTimeFilter.filter_after_datetime-78"><a href="#DateTimeFilter.filter_after_datetime-78"><span class="linenos">78</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter.filter_after_datetime-79"><a href="#DateTimeFilter.filter_after_datetime-79"><span class="linenos">79</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is after the specified datetime.</span>
+</span><span id="DateTimeFilter.filter_after_datetime-80"><a href="#DateTimeFilter.filter_after_datetime-80"><span class="linenos">80</span></a>
+</span><span id="DateTimeFilter.filter_after_datetime-81"><a href="#DateTimeFilter.filter_after_datetime-81"><span class="linenos">81</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter.filter_after_datetime-82"><a href="#DateTimeFilter.filter_after_datetime-82"><span class="linenos">82</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter.filter_after_datetime-83"><a href="#DateTimeFilter.filter_after_datetime-83"><span class="linenos">83</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_after_datetime(df, &quot;systime&quot;, &quot;2023-01-01 12:00:00&quot;)</span>
+</span><span id="DateTimeFilter.filter_after_datetime-84"><a href="#DateTimeFilter.filter_after_datetime-84"><span class="linenos">84</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter.filter_after_datetime-85"><a href="#DateTimeFilter.filter_after_datetime-85"><span class="linenos">85</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_after_datetime-86"><a href="#DateTimeFilter.filter_after_datetime-86"><span class="linenos">86</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
 </span></pre></div>
 
 
@@ -625,8 +567,7 @@ Allows specification of which column to operate on.</p>
 <h2 id="example">Example:</h2>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">DateTimeFilter</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">filter_after_datetime</span><span class="p">(</span><span class="s2">&quot;2023-01-01 12:00:00&quot;</span><span class="p">)</span>
+<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n"><a href="#DateTimeFilter.filter_after_datetime">DateTimeFilter.filter_after_datetime</a></span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;systime&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-01-01 12:00:00&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">filtered_data</span><span class="p">)</span>
 </code></pre>
 </div>
@@ -637,31 +578,32 @@ Allows specification of which column to operate on.</p>
                             <div id="DateTimeFilter.filter_before_datetime" class="classattr">
                                         <input id="DateTimeFilter.filter_before_datetime-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_before_datetime</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">datetime</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">filter_before_datetime</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span>,</span><span class="param">	<span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="DateTimeFilter.filter_before_datetime-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DateTimeFilter.filter_before_datetime"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_before_datetime-96"><a href="#DateTimeFilter.filter_before_datetime-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="nf">filter_before_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DateTimeFilter.filter_before_datetime-97"><a href="#DateTimeFilter.filter_before_datetime-97"><span class="linenos"> 97</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_before_datetime-98"><a href="#DateTimeFilter.filter_before_datetime-98"><span class="linenos"> 98</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified datetime.</span>
-</span><span id="DateTimeFilter.filter_before_datetime-99"><a href="#DateTimeFilter.filter_before_datetime-99"><span class="linenos"> 99</span></a>
-</span><span id="DateTimeFilter.filter_before_datetime-100"><a href="#DateTimeFilter.filter_before_datetime-100"><span class="linenos">100</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter.filter_before_datetime-101"><a href="#DateTimeFilter.filter_before_datetime-101"><span class="linenos">101</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="DateTimeFilter.filter_before_datetime-102"><a href="#DateTimeFilter.filter_before_datetime-102"><span class="linenos">102</span></a>
-</span><span id="DateTimeFilter.filter_before_datetime-103"><a href="#DateTimeFilter.filter_before_datetime-103"><span class="linenos">103</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter.filter_before_datetime-104"><a href="#DateTimeFilter.filter_before_datetime-104"><span class="linenos">104</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified datetime.</span>
-</span><span id="DateTimeFilter.filter_before_datetime-105"><a href="#DateTimeFilter.filter_before_datetime-105"><span class="linenos">105</span></a>
-</span><span id="DateTimeFilter.filter_before_datetime-106"><a href="#DateTimeFilter.filter_before_datetime-106"><span class="linenos">106</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter.filter_before_datetime-107"><a href="#DateTimeFilter.filter_before_datetime-107"><span class="linenos">107</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter.filter_before_datetime-108"><a href="#DateTimeFilter.filter_before_datetime-108"><span class="linenos">108</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter.filter_before_datetime-109"><a href="#DateTimeFilter.filter_before_datetime-109"><span class="linenos">109</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_before_datetime(&quot;2023-01-01 12:00:00&quot;)</span>
-</span><span id="DateTimeFilter.filter_before_datetime-110"><a href="#DateTimeFilter.filter_before_datetime-110"><span class="linenos">110</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter.filter_before_datetime-111"><a href="#DateTimeFilter.filter_before_datetime-111"><span class="linenos">111</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_before_datetime-112"><a href="#DateTimeFilter.filter_before_datetime-112"><span class="linenos">112</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_before_datetime-88"><a href="#DateTimeFilter.filter_before_datetime-88"><span class="linenos"> 88</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter.filter_before_datetime-89"><a href="#DateTimeFilter.filter_before_datetime-89"><span class="linenos"> 89</span></a>    <span class="k">def</span> <span class="nf">filter_before_datetime</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter.filter_before_datetime-90"><a href="#DateTimeFilter.filter_before_datetime-90"><span class="linenos"> 90</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_before_datetime-91"><a href="#DateTimeFilter.filter_before_datetime-91"><span class="linenos"> 91</span></a><span class="sd">        Filters the DataFrame to include only rows before the specified datetime.</span>
+</span><span id="DateTimeFilter.filter_before_datetime-92"><a href="#DateTimeFilter.filter_before_datetime-92"><span class="linenos"> 92</span></a>
+</span><span id="DateTimeFilter.filter_before_datetime-93"><a href="#DateTimeFilter.filter_before_datetime-93"><span class="linenos"> 93</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter.filter_before_datetime-94"><a href="#DateTimeFilter.filter_before_datetime-94"><span class="linenos"> 94</span></a><span class="sd">        - datetime (str): The cutoff datetime in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
+</span><span id="DateTimeFilter.filter_before_datetime-95"><a href="#DateTimeFilter.filter_before_datetime-95"><span class="linenos"> 95</span></a>
+</span><span id="DateTimeFilter.filter_before_datetime-96"><a href="#DateTimeFilter.filter_before_datetime-96"><span class="linenos"> 96</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter.filter_before_datetime-97"><a href="#DateTimeFilter.filter_before_datetime-97"><span class="linenos"> 97</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is before the specified datetime.</span>
+</span><span id="DateTimeFilter.filter_before_datetime-98"><a href="#DateTimeFilter.filter_before_datetime-98"><span class="linenos"> 98</span></a>
+</span><span id="DateTimeFilter.filter_before_datetime-99"><a href="#DateTimeFilter.filter_before_datetime-99"><span class="linenos"> 99</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter.filter_before_datetime-100"><a href="#DateTimeFilter.filter_before_datetime-100"><span class="linenos">100</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter.filter_before_datetime-101"><a href="#DateTimeFilter.filter_before_datetime-101"><span class="linenos">101</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_before_datetime(df, &quot;systime&quot;, &quot;2023-01-01 12:00:00&quot;)</span>
+</span><span id="DateTimeFilter.filter_before_datetime-102"><a href="#DateTimeFilter.filter_before_datetime-102"><span class="linenos">102</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter.filter_before_datetime-103"><a href="#DateTimeFilter.filter_before_datetime-103"><span class="linenos">103</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_before_datetime-104"><a href="#DateTimeFilter.filter_before_datetime-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)]</span>
 </span></pre></div>
 
 
@@ -682,8 +624,7 @@ Allows specification of which column to operate on.</p>
 <h2 id="example">Example:</h2>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">DateTimeFilter</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">filter_before_datetime</span><span class="p">(</span><span class="s2">&quot;2023-01-01 12:00:00&quot;</span><span class="p">)</span>
+<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n"><a href="#DateTimeFilter.filter_before_datetime">DateTimeFilter.filter_before_datetime</a></span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;systime&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-01-01 12:00:00&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">filtered_data</span><span class="p">)</span>
 </code></pre>
 </div>
@@ -694,33 +635,34 @@ Allows specification of which column to operate on.</p>
                             <div id="DateTimeFilter.filter_between_datetimes" class="classattr">
                                         <input id="DateTimeFilter.filter_between_datetimes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">filter_between_datetimes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">start_datetime</span>, </span><span class="param"><span class="n">end_datetime</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">filter_between_datetimes</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span>,</span><span class="param">	<span class="n">start_datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">end_datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="DateTimeFilter.filter_between_datetimes-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DateTimeFilter.filter_between_datetimes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_between_datetimes-114"><a href="#DateTimeFilter.filter_between_datetimes-114"><span class="linenos">114</span></a>    <span class="k">def</span> <span class="nf">filter_between_datetimes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_datetime</span><span class="p">,</span> <span class="n">end_datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-115"><a href="#DateTimeFilter.filter_between_datetimes-115"><span class="linenos">115</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-116"><a href="#DateTimeFilter.filter_between_datetimes-116"><span class="linenos">116</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end datetimes.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DateTimeFilter.filter_between_datetimes-106"><a href="#DateTimeFilter.filter_between_datetimes-106"><span class="linenos">106</span></a>    <span class="nd">@classmethod</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-107"><a href="#DateTimeFilter.filter_between_datetimes-107"><span class="linenos">107</span></a>    <span class="k">def</span> <span class="nf">filter_between_datetimes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">,</span> <span class="n">start_datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end_datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-108"><a href="#DateTimeFilter.filter_between_datetimes-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-109"><a href="#DateTimeFilter.filter_between_datetimes-109"><span class="linenos">109</span></a><span class="sd">        Filters the DataFrame to include only rows between the specified start and end datetimes.</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-110"><a href="#DateTimeFilter.filter_between_datetimes-110"><span class="linenos">110</span></a>
+</span><span id="DateTimeFilter.filter_between_datetimes-111"><a href="#DateTimeFilter.filter_between_datetimes-111"><span class="linenos">111</span></a><span class="sd">        Args:</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-112"><a href="#DateTimeFilter.filter_between_datetimes-112"><span class="linenos">112</span></a><span class="sd">        - start_datetime (str): The start datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-113"><a href="#DateTimeFilter.filter_between_datetimes-113"><span class="linenos">113</span></a><span class="sd">        - end_datetime (str): The end datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-114"><a href="#DateTimeFilter.filter_between_datetimes-114"><span class="linenos">114</span></a>
+</span><span id="DateTimeFilter.filter_between_datetimes-115"><a href="#DateTimeFilter.filter_between_datetimes-115"><span class="linenos">115</span></a><span class="sd">        Returns:</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-116"><a href="#DateTimeFilter.filter_between_datetimes-116"><span class="linenos">116</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified datetimes.</span>
 </span><span id="DateTimeFilter.filter_between_datetimes-117"><a href="#DateTimeFilter.filter_between_datetimes-117"><span class="linenos">117</span></a>
-</span><span id="DateTimeFilter.filter_between_datetimes-118"><a href="#DateTimeFilter.filter_between_datetimes-118"><span class="linenos">118</span></a><span class="sd">        Args:</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-119"><a href="#DateTimeFilter.filter_between_datetimes-119"><span class="linenos">119</span></a><span class="sd">        - start_datetime (str): The start datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-120"><a href="#DateTimeFilter.filter_between_datetimes-120"><span class="linenos">120</span></a><span class="sd">        - end_datetime (str): The end datetime of the interval in &#39;YYYY-MM-DD HH:MM:SS&#39; format.</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-121"><a href="#DateTimeFilter.filter_between_datetimes-121"><span class="linenos">121</span></a>
-</span><span id="DateTimeFilter.filter_between_datetimes-122"><a href="#DateTimeFilter.filter_between_datetimes-122"><span class="linenos">122</span></a><span class="sd">        Returns:</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-123"><a href="#DateTimeFilter.filter_between_datetimes-123"><span class="linenos">123</span></a><span class="sd">        - pd.DataFrame: A DataFrame containing rows where the &#39;systime&#39; is between the specified datetimes.</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-124"><a href="#DateTimeFilter.filter_between_datetimes-124"><span class="linenos">124</span></a>
-</span><span id="DateTimeFilter.filter_between_datetimes-125"><a href="#DateTimeFilter.filter_between_datetimes-125"><span class="linenos">125</span></a><span class="sd">        Example:</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-126"><a href="#DateTimeFilter.filter_between_datetimes-126"><span class="linenos">126</span></a><span class="sd">        --------</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-127"><a href="#DateTimeFilter.filter_between_datetimes-127"><span class="linenos">127</span></a><span class="sd">        &gt;&gt;&gt; sf = DateTimeFilter(df)</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-128"><a href="#DateTimeFilter.filter_between_datetimes-128"><span class="linenos">128</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = sf.filter_between_datetimes(&quot;2023-01-01 12:00:00&quot;, &quot;2023-02-01 12:00:00&quot;)</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-129"><a href="#DateTimeFilter.filter_between_datetimes-129"><span class="linenos">129</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-130"><a href="#DateTimeFilter.filter_between_datetimes-130"><span class="linenos">130</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-131"><a href="#DateTimeFilter.filter_between_datetimes-131"><span class="linenos">131</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_datetime</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_datetime</span><span class="p">))</span>
-</span><span id="DateTimeFilter.filter_between_datetimes-132"><a href="#DateTimeFilter.filter_between_datetimes-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-118"><a href="#DateTimeFilter.filter_between_datetimes-118"><span class="linenos">118</span></a><span class="sd">        Example:</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-119"><a href="#DateTimeFilter.filter_between_datetimes-119"><span class="linenos">119</span></a><span class="sd">        --------</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-120"><a href="#DateTimeFilter.filter_between_datetimes-120"><span class="linenos">120</span></a><span class="sd">        &gt;&gt;&gt; filtered_data = DateTimeFilter.filter_between_datetimes(df, &quot;systime&quot;, &quot;2023-01-01 12:00:00&quot;, &quot;2023-02-01 12:00:00&quot;)</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-121"><a href="#DateTimeFilter.filter_between_datetimes-121"><span class="linenos">121</span></a><span class="sd">        &gt;&gt;&gt; print(filtered_data)</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-122"><a href="#DateTimeFilter.filter_between_datetimes-122"><span class="linenos">122</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-123"><a href="#DateTimeFilter.filter_between_datetimes-123"><span class="linenos">123</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_datetime</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_datetime</span><span class="p">))</span>
+</span><span id="DateTimeFilter.filter_between_datetimes-124"><a href="#DateTimeFilter.filter_between_datetimes-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -742,8 +684,7 @@ Allows specification of which column to operate on.</p>
 <h2 id="example">Example:</h2>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">DateTimeFilter</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">filter_between_datetimes</span><span class="p">(</span><span class="s2">&quot;2023-01-01 12:00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-02-01 12:00:00&quot;</span><span class="p">)</span>
+<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_data</span> <span class="o">=</span> <span class="n"><a href="#DateTimeFilter.filter_between_datetimes">DateTimeFilter.filter_between_datetimes</a></span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;systime&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-01-01 12:00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-02-01 12:00:00&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">filtered_data</span><span class="p">)</span>
 </code></pre>
 </div>
@@ -754,8 +695,10 @@ Allows specification of which column to operate on.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>timeseries_shaper.base.Base</dt>
-                                <dd id="DateTimeFilter.dataframe" class="variable">dataframe</dd>
+                                    <div><dt><a href="../base.html#Base">timeseries_shaper.base.Base</a></dt>
+                                <dd id="DateTimeFilter.__init__" class="function"><a href="../base.html#Base.__init__">Base</a></dd>
+                <dd id="DateTimeFilter.dataframe" class="variable"><a href="../base.html#Base.dataframe">dataframe</a></dd>
+                <dd id="DateTimeFilter.get_dataframe" class="function"><a href="../base.html#Base.get_dataframe">get_dataframe</a></dd>
 
             </div>
                                 </dl>

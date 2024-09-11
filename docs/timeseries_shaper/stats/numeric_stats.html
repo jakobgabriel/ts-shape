@@ -34,12 +34,6 @@
                     <a class="class" href="#NumericStatistics">NumericStatistics</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#NumericStatistics.__init__">NumericStatistics</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#NumericStatistics.column_name">column_name</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#NumericStatistics.column_mean">column_mean</a>
                         </li>
                         <li>
@@ -97,52 +91,59 @@
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">Base</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="k">class</span> <span class="nc">NumericStatistics</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">        Initialize the NumericStatistics class by using the Base class initialization.</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="nf">column_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the mean of a specified column.&quot;&quot;&quot;</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="nf">column_median</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the median of a specified column.&quot;&quot;&quot;</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="nf">column_std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">    Provides class methods to calculate statistics on numeric columns in a pandas DataFrame.</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span> <span class="nf">column_mean</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the mean of a specified column.&quot;&quot;&quot;</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span> <span class="nf">column_median</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the median of a specified column.&quot;&quot;&quot;</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="nf">column_std</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the standard deviation of a specified column.&quot;&quot;&quot;</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="k">def</span> <span class="nf">column_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the variance of a specified column.&quot;&quot;&quot;</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">column_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the minimum value of a specified column.&quot;&quot;&quot;</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">column_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the maximum value of a specified column.&quot;&quot;&quot;</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="k">def</span> <span class="nf">column_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the sum of a specified column.&quot;&quot;&quot;</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">column_kurtosis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the kurtosis of a specified column.&quot;&quot;&quot;</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">kurt</span><span class="p">()</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">column_variance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the variance of a specified column.&quot;&quot;&quot;</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="nf">column_min</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the minimum value of a specified column.&quot;&quot;&quot;</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">def</span> <span class="nf">column_max</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the maximum value of a specified column.&quot;&quot;&quot;</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">column_sum</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the sum of a specified column.&quot;&quot;&quot;</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="k">def</span> <span class="nf">column_skewness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the skewness of a specified column.&quot;&quot;&quot;</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">skew</span><span class="p">()</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Provide a statistical summary for numeric columns in the DataFrame.&quot;&quot;&quot;</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="k">def</span> <span class="nf">column_kurtosis</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the kurtosis of a specified column.&quot;&quot;&quot;</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">kurt</span><span class="p">()</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="k">def</span> <span class="nf">column_skewness</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the skewness of a specified column.&quot;&quot;&quot;</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">skew</span><span class="p">()</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="nd">@classmethod</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Provide a statistical summary for numeric columns in the DataFrame.&quot;&quot;&quot;</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -159,106 +160,82 @@
     </div>
     <a class="headerlink" href="#NumericStatistics"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics-5"><a href="#NumericStatistics-5"><span class="linenos"> 5</span></a><span class="k">class</span> <span class="nc">NumericStatistics</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
-</span><span id="NumericStatistics-6"><a href="#NumericStatistics-6"><span class="linenos"> 6</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="NumericStatistics-7"><a href="#NumericStatistics-7"><span class="linenos"> 7</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-8"><a href="#NumericStatistics-8"><span class="linenos"> 8</span></a><span class="sd">        Initialize the NumericStatistics class by using the Base class initialization.</span>
-</span><span id="NumericStatistics-9"><a href="#NumericStatistics-9"><span class="linenos"> 9</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-10"><a href="#NumericStatistics-10"><span class="linenos">10</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="NumericStatistics-11"><a href="#NumericStatistics-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
-</span><span id="NumericStatistics-12"><a href="#NumericStatistics-12"><span class="linenos">12</span></a>
-</span><span id="NumericStatistics-13"><a href="#NumericStatistics-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">column_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics-14"><a href="#NumericStatistics-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the mean of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-15"><a href="#NumericStatistics-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</span><span id="NumericStatistics-16"><a href="#NumericStatistics-16"><span class="linenos">16</span></a>
-</span><span id="NumericStatistics-17"><a href="#NumericStatistics-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="nf">column_median</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics-18"><a href="#NumericStatistics-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the median of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-19"><a href="#NumericStatistics-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
-</span><span id="NumericStatistics-20"><a href="#NumericStatistics-20"><span class="linenos">20</span></a>
-</span><span id="NumericStatistics-21"><a href="#NumericStatistics-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">column_std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="NumericStatistics-6"><a href="#NumericStatistics-6"><span class="linenos"> 6</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-7"><a href="#NumericStatistics-7"><span class="linenos"> 7</span></a><span class="sd">    Provides class methods to calculate statistics on numeric columns in a pandas DataFrame.</span>
+</span><span id="NumericStatistics-8"><a href="#NumericStatistics-8"><span class="linenos"> 8</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-9"><a href="#NumericStatistics-9"><span class="linenos"> 9</span></a>
+</span><span id="NumericStatistics-10"><a href="#NumericStatistics-10"><span class="linenos">10</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics-11"><a href="#NumericStatistics-11"><span class="linenos">11</span></a>    <span class="k">def</span> <span class="nf">column_mean</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics-12"><a href="#NumericStatistics-12"><span class="linenos">12</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the mean of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-13"><a href="#NumericStatistics-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="NumericStatistics-14"><a href="#NumericStatistics-14"><span class="linenos">14</span></a>
+</span><span id="NumericStatistics-15"><a href="#NumericStatistics-15"><span class="linenos">15</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics-16"><a href="#NumericStatistics-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="nf">column_median</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics-17"><a href="#NumericStatistics-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the median of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-18"><a href="#NumericStatistics-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+</span><span id="NumericStatistics-19"><a href="#NumericStatistics-19"><span class="linenos">19</span></a>
+</span><span id="NumericStatistics-20"><a href="#NumericStatistics-20"><span class="linenos">20</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics-21"><a href="#NumericStatistics-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">column_std</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 </span><span id="NumericStatistics-22"><a href="#NumericStatistics-22"><span class="linenos">22</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the standard deviation of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-23"><a href="#NumericStatistics-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</span><span id="NumericStatistics-23"><a href="#NumericStatistics-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 </span><span id="NumericStatistics-24"><a href="#NumericStatistics-24"><span class="linenos">24</span></a>
-</span><span id="NumericStatistics-25"><a href="#NumericStatistics-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">column_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics-26"><a href="#NumericStatistics-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the variance of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-27"><a href="#NumericStatistics-27"><span class="linenos">27</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
-</span><span id="NumericStatistics-28"><a href="#NumericStatistics-28"><span class="linenos">28</span></a>
-</span><span id="NumericStatistics-29"><a href="#NumericStatistics-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="nf">column_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics-30"><a href="#NumericStatistics-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the minimum value of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-31"><a href="#NumericStatistics-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-</span><span id="NumericStatistics-32"><a href="#NumericStatistics-32"><span class="linenos">32</span></a>
-</span><span id="NumericStatistics-33"><a href="#NumericStatistics-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">column_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics-34"><a href="#NumericStatistics-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the maximum value of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-35"><a href="#NumericStatistics-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-</span><span id="NumericStatistics-36"><a href="#NumericStatistics-36"><span class="linenos">36</span></a>
-</span><span id="NumericStatistics-37"><a href="#NumericStatistics-37"><span class="linenos">37</span></a>    <span class="k">def</span> <span class="nf">column_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics-38"><a href="#NumericStatistics-38"><span class="linenos">38</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the sum of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-39"><a href="#NumericStatistics-39"><span class="linenos">39</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-</span><span id="NumericStatistics-40"><a href="#NumericStatistics-40"><span class="linenos">40</span></a>
-</span><span id="NumericStatistics-41"><a href="#NumericStatistics-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">column_kurtosis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics-42"><a href="#NumericStatistics-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the kurtosis of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-43"><a href="#NumericStatistics-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">kurt</span><span class="p">()</span>
+</span><span id="NumericStatistics-25"><a href="#NumericStatistics-25"><span class="linenos">25</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics-26"><a href="#NumericStatistics-26"><span class="linenos">26</span></a>    <span class="k">def</span> <span class="nf">column_variance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics-27"><a href="#NumericStatistics-27"><span class="linenos">27</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the variance of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-28"><a href="#NumericStatistics-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
+</span><span id="NumericStatistics-29"><a href="#NumericStatistics-29"><span class="linenos">29</span></a>
+</span><span id="NumericStatistics-30"><a href="#NumericStatistics-30"><span class="linenos">30</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics-31"><a href="#NumericStatistics-31"><span class="linenos">31</span></a>    <span class="k">def</span> <span class="nf">column_min</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics-32"><a href="#NumericStatistics-32"><span class="linenos">32</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the minimum value of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-33"><a href="#NumericStatistics-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+</span><span id="NumericStatistics-34"><a href="#NumericStatistics-34"><span class="linenos">34</span></a>
+</span><span id="NumericStatistics-35"><a href="#NumericStatistics-35"><span class="linenos">35</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics-36"><a href="#NumericStatistics-36"><span class="linenos">36</span></a>    <span class="k">def</span> <span class="nf">column_max</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics-37"><a href="#NumericStatistics-37"><span class="linenos">37</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the maximum value of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-38"><a href="#NumericStatistics-38"><span class="linenos">38</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</span><span id="NumericStatistics-39"><a href="#NumericStatistics-39"><span class="linenos">39</span></a>
+</span><span id="NumericStatistics-40"><a href="#NumericStatistics-40"><span class="linenos">40</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics-41"><a href="#NumericStatistics-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">column_sum</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics-42"><a href="#NumericStatistics-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the sum of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-43"><a href="#NumericStatistics-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </span><span id="NumericStatistics-44"><a href="#NumericStatistics-44"><span class="linenos">44</span></a>
-</span><span id="NumericStatistics-45"><a href="#NumericStatistics-45"><span class="linenos">45</span></a>    <span class="k">def</span> <span class="nf">column_skewness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics-46"><a href="#NumericStatistics-46"><span class="linenos">46</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the skewness of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-47"><a href="#NumericStatistics-47"><span class="linenos">47</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">skew</span><span class="p">()</span>
-</span><span id="NumericStatistics-48"><a href="#NumericStatistics-48"><span class="linenos">48</span></a>
-</span><span id="NumericStatistics-49"><a href="#NumericStatistics-49"><span class="linenos">49</span></a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="NumericStatistics-50"><a href="#NumericStatistics-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Provide a statistical summary for numeric columns in the DataFrame.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics-51"><a href="#NumericStatistics-51"><span class="linenos">51</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</span><span id="NumericStatistics-45"><a href="#NumericStatistics-45"><span class="linenos">45</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics-46"><a href="#NumericStatistics-46"><span class="linenos">46</span></a>    <span class="k">def</span> <span class="nf">column_kurtosis</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics-47"><a href="#NumericStatistics-47"><span class="linenos">47</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the kurtosis of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-48"><a href="#NumericStatistics-48"><span class="linenos">48</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">kurt</span><span class="p">()</span>
+</span><span id="NumericStatistics-49"><a href="#NumericStatistics-49"><span class="linenos">49</span></a>
+</span><span id="NumericStatistics-50"><a href="#NumericStatistics-50"><span class="linenos">50</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics-51"><a href="#NumericStatistics-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">column_skewness</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics-52"><a href="#NumericStatistics-52"><span class="linenos">52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the skewness of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-53"><a href="#NumericStatistics-53"><span class="linenos">53</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">skew</span><span class="p">()</span>
+</span><span id="NumericStatistics-54"><a href="#NumericStatistics-54"><span class="linenos">54</span></a>
+</span><span id="NumericStatistics-55"><a href="#NumericStatistics-55"><span class="linenos">55</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics-56"><a href="#NumericStatistics-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="NumericStatistics-57"><a href="#NumericStatistics-57"><span class="linenos">57</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Provide a statistical summary for numeric columns in the DataFrame.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics-58"><a href="#NumericStatistics-58"><span class="linenos">58</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </span></pre></div>
 
 
-    
-
-                            <div id="NumericStatistics.__init__" class="classattr">
-                                        <input id="NumericStatistics.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="name">NumericStatistics</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span></span>)</span>
-
-                <label class="view-source-button" for="NumericStatistics.__init__-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#NumericStatistics.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.__init__-6"><a href="#NumericStatistics.__init__-6"><span class="linenos"> 6</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="NumericStatistics.__init__-7"><a href="#NumericStatistics.__init__-7"><span class="linenos"> 7</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.__init__-8"><a href="#NumericStatistics.__init__-8"><span class="linenos"> 8</span></a><span class="sd">        Initialize the NumericStatistics class by using the Base class initialization.</span>
-</span><span id="NumericStatistics.__init__-9"><a href="#NumericStatistics.__init__-9"><span class="linenos"> 9</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.__init__-10"><a href="#NumericStatistics.__init__-10"><span class="linenos">10</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
-</span><span id="NumericStatistics.__init__-11"><a href="#NumericStatistics.__init__-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Initialize the NumericStatistics class by using the Base class initialization.</p>
+            <div class="docstring"><p>Provides class methods to calculate statistics on numeric columns in a pandas DataFrame.</p>
 </div>
 
 
-                            </div>
-                            <div id="NumericStatistics.column_name" class="classattr">
-                                <div class="attr variable">
-            <span class="name">column_name</span>
-
-        
-    </div>
-    <a class="headerlink" href="#NumericStatistics.column_name"></a>
-    
-    
-
-                            </div>
                             <div id="NumericStatistics.column_mean" class="classattr">
                                         <input id="NumericStatistics.column_mean-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">column_mean</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">column_mean</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">cls</span>, </span><span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="NumericStatistics.column_mean-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NumericStatistics.column_mean"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_mean-13"><a href="#NumericStatistics.column_mean-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">column_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics.column_mean-14"><a href="#NumericStatistics.column_mean-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the mean of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.column_mean-15"><a href="#NumericStatistics.column_mean-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_mean-10"><a href="#NumericStatistics.column_mean-10"><span class="linenos">10</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics.column_mean-11"><a href="#NumericStatistics.column_mean-11"><span class="linenos">11</span></a>    <span class="k">def</span> <span class="nf">column_mean</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics.column_mean-12"><a href="#NumericStatistics.column_mean-12"><span class="linenos">12</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the mean of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics.column_mean-13"><a href="#NumericStatistics.column_mean-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -270,17 +247,19 @@
                             <div id="NumericStatistics.column_median" class="classattr">
                                         <input id="NumericStatistics.column_median-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">column_median</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">column_median</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">cls</span>, </span><span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="NumericStatistics.column_median-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NumericStatistics.column_median"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_median-17"><a href="#NumericStatistics.column_median-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="nf">column_median</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics.column_median-18"><a href="#NumericStatistics.column_median-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the median of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.column_median-19"><a href="#NumericStatistics.column_median-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_median-15"><a href="#NumericStatistics.column_median-15"><span class="linenos">15</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics.column_median-16"><a href="#NumericStatistics.column_median-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="nf">column_median</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics.column_median-17"><a href="#NumericStatistics.column_median-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the median of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics.column_median-18"><a href="#NumericStatistics.column_median-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -292,17 +271,19 @@
                             <div id="NumericStatistics.column_std" class="classattr">
                                         <input id="NumericStatistics.column_std-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">column_std</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">column_std</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">cls</span>, </span><span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="NumericStatistics.column_std-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NumericStatistics.column_std"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_std-21"><a href="#NumericStatistics.column_std-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">column_std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_std-20"><a href="#NumericStatistics.column_std-20"><span class="linenos">20</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics.column_std-21"><a href="#NumericStatistics.column_std-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">column_std</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 </span><span id="NumericStatistics.column_std-22"><a href="#NumericStatistics.column_std-22"><span class="linenos">22</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the standard deviation of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.column_std-23"><a href="#NumericStatistics.column_std-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+</span><span id="NumericStatistics.column_std-23"><a href="#NumericStatistics.column_std-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -314,17 +295,19 @@
                             <div id="NumericStatistics.column_variance" class="classattr">
                                         <input id="NumericStatistics.column_variance-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">column_variance</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">column_variance</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">cls</span>, </span><span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="NumericStatistics.column_variance-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NumericStatistics.column_variance"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_variance-25"><a href="#NumericStatistics.column_variance-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">column_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics.column_variance-26"><a href="#NumericStatistics.column_variance-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the variance of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.column_variance-27"><a href="#NumericStatistics.column_variance-27"><span class="linenos">27</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_variance-25"><a href="#NumericStatistics.column_variance-25"><span class="linenos">25</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics.column_variance-26"><a href="#NumericStatistics.column_variance-26"><span class="linenos">26</span></a>    <span class="k">def</span> <span class="nf">column_variance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics.column_variance-27"><a href="#NumericStatistics.column_variance-27"><span class="linenos">27</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the variance of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics.column_variance-28"><a href="#NumericStatistics.column_variance-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -336,17 +319,19 @@
                             <div id="NumericStatistics.column_min" class="classattr">
                                         <input id="NumericStatistics.column_min-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">column_min</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">column_min</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">cls</span>, </span><span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="NumericStatistics.column_min-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NumericStatistics.column_min"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_min-29"><a href="#NumericStatistics.column_min-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="nf">column_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics.column_min-30"><a href="#NumericStatistics.column_min-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the minimum value of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.column_min-31"><a href="#NumericStatistics.column_min-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_min-30"><a href="#NumericStatistics.column_min-30"><span class="linenos">30</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics.column_min-31"><a href="#NumericStatistics.column_min-31"><span class="linenos">31</span></a>    <span class="k">def</span> <span class="nf">column_min</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics.column_min-32"><a href="#NumericStatistics.column_min-32"><span class="linenos">32</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the minimum value of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics.column_min-33"><a href="#NumericStatistics.column_min-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -358,17 +343,19 @@
                             <div id="NumericStatistics.column_max" class="classattr">
                                         <input id="NumericStatistics.column_max-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">column_max</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">column_max</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">cls</span>, </span><span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="NumericStatistics.column_max-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NumericStatistics.column_max"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_max-33"><a href="#NumericStatistics.column_max-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">column_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics.column_max-34"><a href="#NumericStatistics.column_max-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the maximum value of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.column_max-35"><a href="#NumericStatistics.column_max-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_max-35"><a href="#NumericStatistics.column_max-35"><span class="linenos">35</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics.column_max-36"><a href="#NumericStatistics.column_max-36"><span class="linenos">36</span></a>    <span class="k">def</span> <span class="nf">column_max</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics.column_max-37"><a href="#NumericStatistics.column_max-37"><span class="linenos">37</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the maximum value of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics.column_max-38"><a href="#NumericStatistics.column_max-38"><span class="linenos">38</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -380,17 +367,19 @@
                             <div id="NumericStatistics.column_sum" class="classattr">
                                         <input id="NumericStatistics.column_sum-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">column_sum</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">column_sum</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">cls</span>, </span><span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="NumericStatistics.column_sum-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NumericStatistics.column_sum"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_sum-37"><a href="#NumericStatistics.column_sum-37"><span class="linenos">37</span></a>    <span class="k">def</span> <span class="nf">column_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics.column_sum-38"><a href="#NumericStatistics.column_sum-38"><span class="linenos">38</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the sum of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.column_sum-39"><a href="#NumericStatistics.column_sum-39"><span class="linenos">39</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_sum-40"><a href="#NumericStatistics.column_sum-40"><span class="linenos">40</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics.column_sum-41"><a href="#NumericStatistics.column_sum-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">column_sum</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics.column_sum-42"><a href="#NumericStatistics.column_sum-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the sum of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics.column_sum-43"><a href="#NumericStatistics.column_sum-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -402,17 +391,19 @@
                             <div id="NumericStatistics.column_kurtosis" class="classattr">
                                         <input id="NumericStatistics.column_kurtosis-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">column_kurtosis</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">column_kurtosis</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">cls</span>, </span><span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="NumericStatistics.column_kurtosis-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NumericStatistics.column_kurtosis"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_kurtosis-41"><a href="#NumericStatistics.column_kurtosis-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">column_kurtosis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics.column_kurtosis-42"><a href="#NumericStatistics.column_kurtosis-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the kurtosis of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.column_kurtosis-43"><a href="#NumericStatistics.column_kurtosis-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">kurt</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_kurtosis-45"><a href="#NumericStatistics.column_kurtosis-45"><span class="linenos">45</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics.column_kurtosis-46"><a href="#NumericStatistics.column_kurtosis-46"><span class="linenos">46</span></a>    <span class="k">def</span> <span class="nf">column_kurtosis</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics.column_kurtosis-47"><a href="#NumericStatistics.column_kurtosis-47"><span class="linenos">47</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the kurtosis of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics.column_kurtosis-48"><a href="#NumericStatistics.column_kurtosis-48"><span class="linenos">48</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">kurt</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -424,17 +415,19 @@
                             <div id="NumericStatistics.column_skewness" class="classattr">
                                         <input id="NumericStatistics.column_skewness-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">column_skewness</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">column_skewness</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">cls</span>, </span><span class="param"><span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="NumericStatistics.column_skewness-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NumericStatistics.column_skewness"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_skewness-45"><a href="#NumericStatistics.column_skewness-45"><span class="linenos">45</span></a>    <span class="k">def</span> <span class="nf">column_skewness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="NumericStatistics.column_skewness-46"><a href="#NumericStatistics.column_skewness-46"><span class="linenos">46</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the skewness of a specified column.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.column_skewness-47"><a href="#NumericStatistics.column_skewness-47"><span class="linenos">47</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">skew</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.column_skewness-50"><a href="#NumericStatistics.column_skewness-50"><span class="linenos">50</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics.column_skewness-51"><a href="#NumericStatistics.column_skewness-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">column_skewness</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="NumericStatistics.column_skewness-52"><a href="#NumericStatistics.column_skewness-52"><span class="linenos">52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the skewness of a specified column.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics.column_skewness-53"><a href="#NumericStatistics.column_skewness-53"><span class="linenos">53</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">skew</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -446,17 +439,19 @@
                             <div id="NumericStatistics.describe" class="classattr">
                                         <input id="NumericStatistics.describe-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
-            
+                    <div class="decorator">@classmethod</div>
+
         <span class="def">def</span>
-        <span class="name">describe</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">describe</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">cls</span>,</span><span class="param">	<span class="n">dataframe</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
 
                 <label class="view-source-button" for="NumericStatistics.describe-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NumericStatistics.describe"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.describe-49"><a href="#NumericStatistics.describe-49"><span class="linenos">49</span></a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-</span><span id="NumericStatistics.describe-50"><a href="#NumericStatistics.describe-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Provide a statistical summary for numeric columns in the DataFrame.&quot;&quot;&quot;</span>
-</span><span id="NumericStatistics.describe-51"><a href="#NumericStatistics.describe-51"><span class="linenos">51</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NumericStatistics.describe-55"><a href="#NumericStatistics.describe-55"><span class="linenos">55</span></a>    <span class="nd">@classmethod</span>
+</span><span id="NumericStatistics.describe-56"><a href="#NumericStatistics.describe-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="NumericStatistics.describe-57"><a href="#NumericStatistics.describe-57"><span class="linenos">57</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Provide a statistical summary for numeric columns in the DataFrame.&quot;&quot;&quot;</span>
+</span><span id="NumericStatistics.describe-58"><a href="#NumericStatistics.describe-58"><span class="linenos">58</span></a>        <span class="k">return</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -469,7 +464,9 @@
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="../base.html#Base">timeseries_shaper.base.Base</a></dt>
-                                <dd id="NumericStatistics.dataframe" class="variable"><a href="../base.html#Base.dataframe">dataframe</a></dd>
+                                <dd id="NumericStatistics.__init__" class="function"><a href="../base.html#Base.__init__">Base</a></dd>
+                <dd id="NumericStatistics.dataframe" class="variable"><a href="../base.html#Base.dataframe">dataframe</a></dd>
+                <dd id="NumericStatistics.get_dataframe" class="function"><a href="../base.html#Base.get_dataframe">get_dataframe</a></dd>
 
             </div>
                                 </dl>
