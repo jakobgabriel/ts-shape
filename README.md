@@ -2,36 +2,58 @@
 
 Timeseries-Shaper is a Python library for efficiently filtering and preprocessing time series data using pandas. It provides a set of tools to handle various data transformations, making data preparation tasks easier and more intuitive.
 
-## Features
+Besides that multiple engineering specific methods are utilized to make it fast and easy to work with time series data.   
 
-### Load 
+## Features | Structure
 
-- **Load Parquet**: Load parquet files for further processing
-
-
-### Transform
-
-
-
-#### Filter
-
-- **Filter Missing Values**: Quickly filter out or fill missing values in your time series data.
-- **Boolean Filters**: Apply boolean logic to filter data based on specific conditions.
-- **Integer and Double Filters**: Perform numeric operations and filters specific to integer and double data types.
-- **String Filters**: Manipulate and filter data based on string operations.
-
-
-#### Calculation 
-
-- 
-
-
-#### Descriptive Statistics
-
-- **Boolean Stats**: 
-- **Numeric Stats**: 
-- **String Stats**: 
-- **Timeseries Stats**: 
+```
+├── timeseries_shaper
+│   ├── __init__.py
+│   ├── base.py
+│   ├── calculator
+│   │   ├── __init__.py
+│   │   └── numeric_calc.py
+│   ├── cycles
+│   │   ├── __init__.py
+│   │   ├── cycle_processor.py
+│   │   └── cycles_extractor.py
+│   ├── events
+│   │   ├── __init__.py
+│   │   ├── outlier_detection.py
+│   │   ├── statistical_process_control.py
+│   │   ├── tolerance_deviation.py
+│   │   └── value_mapping.py
+│   ├── filter
+│   │   ├── __init__.py
+│   │   ├── boolean_filter.py
+│   │   ├── custom_filter.py
+│   │   ├── datetime_filter.py
+│   │   ├── numeric_filter.py
+│   │   └── string_filter.py
+│   ├── functions
+│   │   ├── __init__.py
+│   │   └── lambda_func.py
+│   ├── loader
+│   │   ├── __init__.py
+│   │   ├── metadata
+│   │   │   ├── __init__.py
+│   │   │   ├── metadata_api_loader.py
+│   │   │   └── metadata_json_loader.py
+│   │   └── timeseries
+│   │       ├── __init__.py
+│   │       ├── parquet_loader.py
+│   │       ├── s3proxy_parquet_loader.py
+│   │       └── timescale_loader.py
+│   ├── stats
+│   │   ├── __init__.py
+│   │   ├── boolean_stats.py
+│   │   ├── numeric_stats.py
+│   │   ├── string_stats.py
+│   │   └── timestamp_stats.py
+│   ├── time_stats
+│   │   ├── __init__,py
+│   │   └── time_stats_numeric.py
+```
 
 
 ## Installation
