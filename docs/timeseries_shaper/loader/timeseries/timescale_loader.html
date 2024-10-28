@@ -16,17 +16,44 @@
     <nav class="pdoc">
         <label id="navtoggle" for="togglestate" class="pdoc-button"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke-linecap='round' stroke="currentColor" stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg></label>
         <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
-        <div>            <a class="pdoc-button module-list-button" href="../timeseries.html">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/>
-  <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
-</svg>                &nbsp;timeseries_shaper.loader.timeseries</a>
+        <div>
 
 
-            <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
-                   pattern=".+" required>
 
 
+            <h2>API Documentation</h2>
+                <ul class="memberlist">
+            <li>
+                    <a class="class" href="#TimescaleDBDataAccess">TimescaleDBDataAccess</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#TimescaleDBDataAccess.__init__">TimescaleDBDataAccess</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TimescaleDBDataAccess.start_timestamp">start_timestamp</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TimescaleDBDataAccess.end_timestamp">end_timestamp</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TimescaleDBDataAccess.uuids">uuids</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TimescaleDBDataAccess.db_config">db_config</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TimescaleDBDataAccess.engine">engine</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TimescaleDBDataAccess.fetch_data_as_parquet">fetch_data_as_parquet</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#TimescaleDBDataAccess.fetch_data_as_dataframe">fetch_data_as_dataframe</a>
+                        </li>
+                </ul>
+
+            </li>
+    </ul>
 
 
 
@@ -40,199 +67,341 @@
     <main class="pdoc">
             <section class="module-info">
                     <h1 class="modulename">
-<a href="./../../../timeseries_shaper.html">timeseries_shaper</a><wbr>.<a href="./../../loader.html">loader</a><wbr>.<a href="./../timeseries.html">timeseries</a><wbr>.timescale_loader    </h1>
+timeseries_shaper<wbr>.loader<wbr>.timeseries<wbr>.timescale_loader    </h1>
 
                 
                         <input id="mod-timescale_loader-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-timescale_loader-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">1</span></a><span class="c1"># TODO: Timescale Connection and Loader</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span> <span class="nc">TimescaleDBDataAccess</span><span class="p">:</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">    A class to access timeseries data from a TimescaleDB database. This class </span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    retrieves data for specified UUIDs within a defined time range, with the </span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">    option to output data as Parquet files or as a single combined DataFrame.</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end_timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">uuids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">db_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">        Initialize the TimescaleDBDataAccess object.</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">        :param start_timestamp: Start timestamp in &quot;Year-Month-Day Hour:Minute:Second&quot; format.</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">        :param end_timestamp: End timestamp in &quot;Year-Month-Day Hour:Minute:Second&quot; format.</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">        :param uuids: List of UUIDs to retrieve data for.</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">        :param db_config: Configuration dictionary for database connection.</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">start_timestamp</span> <span class="o">=</span> <span class="n">start_timestamp</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">end_timestamp</span> <span class="o">=</span> <span class="n">end_timestamp</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span> <span class="o">=</span> <span class="n">uuids</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">db_config</span> <span class="o">=</span> <span class="n">db_config</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="c1"># Establish database connection engine using SQLAlchemy</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>            <span class="sa">f</span><span class="s1">&#39;postgresql+psycopg2://</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_user&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_pass&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_host&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_name&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="p">)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="k">def</span> <span class="nf">_fetch_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">        Executes an SQL query to fetch timeseries data for a specific UUID from TimescaleDB.</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="sd">        :param uuid: The UUID for which data is being retrieved.</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">        :return: A DataFrame with timeseries data for the UUID.</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="s2">            SELECT uuid::text, systime, value_integer, value_string, value_double, value_bool, is_delta </span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="s2">            FROM telemetry </span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="s2">            WHERE uuid = &#39;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&#39; </span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="s2">              AND systime BETWEEN &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_timestamp</span><span class="si">}</span><span class="s2">&#39; AND &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_timestamp</span><span class="si">}</span><span class="s2">&#39; </span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="s2">            ORDER BY systime ASC</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="s2">        &quot;&quot;&quot;</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="k">def</span> <span class="nf">fetch_data_as_parquet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="sd">        Retrieves timeseries data from TimescaleDB and saves it as Parquet files.</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="sd">        Each file is saved in a directory structure of UUID/year/month/day/hour.</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="sd">        :param output_dir: Base directory to save the Parquet files.</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span><span class="p">:</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_data</span><span class="p">(</span><span class="n">uuid</span><span class="p">):</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>                <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>                    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">chunk</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>                        <span class="n">systime</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;systime&#39;</span><span class="p">]</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>                        <span class="n">timeslot_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">year</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">day</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">hour</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>                        <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">timeslot_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>                        <span class="n">output_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>                        <span class="n">row</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="nf">fetch_data_as_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="sd">        Retrieves timeseries data from TimescaleDB and returns it as a single DataFrame.</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="sd">        :return: A combined DataFrame with data for all specified UUIDs within the time range.</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>        <span class="n">df_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">chunk</span> <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_data</span><span class="p">(</span><span class="n">uuid</span><span class="p">)]</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">df_list</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 </span></pre></div>
 
 
             </section>
+                <section id="TimescaleDBDataAccess">
+                            <input id="TimescaleDBDataAccess-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">TimescaleDBDataAccess</span>:
+
+                <label class="view-source-button" for="TimescaleDBDataAccess-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#TimescaleDBDataAccess"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TimescaleDBDataAccess-7"><a href="#TimescaleDBDataAccess-7"><span class="linenos"> 7</span></a><span class="k">class</span> <span class="nc">TimescaleDBDataAccess</span><span class="p">:</span>
+</span><span id="TimescaleDBDataAccess-8"><a href="#TimescaleDBDataAccess-8"><span class="linenos"> 8</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-9"><a href="#TimescaleDBDataAccess-9"><span class="linenos"> 9</span></a><span class="sd">    A class to access timeseries data from a TimescaleDB database. This class </span>
+</span><span id="TimescaleDBDataAccess-10"><a href="#TimescaleDBDataAccess-10"><span class="linenos">10</span></a><span class="sd">    retrieves data for specified UUIDs within a defined time range, with the </span>
+</span><span id="TimescaleDBDataAccess-11"><a href="#TimescaleDBDataAccess-11"><span class="linenos">11</span></a><span class="sd">    option to output data as Parquet files or as a single combined DataFrame.</span>
+</span><span id="TimescaleDBDataAccess-12"><a href="#TimescaleDBDataAccess-12"><span class="linenos">12</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-13"><a href="#TimescaleDBDataAccess-13"><span class="linenos">13</span></a>
+</span><span id="TimescaleDBDataAccess-14"><a href="#TimescaleDBDataAccess-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end_timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">uuids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">db_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+</span><span id="TimescaleDBDataAccess-15"><a href="#TimescaleDBDataAccess-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-16"><a href="#TimescaleDBDataAccess-16"><span class="linenos">16</span></a><span class="sd">        Initialize the TimescaleDBDataAccess object.</span>
+</span><span id="TimescaleDBDataAccess-17"><a href="#TimescaleDBDataAccess-17"><span class="linenos">17</span></a><span class="sd">        :param start_timestamp: Start timestamp in &quot;Year-Month-Day Hour:Minute:Second&quot; format.</span>
+</span><span id="TimescaleDBDataAccess-18"><a href="#TimescaleDBDataAccess-18"><span class="linenos">18</span></a><span class="sd">        :param end_timestamp: End timestamp in &quot;Year-Month-Day Hour:Minute:Second&quot; format.</span>
+</span><span id="TimescaleDBDataAccess-19"><a href="#TimescaleDBDataAccess-19"><span class="linenos">19</span></a><span class="sd">        :param uuids: List of UUIDs to retrieve data for.</span>
+</span><span id="TimescaleDBDataAccess-20"><a href="#TimescaleDBDataAccess-20"><span class="linenos">20</span></a><span class="sd">        :param db_config: Configuration dictionary for database connection.</span>
+</span><span id="TimescaleDBDataAccess-21"><a href="#TimescaleDBDataAccess-21"><span class="linenos">21</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-22"><a href="#TimescaleDBDataAccess-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">start_timestamp</span> <span class="o">=</span> <span class="n">start_timestamp</span>
+</span><span id="TimescaleDBDataAccess-23"><a href="#TimescaleDBDataAccess-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">end_timestamp</span> <span class="o">=</span> <span class="n">end_timestamp</span>
+</span><span id="TimescaleDBDataAccess-24"><a href="#TimescaleDBDataAccess-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span> <span class="o">=</span> <span class="n">uuids</span>
+</span><span id="TimescaleDBDataAccess-25"><a href="#TimescaleDBDataAccess-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">db_config</span> <span class="o">=</span> <span class="n">db_config</span>
+</span><span id="TimescaleDBDataAccess-26"><a href="#TimescaleDBDataAccess-26"><span class="linenos">26</span></a>
+</span><span id="TimescaleDBDataAccess-27"><a href="#TimescaleDBDataAccess-27"><span class="linenos">27</span></a>        <span class="c1"># Establish database connection engine using SQLAlchemy</span>
+</span><span id="TimescaleDBDataAccess-28"><a href="#TimescaleDBDataAccess-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
+</span><span id="TimescaleDBDataAccess-29"><a href="#TimescaleDBDataAccess-29"><span class="linenos">29</span></a>            <span class="sa">f</span><span class="s1">&#39;postgresql+psycopg2://</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_user&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_pass&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_host&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_name&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span id="TimescaleDBDataAccess-30"><a href="#TimescaleDBDataAccess-30"><span class="linenos">30</span></a>        <span class="p">)</span>
+</span><span id="TimescaleDBDataAccess-31"><a href="#TimescaleDBDataAccess-31"><span class="linenos">31</span></a>
+</span><span id="TimescaleDBDataAccess-32"><a href="#TimescaleDBDataAccess-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">_fetch_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="TimescaleDBDataAccess-33"><a href="#TimescaleDBDataAccess-33"><span class="linenos">33</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-34"><a href="#TimescaleDBDataAccess-34"><span class="linenos">34</span></a><span class="sd">        Executes an SQL query to fetch timeseries data for a specific UUID from TimescaleDB.</span>
+</span><span id="TimescaleDBDataAccess-35"><a href="#TimescaleDBDataAccess-35"><span class="linenos">35</span></a><span class="sd">        :param uuid: The UUID for which data is being retrieved.</span>
+</span><span id="TimescaleDBDataAccess-36"><a href="#TimescaleDBDataAccess-36"><span class="linenos">36</span></a><span class="sd">        :return: A DataFrame with timeseries data for the UUID.</span>
+</span><span id="TimescaleDBDataAccess-37"><a href="#TimescaleDBDataAccess-37"><span class="linenos">37</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-38"><a href="#TimescaleDBDataAccess-38"><span class="linenos">38</span></a>        <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-39"><a href="#TimescaleDBDataAccess-39"><span class="linenos">39</span></a><span class="s2">            SELECT uuid::text, systime, value_integer, value_string, value_double, value_bool, is_delta </span>
+</span><span id="TimescaleDBDataAccess-40"><a href="#TimescaleDBDataAccess-40"><span class="linenos">40</span></a><span class="s2">            FROM telemetry </span>
+</span><span id="TimescaleDBDataAccess-41"><a href="#TimescaleDBDataAccess-41"><span class="linenos">41</span></a><span class="s2">            WHERE uuid = &#39;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&#39; </span>
+</span><span id="TimescaleDBDataAccess-42"><a href="#TimescaleDBDataAccess-42"><span class="linenos">42</span></a><span class="s2">              AND systime BETWEEN &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_timestamp</span><span class="si">}</span><span class="s2">&#39; AND &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_timestamp</span><span class="si">}</span><span class="s2">&#39; </span>
+</span><span id="TimescaleDBDataAccess-43"><a href="#TimescaleDBDataAccess-43"><span class="linenos">43</span></a><span class="s2">            ORDER BY systime ASC</span>
+</span><span id="TimescaleDBDataAccess-44"><a href="#TimescaleDBDataAccess-44"><span class="linenos">44</span></a><span class="s2">        &quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-45"><a href="#TimescaleDBDataAccess-45"><span class="linenos">45</span></a>        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+</span><span id="TimescaleDBDataAccess-46"><a href="#TimescaleDBDataAccess-46"><span class="linenos">46</span></a>
+</span><span id="TimescaleDBDataAccess-47"><a href="#TimescaleDBDataAccess-47"><span class="linenos">47</span></a>    <span class="k">def</span> <span class="nf">fetch_data_as_parquet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="TimescaleDBDataAccess-48"><a href="#TimescaleDBDataAccess-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-49"><a href="#TimescaleDBDataAccess-49"><span class="linenos">49</span></a><span class="sd">        Retrieves timeseries data from TimescaleDB and saves it as Parquet files.</span>
+</span><span id="TimescaleDBDataAccess-50"><a href="#TimescaleDBDataAccess-50"><span class="linenos">50</span></a><span class="sd">        Each file is saved in a directory structure of UUID/year/month/day/hour.</span>
+</span><span id="TimescaleDBDataAccess-51"><a href="#TimescaleDBDataAccess-51"><span class="linenos">51</span></a><span class="sd">        :param output_dir: Base directory to save the Parquet files.</span>
+</span><span id="TimescaleDBDataAccess-52"><a href="#TimescaleDBDataAccess-52"><span class="linenos">52</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-53"><a href="#TimescaleDBDataAccess-53"><span class="linenos">53</span></a>        <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span><span class="p">:</span>
+</span><span id="TimescaleDBDataAccess-54"><a href="#TimescaleDBDataAccess-54"><span class="linenos">54</span></a>            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_data</span><span class="p">(</span><span class="n">uuid</span><span class="p">):</span>
+</span><span id="TimescaleDBDataAccess-55"><a href="#TimescaleDBDataAccess-55"><span class="linenos">55</span></a>                <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="TimescaleDBDataAccess-56"><a href="#TimescaleDBDataAccess-56"><span class="linenos">56</span></a>                    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">chunk</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span id="TimescaleDBDataAccess-57"><a href="#TimescaleDBDataAccess-57"><span class="linenos">57</span></a>                        <span class="n">systime</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;systime&#39;</span><span class="p">]</span>
+</span><span id="TimescaleDBDataAccess-58"><a href="#TimescaleDBDataAccess-58"><span class="linenos">58</span></a>                        <span class="n">timeslot_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">year</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">day</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">hour</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</span><span id="TimescaleDBDataAccess-59"><a href="#TimescaleDBDataAccess-59"><span class="linenos">59</span></a>                        <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">timeslot_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="TimescaleDBDataAccess-60"><a href="#TimescaleDBDataAccess-60"><span class="linenos">60</span></a>                        <span class="n">output_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="TimescaleDBDataAccess-61"><a href="#TimescaleDBDataAccess-61"><span class="linenos">61</span></a>                        <span class="n">row</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="TimescaleDBDataAccess-62"><a href="#TimescaleDBDataAccess-62"><span class="linenos">62</span></a>
+</span><span id="TimescaleDBDataAccess-63"><a href="#TimescaleDBDataAccess-63"><span class="linenos">63</span></a>    <span class="k">def</span> <span class="nf">fetch_data_as_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="TimescaleDBDataAccess-64"><a href="#TimescaleDBDataAccess-64"><span class="linenos">64</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-65"><a href="#TimescaleDBDataAccess-65"><span class="linenos">65</span></a><span class="sd">        Retrieves timeseries data from TimescaleDB and returns it as a single DataFrame.</span>
+</span><span id="TimescaleDBDataAccess-66"><a href="#TimescaleDBDataAccess-66"><span class="linenos">66</span></a><span class="sd">        :return: A combined DataFrame with data for all specified UUIDs within the time range.</span>
+</span><span id="TimescaleDBDataAccess-67"><a href="#TimescaleDBDataAccess-67"><span class="linenos">67</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess-68"><a href="#TimescaleDBDataAccess-68"><span class="linenos">68</span></a>        <span class="n">df_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">chunk</span> <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_data</span><span class="p">(</span><span class="n">uuid</span><span class="p">)]</span>
+</span><span id="TimescaleDBDataAccess-69"><a href="#TimescaleDBDataAccess-69"><span class="linenos">69</span></a>        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">df_list</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>A class to access timeseries data from a TimescaleDB database. This class 
+retrieves data for specified UUIDs within a defined time range, with the 
+option to output data as Parquet files or as a single combined DataFrame.</p>
+</div>
+
+
+                            <div id="TimescaleDBDataAccess.__init__" class="classattr">
+                                        <input id="TimescaleDBDataAccess.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">TimescaleDBDataAccess</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">start_timestamp</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">end_timestamp</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">uuids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>,</span><span class="param">	<span class="n">db_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span></span>)</span>
+
+                <label class="view-source-button" for="TimescaleDBDataAccess.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#TimescaleDBDataAccess.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TimescaleDBDataAccess.__init__-14"><a href="#TimescaleDBDataAccess.__init__-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end_timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">uuids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">db_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+</span><span id="TimescaleDBDataAccess.__init__-15"><a href="#TimescaleDBDataAccess.__init__-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess.__init__-16"><a href="#TimescaleDBDataAccess.__init__-16"><span class="linenos">16</span></a><span class="sd">        Initialize the TimescaleDBDataAccess object.</span>
+</span><span id="TimescaleDBDataAccess.__init__-17"><a href="#TimescaleDBDataAccess.__init__-17"><span class="linenos">17</span></a><span class="sd">        :param start_timestamp: Start timestamp in &quot;Year-Month-Day Hour:Minute:Second&quot; format.</span>
+</span><span id="TimescaleDBDataAccess.__init__-18"><a href="#TimescaleDBDataAccess.__init__-18"><span class="linenos">18</span></a><span class="sd">        :param end_timestamp: End timestamp in &quot;Year-Month-Day Hour:Minute:Second&quot; format.</span>
+</span><span id="TimescaleDBDataAccess.__init__-19"><a href="#TimescaleDBDataAccess.__init__-19"><span class="linenos">19</span></a><span class="sd">        :param uuids: List of UUIDs to retrieve data for.</span>
+</span><span id="TimescaleDBDataAccess.__init__-20"><a href="#TimescaleDBDataAccess.__init__-20"><span class="linenos">20</span></a><span class="sd">        :param db_config: Configuration dictionary for database connection.</span>
+</span><span id="TimescaleDBDataAccess.__init__-21"><a href="#TimescaleDBDataAccess.__init__-21"><span class="linenos">21</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess.__init__-22"><a href="#TimescaleDBDataAccess.__init__-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">start_timestamp</span> <span class="o">=</span> <span class="n">start_timestamp</span>
+</span><span id="TimescaleDBDataAccess.__init__-23"><a href="#TimescaleDBDataAccess.__init__-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">end_timestamp</span> <span class="o">=</span> <span class="n">end_timestamp</span>
+</span><span id="TimescaleDBDataAccess.__init__-24"><a href="#TimescaleDBDataAccess.__init__-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span> <span class="o">=</span> <span class="n">uuids</span>
+</span><span id="TimescaleDBDataAccess.__init__-25"><a href="#TimescaleDBDataAccess.__init__-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">db_config</span> <span class="o">=</span> <span class="n">db_config</span>
+</span><span id="TimescaleDBDataAccess.__init__-26"><a href="#TimescaleDBDataAccess.__init__-26"><span class="linenos">26</span></a>
+</span><span id="TimescaleDBDataAccess.__init__-27"><a href="#TimescaleDBDataAccess.__init__-27"><span class="linenos">27</span></a>        <span class="c1"># Establish database connection engine using SQLAlchemy</span>
+</span><span id="TimescaleDBDataAccess.__init__-28"><a href="#TimescaleDBDataAccess.__init__-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
+</span><span id="TimescaleDBDataAccess.__init__-29"><a href="#TimescaleDBDataAccess.__init__-29"><span class="linenos">29</span></a>            <span class="sa">f</span><span class="s1">&#39;postgresql+psycopg2://</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_user&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_pass&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_host&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">db_config</span><span class="p">[</span><span class="s2">&quot;db_name&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span id="TimescaleDBDataAccess.__init__-30"><a href="#TimescaleDBDataAccess.__init__-30"><span class="linenos">30</span></a>        <span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Initialize the TimescaleDBDataAccess object.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>start_timestamp: Start timestamp in "Year-Month-Day Hour:Minute</strong>: Second" format.</li>
+<li><strong>end_timestamp: End timestamp in "Year-Month-Day Hour:Minute</strong>: Second" format.</li>
+<li><strong>uuids</strong>:  List of UUIDs to retrieve data for.</li>
+<li><strong>db_config</strong>:  Configuration dictionary for database connection.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="TimescaleDBDataAccess.start_timestamp" class="classattr">
+                                <div class="attr variable">
+            <span class="name">start_timestamp</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TimescaleDBDataAccess.start_timestamp"></a>
+    
+    
+
+                            </div>
+                            <div id="TimescaleDBDataAccess.end_timestamp" class="classattr">
+                                <div class="attr variable">
+            <span class="name">end_timestamp</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TimescaleDBDataAccess.end_timestamp"></a>
+    
+    
+
+                            </div>
+                            <div id="TimescaleDBDataAccess.uuids" class="classattr">
+                                <div class="attr variable">
+            <span class="name">uuids</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TimescaleDBDataAccess.uuids"></a>
+    
+    
+
+                            </div>
+                            <div id="TimescaleDBDataAccess.db_config" class="classattr">
+                                <div class="attr variable">
+            <span class="name">db_config</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TimescaleDBDataAccess.db_config"></a>
+    
+    
+
+                            </div>
+                            <div id="TimescaleDBDataAccess.engine" class="classattr">
+                                <div class="attr variable">
+            <span class="name">engine</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TimescaleDBDataAccess.engine"></a>
+    
+    
+
+                            </div>
+                            <div id="TimescaleDBDataAccess.fetch_data_as_parquet" class="classattr">
+                                        <input id="TimescaleDBDataAccess.fetch_data_as_parquet-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">fetch_data_as_parquet</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="TimescaleDBDataAccess.fetch_data_as_parquet-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#TimescaleDBDataAccess.fetch_data_as_parquet"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-47"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-47"><span class="linenos">47</span></a>    <span class="k">def</span> <span class="nf">fetch_data_as_parquet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-48"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-49"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-49"><span class="linenos">49</span></a><span class="sd">        Retrieves timeseries data from TimescaleDB and saves it as Parquet files.</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-50"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-50"><span class="linenos">50</span></a><span class="sd">        Each file is saved in a directory structure of UUID/year/month/day/hour.</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-51"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-51"><span class="linenos">51</span></a><span class="sd">        :param output_dir: Base directory to save the Parquet files.</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-52"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-52"><span class="linenos">52</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-53"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-53"><span class="linenos">53</span></a>        <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span><span class="p">:</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-54"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-54"><span class="linenos">54</span></a>            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_data</span><span class="p">(</span><span class="n">uuid</span><span class="p">):</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-55"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-55"><span class="linenos">55</span></a>                <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-56"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-56"><span class="linenos">56</span></a>                    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">chunk</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-57"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-57"><span class="linenos">57</span></a>                        <span class="n">systime</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;systime&#39;</span><span class="p">]</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-58"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-58"><span class="linenos">58</span></a>                        <span class="n">timeslot_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">year</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">day</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">systime</span><span class="o">.</span><span class="n">hour</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-59"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-59"><span class="linenos">59</span></a>                        <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">timeslot_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-60"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-60"><span class="linenos">60</span></a>                        <span class="n">output_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_parquet-61"><a href="#TimescaleDBDataAccess.fetch_data_as_parquet-61"><span class="linenos">61</span></a>                        <span class="n">row</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">output_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">.parquet&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Retrieves timeseries data from TimescaleDB and saves it as Parquet files.
+Each file is saved in a directory structure of UUID/year/month/day/hour.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>output_dir</strong>:  Base directory to save the Parquet files.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="TimescaleDBDataAccess.fetch_data_as_dataframe" class="classattr">
+                                        <input id="TimescaleDBDataAccess.fetch_data_as_dataframe-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">fetch_data_as_dataframe</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+
+                <label class="view-source-button" for="TimescaleDBDataAccess.fetch_data_as_dataframe-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#TimescaleDBDataAccess.fetch_data_as_dataframe"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TimescaleDBDataAccess.fetch_data_as_dataframe-63"><a href="#TimescaleDBDataAccess.fetch_data_as_dataframe-63"><span class="linenos">63</span></a>    <span class="k">def</span> <span class="nf">fetch_data_as_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_dataframe-64"><a href="#TimescaleDBDataAccess.fetch_data_as_dataframe-64"><span class="linenos">64</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_dataframe-65"><a href="#TimescaleDBDataAccess.fetch_data_as_dataframe-65"><span class="linenos">65</span></a><span class="sd">        Retrieves timeseries data from TimescaleDB and returns it as a single DataFrame.</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_dataframe-66"><a href="#TimescaleDBDataAccess.fetch_data_as_dataframe-66"><span class="linenos">66</span></a><span class="sd">        :return: A combined DataFrame with data for all specified UUIDs within the time range.</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_dataframe-67"><a href="#TimescaleDBDataAccess.fetch_data_as_dataframe-67"><span class="linenos">67</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_dataframe-68"><a href="#TimescaleDBDataAccess.fetch_data_as_dataframe-68"><span class="linenos">68</span></a>        <span class="n">df_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">chunk</span> <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_data</span><span class="p">(</span><span class="n">uuid</span><span class="p">)]</span>
+</span><span id="TimescaleDBDataAccess.fetch_data_as_dataframe-69"><a href="#TimescaleDBDataAccess.fetch_data_as_dataframe-69"><span class="linenos">69</span></a>        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">df_list</span> <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Retrieves timeseries data from TimescaleDB and returns it as a single DataFrame.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>A combined DataFrame with data for all specified UUIDs within the time range.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                </section>
     </main>
-<script>
-    function escapeHTML(html) {
-        return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
-    }
-
-    const originalContent = document.querySelector("main.pdoc");
-    let currentContent = originalContent;
-
-    function setContent(innerHTML) {
-        let elem;
-        if (innerHTML) {
-            elem = document.createElement("main");
-            elem.classList.add("pdoc");
-            elem.innerHTML = innerHTML;
-        } else {
-            elem = originalContent;
-        }
-        if (currentContent !== elem) {
-            currentContent.replaceWith(elem);
-            currentContent = elem;
-        }
-    }
-
-    function getSearchTerm() {
-        return (new URL(window.location)).searchParams.get("search");
-    }
-
-    const searchBox = document.querySelector(".pdoc input[type=search]");
-    searchBox.addEventListener("input", function () {
-        let url = new URL(window.location);
-        if (searchBox.value.trim()) {
-            url.hash = "";
-            url.searchParams.set("search", searchBox.value);
-        } else {
-            url.searchParams.delete("search");
-        }
-        history.replaceState("", "", url.toString());
-        onInput();
-    });
-    window.addEventListener("popstate", onInput);
-
-
-    let search, searchErr;
-
-    async function initialize() {
-        try {
-            search = await new Promise((resolve, reject) => {
-                const script = document.createElement("script");
-                script.type = "text/javascript";
-                script.async = true;
-                script.onload = () => resolve(window.pdocSearch);
-                script.onerror = (e) => reject(e);
-                script.src = "../../../search.js";
-                document.getElementsByTagName("head")[0].appendChild(script);
-            });
-        } catch (e) {
-            console.error("Cannot fetch pdoc search index");
-            searchErr = "Cannot fetch search index.";
-        }
-        onInput();
-
-        document.querySelector("nav.pdoc").addEventListener("click", e => {
-            if (e.target.hash) {
-                searchBox.value = "";
-                searchBox.dispatchEvent(new Event("input"));
-            }
-        });
-    }
-
-    function onInput() {
-        setContent((() => {
-            const term = getSearchTerm();
-            if (!term) {
-                return null
-            }
-            if (searchErr) {
-                return `<h3>Error: ${searchErr}</h3>`
-            }
-            if (!search) {
-                return "<h3>Searching...</h3>"
-            }
-
-            window.scrollTo({top: 0, left: 0, behavior: 'auto'});
-
-            const results = search(term);
-
-            let html;
-            if (results.length === 0) {
-                html = `No search results for '${escapeHTML(term)}'.`
-            } else {
-                html = `<h4>${results.length} search result${results.length > 1 ? "s" : ""} for '${escapeHTML(term)}'.</h4>`;
-            }
-            for (let result of results.slice(0, 10)) {
-                let doc = result.doc;
-                let url = `../../../${doc.modulename.replaceAll(".", "/")}.html`;
-                if (doc.qualname) {
-                    url += `#${doc.qualname}`;
-                }
-
-                let heading;
-                switch (result.doc.kind) {
-                    case "function":
-                        if (doc.fullname.endsWith(".__init__")) {
-                            heading = `<span class="name">${doc.fullname.replace(/\.__init__$/, "")}</span>${doc.signature}`;
-                        } else {
-                            heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span>${doc.signature}`;
-                        }
-                        break;
-                    case "class":
-                        heading = `<span class="def">class</span> <span class="name">${doc.fullname}</span>`;
-                        if (doc.bases)
-                            heading += `<wbr>(<span class="base">${doc.bases}</span>)`;
-                        heading += `:`;
-                        break;
-                    case "variable":
-                        heading = `<span class="name">${doc.fullname}</span>`;
-                        if (doc.annotation)
-                            heading += `<span class="annotation">${doc.annotation}</span>`;
-                        if (doc.default_value)
-                            heading += `<span class="default_value"> = ${doc.default_value}</span>`;
-                        break;
-                    default:
-                        heading = `<span class="name">${doc.fullname}</span>`;
-                        break;
-                }
-                html += `
-                        <section class="search-result">
-                        <a href="${url}" class="attr ${doc.kind}">${heading}</a>
-                        <div class="docstring">${doc.doc}</div>
-                        </section>
-                    `;
-
-            }
-            return html;
-        })());
-    }
-
-    if (getSearchTerm()) {
-        initialize();
-        searchBox.value = getSearchTerm();
-        onInput();
-    } else {
-        searchBox.addEventListener("focus", initialize, {once: true});
-    }
-
-    searchBox.addEventListener("keydown", e => {
-        if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
-            let focused = currentContent.querySelector(".search-result.focused");
-            if (!focused) {
-                currentContent.querySelector(".search-result").classList.add("focused");
-            } else if (
-                e.key === "ArrowDown"
-                && focused.nextElementSibling
-                && focused.nextElementSibling.classList.contains("search-result")
-            ) {
-                focused.classList.remove("focused");
-                focused.nextElementSibling.classList.add("focused");
-                focused.nextElementSibling.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest",
-                    inline: "nearest"
-                });
-            } else if (
-                e.key === "ArrowUp"
-                && focused.previousElementSibling
-                && focused.previousElementSibling.classList.contains("search-result")
-            ) {
-                focused.classList.remove("focused");
-                focused.previousElementSibling.classList.add("focused");
-                focused.previousElementSibling.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest",
-                    inline: "nearest"
-                });
-            } else if (
-                e.key === "Enter"
-            ) {
-                focused.querySelector("a").click();
-            }
-        }
-    });
-</script></body>
+</body>
 </html>

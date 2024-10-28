@@ -28,6 +28,49 @@
 
 
 
+            <h2>API Documentation</h2>
+                <ul class="memberlist">
+            <li>
+                    <a class="class" href="#DatapointAPI">DatapointAPI</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#DatapointAPI.__init__">DatapointAPI</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DatapointAPI.device_name">device_name</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DatapointAPI.base_url">base_url</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DatapointAPI.api_token">api_token</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DatapointAPI.output_path">output_path</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DatapointAPI.uuids">uuids</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DatapointAPI.metadata">metadata</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DatapointAPI.get_uuids">get_uuids</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DatapointAPI.get_full_config">get_full_config</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DatapointAPI.get_uuid_label_pairs">get_uuid_label_pairs</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DatapointAPI.display_dataframe">display_dataframe</a>
+                        </li>
+                </ul>
+
+            </li>
+    </ul>
+
 
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
@@ -40,18 +83,350 @@
     <main class="pdoc">
             <section class="module-info">
                     <h1 class="modulename">
-<a href="./../../../timeseries_shaper.html">timeseries_shaper</a><wbr>.<a href="./../../loader.html">loader</a><wbr>.<a href="./../metadata.html">metadata</a><wbr>.metadata_api_loader    </h1>
+timeseries_shaper<wbr>.loader<wbr>.<a href="./../metadata.html">metadata</a><wbr>.metadata_api_loader    </h1>
 
                 
                         <input id="mod-metadata_api_loader-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-metadata_api_loader-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">1</span></a><span class="c1"># TODO: Metadata API Loader</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span> <span class="nn">requests</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span> <span class="nn">json</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">class</span> <span class="nc">DatapointAPI</span><span class="p">:</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">    Class for accessing datapoints via an API.</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data_points.json&quot;</span><span class="p">):</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">device_name</span> <span class="o">=</span> <span class="n">device_name</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">api_token</span> <span class="o">=</span> <span class="n">api_token</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([])</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_api_access</span><span class="p">()</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">_api_access</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect to the API and retrieve metadata for the specified device.&quot;&quot;&quot;</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>            <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>            <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="p">}</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="n">metadata</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="n">devices_found</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="k">for</span> <span class="n">datatron</span> <span class="ow">in</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">():</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>            <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">datatron</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/devices&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">():</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>                <span class="k">if</span> <span class="n">device</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_name</span><span class="p">:</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>                    <span class="n">datapoints</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">datatron</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/devices/</span><span class="si">{</span><span class="n">device</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/data_points&quot;</span><span class="p">,</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>                        <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>                    <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>                    <span class="n">metadata</span> <span class="o">+=</span> <span class="n">datapoints</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>                    <span class="n">devices_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>                <span class="k">if</span> <span class="n">devices_found</span><span class="p">:</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>                    <span class="k">break</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>            <span class="k">if</span> <span class="n">devices_found</span><span class="p">:</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>                <span class="k">break</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;enabled&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">][[</span><span class="s2">&quot;uuid&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;config&quot;</span><span class="p">]]</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>            <span class="n">data_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_export_json</span><span class="p">(</span><span class="n">data_points</span><span class="p">)</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;uuid&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">data_points</span><span class="p">]</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">_export_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Export data points to a JSON file.&quot;&quot;&quot;</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data_points</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>    <span class="k">def</span> <span class="nf">get_uuids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of UUIDs.&quot;&quot;&quot;</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="k">def</span> <span class="nf">get_full_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the full configuration (uuid, label, config) as a list of dictionaries.&quot;&quot;&quot;</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>    <span class="k">def</span> <span class="nf">get_uuid_label_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of uuid and label pairs.&quot;&quot;&quot;</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[[</span><span class="s1">&#39;uuid&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">)</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>    <span class="k">def</span> <span class="nf">display_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the metadata DataFrame to visually inspect data points.&quot;&quot;&quot;</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
 </span></pre></div>
 
 
             </section>
+                <section id="DatapointAPI">
+                            <input id="DatapointAPI-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">DatapointAPI</span>:
+
+                <label class="view-source-button" for="DatapointAPI-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#DatapointAPI"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DatapointAPI-8"><a href="#DatapointAPI-8"><span class="linenos"> 8</span></a><span class="k">class</span> <span class="nc">DatapointAPI</span><span class="p">:</span>
+</span><span id="DatapointAPI-9"><a href="#DatapointAPI-9"><span class="linenos"> 9</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI-10"><a href="#DatapointAPI-10"><span class="linenos">10</span></a><span class="sd">    Class for accessing datapoints via an API.</span>
+</span><span id="DatapointAPI-11"><a href="#DatapointAPI-11"><span class="linenos">11</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="DatapointAPI-12"><a href="#DatapointAPI-12"><span class="linenos">12</span></a>
+</span><span id="DatapointAPI-13"><a href="#DatapointAPI-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data_points.json&quot;</span><span class="p">):</span>
+</span><span id="DatapointAPI-14"><a href="#DatapointAPI-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">device_name</span> <span class="o">=</span> <span class="n">device_name</span>
+</span><span id="DatapointAPI-15"><a href="#DatapointAPI-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+</span><span id="DatapointAPI-16"><a href="#DatapointAPI-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">api_token</span> <span class="o">=</span> <span class="n">api_token</span>
+</span><span id="DatapointAPI-17"><a href="#DatapointAPI-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span>
+</span><span id="DatapointAPI-18"><a href="#DatapointAPI-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="DatapointAPI-19"><a href="#DatapointAPI-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([])</span>
+</span><span id="DatapointAPI-20"><a href="#DatapointAPI-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_api_access</span><span class="p">()</span>
+</span><span id="DatapointAPI-21"><a href="#DatapointAPI-21"><span class="linenos">21</span></a>
+</span><span id="DatapointAPI-22"><a href="#DatapointAPI-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="nf">_api_access</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="DatapointAPI-23"><a href="#DatapointAPI-23"><span class="linenos">23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect to the API and retrieve metadata for the specified device.&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI-24"><a href="#DatapointAPI-24"><span class="linenos">24</span></a>        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="DatapointAPI-25"><a href="#DatapointAPI-25"><span class="linenos">25</span></a>            <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+</span><span id="DatapointAPI-26"><a href="#DatapointAPI-26"><span class="linenos">26</span></a>            <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="DatapointAPI-27"><a href="#DatapointAPI-27"><span class="linenos">27</span></a>        <span class="p">}</span>
+</span><span id="DatapointAPI-28"><a href="#DatapointAPI-28"><span class="linenos">28</span></a>
+</span><span id="DatapointAPI-29"><a href="#DatapointAPI-29"><span class="linenos">29</span></a>        <span class="n">metadata</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="DatapointAPI-30"><a href="#DatapointAPI-30"><span class="linenos">30</span></a>        <span class="n">devices_found</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="DatapointAPI-31"><a href="#DatapointAPI-31"><span class="linenos">31</span></a>
+</span><span id="DatapointAPI-32"><a href="#DatapointAPI-32"><span class="linenos">32</span></a>        <span class="k">for</span> <span class="n">datatron</span> <span class="ow">in</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">():</span>
+</span><span id="DatapointAPI-33"><a href="#DatapointAPI-33"><span class="linenos">33</span></a>            <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">datatron</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/devices&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">():</span>
+</span><span id="DatapointAPI-34"><a href="#DatapointAPI-34"><span class="linenos">34</span></a>                <span class="k">if</span> <span class="n">device</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_name</span><span class="p">:</span>
+</span><span id="DatapointAPI-35"><a href="#DatapointAPI-35"><span class="linenos">35</span></a>                    <span class="n">datapoints</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+</span><span id="DatapointAPI-36"><a href="#DatapointAPI-36"><span class="linenos">36</span></a>                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">datatron</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/devices/</span><span class="si">{</span><span class="n">device</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/data_points&quot;</span><span class="p">,</span>
+</span><span id="DatapointAPI-37"><a href="#DatapointAPI-37"><span class="linenos">37</span></a>                        <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+</span><span id="DatapointAPI-38"><a href="#DatapointAPI-38"><span class="linenos">38</span></a>                    <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+</span><span id="DatapointAPI-39"><a href="#DatapointAPI-39"><span class="linenos">39</span></a>                    <span class="n">metadata</span> <span class="o">+=</span> <span class="n">datapoints</span>
+</span><span id="DatapointAPI-40"><a href="#DatapointAPI-40"><span class="linenos">40</span></a>                    <span class="n">devices_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+</span><span id="DatapointAPI-41"><a href="#DatapointAPI-41"><span class="linenos">41</span></a>                <span class="k">if</span> <span class="n">devices_found</span><span class="p">:</span>
+</span><span id="DatapointAPI-42"><a href="#DatapointAPI-42"><span class="linenos">42</span></a>                    <span class="k">break</span>
+</span><span id="DatapointAPI-43"><a href="#DatapointAPI-43"><span class="linenos">43</span></a>            <span class="k">if</span> <span class="n">devices_found</span><span class="p">:</span>
+</span><span id="DatapointAPI-44"><a href="#DatapointAPI-44"><span class="linenos">44</span></a>                <span class="k">break</span>
+</span><span id="DatapointAPI-45"><a href="#DatapointAPI-45"><span class="linenos">45</span></a>
+</span><span id="DatapointAPI-46"><a href="#DatapointAPI-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+</span><span id="DatapointAPI-47"><a href="#DatapointAPI-47"><span class="linenos">47</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="DatapointAPI-48"><a href="#DatapointAPI-48"><span class="linenos">48</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;enabled&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">][[</span><span class="s2">&quot;uuid&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;config&quot;</span><span class="p">]]</span>
+</span><span id="DatapointAPI-49"><a href="#DatapointAPI-49"><span class="linenos">49</span></a>            <span class="n">data_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+</span><span id="DatapointAPI-50"><a href="#DatapointAPI-50"><span class="linenos">50</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_export_json</span><span class="p">(</span><span class="n">data_points</span><span class="p">)</span>
+</span><span id="DatapointAPI-51"><a href="#DatapointAPI-51"><span class="linenos">51</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;uuid&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">data_points</span><span class="p">]</span>
+</span><span id="DatapointAPI-52"><a href="#DatapointAPI-52"><span class="linenos">52</span></a>
+</span><span id="DatapointAPI-53"><a href="#DatapointAPI-53"><span class="linenos">53</span></a>    <span class="k">def</span> <span class="nf">_export_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="DatapointAPI-54"><a href="#DatapointAPI-54"><span class="linenos">54</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Export data points to a JSON file.&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI-55"><a href="#DatapointAPI-55"><span class="linenos">55</span></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="DatapointAPI-56"><a href="#DatapointAPI-56"><span class="linenos">56</span></a>            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data_points</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="DatapointAPI-57"><a href="#DatapointAPI-57"><span class="linenos">57</span></a>
+</span><span id="DatapointAPI-58"><a href="#DatapointAPI-58"><span class="linenos">58</span></a>    <span class="k">def</span> <span class="nf">get_uuids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="DatapointAPI-59"><a href="#DatapointAPI-59"><span class="linenos">59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of UUIDs.&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI-60"><a href="#DatapointAPI-60"><span class="linenos">60</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span>
+</span><span id="DatapointAPI-61"><a href="#DatapointAPI-61"><span class="linenos">61</span></a>
+</span><span id="DatapointAPI-62"><a href="#DatapointAPI-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="nf">get_full_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+</span><span id="DatapointAPI-63"><a href="#DatapointAPI-63"><span class="linenos">63</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the full configuration (uuid, label, config) as a list of dictionaries.&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI-64"><a href="#DatapointAPI-64"><span class="linenos">64</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+</span><span id="DatapointAPI-65"><a href="#DatapointAPI-65"><span class="linenos">65</span></a>
+</span><span id="DatapointAPI-66"><a href="#DatapointAPI-66"><span class="linenos">66</span></a>    <span class="k">def</span> <span class="nf">get_uuid_label_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+</span><span id="DatapointAPI-67"><a href="#DatapointAPI-67"><span class="linenos">67</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of uuid and label pairs.&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI-68"><a href="#DatapointAPI-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[[</span><span class="s1">&#39;uuid&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">)</span>
+</span><span id="DatapointAPI-69"><a href="#DatapointAPI-69"><span class="linenos">69</span></a>
+</span><span id="DatapointAPI-70"><a href="#DatapointAPI-70"><span class="linenos">70</span></a>    <span class="k">def</span> <span class="nf">display_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="DatapointAPI-71"><a href="#DatapointAPI-71"><span class="linenos">71</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the metadata DataFrame to visually inspect data points.&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI-72"><a href="#DatapointAPI-72"><span class="linenos">72</span></a>        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Class for accessing datapoints via an API.</p>
+</div>
+
+
+                            <div id="DatapointAPI.__init__" class="classattr">
+                                        <input id="DatapointAPI.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">DatapointAPI</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">device_name</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">api_token</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;data_points.json&#39;</span></span>)</span>
+
+                <label class="view-source-button" for="DatapointAPI.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#DatapointAPI.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DatapointAPI.__init__-13"><a href="#DatapointAPI.__init__-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">api_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data_points.json&quot;</span><span class="p">):</span>
+</span><span id="DatapointAPI.__init__-14"><a href="#DatapointAPI.__init__-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">device_name</span> <span class="o">=</span> <span class="n">device_name</span>
+</span><span id="DatapointAPI.__init__-15"><a href="#DatapointAPI.__init__-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+</span><span id="DatapointAPI.__init__-16"><a href="#DatapointAPI.__init__-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">api_token</span> <span class="o">=</span> <span class="n">api_token</span>
+</span><span id="DatapointAPI.__init__-17"><a href="#DatapointAPI.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span>
+</span><span id="DatapointAPI.__init__-18"><a href="#DatapointAPI.__init__-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="DatapointAPI.__init__-19"><a href="#DatapointAPI.__init__-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([])</span>
+</span><span id="DatapointAPI.__init__-20"><a href="#DatapointAPI.__init__-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_api_access</span><span class="p">()</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="DatapointAPI.device_name" class="classattr">
+                                <div class="attr variable">
+            <span class="name">device_name</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DatapointAPI.device_name"></a>
+    
+    
+
+                            </div>
+                            <div id="DatapointAPI.base_url" class="classattr">
+                                <div class="attr variable">
+            <span class="name">base_url</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DatapointAPI.base_url"></a>
+    
+    
+
+                            </div>
+                            <div id="DatapointAPI.api_token" class="classattr">
+                                <div class="attr variable">
+            <span class="name">api_token</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DatapointAPI.api_token"></a>
+    
+    
+
+                            </div>
+                            <div id="DatapointAPI.output_path" class="classattr">
+                                <div class="attr variable">
+            <span class="name">output_path</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DatapointAPI.output_path"></a>
+    
+    
+
+                            </div>
+                            <div id="DatapointAPI.uuids" class="classattr">
+                                <div class="attr variable">
+            <span class="name">uuids</span><span class="annotation">: List[str]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DatapointAPI.uuids"></a>
+    
+    
+
+                            </div>
+                            <div id="DatapointAPI.metadata" class="classattr">
+                                <div class="attr variable">
+            <span class="name">metadata</span><span class="annotation">: pandas.core.frame.DataFrame</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DatapointAPI.metadata"></a>
+    
+    
+
+                            </div>
+                            <div id="DatapointAPI.get_uuids" class="classattr">
+                                        <input id="DatapointAPI.get_uuids-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_uuids</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="DatapointAPI.get_uuids-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#DatapointAPI.get_uuids"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DatapointAPI.get_uuids-58"><a href="#DatapointAPI.get_uuids-58"><span class="linenos">58</span></a>    <span class="k">def</span> <span class="nf">get_uuids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="DatapointAPI.get_uuids-59"><a href="#DatapointAPI.get_uuids-59"><span class="linenos">59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of UUIDs.&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI.get_uuids-60"><a href="#DatapointAPI.get_uuids-60"><span class="linenos">60</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuids</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Return the list of UUIDs.</p>
+</div>
+
+
+                            </div>
+                            <div id="DatapointAPI.get_full_config" class="classattr">
+                                        <input id="DatapointAPI.get_full_config-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_full_config</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>:</span></span>
+
+                <label class="view-source-button" for="DatapointAPI.get_full_config-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#DatapointAPI.get_full_config"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DatapointAPI.get_full_config-62"><a href="#DatapointAPI.get_full_config-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="nf">get_full_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+</span><span id="DatapointAPI.get_full_config-63"><a href="#DatapointAPI.get_full_config-63"><span class="linenos">63</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the full configuration (uuid, label, config) as a list of dictionaries.&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI.get_full_config-64"><a href="#DatapointAPI.get_full_config-64"><span class="linenos">64</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Return the full configuration (uuid, label, config) as a list of dictionaries.</p>
+</div>
+
+
+                            </div>
+                            <div id="DatapointAPI.get_uuid_label_pairs" class="classattr">
+                                        <input id="DatapointAPI.get_uuid_label_pairs-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_uuid_label_pairs</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>:</span></span>
+
+                <label class="view-source-button" for="DatapointAPI.get_uuid_label_pairs-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#DatapointAPI.get_uuid_label_pairs"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DatapointAPI.get_uuid_label_pairs-66"><a href="#DatapointAPI.get_uuid_label_pairs-66"><span class="linenos">66</span></a>    <span class="k">def</span> <span class="nf">get_uuid_label_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+</span><span id="DatapointAPI.get_uuid_label_pairs-67"><a href="#DatapointAPI.get_uuid_label_pairs-67"><span class="linenos">67</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of uuid and label pairs.&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI.get_uuid_label_pairs-68"><a href="#DatapointAPI.get_uuid_label_pairs-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[[</span><span class="s1">&#39;uuid&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Return a list of uuid and label pairs.</p>
+</div>
+
+
+                            </div>
+                            <div id="DatapointAPI.display_dataframe" class="classattr">
+                                        <input id="DatapointAPI.display_dataframe-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">display_dataframe</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <label class="view-source-button" for="DatapointAPI.display_dataframe-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#DatapointAPI.display_dataframe"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DatapointAPI.display_dataframe-70"><a href="#DatapointAPI.display_dataframe-70"><span class="linenos">70</span></a>    <span class="k">def</span> <span class="nf">display_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="DatapointAPI.display_dataframe-71"><a href="#DatapointAPI.display_dataframe-71"><span class="linenos">71</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the metadata DataFrame to visually inspect data points.&quot;&quot;&quot;</span>
+</span><span id="DatapointAPI.display_dataframe-72"><a href="#DatapointAPI.display_dataframe-72"><span class="linenos">72</span></a>        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Print the metadata DataFrame to visually inspect data points.</p>
+</div>
+
+
+                            </div>
+                </section>
     </main>
 <script>
     function escapeHTML(html) {
