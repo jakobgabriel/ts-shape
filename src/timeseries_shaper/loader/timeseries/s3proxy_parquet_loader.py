@@ -68,7 +68,7 @@ class S3ProxyDataAccess:
             for uuid in set(self.uuids):
                 df = self._fetch_parquet(uuid, timeslot_dir)
                 if df is not None:
-                    output_path = Path(output_dir, f"{uuid}/{timeslot_dir}")
+                    output_path = Path(output_dir, timeslot_dir)
                     output_path.mkdir(parents=True, exist_ok=True)
                     df.to_parquet(output_path / f"{uuid}.parquet")
 

@@ -55,7 +55,7 @@ class TimescaleDBDataAccess:
                     for _, row in chunk.iterrows():
                         systime = row['systime']
                         timeslot_dir = Path(str(systime.year), str(systime.month).zfill(2), str(systime.day).zfill(2), str(systime.hour).zfill(2))
-                        output_path = Path(output_dir, f"{uuid}/{timeslot_dir}")
+                        output_path = Path(output_dir, timeslot_dir)
                         output_path.mkdir(parents=True, exist_ok=True)
                         row.to_frame().T.to_parquet(output_path / f"{uuid}.parquet", index=False)
 
