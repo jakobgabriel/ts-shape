@@ -4,36 +4,16 @@ from sqlalchemy import create_engine
 from typing import List, Dict
 
 class TimescaleDBDataAccess:
-    """
-    A class to access timeseries data from a TimescaleDB database. This class 
-    retrieves data for specified UUIDs within a defined time range, with the 
-    option to output data as Parquet files or as a single combined DataFrame.
-    """
-
     def __init__(self, start_timestamp: str, end_timestamp: str, uuids: List[str], db_config: Dict[str, str]):
-        """
-        Initialize the TimescaleDBDataAccess object.
-        :param start_timestamp: Start timestamp in "Year-Month-Day Hour:Minute:Second" format.
-        :param end_timestamp: End timestamp in "Year-Month-Day Hour:Minute:Second" format.
-        :param uuids: List of UUIDs to retrieve data for.
-        :param db_config: Configuration dictionary for database connection.
-        """
         self.start_timestamp = start_timestamp
         self.end_timestamp = end_timestamp
         self.uuids = uuids
         self.db_config = db_config
-
-        # Establish database connection engine using SQLAlchemy
         self.engine = create_engine(
             f'postgresql+psycopg2://{db_config["db_user"]}:{db_config["db_pass"]}@{db_config["db_host"]}/{db_config["db_name"]}'
         )
 
     def _fetch_data(self, uuid: str) -> pd.DataFrame:
-        """
-        Executes an SQL query to fetch timeseries data for a specific UUID from TimescaleDB.
-        :param uuid: The UUID for which data is being retrieved.
-        :return: A DataFrame with timeseries data for the UUID.
-        """
         query = f"""
             SELECT uuid::text, systime, value_integer, value_string, value_double, value_bool, is_delta 
             FROM telemetry 
@@ -44,20 +24,27 @@ class TimescaleDBDataAccess:
         return pd.read_sql(query, self.engine, chunksize=10000)
 
     def fetch_data_as_parquet(self, output_dir: str):
-        """
-        Retrieves timeseries data from TimescaleDB and saves it as Parquet files.
-        Each file is saved in a directory structure of UUID/year/month/day/hour.
-        :param output_dir: Base directory to save the Parquet files.
-        """
         for uuid in self.uuids:
+            hourly_data = {}
+            
             for chunk in self._fetch_data(uuid):
                 if not chunk.empty:
-                    for _, row in chunk.iterrows():
-                        systime = row['systime']
-                        timeslot_dir = Path(str(systime.year), str(systime.month).zfill(2), str(systime.day).zfill(2), str(systime.hour).zfill(2))
-                        output_path = Path(output_dir, timeslot_dir)
-                        output_path.mkdir(parents=True, exist_ok=True)
-                        row.to_frame().T.to_parquet(output_path / f"{uuid}.parquet", index=False)
+                    # Group the data by hour to accumulate rows for each hour
+                    chunk['hour'] = chunk['systime'].dt.floor('H')
+                    grouped = chunk.groupby('hour')
+                    
+                    for hour, group in grouped:
+                        if hour not in hourly_data:
+                            hourly_data[hour] = group
+                        else:
+                            hourly_data[hour] = pd.concat([hourly_data[hour], group], ignore_index=True)
+            
+            # Write each hour's data to a single Parquet file
+            for hour, data in hourly_data.items():
+                timeslot_dir = Path(str(hour.year), str(hour.month).zfill(2), str(hour.day).zfill(2), str(hour.hour).zfill(2))
+                output_path = Path(output_dir, timeslot_dir)
+                output_path.mkdir(parents=True, exist_ok=True)
+                data.to_parquet(output_path / f"{uuid}.parquet", index=False)
 
     def fetch_data_as_dataframe(self) -> pd.DataFrame:
         """
