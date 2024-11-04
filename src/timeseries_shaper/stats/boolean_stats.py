@@ -1,4 +1,5 @@
 import pandas as pd
+from typing import Dict, Union
 from ..base import Base
 
 class BooleanStatistics(Base):
@@ -41,13 +42,30 @@ class BooleanStatistics(Base):
         return (false_count / total_count) * 100 if total_count > 0 else 0.0
 
     @classmethod
-    def summary(cls, dataframe: pd.DataFrame, column_name: str = 'value_bool') -> pd.DataFrame:
-        """Returns a summary DataFrame with counts and percentages of True, False, and Null values."""
-        data = {
-            'Count True': [cls.count_true(dataframe, column_name)],
-            'Count False': [cls.count_false(dataframe, column_name)],
-            'Count Null': [cls.count_null(dataframe, column_name)],
-            'True %': [cls.true_percentage(dataframe, column_name)],
-            'False %': [cls.false_percentage(dataframe, column_name)]
+    def mode(cls, dataframe: pd.DataFrame, column_name: str) -> bool:
+        """Returns the mode (most common value) of the specified boolean column."""
+        return dataframe[column_name].mode()[0]
+
+    @classmethod
+    def is_balanced(cls, dataframe: pd.DataFrame, column_name: str) -> bool:
+        """Indicates if the distribution is balanced (50% True and False) in the specified boolean column."""
+        true_percentage = dataframe[column_name].mean()
+        return true_percentage == 0.5
+
+    @classmethod
+    def summary_as_dict(cls, dataframe: pd.DataFrame, column_name: str) -> Dict[str, Union[int, float, bool]]:
+        """Returns a summary of boolean statistics for the specified column as a dictionary."""
+        return {
+            'true_count': cls.count_true(dataframe, column_name),
+            'false_count': cls.count_false(dataframe, column_name),
+            'true_percentage': cls.true_percentage(dataframe, column_name),
+            'false_percentage': cls.false_percentage(dataframe, column_name),
+            'mode': cls.mode(dataframe, column_name),
+            'is_balanced': cls.is_balanced(dataframe, column_name)
         }
-        return pd.DataFrame(data)
+
+    @classmethod
+    def summary_as_dataframe(cls, dataframe: pd.DataFrame, column_name: str) -> pd.DataFrame:
+        """Returns a summary of boolean statistics for the specified column as a DataFrame."""
+        summary_data = cls.summary_as_dict(dataframe, column_name)
+        return pd.DataFrame([summary_data])

@@ -1,4 +1,5 @@
 import pandas as pd
+from typing import Dict, Union
 from ..base import Base
 
 class StringStatistics(Base):
@@ -94,3 +95,30 @@ class StringStatistics(Base):
     def contains_digit_count(cls, dataframe: pd.DataFrame, column_name: str = 'value_string') -> int:
         """Counts how many strings contain digits."""
         return dataframe[column_name].dropna().str.contains(r'\d').sum()
+    
+    @classmethod
+    def summary_as_dict(cls, dataframe: pd.DataFrame, column_name: str) -> Dict[str, Union[int, str, float]]:
+        """Returns a dictionary with comprehensive string statistics for the specified column."""
+        most_frequent = cls.most_frequent(dataframe, column_name)
+        value_counts = dataframe[column_name].value_counts()
+
+        return {
+            'unique_values': cls.count_unique(dataframe, column_name),
+            'most_frequent': most_frequent,
+            'count_most_frequent': cls.count_most_frequent(dataframe, column_name),
+            'count_null': cls.count_null(dataframe, column_name),
+            'average_string_length': cls.average_string_length(dataframe, column_name),
+            'longest_string': cls.longest_string(dataframe, column_name),
+            'shortest_string': cls.shortest_string(dataframe, column_name),
+            'uppercase_percentage': cls.uppercase_percentage(dataframe, column_name),
+            'lowercase_percentage': cls.lowercase_percentage(dataframe, column_name),
+            'contains_digit_count': cls.contains_digit_count(dataframe, column_name),
+            'least_common': value_counts.idxmin() if not value_counts.empty else None,
+            'frequency_least_common': value_counts.min() if not value_counts.empty else 0
+        }
+
+    @classmethod
+    def summary_as_dataframe(cls, dataframe: pd.DataFrame, column_name: str) -> pd.DataFrame:
+        """Returns a DataFrame with comprehensive string statistics for the specified column."""
+        summary_data = cls.summary_as_dict(dataframe, column_name)
+        return pd.DataFrame([summary_data])

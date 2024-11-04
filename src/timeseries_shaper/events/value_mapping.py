@@ -81,7 +81,7 @@ class ValueMapper(Base):
         # Merge the mapping table with the DataFrame based on the map_column and mapping_key_column
         mapped_df = self.dataframe.merge(
             self.mapping_table[[self.mapping_key_column, self.mapping_value_column]],
-            left_on=self.map_column, 
+            left_on=self.map_column,
             right_on=self.mapping_key_column,
             how='left'
         )
