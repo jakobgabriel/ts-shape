@@ -8,7 +8,7 @@ DOCS_DIR="./docs"
 mkdir -p $DOCS_DIR
 
 # Export the environment variable to allow subprocess execution in pdoc
-# export PDOC_ALLOW_EXEC=1
+export PDOC_ALLOW_EXEC=1
 
 # Find all Python files in the source directory and generate documentation for each
 find $SRC_DIR -name '*.py' -exec pdoc {} -o $DOCS_DIR \;
