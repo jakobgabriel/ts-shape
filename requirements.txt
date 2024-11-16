@@ -1,2 +1,3 @@
 pandas==2.1.0
 pdoc==14.6.1 # for docs
+scipy==1.14.1
