@@ -30,7 +30,7 @@ class TimescaleDBDataAccess:
             for chunk in self._fetch_data(uuid):
                 if not chunk.empty:
                     # Group the data by hour to accumulate rows for each hour
-                    chunk['hour'] = chunk['systime'].dt.floor('H')
+                    chunk['hour'] = chunk['systime'].dt.floor('h')
                     grouped = chunk.groupby('hour')
                     
                     for hour, group in grouped:
