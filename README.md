@@ -6,43 +6,32 @@ Besides that multiple engineering specific methods are utilized to make it fast 
 
 ## Features | Structure
 
-```
-├── timeseries_shaper
-│   ├── base.py
-│   ├── calculator
-│   │   └── numeric_calc.py
-│   ├── cycles
-│   │   ├── cycle_processor.py
-│   │   └── cycles_extractor.py
-│   ├── events
-│   │   ├── outlier_detection.py
-│   │   ├── statistical_process_control.py
-│   │   ├── tolerance_deviation.py
-│   │   └── value_mapping.py
-│   ├── filter
-│   │   ├── boolean_filter.py
-│   │   ├── custom_filter.py
-│   │   ├── datetime_filter.py
-│   │   ├── numeric_filter.py
-│   │   └── string_filter.py
-│   ├── functions
-│   │   └── lambda_func.py
-│   ├── loader
-│   │   ├── metadata
-│   │   │   ├── metadata_api_loader.py
-│   │   │   └── metadata_json_loader.py
-│   │   └── timeseries
-│   │       ├── parquet_loader.py
-│   │       ├── s3proxy_parquet_loader.py
-│   │       └── timescale_loader.py
-│   ├── stats
-│   │   ├── boolean_stats.py
-│   │   ├── numeric_stats.py
-│   │   ├── string_stats.py
-│   │   └── timestamp_stats.py
-│   ├── time_stats
-│   │   └── time_stats_numeric.py
-```
+| **Directory**           | **Subdirectory/File**                  | **Description**                       |
+|-------------------------|----------------------------------------|---------------------------------------|
+| `timeseries_shaper`     | `base.py`                              | Core functionalities or base logic.  |
+| `calculator`            | `numeric_calc.py`                      | Numeric calculations.                |
+| `cycles`                | `cycle_processor.py`                   | Processes cycles in time series.     |
+|                         | `cycles_extractor.py`                  | Extracts cycles from time series.    |
+| `events`                | `outlier_detection.py`                 | Detects outliers in the data.        |
+|                         | `statistical_process_control.py`       | Implements SPC for quality control.  |
+|                         | `tolerance_deviation.py`               | Handles tolerance deviation checks.  |
+|                         | `value_mapping.py`                     | Maps values for events.              |
+| `filter`                | `boolean_filter.py`                    | Filters boolean data.                |
+|                         | `custom_filter.py`                     | Filters using custom logic.          |
+|                         | `datetime_filter.py`                   | Filters data based on datetime.      |
+|                         | `numeric_filter.py`                    | Filters numeric data.                |
+|                         | `string_filter.py`                     | Filters string data.                 |
+| `functions`             | `lambda_func.py`                       | Contains reusable lambda functions.  |
+| `loader`                | `metadata/metadata_api_loader.py`      | Loads metadata from API.             |
+|                         | `metadata/metadata_json_loader.py`     | Loads metadata from JSON files.      |
+|                         | `timeseries/parquet_loader.py`         | Loads time series data from Parquet. |
+|                         | `timeseries/s3proxy_parquet_loader.py` | Loads data from S3 Parquet proxy.    |
+|                         | `timeseries/timescale_loader.py`       | Loads data from TimescaleDB.         |
+| `stats`                 | `boolean_stats.py`                     | Computes statistics for booleans.    |
+|                         | `numeric_stats.py`                     | Computes statistics for numerics.    |
+|                         | `string_stats.py`                      | Computes statistics for strings.     |
+|                         | `timestamp_stats.py`                   | Computes statistics for timestamps.  |
+| `time_stats`            | `time_stats_numeric.py`                | Computes time-based numeric stats.   |
 
 
 ## Installation
