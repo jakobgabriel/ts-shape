@@ -4,11 +4,11 @@ with open("README.md", "r", encoding = "utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name = "timeseries-shaper",
-    version = "0.0.0.18",
+    name = "ts-shape",
+    version = "0.0.0.19",
     author = "Jakob Gabriel",
     author_email = "jakob.gabriel5@googlemail.com",
-    description = "timeseries-shaper filters, transforms and engineer your timeseries dataframe",
+    description = "ts-shape filters, transforms and engineers your timeseries dataframe",
     long_description = long_description,
     long_description_content_type = "text/markdown",
     url = "https://jakobgabriel.github.io/timeseries-shaper/timeseries_shaper.html",
