@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas as pd  # type: ignore  # type: ignore
 
 class Base:
     def __init__(self, dataframe: pd.DataFrame, column_name: str = 'systime') -> pd.DataFrame:

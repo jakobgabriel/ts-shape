@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas as pd  # type: ignore
 import pytest
 from timeseries_shaper.filter.boolean_filter import IsDeltaFilter, BooleanFilter
 

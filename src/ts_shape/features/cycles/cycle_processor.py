@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional
-import pandas as pd
+import pandas as pd  # type: ignore
 from ts_shape.utils.base import Base
 import logging
 

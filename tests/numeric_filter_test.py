@@ -1,5 +1,5 @@
 import pytest
-import pandas as pd
+import pandas as pd  # type: ignore
 from timeseries_shaper.filter.numeric_filter import IntegerFilter, DoubleFilter
 
 # Test class for IntegerFilter

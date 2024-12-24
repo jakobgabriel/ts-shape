@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas as pd  # type: ignore
 from scipy import stats
 from typing import Dict, Union
 from ts_shape.utils.base import Base

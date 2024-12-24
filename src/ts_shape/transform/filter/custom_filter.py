@@ -1,5 +1,5 @@
 from ts_shape.utils.base import Base
-import pandas as pd
+import pandas as pd  # type: ignore
 
 class CustomFilter(Base):
     @classmethod

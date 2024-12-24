@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas as pd  # type: ignore
 import numpy as np
 from scipy.stats import zscore
 from typing import Callable, Union

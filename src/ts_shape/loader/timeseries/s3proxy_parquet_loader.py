@@ -1,5 +1,5 @@
 from pathlib import Path
-import pandas as pd
+import pandas as pd  # type: ignore
 import s3fs
 from typing import List, Dict
 

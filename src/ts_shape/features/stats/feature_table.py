@@ -1,5 +1,5 @@
 from typing import Dict, Union
-import pandas as pd
+import pandas as pd  # type: ignore
 from pandas.api.types import is_numeric_dtype, is_bool_dtype, is_object_dtype
 
 from .numeric_stats import NumericStatistics

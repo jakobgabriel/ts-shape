@@ -1,5 +1,5 @@
 from typing import Optional
-import pandas as pd
+import pandas as pd  # type: ignore
 import uuid
 import logging
 from ts_shape.utils.base import Base

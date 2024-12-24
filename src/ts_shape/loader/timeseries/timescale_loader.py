@@ -1,5 +1,5 @@
 from pathlib import Path
-import pandas as pd
+import pandas as pd  # type: ignore
 from sqlalchemy import create_engine
 from typing import List, Dict
 
