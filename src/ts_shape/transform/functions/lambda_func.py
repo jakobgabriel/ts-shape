@@ -1,6 +1,6 @@
 import pandas as pd
-from ..base import Base
 from typing import Callable, Any
+from ...base import Base
 
 class LambdaProcessor(Base):
     """

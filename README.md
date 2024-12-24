@@ -19,11 +19,11 @@ Besides that multiple engineering specific methods are utilized to make it fast 
 | **Category**   | **Feature**                               | **Status** |
 |----------------|-------------------------------------------|------------|
 | **Transform**  | Filters: Datatype-specific filters        | ✔️        |
-|                | Functions: Lambda functions               | ✔️        |
-|                | Time Functions: Time-specific processing  | ❌        |
-|                | Calculator: Calculation-based transforms  | ✔️        |
+|                | Functions: Lambda functions for transformations               | ✔️        |
+|                | Time Functions: Time-specific transformations  | ❌        |
+|                | Calculator: Calculation-based transformations | ✔️        |
 | **Features**   | Stats: Datatype-specific statistics       | ❌        |
-|                | Time Stats: Timestamp-specific stats      | ❌        |
+|                | Time Stats: Timestamp-specific statistics      | ❌        |
 | **Context**     | Contextualize Timeseries datasets with foreign sources            | ❌        |
 | **Events**     | Quality Events                            | ❌        |
 |                | Maintenance Events                        | ❌        |

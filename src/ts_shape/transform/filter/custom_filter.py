@@ -1,4 +1,4 @@
-from ..base import Base
+from ...base import Base
 import pandas as pd
 
 class CustomFilter(Base):

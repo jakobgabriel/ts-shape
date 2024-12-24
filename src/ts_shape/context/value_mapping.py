@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import Union
-from ..base import Base
+from ...base import Base
 
 class ValueMapper(Base):
     """

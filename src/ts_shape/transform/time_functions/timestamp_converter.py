@@ -1,6 +1,6 @@
 import pandas as pd
 import pytz
-from ..base import Base  
+from ...base import Base  
 
 class TimestampConverter(Base):
     """

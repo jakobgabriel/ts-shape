@@ -1,5 +1,5 @@
 import pandas as pd
-from ..base import Base
+from ...base import Base
 
 class TimeGroupedStatistics(Base):
     """
