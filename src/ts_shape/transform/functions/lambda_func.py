@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import Callable, Any
-from ts_shape.base import Base
+from ts_shape.utils.base import Base
 
 class LambdaProcessor(Base):
     """

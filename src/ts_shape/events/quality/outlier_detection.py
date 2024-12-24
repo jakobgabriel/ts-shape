@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import zscore
 from typing import Callable, Union
-from ts_shape.base import Base
+from ts_shape.utils.base import Base
 
 
 class OutlierDetectionEvents(Base):

@@ -1,4 +1,5 @@
 pandas==2.1.0
+numpy==2.1.1
 pdoc==14.6.1 # for docs
 scipy==1.13.1
 s3fs==2024.10.0

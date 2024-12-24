@@ -2,7 +2,7 @@ from typing import Optional
 import pandas as pd
 import uuid
 import logging
-from ts_shape.base import Base
+from ts_shape.utils.base import Base
 
 class CycleExtractor(Base):
     """Class for processing cycles based on different criteria."""

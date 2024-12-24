@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import Dict, Union
-from ts_shape.base import Base
+from ts_shape.utils.base import Base
 
 class StringStatistics(Base):
     """

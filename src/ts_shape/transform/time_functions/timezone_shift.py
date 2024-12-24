@@ -1,6 +1,6 @@
 import pandas as pd
 import pytz
-from ts_shape.base import Base  # Import Base from the specified path
+from ts_shape.utils.base import Base  # Import Base from the specified path
 
 class TimezoneShift(Base):
     """
