@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from typing import Callable, List, Optional
-from ...base import Base
+from ts_shape.base import Base
 
 class StatisticalProcessControlRuleBased(Base):
     """

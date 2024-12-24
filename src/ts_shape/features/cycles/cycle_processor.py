@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 import pandas as pd
-from ...base import Base
+from ts_shape.base import Base
 import logging
 
 
