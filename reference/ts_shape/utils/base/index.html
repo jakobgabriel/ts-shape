@@ -2742,6 +2742,24 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#ts_shape.utils.base.Base(dataframe)" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-parameter"></code>&nbsp;dataframe
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ts_shape.utils.base.Base(column_name)" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-parameter"></code>&nbsp;column_name
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ts_shape.utils.base.Base.get_dataframe" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_dataframe
@@ -2979,6 +2997,24 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#ts_shape.utils.base.Base(dataframe)" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-parameter"></code>&nbsp;dataframe
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ts_shape.utils.base.Base(column_name)" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-parameter"></code>&nbsp;column_name
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ts_shape.utils.base.Base.get_dataframe" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_dataframe
@@ -3076,16 +3112,35 @@
 
 
 <a href="#ts_shape.utils.base.Base" class="headerlink" title="Permanent link">¤</a></h2>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">Base</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n"><span title="pandas.DataFrame">DataFrame</span></span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">)</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">Base</span><span class="p">(</span><span class="n"><a class="autorefs autorefs-internal" href="#ts_shape.utils.base.Base(dataframe)">dataframe</a></span><span class="p">:</span> <span class="n"><span title="pandas.DataFrame">DataFrame</span></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-internal" href="#ts_shape.utils.base.Base(column_name)">column_name</a></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
 
 
-        <p>Args:
-- dataframe (pd.DataFrame): The DataFrame to be processed.
-- column_name (str): The column to sort by. Default is 'systime'. If the column is not found
-                     or is not a time column, the class will attempt to detect other time columns.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+<h3 id="ts_shape.utils.base.Base(dataframe)" class="doc doc-heading doc-heading-parameter">              <b><code>dataframe</code></b>
+<a href="#ts_shape.utils.base.Base(dataframe)" class="headerlink" title="Permanent link">¤</a></h3>              (<code><span title="pandas.DataFrame">DataFrame</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>The DataFrame to be processed.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+<h3 id="ts_shape.utils.base.Base(column_name)" class="doc doc-heading doc-heading-parameter">              <b><code>column_name</code></b>
+<a href="#ts_shape.utils.base.Base(column_name)" class="headerlink" title="Permanent link">¤</a></h3>              (<code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>, default:
+                  <code>&#39;systime&#39;</code>
+)
+          –
+          <div class="doc-md-description">
+            <p>The column to sort by. Default is 'systime'. If the column is not found or is not a time column, the class will attempt to detect other time columns.</p>
+          </div>
+        </li>
+    </ul>
 
 
 
@@ -3138,16 +3193,14 @@
 <span class="normal">29</span>
 <span class="normal">30</span>
 <span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;systime&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initializes the Base with a DataFrame, detects time columns, converts them to datetime,</span>
 <span class="sd">    and sorts the DataFrame by the specified column (or the detected time column if applicable).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">    - dataframe (pd.DataFrame): The DataFrame to be processed.</span>
-<span class="sd">    - column_name (str): The column to sort by. Default is &#39;systime&#39;. If the column is not found</span>
-<span class="sd">                         or is not a time column, the class will attempt to detect other time columns.</span>
+<span class="sd">        dataframe (pd.DataFrame): The DataFrame to be processed.</span>
+<span class="sd">        column_name (str): The column to sort by. Default is &#39;systime&#39;. If the column is not found or is not a time column, the class will attempt to detect other time columns.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
@@ -3201,9 +3254,9 @@
 
             <details class="quote">
               <summary>Source code in <code>src/ts_shape/utils/base.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the processed DataFrame.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span>
 </code></pre></div></td></tr></table></div>
