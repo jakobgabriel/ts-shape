@@ -1,6 +1,7 @@
-## Development 
+# Development 
 
-- Generate new pdocs: `.\generate_docs.sh`
+## Build and Publish Package
+
 - Install package locally: `pip install -e .`
 - Run tests locally with pytest: `pytest ./tests`
 

@@ -6,12 +6,6 @@ class ValueMapper(Base):
     """
     A class to map values from specified columns of a DataFrame using a mapping table (CSV or JSON file),
     inheriting from the Base class.
-
-    Attributes:
-        mapping_table (pd.DataFrame): The table containing the mapping rules.
-        map_column (str): The column in the DataFrame to be mapped.
-        mapping_key_column (str): The column in the mapping table that contains keys for mapping.
-        mapping_value_column (str): The column in the mapping table that contains corresponding values for mapping.
     """
     
     def __init__(

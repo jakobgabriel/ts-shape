@@ -12,12 +12,12 @@ class CustomFilter(Base):
         that can be interpreted by pandas' DataFrame.query() method.
 
         Args:
-        - dataframe (pd.DataFrame): The DataFrame to apply the filter on.
-        - conditions (str): A string representing the conditions to filter the DataFrame.
+            dataframe (pd.DataFrame): The DataFrame to apply the filter on.
+            conditions (str): A string representing the conditions to filter the DataFrame.
                             The string should be formatted according to pandas query syntax.
 
         Returns:
-        - pd.DataFrame: A DataFrame containing only the rows that meet the specified conditions.
+            pd.DataFrame: A DataFrame containing only the rows that meet the specified conditions.
 
         Example:
         --------
@@ -26,7 +26,7 @@ class CustomFilter(Base):
         >>> print(filtered_data)
 
         Note:
-        - Ensure that the column names and values used in conditions match those in the DataFrame.
-        - Complex expressions and functions available in pandas query syntax can also be used.
+            Ensure that the column names and values used in conditions match those in the DataFrame.
+            Complex expressions and functions available in pandas query syntax can also be used.
         """
         return dataframe.query(conditions)

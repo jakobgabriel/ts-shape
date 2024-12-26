@@ -7,9 +7,8 @@ class Base:
         and sorts the DataFrame by the specified column (or the detected time column if applicable).
         
         Args:
-        - dataframe (pd.DataFrame): The DataFrame to be processed.
-        - column_name (str): The column to sort by. Default is 'systime'. If the column is not found
-                             or is not a time column, the class will attempt to detect other time columns.
+            dataframe (pd.DataFrame): The DataFrame to be processed.
+            column_name (str): The column to sort by. Default is 'systime'. If the column is not found or is not a time column, the class will attempt to detect other time columns.
         """
         self.dataframe = dataframe.copy()
         

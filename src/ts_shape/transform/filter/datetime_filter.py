@@ -16,10 +16,10 @@ class DateTimeFilter(Base):
         Filters the DataFrame to include only rows after the specified date.
 
         Args:
-        - date (str): The cutoff date in 'YYYY-MM-DD' format.
+            date (str): The cutoff date in 'YYYY-MM-DD' format.
 
         Returns:
-        - pd.DataFrame: A DataFrame containing rows where the 'systime' is after the specified date.
+            pd.DataFrame: A DataFrame containing rows where the 'systime' is after the specified date.
 
         Example:
         --------
@@ -34,10 +34,10 @@ class DateTimeFilter(Base):
         Filters the DataFrame to include only rows before the specified date.
 
         Args:
-        - date (str): The cutoff date in 'YYYY-MM-DD' format.
+            date (str): The cutoff date in 'YYYY-MM-DD' format.
 
         Returns:
-        - pd.DataFrame: A DataFrame containing rows where the 'systime' is before the specified date.
+            pd.DataFrame: A DataFrame containing rows where the 'systime' is before the specified date.
 
         Example:
         --------
@@ -52,11 +52,11 @@ class DateTimeFilter(Base):
         Filters the DataFrame to include only rows between the specified start and end dates.
 
         Args:
-        - start_date (str): The start date of the interval in 'YYYY-MM-DD' format.
-        - end_date (str): The end date of the interval in 'YYYY-MM-DD' format.
+            start_date (str): The start date of the interval in 'YYYY-MM-DD' format.
+            end_date (str): The end date of the interval in 'YYYY-MM-DD' format.
 
         Returns:
-        - pd.DataFrame: A DataFrame containing rows where the 'systime' is between the specified dates.
+            pd.DataFrame: A DataFrame containing rows where the 'systime' is between the specified dates.
 
         Example:
         --------
@@ -72,10 +72,10 @@ class DateTimeFilter(Base):
         Filters the DataFrame to include only rows after the specified datetime.
 
         Args:
-        - datetime (str): The cutoff datetime in 'YYYY-MM-DD HH:MM:SS' format.
+            datetime (str): The cutoff datetime in 'YYYY-MM-DD HH:MM:SS' format.
 
         Returns:
-        - pd.DataFrame: A DataFrame containing rows where the 'systime' is after the specified datetime.
+            pd.DataFrame: A DataFrame containing rows where the 'systime' is after the specified datetime.
 
         Example:
         --------
@@ -90,10 +90,10 @@ class DateTimeFilter(Base):
         Filters the DataFrame to include only rows before the specified datetime.
 
         Args:
-        - datetime (str): The cutoff datetime in 'YYYY-MM-DD HH:MM:SS' format.
+            datetime (str): The cutoff datetime in 'YYYY-MM-DD HH:MM:SS' format.
 
         Returns:
-        - pd.DataFrame: A DataFrame containing rows where the 'systime' is before the specified datetime.
+            pd.DataFrame: A DataFrame containing rows where the 'systime' is before the specified datetime.
 
         Example:
         --------
@@ -108,11 +108,11 @@ class DateTimeFilter(Base):
         Filters the DataFrame to include only rows between the specified start and end datetimes.
 
         Args:
-        - start_datetime (str): The start datetime of the interval in 'YYYY-MM-DD HH:MM:SS' format.
-        - end_datetime (str): The end datetime of the interval in 'YYYY-MM-DD HH:MM:SS' format.
+            start_datetime (str): The start datetime of the interval in 'YYYY-MM-DD HH:MM:SS' format.
+            end_datetime (str): The end datetime of the interval in 'YYYY-MM-DD HH:MM:SS' format.
 
         Returns:
-        - pd.DataFrame: A DataFrame containing rows where the 'systime' is between the specified datetimes.
+            pd.DataFrame: A DataFrame containing rows where the 'systime' is between the specified datetimes.
 
         Example:
         --------
