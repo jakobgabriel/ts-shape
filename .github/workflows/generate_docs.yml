@@ -11,25 +11,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Check out the code
     - name: Check out code
       uses: actions/checkout@v3
 
+    # Step 2: Set up Python environment
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.9"
 
+    # Step 3: Install dependencies from requirements-docs.txt
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements-docs.txt
 
+    # Step 4: Build the MkDocs documentation
     - name: Build documentation
       run: |
         mkdocs build
 
+    # Step 5: Deploy to GitHub Pages
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: site
+        allow_empty_commit: true
+        force_orphan: true
+        destination_branch: gh-pages
