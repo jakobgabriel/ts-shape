@@ -19,7 +19,7 @@ nav:
   - Changelog: changelog.md
 #  - Credits: credits.md
   - License: license.md
-  - Summary: summary.md
+  - Summary: reference/SUMMARY.md
 - Usage:
   - usage/index.md
 # defer to gen-files + literate-nav
@@ -34,7 +34,7 @@ nav:
 
 theme:
   name: material
-  logo: logo.svg
+  logo: assets/logo.svg
   features:
   - announce.dismiss
   - content.action.edit
@@ -85,7 +85,11 @@ markdown_extensions:
 - pymdownx.snippets:
     base_path: [!relative $config_dir]
     check_paths: true
-- pymdownx.superfences
+- pymdownx.superfences:
+    custom_fences:
+      - name: mermaid
+        class: mermaid
+        format: !!python/name:pymdownx.superfences.fence_code_format
 - pymdownx.tabbed:
     alternate_style: true
     slugify: !!python/object/apply:pymdownx.slugs.slugify
@@ -125,7 +129,7 @@ plugins:
           parameter_headings: true
           separate_signature: true
           show_root_heading: true
-          show_root_full_path: false
+          show_root_full_path: true
           show_signature_annotations: true
           show_source: true
           show_symbol_type_heading: true
