@@ -1,7 +1,0 @@
-# next 
-
-
-# 25-12-2024
-- pdoc docs exchanged with mkdocs material autodoc
-
-# ...
