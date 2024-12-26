@@ -1,7 +1,9 @@
 # ts-shape | Timeseries Shaper
 
-[![pypi version](https://img.shields.io/pypi/v/timeseries-shaper.svg)](https://pypi.org/project/timeseries-shaper/)
-[![downloads](https://static.pepy.tech/badge/timeseries-shaper/week)](https://pepy.tech/projects/timeseries-shaper)
+[![pypi version](https://img.shields.io/pypi/v/ts-shape.svg)](https://pypi.org/project/ts-shape/)
+[![downloads](https://static.pepy.tech/badge/ts-shape/week)](https://pepy.tech/projects/ts-shape)
+![documentation workflow](https://github.com/jakobgabriel/ts-shape/actions/workflows/generate_docs.yml/badge.svg)
+[![documentation](https://img.shields.io/badge/docs-mkdocs-708FCC.svg?style=flat)](https://jakobgabriel.github.io/ts-shape/)
 
 ----
 

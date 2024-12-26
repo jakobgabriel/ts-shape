@@ -137,4 +137,4 @@ extra:
   - icon: fontawesome/brands/github
     link: https://github.com/jakobgabriel
   - icon: fontawesome/brands/python
-    link: https://pypi.org/project/timeseries-shaper/
+    link: https://pypi.org/project/ts-shape/

@@ -11,9 +11,9 @@ setuptools.setup(
     description = "ts-shape filters, transforms and engineers your timeseries dataframe",
     long_description = long_description,
     long_description_content_type = "text/markdown",
-    url = "https://jakobgabriel.github.io/timeseries-shaper/timeseries_shaper.html",
+    url = "https://jakobgabriel.github.io/ts-shape/",
     project_urls = {
-        "Bug Tracker": "https://github.com/jakobgabriel/timeseries-shaper",
+        "Bug Tracker": "https://github.com/jakobgabriel/ts-shape",
     },
     classifiers = [
         "Programming Language :: Python :: 3",

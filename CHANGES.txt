@@ -1,7 +1,52 @@
-# next 
+# Dec 26, 2024
+add: mkdocs material deployment with gh actions
 
+# Dec 25, 2024
+add: pdoc docs exchanged with mkdocs material autodoc
 
-# 25-12-2024
-- pdoc docs exchanged with mkdocs material autodoc
+# Dec 23, 2024
+add: library rename
+add: library structure change. loader, transform, feature, context, events
 
-# ...
+# Dec 20, 2024
+fix: closes #7
+
+# Nov 16, 2024
+add: dev state docs for combine/integrator.py
+add: dev state for combine/integrator.py
+add: metadata loader improved
+
+# Nov 4, 2024
+add: stats classes improved + feature table class added
+
+# Oct 29, 2024
+add: timescaledb loader adjusted
+
+# Oct 28, 2024
+add: loader classes adjusted
+add: classes for timestamp_converter added
+add: classes for s3, timescaledb, timezone_shift added
+
+# Oct 27, 2024
+add: docs for time_stats added
+add: time_stats for numeric value columns added
+
+# Sep 11, 2024
+add: methods refactored to execute without an instance
+
+# Sep 9, 2024
+add: cycle methods refined and splitted to cycle processor and extractor
+
+# Sep 8, 2024
+add: cycle method and metadata loader including tests for numeric filters
+add: additional methods added
+
+# Aug 25, 2024
+fix: docs re-created
+fix: docs
+add: parquet loader, timestamp, string, numeric and boolean stats methods
+
+# May 4, 2024
+change: typings added, first test added
+change: package folder moved
+init: pypi package structure for timeseries-shaper / internal project for my master thesis
