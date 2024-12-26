@@ -29,7 +29,7 @@ class ValueMapper(Base):
         """
         Initializes ValueMapper and the base DataFrame from the Base class.
 
-        Parameters:
+        Args:
             dataframe (pd.DataFrame): The DataFrame to be processed and mapped.
             mapping_file (str): The file path of the mapping table (CSV or JSON).
             map_column (str): The name of the column in the DataFrame that needs to be mapped.
@@ -57,7 +57,7 @@ class ValueMapper(Base):
         """
         Loads the mapping table from a CSV or JSON file.
 
-        Parameters:
+        Args:
             mapping_file (str): The file path of the mapping table.
             file_type (str): The type of the file ('csv' or 'json').
 

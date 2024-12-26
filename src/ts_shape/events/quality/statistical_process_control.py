@@ -14,7 +14,7 @@ class StatisticalProcessControlRuleBased(Base):
         Initializes the SPCMonitor with UUIDs for tolerance, actual, and event values.
         Inherits the sorted dataframe from the Base class.
         
-        Parameters:
+        Args:
             dataframe (pd.DataFrame): The input DataFrame containing the data to be processed.
             value_column (str): The column containing the values to monitor.
             tolerance_uuid (str): UUID identifier for rows that set tolerance values.
@@ -154,7 +154,7 @@ class StatisticalProcessControlRuleBased(Base):
         """
         Applies the selected SPC rules and generates a DataFrame of events where any rules are violated.
         
-        Parameters:
+        Args:
             selected_rules (Optional[List[str]]): List of rule names (e.g., ['rule_1', 'rule_3']) to apply.
         
         Returns:

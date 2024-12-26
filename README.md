@@ -16,19 +16,19 @@ Besides that multiple engineering specific methods are utilized to make it fast 
 ## Features | Concept
 
 
-| **Category**   | **Feature**                               | **Status** |
-|----------------|-------------------------------------------|------------|
-| **Transform**  | Filters: Datatype-specific filters        | ✔️        |
-|                | Functions: Lambda functions for transformations               | ✔️        |
-|                | Time Functions: Time-specific transformations  | ❌        |
-|                | Calculator: Calculation-based transformations | ✔️        |
-| **Features**   | Stats: Datatype-specific statistics       | ❌        |
-|                | Time Stats: Timestamp-specific statistics      | ❌        |
-| **Context**     | Contextualize Timeseries datasets with foreign sources            | ❌        |
-| **Events**     | Quality Events                            | ❌        |
-|                | Maintenance Events                        | ❌        |
-|                | Production Events                         | ❌        |
-|                | Engineering Events                        | ❌        |
+| **Category**  | **Feature**                                            | **Status** |
+|---------------|--------------------------------------------------------|------------|
+| **Transform** | Filters: Datatype-specific filters                     | ✔️         |
+|               | Functions: Lambda functions for transformations        | ✔️         |
+|               | Time Functions: Time-specific transformations          | ✔️         |
+|               | Calculator: Calculation-based transformations          | ✔️         |
+| **Features**  | Stats: Datatype-specific statistics                    | ✔️         |
+|               | Time Stats: Timestamp-specific statistics              | ✔️         |
+| **Context**   | Contextualize Timeseries datasets with foreign sources | ❌          |
+| **Events**    | Quality Events                                         | ❌          |
+|               | Maintenance Events                                     | ❌          |
+|               | Production Events                                      | ❌          |
+|               | Engineering Events                                     | ❌          |
 
 
 ## Installation

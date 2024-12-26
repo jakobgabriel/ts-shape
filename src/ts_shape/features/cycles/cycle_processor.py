@@ -14,10 +14,11 @@ class CycleDataProcessor(Base):
         """
         Initializes the CycleDataProcessor with cycles and values DataFrames.
 
-        :param cycles_df: DataFrame containing columns 'cycle_start', 'cycle_end', and 'cycle_uuid'.
-        :param values_df: DataFrame containing the values and timestamps in the 'systime' column.
-        :param cycle_uuid_col: Name of the column representing cycle UUIDs.
-        :param systime_col: Name of the column representing the timestamps for the values.
+        Args:
+            cycles_df: DataFrame containing columns 'cycle_start', 'cycle_end', and 'cycle_uuid'.
+            values_df: DataFrame containing the values and timestamps in the 'systime' column.
+            cycle_uuid_col: Name of the column representing cycle UUIDs.
+            systime_col: Name of the column representing the timestamps for the values.
         """
         super().__init__(values_df)  # Call the parent constructor
         self.values_df = values_df.copy()  # Initialize self.values_df explicitly
@@ -37,7 +38,8 @@ class CycleDataProcessor(Base):
         Splits the values DataFrame by cycles defined in the cycles DataFrame. 
         Each cycle is defined by a start and end time, and the corresponding values are filtered accordingly.
 
-        :return: Dictionary where keys are cycle_uuids and values are DataFrames with the corresponding cycle data.
+        Return:
+            Dictionary where keys are cycle_uuids and values are DataFrames with the corresponding cycle data.
         """
         result = {}
         for _, row in self.cycles_df.iterrows():
@@ -52,7 +54,8 @@ class CycleDataProcessor(Base):
         Merges the values DataFrame with the cycles DataFrame based on the cycle time intervals. 
         Appends the 'cycle_uuid' to the values DataFrame.
 
-        :return: DataFrame with an added 'cycle_uuid' column.
+        Return:
+            DataFrame with an added 'cycle_uuid' column.
         """
         # Merge based on systime falling within cycle_start and cycle_end
         self.values_df[self.cycle_uuid_col] = None
@@ -69,8 +72,11 @@ class CycleDataProcessor(Base):
         """
         Group the DataFrame by the cycle_uuid column, resulting in a list of DataFrames, each containing data for one cycle.
 
-        :param data: DataFrame containing the data to be grouped by cycle_uuid. If None, uses the internal values_df.
-        :return: List of DataFrames, each containing data for a unique cycle_uuid.
+        Args:
+            data: DataFrame containing the data to be grouped by cycle_uuid. If None, uses the internal values_df.
+        
+        Return:
+            List of DataFrames, each containing data for a unique cycle_uuid.
         """
         if data is None:
             data = self.values_df
@@ -84,9 +90,12 @@ class CycleDataProcessor(Base):
         Splits a list of DataFrames by groups based on a specified column. 
         This function performs a groupby operation on each DataFrame in the list and then flattens the result.
 
-        :param dfs: List of DataFrames to be split.
-        :param column: Column name to group by.
-        :return: List of DataFrames, each corresponding to a group in the original DataFrames.
+        Args:
+            dfs: List of DataFrames to be split.
+            column: Column name to group by.
+        
+        Return:
+            List of DataFrames, each corresponding to a group in the original DataFrames.
         """
         split_dfs = []
         for df in dfs:
@@ -101,9 +110,12 @@ class CycleDataProcessor(Base):
         """
         Filters the values DataFrame by the given time range.
 
-        :param start_time: Start of the time range.
-        :param end_time: End of the time range.
-        :return: Filtered DataFrame containing rows within the time range.
+        Args:
+            start_time: Start of the time range.
+            end_time: End of the time range.
+        
+        Return:
+            Filtered DataFrame containing rows within the time range.
         """
         mask = (self.values_df[self.systime_col] >= start_time) & (self.values_df[self.systime_col] <= end_time)
         return self.values_df[mask]

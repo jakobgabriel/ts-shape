@@ -15,7 +15,7 @@ class OutlierDetectionEvents(Base):
         """
         Initializes the OutlierDetectionEvents with specific attributes for outlier detection.
 
-        Parameters:
+        Args:
             dataframe (pd.DataFrame): The input time series DataFrame.
             value_column (str): The name of the column containing the values for outlier detection.
             event_uuid (str): A UUID or identifier for detected outlier events.
@@ -63,7 +63,7 @@ class OutlierDetectionEvents(Base):
         """
         Detects outliers using the Z-score method.
 
-        Parameters:
+        Args:
             threshold (float): The Z-score threshold for detecting outliers.
 
         Returns:
@@ -88,7 +88,7 @@ class OutlierDetectionEvents(Base):
         """
         Detects outliers using the IQR method.
 
-        Parameters:
+        Args:
             threshold (tuple): The multipliers for the IQR range for detecting outliers (lower, upper).
 
         Returns:
