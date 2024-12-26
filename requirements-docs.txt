@@ -2,3 +2,4 @@ mkdocs-literate-nav
 mkdocs-material
 mkdocs-gen-files
 mkdocs-callouts
+mkdocstrings
