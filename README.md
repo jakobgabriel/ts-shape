@@ -38,12 +38,12 @@ Besides that multiple engineering specific methods are utilized to make it fast 
 Install ts-shape using pip:
 
 ```bash
-pip install timeseries-shaper
+pip install ts-shape
 ```
 
 ## Documentation
 
-For full documentation, visit GitHub Pages or check out the docstrings in the code.
+For full documentation, visit [GitHub Pages](https://jakobgabriel.github.io/ts-shape/) or check out the docstrings in the code.
 
 ## Contributing
 

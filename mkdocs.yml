@@ -19,6 +19,7 @@ nav:
   - Changelog: changelog.md
 #  - Credits: credits.md
   - License: license.md
+  - Summary: summary.md
 - Usage:
   - usage/index.md
 # defer to gen-files + literate-nav
@@ -28,7 +29,7 @@ nav:
   - Contributing: contributing.md
 #  - Code of Conduct: code_of_conduct.md
   - Getting started:
-#    - Installation: insiders/installation.md
+    - Installation: insiders/installation.md
     - Development: insiders/development.md
 
 theme:
