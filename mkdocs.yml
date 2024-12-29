@@ -34,7 +34,7 @@ nav:
 
 theme:
   name: material
-  logo: assets/logo.svg
+  logo: assets/ts-shape.png
   features:
   - announce.dismiss
   - content.action.edit
