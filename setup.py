@@ -4,8 +4,8 @@ with open("README.md", "r", encoding = "utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name = "ts-shape",
-    version = "0.0.0.19",
+    name = "ts_shape",
+    version = "0.0.0.21",
     author = "Jakob Gabriel",
     author_email = "jakob.gabriel5@googlemail.com",
     description = "ts-shape filters, transforms and engineers your timeseries dataframe",
