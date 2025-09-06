@@ -50,12 +50,13 @@ class OutlierDetectionEvents(Base):
         # Convert list of DataFrame slices to a single DataFrame
         if events_data:
             events_df = pd.concat(events_data)
-            events_df['uuid'] = self.event_uuid
         else:
             events_df = pd.DataFrame(columns=outliers_df.columns)  # Create empty DataFrame if no data
 
+        # Ensure consistent schema even when empty
         events_df[self.value_column] = np.nan
         events_df['is_delta'] = True
+        events_df['uuid'] = self.event_uuid
 
         return events_df.drop(['outlier', 'group_id'], axis=1)
 

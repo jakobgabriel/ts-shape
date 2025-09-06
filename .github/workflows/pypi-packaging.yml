@@ -1,4 +1,4 @@
-name: Package, Publish, and Docs
+name: Package and Publish
 
 on:
   push:
@@ -12,15 +12,9 @@ on:
         default: 'false'
         type: choice
         options: ['false', 'true']
-      deploy_docs:
-        description: 'Deploy MkDocs site (only for manual runs)'
-        required: false
-        default: 'false'
-        type: choice
-        options: ['false', 'true']
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -75,37 +69,5 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
-
-  docs:
-    name: Build and Deploy Docs
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install docs dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements-docs.txt ]; then python -m pip install -r requirements-docs.txt; fi
-          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
-          # Optional: install the package so mkdocstrings can import it if needed
-          python -m pip install -e .
-
-      - name: Build MkDocs site
-        run: mkdocs build --clean --strict
-
-      - name: Deploy to GitHub Pages (on tag push)
-        if: github.event_name == 'push'
-        run: mkdocs gh-deploy --force --no-history
-
-      - name: Deploy to GitHub Pages (manual)
-        if: github.event_name == 'workflow_dispatch' && inputs.deploy_docs == 'true'
-        run: mkdocs gh-deploy --force --no-history
 
       
