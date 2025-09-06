@@ -3258,36 +3258,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features-concept" class="md-nav__link">
+  <a href="#install" class="md-nav__link">
     <span class="md-ellipsis">
-      Features | Concept
+      Install
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
+  <a href="#whats-inside" class="md-nav__link">
     <span class="md-ellipsis">
-      Installation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Documentation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#contributing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Contributing
+      What’s Inside
     </span>
   </a>
   
@@ -3297,15 +3279,6 @@
   <a href="#license" class="md-nav__link">
     <span class="md-ellipsis">
       License
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#acknowledgements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Acknowledgements
     </span>
   </a>
   
@@ -3346,93 +3319,41 @@
 <h1 id="ts-shape-timeseries-shaper">ts-shape | Timeseries Shaper<a class="headerlink" href="#ts-shape-timeseries-shaper" title="Permanent link">¤</a></h1>
 <p><a href="https://pypi.org/project/ts-shape/"><img alt="pypi version" src="https://img.shields.io/pypi/v/ts-shape.svg" /></a>
 <a href="https://pepy.tech/projects/ts-shape"><img alt="downloads" src="https://static.pepy.tech/badge/ts-shape/week" /></a>
-<img alt="documentation workflow" src="https://github.com/jakobgabriel/ts-shape/actions/workflows/generate_docs.yml/badge.svg" />
-<a href="https://jakobgabriel.github.io/ts-shape/"><img alt="documentation" src="https://img.shields.io/badge/docs-mkdocs-708FCC.svg?style=flat" /></a></p>
-<hr />
-<p>This repository contains the <em>ts-shape</em> python package. The abbreviation stands for</p>
-<p><em>"Time Series shaping with rule based methods"</em>.</p>
-<p>ts-shape is a Python library for efficiently transforms, contextualizes and extracts events from time series data. It provides a set of tools to handle various transformations, making data preparation tasks easier and more intuitive.</p>
-<p>Besides that multiple engineering specific methods are utilized to make it fast and easy to work with time series data.</p>
-<h2 id="features-concept">Features | Concept<a class="headerlink" href="#features-concept" title="Permanent link">¤</a></h2>
-<table>
-<thead>
-<tr>
-<th><strong>Category</strong></th>
-<th><strong>Feature</strong></th>
-<th><strong>Status</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Transform</strong></td>
-<td>Filters: Datatype-specific filters</td>
-<td>✔️</td>
-</tr>
-<tr>
-<td></td>
-<td>Functions: Lambda functions for transformations</td>
-<td>✔️</td>
-</tr>
-<tr>
-<td></td>
-<td>Time Functions: Time-specific transformations</td>
-<td>✔️</td>
-</tr>
-<tr>
-<td></td>
-<td>Calculator: Calculation-based transformations</td>
-<td>✔️</td>
-</tr>
-<tr>
-<td><strong>Features</strong></td>
-<td>Stats: Datatype-specific statistics</td>
-<td>✔️</td>
-</tr>
-<tr>
-<td></td>
-<td>Time Stats: Timestamp-specific statistics</td>
-<td>✔️</td>
-</tr>
-<tr>
-<td><strong>Context</strong></td>
-<td>Contextualize Timeseries datasets with foreign sources</td>
-<td>❌</td>
-</tr>
-<tr>
-<td><strong>Events</strong></td>
-<td>Quality Events</td>
-<td>❌</td>
-</tr>
-<tr>
-<td></td>
-<td>Maintenance Events</td>
-<td>❌</td>
-</tr>
-<tr>
-<td></td>
-<td>Production Events</td>
-<td>❌</td>
-</tr>
-<tr>
-<td></td>
-<td>Engineering Events</td>
-<td>❌</td>
-</tr>
-</tbody>
-</table>
-<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¤</a></h2>
-<p>Install ts-shape using pip:</p>
+<a href="https://jakobgabriel.github.io/ts-shape/"><img alt="docs" src="https://img.shields.io/badge/docs-mkdocs-708FCC.svg?style=flat" /></a></p>
+<p>ts-shape is a lightweight, composable toolkit to load, shape, and analyze time series data. It embraces a simple DataFrame-in → DataFrame-out philosophy across loaders, transforms, feature extractors, and event detectors.</p>
+<p>Key ideas:
+- Unified DataFrame workflow: Load timeseries + metadata, join on <code>uuid</code>, and process.
+- Modular building blocks: Use only what you need; components are decoupled and easy to extend.
+- Performance aware: Vectorized ops, chunked DB reads, and concurrent I/O for remote storage.</p>
+<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">¤</a></h2>
 <div class="language-bash highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>ts-shape
+<span class="c1"># Parquet engine (recommended)</span>
+pip<span class="w"> </span>install<span class="w"> </span>pyarrow<span class="w">  </span><span class="c1"># or: pip install fastparquet</span>
 </code></pre></div>
-<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">¤</a></h2>
-<p>For full documentation, visit <a href="https://jakobgabriel.github.io/ts-shape/">GitHub Pages</a> or check out the docstrings in the code.</p>
-<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">¤</a></h2>
-<p>Contributions are welcome! For major changes, please open an issue first to discuss what you would like to change.</p>
-<p>Please ensure to update tests as appropriate.</p>
+<p>Optional integrations:
+- Azure Blob Storage: <code>pip install azure-storage-blob</code>
+- Azure AAD + management (optional): <code>pip install azure-identity azure-mgmt-storage</code>
+- S3 proxy access: already included via <code>s3fs</code>
+- TimescaleDB: <code>pip install sqlalchemy psycopg2-binary</code></p>
+<h2 id="whats-inside">What’s Inside<a class="headerlink" href="#whats-inside" title="Permanent link">¤</a></h2>
+<ul>
+<li>Loaders (timeseries):</li>
+<li>Parquet folders (local)</li>
+<li>S3 proxy parquet via <code>s3fs</code></li>
+<li>Azure Blob parquet (hourly layout, UUID filters, time range)</li>
+<li>TimescaleDB (chunked reads, parquet export by hour)</li>
+<li>Loaders (metadata):</li>
+<li>JSON metadata loader (robust input shapes, flattens config)</li>
+<li>Transformations:</li>
+<li>Filters (numeric/string/boolean/datetime), generic functions, time functions, calculators</li>
+<li>Features:</li>
+<li>Descriptive stats, time stats, cycles utilities</li>
+<li>Events:</li>
+<li>Quality (outlier detection, SPC, tolerance deviation), production/maintenance patterns</li>
+</ul>
+<p>See the extended concept overview in <code>docs/concept.md</code>.</p>
 <h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">¤</a></h2>
-<p>Distributed under the MIT License. See LICENSE for more information.</p>
-<h2 id="acknowledgements">Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permanent link">¤</a></h2>
-<p>!TODO</p>
+<p>MIT — see <code>LICENSE.txt</code>.</p>
 
 
 
