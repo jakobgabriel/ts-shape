@@ -1,0 +1,111 @@
+name: Package, Publish, and Docs
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Build only (skip publish)'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+      deploy_docs:
+        description: 'Deploy MkDocs site (only for manual runs)'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Upgrade pip and install build backend
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade build wheel setuptools
+
+      - name: Install runtime requirements
+        if: hashFiles('requirements.txt') != ''
+        run: |
+          python -m pip install -r requirements.txt
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+
+  publish:
+    name: Publish distribution
+    needs: build
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && inputs.dry_run == 'false')
+    steps:
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Publish to PyPI
+        if: |
+          github.event_name == 'push' ||
+          (github.event_name == 'workflow_dispatch' && inputs.dry_run == 'false')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  docs:
+    name: Build and Deploy Docs
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install docs dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements-docs.txt ]; then python -m pip install -r requirements-docs.txt; fi
+          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+          # Optional: install the package so mkdocstrings can import it if needed
+          python -m pip install -e .
+
+      - name: Build MkDocs site
+        run: mkdocs build --clean --strict
+
+      - name: Deploy to GitHub Pages (on tag push)
+        if: github.event_name == 'push'
+        run: mkdocs gh-deploy --force --no-history
+
+      - name: Deploy to GitHub Pages (manual)
+        if: github.event_name == 'workflow_dispatch' && inputs.deploy_docs == 'true'
+        run: mkdocs gh-deploy --force --no-history
+
+      
