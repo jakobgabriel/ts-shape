@@ -1,7 +1,7 @@
-import pandas as pd  # type: ignore  # type: ignore
+import pandas as pd  # type: ignore
 
 class Base:
-    def __init__(self, dataframe: pd.DataFrame, column_name: str = 'systime') -> pd.DataFrame:
+    def __init__(self, dataframe: pd.DataFrame, column_name: str = 'systime') -> None:
         """
         Initializes the Base with a DataFrame, detects time columns, converts them to datetime,
         and sorts the DataFrame by the specified column (or the detected time column if applicable).
