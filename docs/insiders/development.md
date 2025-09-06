@@ -1,9 +1,36 @@
-# Development 
+# 🚀 Development Guide
 
-## Build and Publish Package
+## 1. Install Package Locally
 
-- Install package locally: `pip install -e .`
-- Run tests locally with pytest: `pytest ./tests`
+```bash
+pip install -e .
+```
+> Installs your package in editable mode for local development.
 
-- Build package for upload: `python setup.py sdist bdist_wheel`
-- Upload build package to pypi: `twine upload dist/* --verbose --skip-existing`
+---
+
+## 2. Run Tests
+
+```bash
+pytest ./tests
+```
+> Executes all tests to ensure your code is working as expected.
+
+---
+
+## 3. Build Distribution Packages
+
+```bash
+python setup.py sdist bdist_wheel
+```
+> Creates source and wheel distributions in the `dist/` directory.
+
+---
+
+## 4. Publish to PyPI
+
+```bash
+twine upload dist/* --verbose --skip-existing
+```
+> Uploads your package to [PyPI](https://pypi.org/).  
+> **Tip:** Ensure your credentials are set up in `~/.pypirc`.

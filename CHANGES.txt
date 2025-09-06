@@ -1,3 +1,11 @@
+# Sep 09, 2025
+add: Azure blob storage container loader
+add: Metadata JSON loader added
+changed: development guide
+
+# Apr 06, 2025
+add: quickstart guide added to docs
+
 # Dec 26, 2024
 add: mkdocs material deployment with gh actions
 
