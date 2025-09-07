@@ -5,14 +5,11 @@ ts-shape is a lightweight, composable toolkit for shaping time series data into 
 ## Architecture Overview
 
 ```mermaid
-graph TD
-    A[Loaders<br/>Timeseries + Metadata] --> B[Combine<br/>(Join on uuid)]
-    B --> C[Transform
-        <br/>Filters · Functions · Time Functions · Calculator]
-    C --> D[Features
-        <br/>Stats · Time Stats · Cycles]
-    D --> E[Events
-        <br/>Quality · Maintenance · Production · Engineering]
+flowchart TD
+    A[Loaders: Timeseries + Metadata] --> B[Combine: join on uuid]
+    B --> C[Transform: Filters / Functions / Time Functions / Calculator]
+    C --> D[Features: Stats / Time Stats / Cycles]
+    D --> E[Events: Quality / Maintenance / Production / Engineering]
 ```
 
 Core ideas:
