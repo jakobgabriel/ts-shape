@@ -908,6 +908,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -974,6 +978,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../events/engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../events/maintenance/__init__/" class="md-nav__link">
         
   
@@ -1016,10 +1043,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_3" id="__nav_3_1_1_2_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
             
   
   
@@ -1032,8 +1059,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_3">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_4">
             <span class="md-nav__icon md-icon"></span>
             production
           </label>
@@ -1123,10 +1150,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_5" id="__nav_3_1_1_2_5_label" tabindex="0">
             
   
   
@@ -1139,8 +1166,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_4">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_5">
             <span class="md-nav__icon md-icon"></span>
             quality
           </label>
@@ -1241,6 +1268,29 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../events/supplychain/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    supplychain
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3321,6 +3371,40 @@
 <a href="#ts_shape.loader.timeseries" class="headerlink" title="Permanent link">¤</a></h1>
 
     <div class="doc doc-contents first">
+
+        <p>Timeseries Loaders</p>
+<p>Load timeseries data from parquet folders, S3-compatible stores, Azure Blob,
+and TimescaleDB.</p>
+        <ul>
+<li>ParquetLoader: Read parquet files from local folder structures.</li>
+<li>load_all_files: Load all parquet under a base path.</li>
+<li>load_by_time_range: Load files within YYYY/MM/DD/HH path range.</li>
+<li>load_by_uuid_list: Load files matching UUIDs in filenames.</li>
+<li>
+<p>load_files_by_time_range_and_uuids: Combine time range and UUID filters.</p>
+</li>
+<li>
+<p>S3ProxyDataAccess: Retrieve parquet via an S3-compatible proxy.</p>
+</li>
+<li>fetch_data_as_parquet: Save parquet files to a local folder structure.</li>
+<li>
+<p>fetch_data_as_dataframe: Return a combined DataFrame.</p>
+</li>
+<li>
+<p>AzureBlobParquetLoader: Load parquet from Azure Blob Storage.</p>
+</li>
+<li>load_all_files: Load all parquet under an optional prefix.</li>
+<li>load_by_time_range: Load hourly folders between start and end.</li>
+<li>load_files_by_time_range_and_uuids: Load per-hour per-UUID parquet files.</li>
+<li>
+<p>list_structure: List folders and files under a prefix.</p>
+</li>
+<li>
+<p>TimescaleDBDataAccess: Stream timeseries from TimescaleDB.</p>
+</li>
+<li>fetch_data_as_parquet: Partition-by-hour and write parquet.</li>
+<li>fetch_data_as_dataframe: Return a combined DataFrame.</li>
+</ul>
 
 
 

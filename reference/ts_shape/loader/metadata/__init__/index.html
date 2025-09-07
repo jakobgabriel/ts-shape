@@ -908,6 +908,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -974,6 +978,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../events/engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../events/maintenance/__init__/" class="md-nav__link">
         
   
@@ -1016,10 +1043,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_3" id="__nav_3_1_1_2_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
             
   
   
@@ -1032,8 +1059,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_3">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_4">
             <span class="md-nav__icon md-icon"></span>
             production
           </label>
@@ -1123,10 +1150,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_5" id="__nav_3_1_1_2_5_label" tabindex="0">
             
   
   
@@ -1139,8 +1166,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_4">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_5">
             <span class="md-nav__icon md-icon"></span>
             quality
           </label>
@@ -1241,6 +1268,29 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../events/supplychain/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    supplychain
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3321,6 +3371,39 @@
 <a href="#ts_shape.loader.metadata" class="headerlink" title="Permanent link">¤</a></h1>
 
     <div class="doc doc-contents first">
+
+        <p>Metadata Loaders</p>
+<p>Load and normalize datapoint metadata from JSON, REST APIs, or databases.</p>
+        <ul>
+<li>MetadataJsonLoader: Normalize metadata JSONs into a UUID-indexed DataFrame.</li>
+<li>from_file: Create from a JSON file.</li>
+<li>from_str: Create from a JSON string.</li>
+<li>to_df: Return DataFrame view.</li>
+<li>head: Preview top rows.</li>
+<li>get_by_uuid: Access row by UUID.</li>
+<li>get_by_label: Access row by label.</li>
+<li>join_with: Join with other DataFrames.</li>
+<li>filter_by_uuid: Filter by UUID set.</li>
+<li>filter_by_label: Filter by label set.</li>
+<li>list_uuids: List UUIDs.</li>
+<li>
+<p>list_labels: List non-null labels.</p>
+</li>
+<li>
+<p>DatapointAPI: Retrieve datapoint metadata from a REST API.</p>
+</li>
+<li>get_all_uuids: UUIDs per device.</li>
+<li>get_all_metadata: Metadata per device.</li>
+<li>
+<p>display_dataframe: Print DataFrames for devices.</p>
+</li>
+<li>
+<p>DatapointDB: Retrieve datapoint metadata from PostgreSQL.</p>
+</li>
+<li>get_all_uuids: UUIDs per device.</li>
+<li>get_all_metadata: Metadata per device.</li>
+<li>display_dataframe: Print DataFrames for devices.</li>
+</ul>
 
 
 

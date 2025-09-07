@@ -908,6 +908,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -974,6 +978,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../events/engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../events/maintenance/__init__/" class="md-nav__link">
         
   
@@ -1016,10 +1043,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_3" id="__nav_3_1_1_2_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
             
   
   
@@ -1032,8 +1059,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_3">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_4">
             <span class="md-nav__icon md-icon"></span>
             production
           </label>
@@ -1123,10 +1150,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_5" id="__nav_3_1_1_2_5_label" tabindex="0">
             
   
   
@@ -1139,8 +1166,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_4">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_5">
             <span class="md-nav__icon md-icon"></span>
             quality
           </label>
@@ -1241,6 +1268,29 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../events/supplychain/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    supplychain
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3320,6 +3370,98 @@
 
     <div class="doc doc-contents first">
 
+        <p>Transform</p>
+<p>Row-level filtering, column transformations, and timestamp utilities.</p>
+        <ul>
+<li>IntegerFilter: Equality/inequality/range filters for integer columns.</li>
+<li>filter_value_integer_match: Select rows equal to a value.</li>
+<li>filter_value_integer_not_match: Select rows not equal to a value.</li>
+<li>
+<p>filter_value_integer_between: Select rows within [min, max].</p>
+</li>
+<li>
+<p>DoubleFilter: NaN removal and numeric ranges for floating-point columns.</p>
+</li>
+<li>filter_nan_value_double: Drop rows with NaN in the column.</li>
+<li>
+<p>filter_value_double_between: Select rows within [min, max].</p>
+</li>
+<li>
+<p>StringFilter: Equality, contains, regex cleaning, and change detection.</p>
+</li>
+<li>filter_na_value_string: Drop rows with NA values.</li>
+<li>filter_value_string_match: Select rows equal to a string.</li>
+<li>filter_value_string_not_match: Select rows not equal to a string.</li>
+<li>filter_string_contains: Select rows containing a substring.</li>
+<li>regex_clean_value_string: Regex-based cleaning or replacement.</li>
+<li>
+<p>detect_changes_in_string: Detect row-to-row changes in a string column.</p>
+</li>
+<li>
+<p>BooleanFilter: Detect raising/falling edges of boolean states.</p>
+</li>
+<li>filter_falling_value_bool: True→False transitions.</li>
+<li>
+<p>filter_raising_value_bool: False→True transitions.</p>
+</li>
+<li>
+<p>IsDeltaFilter: Select rows by the is_delta flag.</p>
+</li>
+<li>filter_is_delta_true: Only True.</li>
+<li>
+<p>filter_is_delta_false: Only False.</p>
+</li>
+<li>
+<p>DateTimeFilter: Before/after/between filters for timestamps.</p>
+</li>
+<li>filter_after_date: After a given date.</li>
+<li>filter_before_date: Before a given date.</li>
+<li>filter_between_dates: Between start and end dates.</li>
+<li>filter_after_datetime: After a given datetime.</li>
+<li>filter_before_datetime: Before a given datetime.</li>
+<li>
+<p>filter_between_datetimes: Between start and end datetimes.</p>
+</li>
+<li>
+<p>CustomFilter: Free-form DataFrame.query string conditions.</p>
+</li>
+<li>
+<p>filter_custom_conditions: Apply a query string to filter rows.</p>
+</li>
+<li>
+<p>IntegerCalc: Numeric column calculations.</p>
+</li>
+<li>scale_column: Multiply by a factor.</li>
+<li>offset_column: Add a constant.</li>
+<li>divide_column: Divide by a constant.</li>
+<li>subtract_column: Subtract a constant.</li>
+<li>calculate_with_fixed_factors: Multiply then add.</li>
+<li>mod_column: Modulo operation.</li>
+<li>
+<p>power_column: Raise to a power.</p>
+</li>
+<li>
+<p>LambdaProcessor: Apply vectorized callables to columns.</p>
+</li>
+<li>
+<p>apply_function: Apply a Python callable over a column's values.</p>
+</li>
+<li>
+<p>TimestampConverter: Convert integer timestamps to tz-aware datetimes.</p>
+</li>
+<li>
+<p>convert_to_datetime: Convert s/ms/us/ns to datetime in a timezone.</p>
+</li>
+<li>
+<p>TimezoneShift: Timezone localization/conversion helpers.</p>
+</li>
+<li>shift_timezone: Convert timezones in-place.</li>
+<li>add_timezone_column: Add a converted timestamp column.</li>
+<li>detect_timezone_awareness: Check tz-awareness of a column.</li>
+<li>revert_to_original_timezone: Convert back to original tz.</li>
+<li>calculate_time_difference: Difference between two timestamp columns.</li>
+</ul>
+
 
 
 
@@ -3331,28 +3473,28 @@
           <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-module&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;ts_shape.transform.calculator&lt;/span&gt;" href="../calculator/__init__/#ts_shape.transform.calculator">calculator</a></code></b>
           –
           <div class="doc-md-description">
-            
+            <p>Calculator</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-module&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;ts_shape.transform.filter&lt;/span&gt;" href="../filter/__init__/#ts_shape.transform.filter">filter</a></code></b>
           –
           <div class="doc-md-description">
-            
+            <p>Filters</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-module&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;ts_shape.transform.functions&lt;/span&gt;" href="../functions/__init__/#ts_shape.transform.functions">functions</a></code></b>
           –
           <div class="doc-md-description">
-            
+            <p>Functions</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-module&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;ts_shape.transform.time_functions&lt;/span&gt;" href="../time_functions/__init__/#ts_shape.transform.time_functions">time_functions</a></code></b>
           –
           <div class="doc-md-description">
-            
+            <p>Time Functions</p>
           </div>
         </li>
     </ul>

@@ -908,6 +908,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -974,6 +978,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../events/engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../events/maintenance/__init__/" class="md-nav__link">
         
   
@@ -1016,10 +1043,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_3" id="__nav_3_1_1_2_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
             
   
   
@@ -1032,8 +1059,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_3">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_4">
             <span class="md-nav__icon md-icon"></span>
             production
           </label>
@@ -1123,10 +1150,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_5" id="__nav_3_1_1_2_5_label" tabindex="0">
             
   
   
@@ -1139,8 +1166,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_4">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_5">
             <span class="md-nav__icon md-icon"></span>
             quality
           </label>
@@ -1241,6 +1268,29 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../events/supplychain/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    supplychain
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3321,6 +3371,90 @@
 <a href="#ts_shape.features.stats" class="headerlink" title="Permanent link">¤</a></h1>
 
     <div class="doc doc-contents first">
+
+        <p>Statistics</p>
+<p>Descriptive statistics for numeric, string, boolean, and timestamp columns.</p>
+        <ul>
+<li>NumericStatistics: Descriptive metrics for numeric columns.</li>
+<li>column_mean: Mean of a column.</li>
+<li>column_median: Median of a column.</li>
+<li>column_std: Standard deviation of a column.</li>
+<li>column_variance: Variance of a column.</li>
+<li>column_min: Minimum value.</li>
+<li>column_max: Maximum value.</li>
+<li>column_sum: Sum of values.</li>
+<li>column_kurtosis: Kurtosis of values.</li>
+<li>column_skewness: Skewness of values.</li>
+<li>column_quantile: Quantile of a column.</li>
+<li>column_iqr: Interquartile range.</li>
+<li>column_range: Range (max - min).</li>
+<li>column_mad: Mean absolute deviation.</li>
+<li>coefficient_of_variation: Standard deviation divided by mean (guarded).</li>
+<li>standard_error_mean: Standard error of the mean.</li>
+<li>describe: Pandas describe wrapper.</li>
+<li>summary_as_dict: Comprehensive numeric summary as dict.</li>
+<li>
+<p>summary_as_dataframe: Comprehensive numeric summary as DataFrame.</p>
+</li>
+<li>
+<p>StringStatistics: Metrics for string/categorical columns.</p>
+</li>
+<li>count_unique: Number of unique strings.</li>
+<li>most_frequent: Most frequent string.</li>
+<li>count_most_frequent: Count of the most frequent string.</li>
+<li>count_null: Number of nulls.</li>
+<li>average_string_length: Average length of non-null strings.</li>
+<li>longest_string: Longest string.</li>
+<li>shortest_string: Shortest string.</li>
+<li>string_length_summary: Summary of lengths.</li>
+<li>most_common_n_strings: Top-N most frequent strings.</li>
+<li>contains_substring_count: Count of strings containing a substring.</li>
+<li>starts_with_count: Count of strings starting with a prefix.</li>
+<li>ends_with_count: Count of strings ending with a suffix.</li>
+<li>uppercase_percentage: Percentage of uppercase strings.</li>
+<li>lowercase_percentage: Percentage of lowercase strings.</li>
+<li>contains_digit_count: Count of strings containing digits.</li>
+<li>summary_as_dict: Comprehensive string summary as dict.</li>
+<li>
+<p>summary_as_dataframe: Comprehensive string summary as DataFrame.</p>
+</li>
+<li>
+<p>BooleanStatistics: Metrics for boolean columns.</p>
+</li>
+<li>count_true: Count of True values.</li>
+<li>count_false: Count of False values.</li>
+<li>count_null: Count of nulls.</li>
+<li>count_not_null: Count of non-nulls.</li>
+<li>true_percentage: Percentage True.</li>
+<li>false_percentage: Percentage False.</li>
+<li>mode: Most common boolean value.</li>
+<li>is_balanced: Whether distribution is 50/50.</li>
+<li>summary_as_dict: Summary as dict.</li>
+<li>
+<p>summary_as_dataframe: Summary as DataFrame.</p>
+</li>
+<li>
+<p>TimestampStatistics: Metrics for timestamp columns.</p>
+</li>
+<li>count_null: Count of null timestamps.</li>
+<li>count_not_null: Count of non-null timestamps.</li>
+<li>earliest_timestamp: Earliest timestamp.</li>
+<li>latest_timestamp: Latest timestamp.</li>
+<li>timestamp_range: Time range (latest - earliest).</li>
+<li>most_frequent_timestamp: Most frequent timestamp.</li>
+<li>count_most_frequent_timestamp: Count of the modal timestamp.</li>
+<li>year_distribution: Distribution by year.</li>
+<li>month_distribution: Distribution by month.</li>
+<li>weekday_distribution: Distribution by weekday.</li>
+<li>hour_distribution: Distribution by hour.</li>
+<li>most_frequent_day: Most frequent weekday.</li>
+<li>most_frequent_hour: Most frequent hour.</li>
+<li>average_time_gap: Average gap between consecutive timestamps.</li>
+<li>median_timestamp: Median timestamp.</li>
+<li>standard_deviation_timestamps: Standard deviation of consecutive differences.</li>
+<li>timestamp_quartiles: 25th/50th/75th percentiles.</li>
+<li>days_with_most_activity: Top-N active days.</li>
+</ul>
 
 
 

@@ -910,6 +910,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -976,6 +980,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../maintenance/__init__/" class="md-nav__link">
         
   
@@ -1018,10 +1045,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_3" id="__nav_3_1_1_2_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
             
   
   
@@ -1034,8 +1061,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_3">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_4">
             <span class="md-nav__icon md-icon"></span>
             production
           </label>
@@ -1127,10 +1154,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_5" id="__nav_3_1_1_2_5_label" tabindex="0">
             
   
   
@@ -1143,8 +1170,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_1_1_2_4">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1_1_2_5">
             <span class="md-nav__icon md-icon"></span>
             quality
           </label>
@@ -1255,6 +1282,29 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../supplychain/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    supplychain
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3321,6 +3371,38 @@
 <a href="#ts_shape.events.quality" class="headerlink" title="Permanent link">¤</a></h1>
 
     <div class="doc doc-contents first">
+
+        <p>Quality Events</p>
+<p>Detectors for quality-related events: outliers, statistical process control,
+and tolerance deviations over time series.</p>
+        <ul>
+<li>OutlierDetectionEvents: Detect and group outlier events in a time series.</li>
+<li>detect_outliers_zscore: Detect outliers using Z-score thresholding and group nearby points.</li>
+<li>
+<p>detect_outliers_iqr: Detect outliers using IQR bounds and group nearby points.</p>
+</li>
+<li>
+<p>StatisticalProcessControlRuleBased: Apply Western Electric rules to actual values
+  using tolerance context to flag control-limit violations.</p>
+</li>
+<li>calculate_control_limits: Compute mean and ±1/±2/±3 standard-deviation bands from tolerance rows.</li>
+<li>process: Apply selected rules and emit event rows for violations.</li>
+<li>rule_1: One point beyond the 3-sigma control limits.</li>
+<li>rule_2: Nine consecutive points on one side of the mean.</li>
+<li>rule_3: Six consecutive points steadily increasing or decreasing.</li>
+<li>rule_4: Fourteen consecutive points alternating up and down.</li>
+<li>rule_5: Two of three consecutive points near the control limit (between 2 and 3 sigma).</li>
+<li>rule_6: Four of five consecutive points near the control limit (between 1 and 2 sigma).</li>
+<li>rule_7: Fifteen consecutive points within 1 sigma of the mean.</li>
+<li>
+<p>rule_8: Eight consecutive points on both sides of the mean within 1 sigma.</p>
+</li>
+<li>
+<p>ToleranceDeviationEvents: Flag intervals where actual values cross/compare against
+  tolerance settings and group them into start/end events.</p>
+</li>
+<li>process_and_group_data_with_events: Build grouped deviation events with event UUIDs.</li>
+</ul>
 
 
 

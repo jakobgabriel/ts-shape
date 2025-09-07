@@ -1036,6 +1036,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1102,6 +1106,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/ts_shape/events/engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reference/ts_shape/events/maintenance/__init__/" class="md-nav__link">
         
   
@@ -1144,10 +1171,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_3" id="__nav_3_1_1_2_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
             
   
   
@@ -1160,8 +1187,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_3">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_4">
             <span class="md-nav__icon md-icon"></span>
             production
           </label>
@@ -1251,10 +1278,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_5" id="__nav_3_1_1_2_5_label" tabindex="0">
             
   
   
@@ -1267,8 +1294,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_4">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_5">
             <span class="md-nav__icon md-icon"></span>
             quality
           </label>
@@ -1369,6 +1396,29 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/ts_shape/events/supplychain/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    supplychain
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3534,14 +3584,11 @@
 <h1 id="concept">Concept<a class="headerlink" href="#concept" title="Permanent link">¤</a></h1>
 <p>ts-shape is a lightweight, composable toolkit for shaping time series data into analysis-ready DataFrames. It focuses on three pillars: loading, transforming, and extracting higher-level features/events — with a consistent, Pandas-first interface.</p>
 <h2 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">¤</a></h2>
-<pre class="mermaid"><code>graph TD
-    A[Loaders&lt;br/&gt;Timeseries + Metadata] --&gt; B[Combine&lt;br/&gt;(Join on uuid)]
-    B --&gt; C[Transform
-        &lt;br/&gt;Filters · Functions · Time Functions · Calculator]
-    C --&gt; D[Features
-        &lt;br/&gt;Stats · Time Stats · Cycles]
-    D --&gt; E[Events
-        &lt;br/&gt;Quality · Maintenance · Production · Engineering]</code></pre>
+<pre class="mermaid"><code>flowchart TD
+    A[Loaders: Timeseries + Metadata] --&gt; B[Combine: join on uuid]
+    B --&gt; C[Transform: Filters / Functions / Time Functions / Calculator]
+    C --&gt; D[Features: Stats / Time Stats / Cycles]
+    D --&gt; E[Events: Quality / Maintenance / Production / Engineering]</code></pre>
 <p>Core ideas:
 - DataFrame-in, DataFrame-out: Every stage accepts and returns Pandas DataFrames for easy composition.
 - Simple schema: Timeseries frames use a compact set of typed columns; metadata/enrichment joins on a stable <code>uuid</code> key.

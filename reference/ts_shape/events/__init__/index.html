@@ -16,7 +16,7 @@
         <link rel="prev" href="../../context/value_mapping/">
       
       
-        <link rel="next" href="../maintenance/__init__/">
+        <link rel="next" href="../engineering/__init__/">
       
       
       <link rel="icon" href="../../../../assets/favicon-16x16.png">
@@ -910,6 +910,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -986,6 +990,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../maintenance/__init__/" class="md-nav__link">
         
   
@@ -1028,10 +1055,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_3" id="__nav_3_1_1_2_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
             
   
   
@@ -1044,8 +1071,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_3">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_4">
             <span class="md-nav__icon md-icon"></span>
             production
           </label>
@@ -1135,10 +1162,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_5" id="__nav_3_1_1_2_5_label" tabindex="0">
             
   
   
@@ -1151,8 +1178,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_4">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_5">
             <span class="md-nav__icon md-icon"></span>
             quality
           </label>
@@ -1253,6 +1280,29 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../supplychain/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    supplychain
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3320,6 +3370,30 @@
 
     <div class="doc doc-contents first">
 
+        <p>Events</p>
+<p>Extract events from shaped timeseries across quality, maintenance, and
+production domains.</p>
+        <ul>
+<li>OutlierDetectionEvents: Detect and group outlier events in a time series.</li>
+<li>detect_outliers_zscore: Detect outliers using Z-score thresholding and group nearby points.</li>
+<li>
+<p>detect_outliers_iqr: Detect outliers using IQR bounds and group nearby points.</p>
+</li>
+<li>
+<p>StatisticalProcessControlRuleBased: Apply Western Electric rules to flag
+  control-limit violations on actual values using tolerance context.</p>
+</li>
+<li>calculate_control_limits: Compute mean and ±1/±2/±3 standard-deviation bands from tolerance rows.</li>
+<li>
+<p>process: Apply selected rules and emit event rows for violations.</p>
+</li>
+<li>
+<p>ToleranceDeviationEvents: Flag intervals where actual values cross configured
+  tolerance and group them into start/end events.</p>
+</li>
+<li>process_and_group_data_with_events: Build grouped deviation events with event UUIDs.</li>
+</ul>
+
 
 
 
@@ -3328,10 +3402,38 @@
 <p><span class="doc-section-title">Modules:</span></p>
     <ul>
         <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-module&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;ts_shape.events.engineering&lt;/span&gt;" href="../engineering/__init__/#ts_shape.events.engineering">engineering</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Engineering Events</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-module&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;ts_shape.events.maintenance&lt;/span&gt;" href="../maintenance/__init__/#ts_shape.events.maintenance">maintenance</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Maintenance Events</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-module&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;ts_shape.events.production&lt;/span&gt;" href="../production/__init__/#ts_shape.events.production">production</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Production Events</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
           <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-module&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;ts_shape.events.quality&lt;/span&gt;" href="../quality/__init__/#ts_shape.events.quality">quality</a></code></b>
           –
           <div class="doc-md-description">
-            
+            <p>Quality Events</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+          <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-module&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-module-name&quot;&gt;ts_shape.events.supplychain&lt;/span&gt;" href="../supplychain/__init__/#ts_shape.events.supplychain">supplychain</a></code></b>
+          –
+          <div class="doc-md-description">
+            <p>Supply Chain Events</p>
           </div>
         </li>
     </ul>
@@ -3416,13 +3518,13 @@
         
         
           
-          <a href="../maintenance/__init__/" class="md-footer__link md-footer__link--next" aria-label="Next: maintenance">
+          <a href="../engineering/__init__/" class="md-footer__link md-footer__link--next" aria-label="Next: engineering">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                maintenance
+                engineering
               </div>
             </div>
             <div class="md-footer__button md-icon">

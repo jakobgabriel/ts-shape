@@ -888,6 +888,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -954,6 +958,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../reference/ts_shape/events/engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/ts_shape/events/maintenance/__init__/" class="md-nav__link">
         
   
@@ -996,10 +1023,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_3" id="__nav_3_1_1_2_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
             
   
   
@@ -1012,8 +1039,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_3">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_4">
             <span class="md-nav__icon md-icon"></span>
             production
           </label>
@@ -1103,10 +1130,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_1_1_2_4" id="__nav_3_1_1_2_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_1_1_2_5" id="__nav_3_1_1_2_5_label" tabindex="0">
             
   
   
@@ -1119,8 +1146,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1_1_2_4">
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_5">
             <span class="md-nav__icon md-icon"></span>
             quality
           </label>
@@ -1221,6 +1248,29 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/ts_shape/events/supplychain/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    supplychain
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3290,6 +3340,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#5-automatic-version-bumping-and-publishing-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Automatic Version Bumping and Publishing (CI)
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3376,6 +3435,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#5-automatic-version-bumping-and-publishing-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Automatic Version Bumping and Publishing (CI)
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3437,6 +3505,42 @@
 <p>Uploads your package to <a href="https://pypi.org/">PyPI</a>.<br />
 <strong>Tip:</strong> Ensure your credentials are set up in <code>~/.pypirc</code>.</p>
 </blockquote>
+<hr />
+<h2 id="5-automatic-version-bumping-and-publishing-ci">5. Automatic Version Bumping and Publishing (CI)<a class="headerlink" href="#5-automatic-version-bumping-and-publishing-ci" title="Permanent link">¤</a></h2>
+<p>This repo is configured to auto-bump the version in <code>setup.py</code>, create a Git tag, and publish to PyPI on pushes to <code>main</code>.</p>
+<ul>
+<li>Workflow: <code>.github/workflows/auto_bump_version.yml</code></li>
+<li>Publish on tags: <code>.github/workflows/pypi-packaging.yml</code> (triggers on <code>v*</code> tags)</li>
+</ul>
+<p>Keep the version declaration in <code>setup.py</code> in this exact form (the trailing comma is fine):</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">setuptools</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ts_shape&quot;</span><span class="p">,</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;0.0.0.24&quot;</span><span class="p">,</span>
+    <span class="c1"># ...</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>On every push to <code>main</code>, the auto-bump workflow reads that line and increments it based on the latest commit message:</p>
+<ul>
+<li>Major: include <code>BREAKING CHANGE</code>, <code>#major</code>, or the short <code>!:</code> in the subject</li>
+<li>Minor: start the subject with <code>feat</code> or include <code>#minor</code></li>
+<li>Patch: default for all other commits</li>
+</ul>
+<p>Examples:</p>
+<div class="language-text highlight"><pre><span></span><code>feat: add new SPC rule 9
+# =&gt; bumps 0.0.0.24 -&gt; 0.1.0 and tags v0.1.0
+
+fix: handle NaNs in StringFilter
+# =&gt; bumps 0.1.0 -&gt; 0.1.1 and tags v0.1.1
+
+refactor!: remove deprecated API (BREAKING CHANGE)
+# =&gt; bumps 0.1.1 -&gt; 1.0.0 and tags v1.0.0
+</code></pre></div>
+<p>The workflow then:
+- Commits the updated <code>setup.py</code> with <code>[skip ci]</code> to avoid loops
+- Creates and pushes a tag <code>vX.Y.Z</code>
+- The packaging workflow sees the tag and publishes the built artifacts to PyPI</p>
+<p>One‑time repo setting required: enable “Read and write permissions” for GitHub Actions under
+Settings → Actions → General → Workflow permissions.</p>
 
 
 
