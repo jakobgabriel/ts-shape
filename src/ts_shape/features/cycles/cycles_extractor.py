@@ -88,7 +88,12 @@ class CycleExtractor(Base):
 
     def _generate_cycle_dataframe(self, cycle_starts: pd.DataFrame, cycle_ends: pd.DataFrame) -> pd.DataFrame:
         """Generates a DataFrame with cycle start and end times."""
-        cycle_df = pd.DataFrame(columns=['cycle_start', 'cycle_end', 'cycle_uuid'])
+        # Predefine dtypes to avoid dtype inference warnings in future pandas versions
+        cycle_df = pd.DataFrame({
+            'cycle_start': pd.Series(dtype='datetime64[ns]'),
+            'cycle_end': pd.Series(dtype='datetime64[ns]'),
+            'cycle_uuid': pd.Series(dtype='string'),
+        })
         cycle_ends_iter = iter(cycle_ends['systime'])
 
         try:

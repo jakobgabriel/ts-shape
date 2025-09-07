@@ -80,7 +80,7 @@ class OutlierDetectionEvents(Base):
         df['outlier'] = np.abs(zscore(df[self.value_column])) > threshold
 
         # Filter to keep only outliers
-        outliers_df = df[df['outlier']]
+        outliers_df = df.loc[df['outlier']].copy()
 
         # Group and return the outliers
         return self._group_outliers(outliers_df)
@@ -110,7 +110,7 @@ class OutlierDetectionEvents(Base):
         df['outlier'] = (df[self.value_column] < lower_bound) | (df[self.value_column] > upper_bound)
 
         # Filter to keep only outliers
-        outliers_df = df[df['outlier']]
+        outliers_df = df.loc[df['outlier']].copy()
 
         # Group and return the outliers
         return self._group_outliers(outliers_df)

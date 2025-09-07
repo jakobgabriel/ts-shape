@@ -1,0 +1,10 @@
+pandas
+scipy
+numpy
+s3fs
+requests
+pytz
+psycopg2-binary
+sqlalchemy
+azure-storage-blob
+

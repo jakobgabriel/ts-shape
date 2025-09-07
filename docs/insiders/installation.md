@@ -59,13 +59,16 @@ If you’re developing or want the latest:
 ## Sanity Check
 
 - Minimal check to ensure functionality:
-  - `python - << 'PY'
-import pandas as pd
-from ts_shape.loader.metadata.metadata_json_loader import MetadataJsonLoader
-data = {"uuid": {"0": "u1"}, "label": {"0": "sensor-1"}, "config": {"0": {"unit": "C"}}}
-df = MetadataJsonLoader(data).to_df()
-print(df)
-PY`
+
+  ```python
+  python - << 'PY'
+  import pandas as pd
+  from ts_shape.loader.metadata.metadata_json_loader import MetadataJsonLoader
+  data = {"uuid": {"0": "u1"}, "label": {"0": "sensor-1"}, "config": {"0": {"unit": "C"}}}
+  df = MetadataJsonLoader(data).to_df()
+  print(df)
+  PY
+  ```
 
 ## Troubleshooting
 

@@ -7,6 +7,7 @@
 ts-shape is a lightweight, composable toolkit to load, shape, and analyze time series data. It embraces a simple DataFrame-in → DataFrame-out philosophy across loaders, transforms, feature extractors, and event detectors.
 
 Key ideas:
+
 - Unified DataFrame workflow: Load timeseries + metadata, join on `uuid`, and process.
 - Modular building blocks: Use only what you need; components are decoupled and easy to extend.
 - Performance aware: Vectorized ops, chunked DB reads, and concurrent I/O for remote storage.
@@ -20,6 +21,7 @@ pip install pyarrow  # or: pip install fastparquet
 ```
 
 Optional integrations:
+
 - Azure Blob Storage: `pip install azure-storage-blob`
 - Azure AAD + management (optional): `pip install azure-identity azure-mgmt-storage`
 - S3 proxy access: already included via `s3fs`

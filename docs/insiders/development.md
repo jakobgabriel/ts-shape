@@ -1,4 +1,4 @@
-# 🚀 Development Guide
+# Development Guide
 
 ## 1. Install Package Locally
 
@@ -80,3 +80,35 @@ The workflow then:
 
 One‑time repo setting required: enable “Read and write permissions” for GitHub Actions under
 Settings → Actions → General → Workflow permissions.
+
+---
+
+## 6. Manage Requirements (pip‑tools)
+
+Keep only direct dependencies in `requirements.in` and compile pinned versions into `requirements.txt`.
+
+Setup (once per environment):
+
+```bash
+python -m pip install --upgrade pip-tools
+```
+
+Compile/update pins:
+
+```bash
+# Compile requirements.in -> requirements.txt
+python scripts/requirements.py compile
+
+# Upgrade all pins to latest compatible versions
+python scripts/requirements.py upgrade
+```
+
+Sync your virtualenv exactly to `requirements.txt` (adds/removes packages):
+
+```bash
+python scripts/requirements.py sync
+```
+
+Notes:
+- Edit direct deps in `requirements.in` (not `requirements.txt`).
+- `pip-sync` will uninstall anything not listed in `requirements.txt`.

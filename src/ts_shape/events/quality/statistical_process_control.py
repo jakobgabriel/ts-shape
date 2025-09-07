@@ -160,7 +160,7 @@ class StatisticalProcessControlRuleBased(Base):
         Returns:
             pd.DataFrame: DataFrame with rule violations and detected events.
         """
-        df = self.dataframe[self.dataframe['uuid'] == self.actual_uuid]
+        df = self.dataframe[self.dataframe['uuid'] == self.actual_uuid].copy()
         df['systime'] = pd.to_datetime(df['systime'])
         df = df.sort_values(by='systime')
 
