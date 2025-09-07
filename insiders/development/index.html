@@ -957,9 +957,33 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../reference/ts_shape/events/engineering/__init__/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_1_2_2" id="__nav_3_1_1_2_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -968,7 +992,88 @@
   </span>
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            engineering
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/ts_shape/events/engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+      init  
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/ts_shape/events/engineering/setpoint_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    setpoint_events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/ts_shape/events/engineering/startup_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    startup_events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1005,6 +1110,14 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
       
         
       
@@ -1076,12 +1189,104 @@
   
   
     <li class="md-nav__item">
+      <a href="../../reference/ts_shape/events/production/changeover/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    changeover
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/ts_shape/events/production/downtime/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     downtime
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/ts_shape/events/production/flow_constraints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    flow_constraints
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/ts_shape/events/production/line_throughput/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    line_throughput
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/ts_shape/events/production/machine_state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    machine_state
     
   </span>
   
@@ -3349,6 +3554,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#6-manage-requirements-piptools" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Manage Requirements (pip‑tools)
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3444,6 +3658,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#6-manage-requirements-piptools" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Manage Requirements (pip‑tools)
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3476,7 +3699,7 @@
   
 
 
-<h1 id="development-guide">🚀 Development Guide<a class="headerlink" href="#development-guide" title="Permanent link">¤</a></h1>
+<h1 id="development-guide">Development Guide<a class="headerlink" href="#development-guide" title="Permanent link">¤</a></h1>
 <h2 id="1-install-package-locally">1. Install Package Locally<a class="headerlink" href="#1-install-package-locally" title="Permanent link">¤</a></h2>
 <div class="language-bash highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </code></pre></div>
@@ -3541,6 +3764,25 @@ refactor!: remove deprecated API (BREAKING CHANGE)
 - The packaging workflow sees the tag and publishes the built artifacts to PyPI</p>
 <p>One‑time repo setting required: enable “Read and write permissions” for GitHub Actions under
 Settings → Actions → General → Workflow permissions.</p>
+<hr />
+<h2 id="6-manage-requirements-piptools">6. Manage Requirements (pip‑tools)<a class="headerlink" href="#6-manage-requirements-piptools" title="Permanent link">¤</a></h2>
+<p>Keep only direct dependencies in <code>requirements.in</code> and compile pinned versions into <code>requirements.txt</code>.</p>
+<p>Setup (once per environment):</p>
+<div class="language-bash highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip-tools
+</code></pre></div>
+<p>Compile/update pins:</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Compile requirements.in -&gt; requirements.txt</span>
+python<span class="w"> </span>scripts/requirements.py<span class="w"> </span>compile
+
+<span class="c1"># Upgrade all pins to latest compatible versions</span>
+python<span class="w"> </span>scripts/requirements.py<span class="w"> </span>upgrade
+</code></pre></div>
+<p>Sync your virtualenv exactly to <code>requirements.txt</code> (adds/removes packages):</p>
+<div class="language-bash highlight"><pre><span></span><code>python<span class="w"> </span>scripts/requirements.py<span class="w"> </span>sync
+</code></pre></div>
+<p>Notes:
+- Edit direct deps in <code>requirements.in</code> (not <code>requirements.txt</code>).
+- <code>pip-sync</code> will uninstall anything not listed in <code>requirements.txt</code>.</p>
 
 
 

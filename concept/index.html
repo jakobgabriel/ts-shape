@@ -1105,9 +1105,33 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../reference/ts_shape/events/engineering/__init__/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_1_2_2" id="__nav_3_1_1_2_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1116,7 +1140,88 @@
   </span>
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            engineering
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/ts_shape/events/engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+      init  
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/ts_shape/events/engineering/setpoint_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    setpoint_events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/ts_shape/events/engineering/startup_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    startup_events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1153,6 +1258,14 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
       
         
       
@@ -1224,12 +1337,104 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/ts_shape/events/production/changeover/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    changeover
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reference/ts_shape/events/production/downtime/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     downtime
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/ts_shape/events/production/flow_constraints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    flow_constraints
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/ts_shape/events/production/line_throughput/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    line_throughput
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/ts_shape/events/production/machine_state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    machine_state
     
   </span>
   
@@ -3589,35 +3794,49 @@
     B --&gt; C[Transform: Filters / Functions / Time Functions / Calculator]
     C --&gt; D[Features: Stats / Time Stats / Cycles]
     D --&gt; E[Events: Quality / Maintenance / Production / Engineering]</code></pre>
-<p>Core ideas:
-- DataFrame-in, DataFrame-out: Every stage accepts and returns Pandas DataFrames for easy composition.
-- Simple schema: Timeseries frames use a compact set of typed columns; metadata/enrichment joins on a stable <code>uuid</code> key.
-- Modular blocks: Use only what you need — loaders, transforms, features, and events are decoupled.</p>
+<p>Core ideas:</p>
+<ul>
+<li>DataFrame-in, DataFrame-out: Every stage accepts and returns Pandas DataFrames for easy composition.</li>
+<li>Simple schema: Timeseries frames use a compact set of typed columns; metadata/enrichment joins on a stable <code>uuid</code> key.</li>
+<li>Modular blocks: Use only what you need — loaders, transforms, features, and events are decoupled.</li>
+</ul>
 <h2 id="data-model">Data Model<a class="headerlink" href="#data-model" title="Permanent link">¤</a></h2>
-<p>Timeseries DataFrame (typical columns):
-- uuid: string identifier for a signal/series
-- systime: timestamp (tz-aware recommended)
-- value_double, value_integer, value_string, value_bool: value channels (one or more may be present)
-- is_delta: boolean flag indicating delta semantics (optional)</p>
-<p>Metadata DataFrame:
-- Indexed by uuid or has a <code>uuid</code> column
-- Arbitrary columns describing the signal (label, unit, config.*)</p>
-<p>Conventions:
-- Join key is <code>uuid</code> by default.
-- Keep values narrow: prefer one type-specific value column where possible.</p>
+<p>Timeseries DataFrame (typical columns):</p>
+<ul>
+<li>uuid: string identifier for a signal/series</li>
+<li>systime: timestamp (tz-aware recommended)</li>
+<li>value_double, value_integer, value_string, value_bool: value channels (one or more may be present)</li>
+<li>is_delta: boolean flag indicating delta semantics (optional)</li>
+</ul>
+<p>Metadata DataFrame:</p>
+<ul>
+<li>Indexed by uuid or has a <code>uuid</code> column</li>
+<li>Arbitrary columns describing the signal (label, unit, config.*)</li>
+</ul>
+<p>Conventions:</p>
+<ul>
+<li>Join key is <code>uuid</code> by default.</li>
+<li>Keep values narrow: prefer one type-specific value column where possible.</li>
+</ul>
 <h2 id="loaders">Loaders<a class="headerlink" href="#loaders" title="Permanent link">¤</a></h2>
-<p>Timeseries:
-- Parquet folder loader: Recursively reads parquet files from local/remote mounts.
-- S3 proxy parquet loader: Streams parquet via S3-compatible endpoints.
-- Azure Blob parquet loader: Loads parquet files from containers; supports time-based folder structure (parquet/YYYY/MM/DD/HH) and UUID filters.
-- TimescaleDB loader: Streams rows by UUID and time range; can emit parquet partitioned by hour.</p>
-<p>Metadata:
-- JSON metadata loader: Robustly ingests JSON in multiple shapes (list-of-records, dicts of lists/dicts), flattens <code>config</code> into columns, and indexes by <code>uuid</code>.</p>
+<p>Timeseries:</p>
+<ul>
+<li>Parquet folder loader: Recursively reads parquet files from local/remote mounts.</li>
+<li>S3 proxy parquet loader: Streams parquet via S3-compatible endpoints.</li>
+<li>Azure Blob parquet loader: Loads parquet files from containers; supports time-based folder structure (parquet/YYYY/MM/DD/HH) and UUID filters.</li>
+<li>TimescaleDB loader: Streams rows by UUID and time range; can emit parquet partitioned by hour.</li>
+</ul>
+<p>Metadata:</p>
+<ul>
+<li>JSON metadata loader: Robustly ingests JSON in multiple shapes (list-of-records, dicts of lists/dicts), flattens <code>config</code> into columns, and indexes by <code>uuid</code>.</li>
+</ul>
 <p>All loaders expose either a DataFrame-returning method (e.g., <code>fetch_data_as_dataframe</code>, <code>to_df</code>) or a parquet materialization method when desired.</p>
 <h2 id="combination-layer">Combination Layer<a class="headerlink" href="#combination-layer" title="Permanent link">¤</a></h2>
-<p>Use <code>DataIntegratorHybrid.combine_data(...)</code> to merge timeseries and metadata sources into one frame:
-- Accepts DataFrames or source objects (with <code>fetch_data_as_dataframe</code>/<code>fetch_metadata</code>).
-- Merges on <code>uuid</code> (configurable), supporting different join strategies (<code>left</code>, <code>inner</code>, ...).</p>
+<p>Use <code>DataIntegratorHybrid.combine_data(...)</code> to merge timeseries and metadata sources into one frame:</p>
+<ul>
+<li>Accepts DataFrames or source objects (with <code>fetch_data_as_dataframe</code>/<code>fetch_metadata</code>).</li>
+<li>Merges on <code>uuid</code> (configurable), supporting different join strategies (<code>left</code>, <code>inner</code>, ...).</li>
+</ul>
 <p>Example:
 <div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ts_shape.loader.combine.integrator</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataIntegratorHybrid</span>
 
@@ -3630,36 +3849,60 @@
 <span class="p">)</span>
 </code></pre></div></p>
 <h2 id="transform">Transform<a class="headerlink" href="#transform" title="Permanent link">¤</a></h2>
-<p>Reusable blocks to reshape and clean data:
-- Filters: datatype-specific predicates (numeric/string/boolean/datetime) to subset rows or fix values.
-- Functions: arbitrary lambda-like transformations for columns.
-- Time Functions: timestamp operations (timezone shift, conversion, resampling helpers).
-- Calculator: numeric calculators to derive engineered columns.</p>
+<p>Reusable blocks to reshape and clean data:</p>
+<ul>
+<li>Filters: datatype-specific predicates (numeric/string/boolean/datetime) to subset rows or fix values.</li>
+<li>Functions: arbitrary lambda-like transformations for columns.</li>
+<li>Time Functions: timestamp operations (timezone shift, conversion, resampling helpers).</li>
+<li>Calculator: numeric calculators to derive engineered columns.</li>
+</ul>
 <p>All transformations accept/return DataFrames to compose pipelines like small, testable steps.</p>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">¤</a></h2>
-<p>Feature extractors summarize series into compact descriptors:
-- Stats: per-type descriptive stats (min/max/mean/std for numeric, frequency for strings, etc.).
-- Time Stats: timestamp-specific stats (first/last timestamp, counts per window, coverage).
-- Cycles: utilities to identify and process cycles in signals.</p>
+<p>Feature extractors summarize series into compact descriptors:</p>
+<ul>
+<li>Stats: per-type descriptive stats (min/max/mean/std for numeric, frequency for strings, etc.).</li>
+<li>Time Stats: timestamp-specific stats (first/last timestamp, counts per window, coverage).</li>
+<li>Cycles: utilities to identify and process cycles in signals.</li>
+</ul>
 <p><code>DescriptiveFeatures.compute(...)</code> can emit a nested dict or a flat DataFrame for easy downstream analysis.</p>
 <h2 id="events">Events<a class="headerlink" href="#events" title="Permanent link">¤</a></h2>
-<p>Event detectors derive categorical flags and ranges from raw signals:
-- Quality: outlier detection, SPC rules, tolerance deviations.
-- Maintenance: downtime and other operational events.
-- Production/Engineering: domain patterns extractable from the shaped series.</p>
+<p>Event detectors derive categorical flags and ranges from raw signals:</p>
+<ul>
+<li>Quality: outlier detection, SPC rules, tolerance deviations.</li>
+<li>Maintenance: downtime and other operational events.</li>
+<li>Production/Engineering: domain patterns extractable from the shaped series.</li>
+</ul>
 <p>Each detector takes a DataFrame and returns either annotated frames or event tables.</p>
 <h2 id="typical-pipeline">Typical Pipeline<a class="headerlink" href="#typical-pipeline" title="Permanent link">¤</a></h2>
-<p>1) Load
-- Read timeseries (e.g., parquet or DB) into a DataFrame with <code>uuid</code>, <code>systime</code>, and values.
-- Load metadata JSON and convert to a <code>uuid</code>-indexed DataFrame.</p>
-<p>2) Combine
-- Join timeseries with metadata on <code>uuid</code> to enrich context.</p>
-<p>3) Transform
-- Apply filters/functions/time operations; compute engineered columns.</p>
-<p>4) Features &amp; Events
-- Compute stats and time stats; identify domain events.</p>
-<p>5) Output
-- Keep as a DataFrame, write parquet/CSV, or feed to a model/BI tool.</p>
+<ol>
+<li>Load</li>
+<li>Read timeseries (e.g., parquet or DB) into a DataFrame with <code>uuid</code>, <code>systime</code>, and values.</li>
+<li>
+<p>Load metadata JSON and convert to a <code>uuid</code>-indexed DataFrame.</p>
+</li>
+<li>
+<p>Combine</p>
+</li>
+<li>
+<p>Join timeseries with metadata on <code>uuid</code> to enrich context.</p>
+</li>
+<li>
+<p>Transform</p>
+</li>
+<li>
+<p>Apply filters/functions/time operations; compute engineered columns.</p>
+</li>
+<li>
+<p>Features &amp; Events</p>
+</li>
+<li>
+<p>Compute stats and time stats; identify domain events.</p>
+</li>
+<li>
+<p>Output</p>
+</li>
+<li>Keep as a DataFrame, write parquet/CSV, or feed to a model/BI tool.</li>
+</ol>
 <h2 id="design-principles">Design Principles<a class="headerlink" href="#design-principles" title="Permanent link">¤</a></h2>
 <ul>
 <li>Minimal assumptions: Works with partial columns; you choose the value channel(s) in play.</li>

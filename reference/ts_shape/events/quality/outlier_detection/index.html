@@ -979,9 +979,33 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../engineering/__init__/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_1_2_2" id="__nav_3_1_1_2_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -990,7 +1014,88 @@
   </span>
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            engineering
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+      init  
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/setpoint_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    setpoint_events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../engineering/startup_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    startup_events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1027,6 +1132,14 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
       
         
       
@@ -1098,12 +1211,104 @@
   
   
     <li class="md-nav__item">
+      <a href="../../production/changeover/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    changeover
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../production/downtime/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     downtime
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../production/flow_constraints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    flow_constraints
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../production/line_throughput/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    line_throughput
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../production/machine_state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    machine_state
     
   </span>
   
@@ -3908,7 +4113,7 @@
     <span class="n">df</span><span class="p">[</span><span class="s1">&#39;outlier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">value_column</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lower_bound</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">value_column</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">upper_bound</span><span class="p">)</span>
 
     <span class="c1"># Filter to keep only outliers</span>
-    <span class="n">outliers_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;outlier&#39;</span><span class="p">]]</span>
+    <span class="n">outliers_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;outlier&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="c1"># Group and return the outliers</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_outliers</span><span class="p">(</span><span class="n">outliers_df</span><span class="p">)</span>
@@ -4006,7 +4211,7 @@
     <span class="n">df</span><span class="p">[</span><span class="s1">&#39;outlier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">zscore</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">value_column</span><span class="p">]))</span> <span class="o">&gt;</span> <span class="n">threshold</span>
 
     <span class="c1"># Filter to keep only outliers</span>
-    <span class="n">outliers_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;outlier&#39;</span><span class="p">]]</span>
+    <span class="n">outliers_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;outlier&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="c1"># Group and return the outliers</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_outliers</span><span class="p">(</span><span class="n">outliers_df</span><span class="p">)</span>

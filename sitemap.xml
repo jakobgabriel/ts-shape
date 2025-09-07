@@ -49,6 +49,14 @@
          <lastmod>2025-09-07</lastmod>
     </url>
     <url>
+         <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/engineering/setpoint_events/</loc>
+         <lastmod>2025-09-07</lastmod>
+    </url>
+    <url>
+         <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/engineering/startup_events/</loc>
+         <lastmod>2025-09-07</lastmod>
+    </url>
+    <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/maintenance/__init__/</loc>
          <lastmod>2025-09-07</lastmod>
     </url>
@@ -57,7 +65,23 @@
          <lastmod>2025-09-07</lastmod>
     </url>
     <url>
+         <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/changeover/</loc>
+         <lastmod>2025-09-07</lastmod>
+    </url>
+    <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/downtime/</loc>
+         <lastmod>2025-09-07</lastmod>
+    </url>
+    <url>
+         <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/flow_constraints/</loc>
+         <lastmod>2025-09-07</lastmod>
+    </url>
+    <url>
+         <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/line_throughput/</loc>
+         <lastmod>2025-09-07</lastmod>
+    </url>
+    <url>
+         <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/machine_state/</loc>
          <lastmod>2025-09-07</lastmod>
     </url>
     <url>

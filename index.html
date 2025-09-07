@@ -962,9 +962,33 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="reference/ts_shape/events/engineering/__init__/" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_1_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_1_2_2" id="__nav_3_1_1_2_2_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -973,7 +997,88 @@
   </span>
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_3_1_1_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_1_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            engineering
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/ts_shape/events/engineering/__init__/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+      init  
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/ts_shape/events/engineering/setpoint_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    setpoint_events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/ts_shape/events/engineering/startup_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    startup_events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1010,6 +1115,14 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
       
         
       
@@ -1081,12 +1194,104 @@
   
   
     <li class="md-nav__item">
+      <a href="reference/ts_shape/events/production/changeover/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    changeover
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="reference/ts_shape/events/production/downtime/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     downtime
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/ts_shape/events/production/flow_constraints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    flow_constraints
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/ts_shape/events/production/line_throughput/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    line_throughput
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/ts_shape/events/production/machine_state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    machine_state
     
   </span>
   
@@ -3371,20 +3576,24 @@
 <a href="https://pepy.tech/projects/ts-shape"><img alt="downloads" src="https://static.pepy.tech/badge/ts-shape/week" /></a>
 <a href="https://jakobgabriel.github.io/ts-shape/"><img alt="docs" src="https://img.shields.io/badge/docs-mkdocs-708FCC.svg?style=flat" /></a></p>
 <p>ts-shape is a lightweight, composable toolkit to load, shape, and analyze time series data. It embraces a simple DataFrame-in → DataFrame-out philosophy across loaders, transforms, feature extractors, and event detectors.</p>
-<p>Key ideas:
-- Unified DataFrame workflow: Load timeseries + metadata, join on <code>uuid</code>, and process.
-- Modular building blocks: Use only what you need; components are decoupled and easy to extend.
-- Performance aware: Vectorized ops, chunked DB reads, and concurrent I/O for remote storage.</p>
+<p>Key ideas:</p>
+<ul>
+<li>Unified DataFrame workflow: Load timeseries + metadata, join on <code>uuid</code>, and process.</li>
+<li>Modular building blocks: Use only what you need; components are decoupled and easy to extend.</li>
+<li>Performance aware: Vectorized ops, chunked DB reads, and concurrent I/O for remote storage.</li>
+</ul>
 <h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">¤</a></h2>
 <div class="language-bash highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>ts-shape
 <span class="c1"># Parquet engine (recommended)</span>
 pip<span class="w"> </span>install<span class="w"> </span>pyarrow<span class="w">  </span><span class="c1"># or: pip install fastparquet</span>
 </code></pre></div>
-<p>Optional integrations:
-- Azure Blob Storage: <code>pip install azure-storage-blob</code>
-- Azure AAD + management (optional): <code>pip install azure-identity azure-mgmt-storage</code>
-- S3 proxy access: already included via <code>s3fs</code>
-- TimescaleDB: <code>pip install sqlalchemy psycopg2-binary</code></p>
+<p>Optional integrations:</p>
+<ul>
+<li>Azure Blob Storage: <code>pip install azure-storage-blob</code></li>
+<li>Azure AAD + management (optional): <code>pip install azure-identity azure-mgmt-storage</code></li>
+<li>S3 proxy access: already included via <code>s3fs</code></li>
+<li>TimescaleDB: <code>pip install sqlalchemy psycopg2-binary</code></li>
+</ul>
 <h2 id="whats-inside">What’s Inside<a class="headerlink" href="#whats-inside" title="Permanent link">¤</a></h2>
 <ul>
 <li>Loaders (timeseries):</li>
