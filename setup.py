@@ -1,11 +1,11 @@
-import setuptools
+from setuptools import setup, find_packages 
 
 with open("README.md", "r", encoding = "utf-8") as fh:
     long_description = fh.read()
 
-setuptools.setup(
+setup(
     name = "ts_shape",
-    version = "0.0.0.27",
+    version = "0.0.0.29",
     author = "Jakob Gabriel",
     author_email = "jakob.gabriel5@googlemail.com",
     description = "ts-shape filters, transforms and engineers your timeseries dataframe",
@@ -20,7 +20,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    packages = find_packages(where="src"),
     package_dir = {"": "src"},
-    packages = setuptools.find_packages(where="src"),
     python_requires = ">=3.10"
 )
