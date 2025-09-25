@@ -198,23 +198,64 @@ class AzureBlobParquetLoader:
         uuid_list: List[str],
     ) -> pd.DataFrame:
         """
-        Load parquet blobs for given UUIDs within [start, end] hours using direct paths.
+        Load parquet blobs for given UUIDs within [start, end] hours.
 
-        Assumes blob path pattern: prefix/YYYY/MM/DD/HH/{uuid}.parquet
-        Avoids container-wide listing for maximum speed.
+        Strategy:
+        1) Construct direct blob paths assuming pattern prefix/YYYY/MM/DD/HH/{uuid}.parquet
+           (fast path, no listing).
+        2) For robustness, also list each hour prefix and include any blob whose basename
+           equals one of the requested UUID variants (handles case differences and extra
+           subfolders below the hour level).
         """
         if not uuid_list:
             return pd.DataFrame()
 
-        uuids = list(dict.fromkeys(uuid_list))  # preserve order, dedupe
+        # Sanitize and deduplicate UUIDs while preserving order
+        def _clean_uuid(u: object) -> str:
+            s = str(u).strip().strip("{}").strip()
+            return s
+
+        raw = [_clean_uuid(u) for u in uuid_list]
+        # Include lowercase variants to be tolerant of case differences in filenames
+        variants_ordered: List[str] = []
+        seen: Set[str] = set()
+        for u in raw:
+            for v in (u, u.lower()):
+                if v and v not in seen:
+                    seen.add(v)
+                    variants_ordered.append(v)
+
         hour_prefixes = [self._hour_prefix(ts) for ts in self._hourly_slots(start_timestamp, end_timestamp)]
 
-        # Build full blob names deterministically
-        blob_names = [f"{pfx}{u}.parquet" for pfx in hour_prefixes for u in uuids]
+        # 1) Fast path: build direct blob names
+        direct_names = [f"{pfx}{u}.parquet" for pfx in hour_prefixes for u in variants_ordered]
+
+        # 2) Robust path: list each hour prefix and filter by basename match
+        basenames = {f"{u}.parquet" for u in variants_ordered}
+        listed_names: List[str] = []
+        try:
+            for pfx in hour_prefixes:
+                blob_iter = self.container_client.list_blobs(name_starts_with=pfx)
+                for b in blob_iter:  # type: ignore[attr-defined]
+                    name = str(b.name)
+                    if not name.endswith(".parquet"):
+                        continue
+                    base = name.rsplit("/", 1)[-1]
+                    if base in basenames:
+                        listed_names.append(name)
+        except Exception:
+            # If listing fails for any reason, continue with direct names only
+            pass
+
+        # Merge and preserve order, avoid duplicates
+        all_blob_names = list(dict.fromkeys([*direct_names, *listed_names]))
+
+        if not all_blob_names:
+            return pd.DataFrame()
 
         frames: List[pd.DataFrame] = []
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            future_to_name = {executor.submit(self._download_parquet, name): name for name in blob_names}
+            future_to_name = {executor.submit(self._download_parquet, name): name for name in all_blob_names}
             for future in as_completed(future_to_name):
                 df = future.result()
                 if df is not None and not df.empty:
