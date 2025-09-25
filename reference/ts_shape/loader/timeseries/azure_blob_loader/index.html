@@ -4141,7 +4141,7 @@
             <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-method&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;load_files_by_time_range_and_uuids&lt;/span&gt; (&lt;code&gt;ts_shape.loader.timeseries.azure_blob_loader.AzureBlobParquetLoader.load_files_by_time_range_and_uuids&lt;/code&gt;)" href="#ts_shape.loader.timeseries.azure_blob_loader.AzureBlobParquetLoader.load_files_by_time_range_and_uuids">load_files_by_time_range_and_uuids</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Load parquet blobs for given UUIDs within [start, end] hours using direct paths.</p>
+              <p>Load parquet blobs for given UUIDs within [start, end] hours.</p>
             </div>
           </li>
     </ul>
@@ -4476,40 +4476,40 @@
 
             <details class="quote">
               <summary>Source code in <code>src/ts_shape/loader/timeseries/azure_blob_loader.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">list_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parquet_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">list_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parquet_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List folder prefixes (hours) and blob names under the configured `prefix`.</span>
 
@@ -4725,9 +4725,13 @@ Listing is constrained per-hour for speed.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Load parquet blobs for given UUIDs within [start, end] hours using direct paths.</p>
-<p>Assumes blob path pattern: prefix/YYYY/MM/DD/HH/{uuid}.parquet
-Avoids container-wide listing for maximum speed.</p>
+        <p>Load parquet blobs for given UUIDs within [start, end] hours.</p>
+<p>Strategy:
+1) Construct direct blob paths assuming pattern prefix/YYYY/MM/DD/HH/{uuid}.parquet
+   (fast path, no listing).
+2) For robustness, also list each hour prefix and include any blob whose basename
+   equals one of the requested UUID variants (handles case differences and extra
+   subfolders below the hour level).</p>
 
 
             <details class="quote">
@@ -4761,30 +4765,112 @@ Avoids container-wide listing for maximum speed.</p>
 <span class="normal">220</span>
 <span class="normal">221</span>
 <span class="normal">222</span>
-<span class="normal">223</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_files_by_time_range_and_uuids</span><span class="p">(</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_files_by_time_range_and_uuids</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">start_timestamp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">,</span>
     <span class="n">end_timestamp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">,</span>
     <span class="n">uuid_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Load parquet blobs for given UUIDs within [start, end] hours using direct paths.</span>
+<span class="sd">    Load parquet blobs for given UUIDs within [start, end] hours.</span>
 
-<span class="sd">    Assumes blob path pattern: prefix/YYYY/MM/DD/HH/{uuid}.parquet</span>
-<span class="sd">    Avoids container-wide listing for maximum speed.</span>
+<span class="sd">    Strategy:</span>
+<span class="sd">    1) Construct direct blob paths assuming pattern prefix/YYYY/MM/DD/HH/{uuid}.parquet</span>
+<span class="sd">       (fast path, no listing).</span>
+<span class="sd">    2) For robustness, also list each hour prefix and include any blob whose basename</span>
+<span class="sd">       equals one of the requested UUID variants (handles case differences and extra</span>
+<span class="sd">       subfolders below the hour level).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">uuid_list</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 
-    <span class="n">uuids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">uuid_list</span><span class="p">))</span>  <span class="c1"># preserve order, dedupe</span>
+    <span class="c1"># Sanitize and deduplicate UUIDs while preserving order</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clean_uuid</span><span class="p">(</span><span class="n">u</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+    <span class="n">raw</span> <span class="o">=</span> <span class="p">[</span><span class="n">_clean_uuid</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">uuid_list</span><span class="p">]</span>
+    <span class="c1"># Include lowercase variants to be tolerant of case differences in filenames</span>
+    <span class="n">variants_ordered</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">seen</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="n">variants_ordered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
     <span class="n">hour_prefixes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_hour_prefix</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hourly_slots</span><span class="p">(</span><span class="n">start_timestamp</span><span class="p">,</span> <span class="n">end_timestamp</span><span class="p">)]</span>
 
-    <span class="c1"># Build full blob names deterministically</span>
-    <span class="n">blob_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pfx</span><span class="si">}{</span><span class="n">u</span><span class="si">}</span><span class="s2">.parquet&quot;</span> <span class="k">for</span> <span class="n">pfx</span> <span class="ow">in</span> <span class="n">hour_prefixes</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">uuids</span><span class="p">]</span>
+    <span class="c1"># 1) Fast path: build direct blob names</span>
+    <span class="n">direct_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pfx</span><span class="si">}{</span><span class="n">u</span><span class="si">}</span><span class="s2">.parquet&quot;</span> <span class="k">for</span> <span class="n">pfx</span> <span class="ow">in</span> <span class="n">hour_prefixes</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">variants_ordered</span><span class="p">]</span>
+
+    <span class="c1"># 2) Robust path: list each hour prefix and filter by basename match</span>
+    <span class="n">basenames</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">.parquet&quot;</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">variants_ordered</span><span class="p">}</span>
+    <span class="n">listed_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">pfx</span> <span class="ow">in</span> <span class="n">hour_prefixes</span><span class="p">:</span>
+            <span class="n">blob_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_client</span><span class="o">.</span><span class="n">list_blobs</span><span class="p">(</span><span class="n">name_starts_with</span><span class="o">=</span><span class="n">pfx</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blob_iter</span><span class="p">:</span>  <span class="c1"># type: ignore[attr-defined]</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.parquet&quot;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">basenames</span><span class="p">:</span>
+                    <span class="n">listed_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="c1"># If listing fails for any reason, continue with direct names only</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Merge and preserve order, avoid duplicates</span>
+    <span class="n">all_blob_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">([</span><span class="o">*</span><span class="n">direct_names</span><span class="p">,</span> <span class="o">*</span><span class="n">listed_names</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">all_blob_names</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 
     <span class="n">frames</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_workers</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
-        <span class="n">future_to_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_download_parquet</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">blob_names</span><span class="p">}</span>
+        <span class="n">future_to_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_download_parquet</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">all_blob_names</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">future_to_name</span><span class="p">):</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
