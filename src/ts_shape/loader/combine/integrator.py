@@ -1,5 +1,5 @@
 import pandas as pd  # type: ignore
-from typing import List, Dict, Union, Optional
+from typing import List, Union, Optional
 
 
 class DataIntegratorHybrid:
@@ -21,7 +21,7 @@ class DataIntegratorHybrid:
     ) -> pd.DataFrame:
         """
         Combine timeseries and metadata from various sources.
-        
+
         :param timeseries_sources: List of timeseries sources (DataFrame or instances with `fetch_data_as_dataframe`).
         :param metadata_sources: List of metadata sources (DataFrame or instances with `fetch_metadata`).
         :param uuids: Optional list of UUIDs to filter the combined data.
@@ -43,6 +43,21 @@ class DataIntegratorHybrid:
             print("No metadata found.")
             return timeseries_data
 
+        missing_timeseries_key = join_key not in timeseries_data.columns
+        missing_metadata_key = join_key not in metadata.columns
+
+        if missing_timeseries_key or missing_metadata_key:
+            missing_parts = []
+            if missing_timeseries_key:
+                missing_parts.append("timeseries data")
+            if missing_metadata_key:
+                missing_parts.append("metadata")
+            print(
+                f"Cannot merge because join key '{join_key}' is missing in "
+                f"{', '.join(missing_parts)}."
+            )
+            return timeseries_data
+
         # Merge timeseries data with metadata
         combined_data = pd.merge(timeseries_data, metadata, on=join_key, how=merge_how)
 
@@ -56,7 +71,7 @@ class DataIntegratorHybrid:
     def _combine_timeseries(cls, sources: Optional[List[Union[pd.DataFrame, object]]], join_key: str) -> pd.DataFrame:
         """
         Combine timeseries data from multiple sources.
-        
+
         :param sources: List of sources (DataFrame or instances with `fetch_data_as_dataframe`).
         :param join_key: Key column to use for merging.
         :return: A combined timeseries DataFrame.
@@ -67,9 +82,10 @@ class DataIntegratorHybrid:
         frames = []
         for source in sources:
             if isinstance(source, pd.DataFrame):
-                frames.append(source)
+                frames.append(cls._ensure_join_key_column(source, join_key))
             elif hasattr(source, "fetch_data_as_dataframe"):
-                frames.append(source.fetch_data_as_dataframe())
+                df = source.fetch_data_as_dataframe()
+                frames.append(cls._ensure_join_key_column(df, join_key))
             else:
                 print(f"Unsupported timeseries source: {source}")
 
@@ -79,7 +95,7 @@ class DataIntegratorHybrid:
     def _combine_metadata(cls, sources: Optional[List[Union[pd.DataFrame, object]]], join_key: str) -> pd.DataFrame:
         """
         Combine metadata from multiple sources.
-        
+
         :param sources: List of sources (DataFrame or instances with `fetch_metadata`).
         :param join_key: Key column to use for merging.
         :return: A combined metadata DataFrame.
@@ -90,10 +106,34 @@ class DataIntegratorHybrid:
         frames = []
         for source in sources:
             if isinstance(source, pd.DataFrame):
-                frames.append(source)
+                frames.append(cls._ensure_join_key_column(source, join_key))
             elif hasattr(source, "fetch_metadata"):
-                frames.append(source.fetch_metadata())
+                df = source.fetch_metadata()
+                frames.append(cls._ensure_join_key_column(df, join_key))
             else:
                 print(f"Unsupported metadata source: {source}")
 
         return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
+
+    @staticmethod
+    def _ensure_join_key_column(df: pd.DataFrame, join_key: str) -> pd.DataFrame:
+        """
+        Ensure the join key exists as a column. If it lives in the index, bring it into the columns.
+        """
+        if join_key in df.columns:
+            return df
+
+        if isinstance(df.index, pd.MultiIndex):
+            index_names = list(df.index.names)
+            if join_key in index_names:
+                return df.reset_index(level=join_key)
+        else:
+            index_names = [df.index.name]
+            if df.index.name == join_key:
+                return df.reset_index()
+
+        print(
+            f"Join key '{join_key}' not found in columns or index. "
+            f"Columns: {list(df.columns)}; index names: {index_names}"
+        )
+        return df

@@ -5,7 +5,7 @@ with open("README.md", "r", encoding = "utf-8") as fh:
 
 setup(
     name = "ts_shape",
-    version = "0.0.0.29",
+    version = "0.0.0.30",
     author = "Jakob Gabriel",
     author_email = "jakob.gabriel5@googlemail.com",
     description = "ts-shape filters, transforms and engineers your timeseries dataframe",

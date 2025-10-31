@@ -17,8 +17,19 @@ Classes:
 - AzureBlobParquetLoader: Load parquet from Azure Blob Storage.
   - load_all_files: Load all parquet under an optional prefix.
   - load_by_time_range: Load hourly folders between start and end.
+  - stream_by_time_range: Yield (blob, DataFrame) incrementally.
   - load_files_by_time_range_and_uuids: Load per-hour per-UUID parquet files.
+  - stream_files_by_time_range_and_uuids: Yield per-UUID frames incrementally.
   - list_structure: List folders and files under a prefix.
+
+- AzureBlobFlexibleFileLoader: Load arbitrary file types from Azure Blob Storage.
+  - list_files_by_time_range: List matching files (by extension) under hourly folders.
+  - iter_file_names_by_time_range: Generator of names without downloading.
+  - fetch_files_by_time_range: Download matching files as raw bytes or parsed objects.
+  - stream_files_by_time_range: Stream (blob, bytes/parsed) incrementally.
+  - fetch_files_by_time_range_and_basenames: Download by explicit basenames.
+  - stream_files_by_time_range_and_basenames: Stream by explicit basenames.
+  - register_parser/unregister_parser: Plug-in parser functions per file extension.
 
 - TimescaleDBDataAccess: Stream timeseries from TimescaleDB.
   - fetch_data_as_parquet: Partition-by-hour and write parquet.
