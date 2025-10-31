@@ -2,278 +2,282 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/changelog/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/concept/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/contributing/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/license/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/insiders/development/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/insiders/installation/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/SUMMARY/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/context/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/context/value_mapping/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/engineering/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/engineering/setpoint_events/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/engineering/startup_events/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/maintenance/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/changeover/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/downtime/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/flow_constraints/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/line_throughput/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/production/machine_state/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/quality/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/quality/outlier_detection/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/quality/statistical_process_control/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/quality/tolerance_deviation/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/events/supplychain/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/cycles/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/cycles/cycle_processor/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/cycles/cycles_extractor/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/stats/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/stats/boolean_stats/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/stats/feature_table/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/stats/numeric_stats/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/stats/string_stats/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/stats/timestamp_stats/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/time_stats/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/features/time_stats/time_stats_numeric/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/combine/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/combine/integrator/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/context/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/metadata/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/metadata/metadata_api_loader/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/metadata/metadata_db_loader/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/metadata/metadata_json_loader/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/timeseries/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/timeseries/azure_blob_loader/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
+    </url>
+    <url>
+         <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/timeseries/energy_api_loader/</loc>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/timeseries/parquet_loader/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/timeseries/s3proxy_parquet_loader/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/loader/timeseries/timescale_loader/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/calculator/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/calculator/numeric_calc/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/filter/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/filter/boolean_filter/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/filter/custom_filter/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/filter/datetime_filter/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/filter/numeric_filter/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/filter/string_filter/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/functions/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/functions/lambda_func/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/time_functions/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/time_functions/timestamp_converter/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/transform/time_functions/timezone_shift/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/utils/__init__/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/reference/ts_shape/utils/base/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
     <url>
          <loc>https://jakobgabriel.github.io/ts-shape/usage/</loc>
-         <lastmod>2025-09-25</lastmod>
+         <lastmod>2025-10-31</lastmod>
     </url>
 </urlset>
