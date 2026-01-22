@@ -116,14 +116,24 @@ class PartProductionTracking(Base):
         counter_data[self.time_column] = pd.to_datetime(counter_data[self.time_column])
 
         # Merge part ID with counter data (backward fill - use most recent part)
+        # Select only needed columns to avoid suffix issues in merge
+        counter_subset = counter_data[[self.time_column, value_column_counter, "uuid"]].copy()
+        part_subset = part_data[[self.time_column, value_column_part]].copy()
+
         merged = pd.merge_asof(
-            counter_data,
-            part_data[[self.time_column, value_column_part]],
+            counter_subset,
+            part_subset,
             on=self.time_column,
             direction="backward"
         )
 
-        merged = merged.rename(columns={value_column_part: "part_number"})
+        # Rename part column
+        if value_column_part in merged.columns:
+            merged = merged.rename(columns={value_column_part: "part_number"})
+        else:
+            # Handle case where merge added suffix
+            merged = merged.rename(columns={f"{value_column_part}_y": "part_number"})
+
         merged = merged.dropna(subset=["part_number"])
 
         # Group by time window and part number

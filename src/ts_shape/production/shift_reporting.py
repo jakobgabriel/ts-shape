@@ -163,12 +163,20 @@ class ShiftReporting(Base):
             if not part_data.empty:
                 part_data[self.time_column] = pd.to_datetime(part_data[self.time_column])
 
+                # Select only needed columns to avoid suffix issues in merge
+                # Keep only the columns we need from counter_data
+                merge_cols = [self.time_column, value_column_counter, "shift", "date"]
+                counter_subset = counter_data[merge_cols].copy()
+                part_subset = part_data[[self.time_column, value_column_part]].copy()
+
                 counter_data = pd.merge_asof(
-                    counter_data,
-                    part_data[[self.time_column, value_column_part]],
+                    counter_subset,
+                    part_subset,
                     on=self.time_column,
                     direction="backward"
                 )
+
+                # Rename part column
                 counter_data = counter_data.rename(columns={value_column_part: "part_number"})
                 group_cols.append("part_number")
 
