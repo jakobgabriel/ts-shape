@@ -1,5 +1,6 @@
 import pandas as pd  # type: ignore
-from typing import List, Dict, Any, Optional
+import numpy as np
+from typing import List, Dict, Any, Optional, Callable
 
 from ts_shape.utils.base import Base
 
@@ -73,7 +74,7 @@ class ChangeoverEvents(Base):
         config: Optional[Dict[str, Any]] = None,
         fallback: Optional[Dict[str, Any]] = None,
     ) -> pd.DataFrame:
-        """Compute changeover windows per product change.
+        """Compute changeover windows per product change with enhanced configurability.
 
         until:
           - fixed_window: end = start + config['duration'] (e.g., '10m')
@@ -82,7 +83,11 @@ class ChangeoverEvents(Base):
                   'metrics': [
                     {'uuid': 'm1', 'value_column': 'value_double', 'band': 0.2, 'hold': '2m'},
                     ...
-                  ]
+                  ],
+                  'reference_method': 'expanding_median' | 'rolling_mean' | 'ewma' | 'target_value',
+                  'rolling_window': 5,  # for rolling_mean (number of points)
+                  'ewma_span': 10,  # for ewma
+                  'target_values': {'m1': 100.0, ...}  # for target_value
                 }
         fallback: {'default_duration': '10m', 'completed': False}
         """
@@ -117,47 +122,12 @@ class ChangeoverEvents(Base):
                 continue
 
             if until == "stable_band":
-                metric_defs = config.get("metrics", [])
-                metric_ends: List[pd.Timestamp] = []
-                for mdef in metric_defs:
-                    uid = mdef["uuid"]
-                    vcol = mdef.get("value_column", "value_double")
-                    band = float(mdef.get("band", 0.0))
-                    hold_td = pd.to_timedelta(mdef.get("hold", "0s"))
-                    s = (
-                        self.dataframe[self.dataframe["uuid"] == uid]
-                        .copy()
-                        .sort_values(self.time_column)
-                    )
-                    s[self.time_column] = pd.to_datetime(s[self.time_column])
-                    s = s[s[self.time_column] >= t0]
-                    if s.empty:
-                        continue
-                    # Rolling median reference and band mask
-                    # Use expanding median to be robust soon after change
-                    ref = s[vcol].expanding(min_periods=3).median()
-                    inside = (s[vcol] - ref).abs() <= band
-                    if not inside.any():
-                        continue
-                    gid = (inside.ne(inside.shift())).cumsum()
-                    end_found: Optional[pd.Timestamp] = None
-                    for _, seg in s.groupby(gid):
-                        seg_inside = inside.loc[seg.index]
-                        if not seg_inside.iloc[0]:
-                            continue
-                        start_seg = seg[self.time_column].iloc[0]
-                        end_seg = seg[self.time_column].iloc[-1]
-                        if (end_seg - start_seg) >= hold_td:
-                            end_found = start_seg
-                            break
-                    if end_found is not None:
-                        metric_ends.append(end_found)
-                if metric_defs and len(metric_ends) == len(metric_defs):
-                    end = max(metric_ends)
+                result = self._compute_stable_band_end(t0, config)
+                if result is not None:
                     rows.append(
                         {
                             "start": t0,
-                            "end": end,
+                            "end": result,
                             "uuid": self.event_uuid,
                             "source_uuid": product_uuid,
                             "is_delta": True,
@@ -182,4 +152,131 @@ class ChangeoverEvents(Base):
             )
 
         return pd.DataFrame(rows)
+
+    def _compute_stable_band_end(self, t0: pd.Timestamp, config: Dict[str, Any]) -> Optional[pd.Timestamp]:
+        """Compute end time for stable_band method with configurable reference methods."""
+        metric_defs = config.get("metrics", [])
+        reference_method = config.get("reference_method", "expanding_median")
+
+        metric_ends: List[pd.Timestamp] = []
+
+        for mdef in metric_defs:
+            uid = mdef["uuid"]
+            vcol = mdef.get("value_column", "value_double")
+            band = float(mdef.get("band", 0.0))
+            hold_td = pd.to_timedelta(mdef.get("hold", "0s"))
+
+            s = (
+                self.dataframe[self.dataframe["uuid"] == uid]
+                .copy()
+                .sort_values(self.time_column)
+            )
+            s[self.time_column] = pd.to_datetime(s[self.time_column])
+            s = s[s[self.time_column] >= t0]
+
+            if s.empty:
+                continue
+
+            # Calculate reference based on method
+            ref = self._calculate_reference(s[vcol], reference_method, config, mdef)
+
+            # Check stability
+            inside = (s[vcol] - ref).abs() <= band
+            if not inside.any():
+                continue
+
+            # Find first stable period
+            gid = (inside.ne(inside.shift())).cumsum()
+            end_found: Optional[pd.Timestamp] = None
+
+            for _, seg in s.groupby(gid):
+                seg_inside = inside.loc[seg.index]
+                if not seg_inside.iloc[0]:
+                    continue
+                start_seg = seg[self.time_column].iloc[0]
+                end_seg = seg[self.time_column].iloc[-1]
+                if (end_seg - start_seg) >= hold_td:
+                    end_found = start_seg
+                    break
+
+            if end_found is not None:
+                metric_ends.append(end_found)
+
+        if metric_defs and len(metric_ends) == len(metric_defs):
+            return max(metric_ends)
+
+        return None
+
+    def _calculate_reference(self, series: pd.Series, method: str, config: Dict[str, Any], mdef: Dict[str, Any]) -> pd.Series:
+        """Calculate reference values using various methods."""
+        if method == "expanding_median":
+            return series.expanding(min_periods=3).median()
+        elif method == "rolling_mean":
+            window_size = config.get("rolling_window", max(3, int(len(series) * 0.1)))
+            return series.rolling(window=window_size, min_periods=3).mean()
+        elif method == "ewma":
+            span = config.get("ewma_span", 10)
+            return series.ewm(span=span, min_periods=3).mean()
+        elif method == "target_value":
+            target_values = config.get("target_values", {})
+            target = target_values.get(mdef["uuid"], series.median())
+            return pd.Series([target] * len(series), index=series.index)
+        else:
+            # Default to expanding median
+            return series.expanding(min_periods=3).median()
+
+    def changeover_quality_metrics(
+        self,
+        product_uuid: str,
+        *,
+        value_column: str = "value_string",
+    ) -> pd.DataFrame:
+        """Compute quality metrics for changeovers.
+
+        Returns metrics including:
+        - changeover duration patterns
+        - frequency statistics
+        - time between changeovers
+        - product-specific metrics
+        """
+        changes = self.detect_changeover(product_uuid, value_column=value_column)
+
+        if changes.empty or len(changes) < 2:
+            return pd.DataFrame(
+                columns=[
+                    "product", "changeover_count", "avg_time_between_seconds",
+                    "min_time_between_seconds", "max_time_between_seconds",
+                    "std_time_between_seconds"
+                ]
+            )
+
+        # Group by product (new_value)
+        product_metrics = []
+        for product in changes["new_value"].unique():
+            product_changes = changes[changes["new_value"] == product]
+            product_times = product_changes["systime"].sort_values()
+
+            if len(product_times) < 2:
+                metrics = {
+                    "product": product,
+                    "changeover_count": len(product_changes),
+                    "avg_time_between_seconds": None,
+                    "min_time_between_seconds": None,
+                    "max_time_between_seconds": None,
+                    "std_time_between_seconds": None,
+                }
+            else:
+                product_diffs = product_times.diff().dt.total_seconds().dropna()
+
+                metrics = {
+                    "product": product,
+                    "changeover_count": len(product_changes),
+                    "avg_time_between_seconds": product_diffs.mean(),
+                    "min_time_between_seconds": product_diffs.min(),
+                    "max_time_between_seconds": product_diffs.max(),
+                    "std_time_between_seconds": product_diffs.std(),
+                }
+            product_metrics.append(metrics)
+
+        return pd.DataFrame(product_metrics)
 
