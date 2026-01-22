@@ -1446,6 +1446,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#ts_shape.events.production.changeover.ChangeoverEvents.changeover_quality_metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;changeover_quality_metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ts_shape.events.production.changeover.ChangeoverEvents.changeover_window" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4255,6 +4266,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#ts_shape.events.production.changeover.ChangeoverEvents.changeover_quality_metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;changeover_quality_metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ts_shape.events.production.changeover.ChangeoverEvents.changeover_window" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4411,10 +4433,17 @@ requiring a dedicated 'first good' signal.</p>
 <p><span class="doc-section-title">Methods:</span></p>
     <ul>
           <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-method&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;changeover_quality_metrics&lt;/span&gt; (&lt;code&gt;ts_shape.events.production.changeover.ChangeoverEvents.changeover_quality_metrics&lt;/code&gt;)" href="#ts_shape.events.production.changeover.ChangeoverEvents.changeover_quality_metrics">changeover_quality_metrics</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Compute quality metrics for changeovers.</p>
+            </div>
+          </li>
+          <li class="doc-section-item field-body">
             <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-method&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;changeover_window&lt;/span&gt; (&lt;code&gt;ts_shape.events.production.changeover.ChangeoverEvents.changeover_window&lt;/code&gt;)" href="#ts_shape.events.production.changeover.ChangeoverEvents.changeover_window">changeover_window</a></code></b>
             –
             <div class="doc-md-description">
-              <p>Compute changeover windows per product change.</p>
+              <p>Compute changeover windows per product change with enhanced configurability.</p>
             </div>
           </li>
           <li class="doc-section-item field-body">
@@ -4437,8 +4466,7 @@ requiring a dedicated 'first good' signal.</p>
 
                   <details class="quote">
                     <summary>Source code in <code>src/ts_shape/events/production/changeover.py</code></summary>
-                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
-<span class="normal">19</span>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
@@ -4446,7 +4474,8 @@ requiring a dedicated 'first good' signal.</p>
 <span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">27</span>
+<span class="normal">28</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -4475,6 +4504,142 @@ requiring a dedicated 'first good' signal.</p>
 <div class="doc doc-object doc-function">
 
 
+<h3 id="ts_shape.events.production.changeover.ChangeoverEvents.changeover_quality_metrics" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">changeover_quality_metrics</span>
+
+
+<a href="#ts_shape.events.production.changeover.ChangeoverEvents.changeover_quality_metrics" class="headerlink" title="Permanent link">¤</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span class="nf">changeover_quality_metrics</span><span class="p">(</span><span class="n"><span title="ts_shape.events.production.changeover.ChangeoverEvents.changeover_quality_metrics(product_uuid)">product_uuid</span></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n"><span title="ts_shape.events.production.changeover.ChangeoverEvents.changeover_quality_metrics(value_column)">value_column</span></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s1">&#39;value_string&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><span title="pandas.DataFrame">DataFrame</span></span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Compute quality metrics for changeovers.</p>
+<p>Returns metrics including:
+- changeover duration patterns
+- frequency statistics
+- time between changeovers
+- product-specific metrics</p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/ts_shape/events/production/changeover.py</code></summary>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">changeover_quality_metrics</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">product_uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">value_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;value_string&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute quality metrics for changeovers.</span>
+
+<span class="sd">    Returns metrics including:</span>
+<span class="sd">    - changeover duration patterns</span>
+<span class="sd">    - frequency statistics</span>
+<span class="sd">    - time between changeovers</span>
+<span class="sd">    - product-specific metrics</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">changes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_changeover</span><span class="p">(</span><span class="n">product_uuid</span><span class="p">,</span> <span class="n">value_column</span><span class="o">=</span><span class="n">value_column</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">changes</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">changes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;product&quot;</span><span class="p">,</span> <span class="s2">&quot;changeover_count&quot;</span><span class="p">,</span> <span class="s2">&quot;avg_time_between_seconds&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;min_time_between_seconds&quot;</span><span class="p">,</span> <span class="s2">&quot;max_time_between_seconds&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;std_time_between_seconds&quot;</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Group by product (new_value)</span>
+    <span class="n">product_metrics</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">changes</span><span class="p">[</span><span class="s2">&quot;new_value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+        <span class="n">product_changes</span> <span class="o">=</span> <span class="n">changes</span><span class="p">[</span><span class="n">changes</span><span class="p">[</span><span class="s2">&quot;new_value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">product</span><span class="p">]</span>
+        <span class="n">product_times</span> <span class="o">=</span> <span class="n">product_changes</span><span class="p">[</span><span class="s2">&quot;systime&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">product_times</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;product&quot;</span><span class="p">:</span> <span class="n">product</span><span class="p">,</span>
+                <span class="s2">&quot;changeover_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">product_changes</span><span class="p">),</span>
+                <span class="s2">&quot;avg_time_between_seconds&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;min_time_between_seconds&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;max_time_between_seconds&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;std_time_between_seconds&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">product_diffs</span> <span class="o">=</span> <span class="n">product_times</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+            <span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;product&quot;</span><span class="p">:</span> <span class="n">product</span><span class="p">,</span>
+                <span class="s2">&quot;changeover_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">product_changes</span><span class="p">),</span>
+                <span class="s2">&quot;avg_time_between_seconds&quot;</span><span class="p">:</span> <span class="n">product_diffs</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+                <span class="s2">&quot;min_time_between_seconds&quot;</span><span class="p">:</span> <span class="n">product_diffs</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                <span class="s2">&quot;max_time_between_seconds&quot;</span><span class="p">:</span> <span class="n">product_diffs</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+                <span class="s2">&quot;std_time_between_seconds&quot;</span><span class="p">:</span> <span class="n">product_diffs</span><span class="o">.</span><span class="n">std</span><span class="p">(),</span>
+            <span class="p">}</span>
+        <span class="n">product_metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">product_metrics</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
 <h3 id="ts_shape.events.production.changeover.ChangeoverEvents.changeover_window" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">changeover_window</span>
 
@@ -4485,7 +4650,7 @@ requiring a dedicated 'first good' signal.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Compute changeover windows per product change.</p>
+        <p>Compute changeover windows per product change with enhanced configurability.</p>
 
 
 <details class="until" open>
@@ -4497,7 +4662,11 @@ requiring a dedicated 'first good' signal.</p>
         'metrics': [
           {'uuid': 'm1', 'value_column': 'value_double', 'band': 0.2, 'hold': '2m'},
           ...
-        ]
+        ],
+        'reference_method': 'expanding_median' | 'rolling_mean' | 'ewma' | 'target_value',
+        'rolling_window': 5,  # for rolling_mean (number of points)
+        'ewma_span': 10,  # for ewma
+        'target_values': {'m1': 100.0, ...}  # for target_value
       }</li>
 </ul>
 </details>        <p>fallback: {'default_duration': '10m', 'completed': False}</p>
@@ -4505,8 +4674,7 @@ requiring a dedicated 'first good' signal.</p>
 
             <details class="quote">
               <summary>Source code in <code>src/ts_shape/events/production/changeover.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 66</span>
-<span class="normal"> 67</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 67</span>
 <span class="normal"> 68</span>
 <span class="normal"> 69</span>
 <span class="normal"> 70</span>
@@ -4593,37 +4761,7 @@ requiring a dedicated 'first good' signal.</p>
 <span class="normal">151</span>
 <span class="normal">152</span>
 <span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">changeover_window</span><span class="p">(</span>
+<span class="normal">154</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">changeover_window</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">product_uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -4633,7 +4771,7 @@ requiring a dedicated 'first good' signal.</p>
     <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">fallback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute changeover windows per product change.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute changeover windows per product change with enhanced configurability.</span>
 
 <span class="sd">    until:</span>
 <span class="sd">      - fixed_window: end = start + config[&#39;duration&#39;] (e.g., &#39;10m&#39;)</span>
@@ -4642,7 +4780,11 @@ requiring a dedicated 'first good' signal.</p>
 <span class="sd">              &#39;metrics&#39;: [</span>
 <span class="sd">                {&#39;uuid&#39;: &#39;m1&#39;, &#39;value_column&#39;: &#39;value_double&#39;, &#39;band&#39;: 0.2, &#39;hold&#39;: &#39;2m&#39;},</span>
 <span class="sd">                ...</span>
-<span class="sd">              ]</span>
+<span class="sd">              ],</span>
+<span class="sd">              &#39;reference_method&#39;: &#39;expanding_median&#39; | &#39;rolling_mean&#39; | &#39;ewma&#39; | &#39;target_value&#39;,</span>
+<span class="sd">              &#39;rolling_window&#39;: 5,  # for rolling_mean (number of points)</span>
+<span class="sd">              &#39;ewma_span&#39;: 10,  # for ewma</span>
+<span class="sd">              &#39;target_values&#39;: {&#39;m1&#39;: 100.0, ...}  # for target_value</span>
 <span class="sd">            }</span>
 <span class="sd">    fallback: {&#39;default_duration&#39;: &#39;10m&#39;, &#39;completed&#39;: False}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -4677,47 +4819,12 @@ requiring a dedicated 'first good' signal.</p>
             <span class="k">continue</span>
 
         <span class="k">if</span> <span class="n">until</span> <span class="o">==</span> <span class="s2">&quot;stable_band&quot;</span><span class="p">:</span>
-            <span class="n">metric_defs</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="n">metric_ends</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">mdef</span> <span class="ow">in</span> <span class="n">metric_defs</span><span class="p">:</span>
-                <span class="n">uid</span> <span class="o">=</span> <span class="n">mdef</span><span class="p">[</span><span class="s2">&quot;uuid&quot;</span><span class="p">]</span>
-                <span class="n">vcol</span> <span class="o">=</span> <span class="n">mdef</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value_column&quot;</span><span class="p">,</span> <span class="s2">&quot;value_double&quot;</span><span class="p">)</span>
-                <span class="n">band</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">mdef</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;band&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
-                <span class="n">hold_td</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">mdef</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hold&quot;</span><span class="p">,</span> <span class="s2">&quot;0s&quot;</span><span class="p">))</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;uuid&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">uid</span><span class="p">]</span>
-                    <span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_column</span><span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">s</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">time_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">time_column</span><span class="p">])</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">time_column</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">t0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="c1"># Rolling median reference and band mask</span>
-                <span class="c1"># Use expanding median to be robust soon after change</span>
-                <span class="n">ref</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">vcol</span><span class="p">]</span><span class="o">.</span><span class="n">expanding</span><span class="p">(</span><span class="n">min_periods</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
-                <span class="n">inside</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">vcol</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">band</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">inside</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                    <span class="k">continue</span>
-                <span class="n">gid</span> <span class="o">=</span> <span class="p">(</span><span class="n">inside</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="n">inside</span><span class="o">.</span><span class="n">shift</span><span class="p">()))</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
-                <span class="n">end_found</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">seg</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
-                    <span class="n">seg_inside</span> <span class="o">=</span> <span class="n">inside</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">seg</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">seg_inside</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                        <span class="k">continue</span>
-                    <span class="n">start_seg</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">time_column</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">end_seg</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">time_column</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">end_seg</span> <span class="o">-</span> <span class="n">start_seg</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">hold_td</span><span class="p">:</span>
-                        <span class="n">end_found</span> <span class="o">=</span> <span class="n">start_seg</span>
-                        <span class="k">break</span>
-                <span class="k">if</span> <span class="n">end_found</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">metric_ends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end_found</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">metric_defs</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">metric_ends</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">metric_defs</span><span class="p">):</span>
-                <span class="n">end</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">metric_ends</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_stable_band_end</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">t0</span><span class="p">,</span>
-                        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">end</span><span class="p">,</span>
+                        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">,</span>
                         <span class="s2">&quot;uuid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_uuid</span><span class="p">,</span>
                         <span class="s2">&quot;source_uuid&quot;</span><span class="p">:</span> <span class="n">product_uuid</span><span class="p">,</span>
                         <span class="s2">&quot;is_delta&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
@@ -4768,8 +4875,7 @@ until the next change.</p>
 
             <details class="quote">
               <summary>Source code in <code>src/ts_shape/events/production/changeover.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">29</span>
-<span class="normal">30</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">30</span>
 <span class="normal">31</span>
 <span class="normal">32</span>
 <span class="normal">33</span>
@@ -4803,7 +4909,8 @@ until the next change.</p>
 <span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
-<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">detect_changeover</span><span class="p">(</span>
+<span class="normal">64</span>
+<span class="normal">65</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">detect_changeover</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">product_uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
