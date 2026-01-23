@@ -300,7 +300,7 @@ Quality = Good Parts / Total Parts
 
 ### Example Usage
 ```python
-from ts_shape.production import OEETracking
+from ts_shape.events.production import OEETracking
 
 oee = OEETracking(df)
 

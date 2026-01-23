@@ -85,7 +85,7 @@ Use MyST Markdown for documentation:
 
 \`\`\`python
 # Code example
-from ts_shape.production import PartProductionTracking
+from ts_shape.events.production import PartProductionTracking
 tracker = PartProductionTracking(df)
 \`\`\`
 ```
@@ -100,7 +100,7 @@ Section Title
 
 .. code-block:: python
 
-   from ts_shape.production import PartProductionTracking
+   from ts_shape.events.production import PartProductionTracking
    tracker = PartProductionTracking(df)
 
 .. note::

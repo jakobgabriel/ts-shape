@@ -24,7 +24,7 @@ pip install -e .
 
 ```python
 import ts_shape
-from ts_shape.production import PartProductionTracking
+from ts_shape.events.production import PartProductionTracking
 
 print("ts-shape installed successfully!")
 ```

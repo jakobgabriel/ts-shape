@@ -40,7 +40,7 @@ df = pd.DataFrame({
 ### Track Production Quantities
 
 ```python
-from ts_shape.production import PartProductionTracking
+from ts_shape.events.production import PartProductionTracking
 
 tracker = PartProductionTracking(df)
 
@@ -60,7 +60,7 @@ print(daily)
 ### Analyze Cycle Times
 
 ```python
-from ts_shape.production import CycleTimeTracking
+from ts_shape.events.production import CycleTimeTracking
 
 tracker = CycleTimeTracking(df)
 
@@ -82,7 +82,7 @@ print(stats)
 ### Production by Shift
 
 ```python
-from ts_shape.production import ShiftReporting
+from ts_shape.events.production import ShiftReporting
 
 reporter = ShiftReporting(df)
 
@@ -104,7 +104,7 @@ print(shifts)
 ### Calculate Availability
 
 ```python
-from ts_shape.production import DowntimeTracking
+from ts_shape.events.production import DowntimeTracking
 
 tracker = DowntimeTracking(df)
 
@@ -145,7 +145,7 @@ print(top_reasons)
 ### NOK (Defective Parts) Analysis
 
 ```python
-from ts_shape.production import QualityTracking
+from ts_shape.events.production import QualityTracking
 
 tracker = QualityTracking(df)
 
@@ -185,7 +185,7 @@ print(defects)
 Combine all modules for a complete performance picture:
 
 ```python
-from ts_shape.production import *
+from ts_shape.events.production import *
 
 # 1. QUANTITY: How many parts?
 production = PartProductionTracking(df)

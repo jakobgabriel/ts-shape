@@ -6,7 +6,7 @@ Complete API reference for all production modules.
 PartProductionTracking
 ----------------------
 
-.. automodule:: ts_shape.production.part_tracking
+.. automodule:: ts_shape.events.production.part_tracking
    :members:
    :undoc-members:
    :show-inheritance:
@@ -14,7 +14,7 @@ PartProductionTracking
 CycleTimeTracking
 -----------------
 
-.. automodule:: ts_shape.production.cycle_time_tracking
+.. automodule:: ts_shape.events.production.cycle_time_tracking
    :members:
    :undoc-members:
    :show-inheritance:
@@ -22,7 +22,7 @@ CycleTimeTracking
 ShiftReporting
 --------------
 
-.. automodule:: ts_shape.production.shift_reporting
+.. automodule:: ts_shape.events.production.shift_reporting
    :members:
    :undoc-members:
    :show-inheritance:
@@ -30,7 +30,7 @@ ShiftReporting
 DowntimeTracking
 ----------------
 
-.. automodule:: ts_shape.production.downtime_tracking
+.. automodule:: ts_shape.events.production.downtime_tracking
    :members:
    :undoc-members:
    :show-inheritance:
@@ -38,7 +38,7 @@ DowntimeTracking
 QualityTracking
 ---------------
 
-.. automodule:: ts_shape.production.quality_tracking
+.. automodule:: ts_shape.events.production.quality_tracking
    :members:
    :undoc-members:
    :show-inheritance:

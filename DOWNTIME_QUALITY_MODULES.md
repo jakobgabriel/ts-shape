@@ -22,7 +22,7 @@ Track machine downtimes, availability, and identify top reasons for production l
 ### Quick Start
 
 ```python
-from ts_shape.production import DowntimeTracking
+from ts_shape.events.production import DowntimeTracking
 
 # Initialize tracker
 tracker = DowntimeTracking(df)
@@ -169,7 +169,7 @@ Track NOK (Not OK/defective) parts, quality rates, and identify defect patterns.
 ### Quick Start
 
 ```python
-from ts_shape.production import QualityTracking
+from ts_shape.events.production import QualityTracking
 
 # Initialize tracker
 tracker = QualityTracking(df)
@@ -309,7 +309,7 @@ result = tracker.daily_quality_summary(
 **Question**: "What was our performance yesterday?"
 
 ```python
-from ts_shape.production import DowntimeTracking, QualityTracking
+from ts_shape.events.production import DowntimeTracking, QualityTracking
 
 # Downtime analysis
 downtime_tracker = DowntimeTracking(df)
@@ -419,7 +419,7 @@ print(f"\nAverage weekly OEE: {weekly['oee_approx'].mean():.1f}%")
 These modules work seamlessly with the existing production tracking modules:
 
 ```python
-from ts_shape.production import (
+from ts_shape.events.production import (
     PartProductionTracking,
     CycleTimeTracking,
     ShiftReporting,
