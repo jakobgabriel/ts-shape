@@ -1,5 +1,7 @@
+mkdocs>=1.5
+mkdocs-material>=9.0
 mkdocs-literate-nav
-mkdocs-material
 mkdocs-gen-files
 mkdocs-callouts
-mkdocstrings-python
+mkdocstrings[python]>=0.24
+black
