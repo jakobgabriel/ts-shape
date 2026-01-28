@@ -1,141 +1,205 @@
 # Concept
 
-ts-shape is a lightweight, composable toolkit for shaping time series data into analysis-ready DataFrames. It focuses on three pillars: loading, transforming, and extracting higher-level features/events — with a consistent, Pandas-first interface.
+ts-shape is a lightweight toolkit for shaping timeseries data into analysis-ready DataFrames.
 
-## Architecture Overview
+## Architecture
 
 ```mermaid
-flowchart TD
-    A[Loaders: Timeseries + Metadata] --> B[Combine: join on uuid]
-    B --> C[Transform: Filters / Functions / Time Functions / Calculator]
-    C --> D[Features: Stats / Time Stats / Cycles]
-    D --> E[Events: Quality / Maintenance / Production / Engineering]
+flowchart LR
+    subgraph Load
+        L1[Parquet]
+        L2[S3/Azure]
+        L3[TimescaleDB]
+        L4[Metadata]
+    end
+
+    L1 --> C[Combine]
+    L2 --> C
+    L3 --> C
+    L4 --> C
+
+    C --> T[Transform]
+    T --> F[Features]
+    F --> E[Events]
+    E --> O[Output]
 ```
 
-Core ideas:
+## Core Principles
 
-- DataFrame-in, DataFrame-out: Every stage accepts and returns Pandas DataFrames for easy composition.
-- Simple schema: Timeseries frames use a compact set of typed columns; metadata/enrichment joins on a stable `uuid` key.
-- Modular blocks: Use only what you need — loaders, transforms, features, and events are decoupled.
+| Principle | Description |
+|-----------|-------------|
+| **DataFrame-First** | Every operation accepts and returns Pandas DataFrames |
+| **Modular** | Use only what you need - all components are decoupled |
+| **Composable** | Chain operations together like building blocks |
+| **Consistent Schema** | Simple, predictable data structure |
 
 ## Data Model
 
-Timeseries DataFrame (typical columns):
+### Timeseries DataFrame
 
-- uuid: string identifier for a signal/series
-- systime: timestamp (tz-aware recommended)
-- value_double, value_integer, value_string, value_bool: value channels (one or more may be present)
-- is_delta: boolean flag indicating delta semantics (optional)
+| Column | Type | Description |
+|--------|------|-------------|
+| `uuid` | string | Signal/sensor identifier |
+| `systime` | datetime | Timestamp (tz-aware recommended) |
+| `value_double` | float | Numeric measurements |
+| `value_integer` | int | Counter/integer values |
+| `value_string` | string | Categorical data |
+| `value_bool` | bool | Binary states |
+| `is_delta` | bool | Delta vs absolute (optional) |
 
-Metadata DataFrame:
+### Metadata DataFrame
 
-- Indexed by uuid or has a `uuid` column
-- Arbitrary columns describing the signal (label, unit, config.*)
+| Column | Type | Description |
+|--------|------|-------------|
+| `uuid` | string | Signal identifier (join key) |
+| `label` | string | Human-readable name |
+| `unit` | string | Measurement unit |
+| `config.*` | any | Additional configuration |
 
-Conventions:
+## Module Reference
 
-- Join key is `uuid` by default.
-- Keep values narrow: prefer one type-specific value column where possible.
+### Loaders
 
-## Loaders
+| Module | Source | Method |
+|--------|--------|--------|
+| `ParquetLoader` | Local/remote parquet | `load_all_files()` |
+| `S3ProxyParquetLoader` | S3-compatible storage | `fetch_data_as_dataframe()` |
+| `AzureBlobLoader` | Azure Blob containers | `fetch_data_as_dataframe()` |
+| `TimescaleLoader` | TimescaleDB | `fetch_data_as_dataframe()` |
+| `MetadataLoader` | JSON files | `to_df()` |
 
-Timeseries:
+### Transforms
 
-- Parquet folder loader: Recursively reads parquet files from local/remote mounts.
-- S3 proxy parquet loader: Streams parquet via S3-compatible endpoints.
-- Azure Blob parquet loader: Loads parquet files from containers; supports time-based folder structure (parquet/YYYY/MM/DD/HH) and UUID filters.
-- TimescaleDB loader: Streams rows by UUID and time range; can emit parquet partitioned by hour.
+| Module | Purpose |
+|--------|---------|
+| `NumericFilter` | Filter by numeric range, null handling |
+| `StringFilter` | Pattern matching, contains, regex |
+| `DateTimeFilter` | Time range, weekday, hour filters |
+| `BooleanFilter` | Flag-based row filtering |
+| `NumericCalc` | Derived columns, calculations |
+| `TimezoneShift` | Convert between timezones |
+| `TimestampConverter` | Parse/format timestamps |
 
-Metadata:
+### Features
 
-- JSON metadata loader: Robustly ingests JSON in multiple shapes (list-of-records, dicts of lists/dicts), flattens `config` into columns, and indexes by `uuid`.
+| Module | Output |
+|--------|--------|
+| `NumericStatistics` | min, max, mean, std, percentiles |
+| `TimestampStats` | first, last, count, coverage |
+| `StringStatistics` | value counts, cardinality |
+| `CycleExtractor` | Cycle detection and metrics |
 
-All loaders expose either a DataFrame-returning method (e.g., `fetch_data_as_dataframe`, `to_df`) or a parquet materialization method when desired.
+### Events
 
-## Combination Layer
+| Module | Detection |
+|--------|-----------|
+| `OutlierDetection` | Z-score, IQR outliers |
+| `StatisticalProcessControl` | SPC/control chart rules |
+| `ToleranceDeviation` | Specification violations |
+| `MachineStateEvents` | Run/idle state changes |
+| `StartupEvents` | Startup detection |
+| `SetpointEvents` | Setpoint changes |
 
-Use `DataIntegratorHybrid.combine_data(...)` to merge timeseries and metadata sources into one frame:
+## Pipeline Pattern
 
-- Accepts DataFrames or source objects (with `fetch_data_as_dataframe`/`fetch_metadata`).
-- Merges on `uuid` (configurable), supporting different join strategies (`left`, `inner`, ...).
-
-Example:
 ```python
+# 1. LOAD
+from ts_shape.loader.timeseries.parquet_loader import ParquetLoader
+from ts_shape.loader.metadata.metadata_json_loader import MetadataLoader
+
+ts_df = ParquetLoader.load_all_files("data/")
+meta_df = MetadataLoader("config/signals.json").to_df()
+
+# 2. COMBINE
 from ts_shape.loader.combine.integrator import DataIntegratorHybrid
 
-combined = DataIntegratorHybrid.combine_data(
-    timeseries_sources=[ts_df_or_loader],
-    metadata_sources=[meta_df_or_loader],
-    uuids=["id-1", "id-2"],
-    join_key="uuid",
-    merge_how="left",
+df = DataIntegratorHybrid.combine_data(
+    timeseries_sources=[ts_df],
+    metadata_sources=[meta_df],
+    join_key="uuid"
 )
+
+# 3. TRANSFORM
+from ts_shape.transform.filter.datetime_filter import DateTimeFilter
+from ts_shape.transform.filter.numeric_filter import NumericFilter
+
+df = DateTimeFilter.filter_after(df, "systime", "2024-01-01")
+df = NumericFilter.filter_not_null(df, "value_double")
+
+# 4. ANALYZE
+from ts_shape.features.stats.numeric_stats import NumericStatistics
+from ts_shape.events.quality.outlier_detection import OutlierDetection
+
+stats = NumericStatistics(df, "value_double")
+outliers = OutlierDetection.detect_zscore_outliers(df, "value_double", threshold=3.0)
 ```
 
-## Transform
+## Design Decisions
 
-Reusable blocks to reshape and clean data:
+### Why DataFrames?
 
-- Filters: datatype-specific predicates (numeric/string/boolean/datetime) to subset rows or fix values.
-- Functions: arbitrary lambda-like transformations for columns.
-- Time Functions: timestamp operations (timezone shift, conversion, resampling helpers).
-- Calculator: numeric calculators to derive engineered columns.
+- **Universal**: Understood by all data scientists
+- **Ecosystem**: Works with matplotlib, scikit-learn, etc.
+- **Debuggable**: Easy to inspect intermediate results
+- **Exportable**: Save to CSV, parquet, database
 
-All transformations accept/return DataFrames to compose pipelines like small, testable steps.
+### Why Modular?
 
-## Features
+- **Lightweight**: Import only what you need
+- **Testable**: Each component works independently
+- **Extensible**: Add custom modules easily
+- **Maintainable**: Clear separation of concerns
 
-Feature extractors summarize series into compact descriptors:
+### Why This Schema?
 
-- Stats: per-type descriptive stats (min/max/mean/std for numeric, frequency for strings, etc.).
-- Time Stats: timestamp-specific stats (first/last timestamp, counts per window, coverage).
-- Cycles: utilities to identify and process cycles in signals.
-
-`DescriptiveFeatures.compute(...)` can emit a nested dict or a flat DataFrame for easy downstream analysis.
-
-## Events
-
-Event detectors derive categorical flags and ranges from raw signals:
-
-- Quality: outlier detection, SPC rules, tolerance deviations.
-- Maintenance: downtime and other operational events.
-- Production/Engineering: domain patterns extractable from the shaped series.
-
-Each detector takes a DataFrame and returns either annotated frames or event tables.
-
-## Typical Pipeline
-
-1. Load
-   - Read timeseries (e.g., parquet or DB) into a DataFrame with `uuid`, `systime`, and values.
-   - Load metadata JSON and convert to a `uuid`-indexed DataFrame.
-
-2. Combine
-   - Join timeseries with metadata on `uuid` to enrich context.
-
-3. Transform
-   - Apply filters/functions/time operations; compute engineered columns.
-
-4. Features & Events
-   - Compute stats and time stats; identify domain events.
-
-5. Output
-   - Keep as a DataFrame, write parquet/CSV, or feed to a model/BI tool.
-
-## Design Principles
-
-- Minimal assumptions: Works with partial columns; you choose the value channel(s) in play.
-- Composability: Small building blocks; pure DataFrame IO.
-- Performance-aware: Vectorized Pandas ops; chunked DB reads; concurrent IO for remote storage.
-- Extensible: Add new loaders, transforms, features, or events with simple, documented interfaces.
+- **Flexible**: Not all columns required
+- **Multi-type**: Handles numeric, string, boolean values
+- **Joinable**: UUID enables metadata enrichment
+- **Sparse-friendly**: Nulls are fine
 
 ## Extending ts-shape
 
-- New loader: implement a class with `fetch_data_as_dataframe()` or an explicit `to_parquet()` flow.
-- New transform: write a function that takes/returns a DataFrame; place under `transform/*`.
-- New feature/event: follow existing patterns; accept a DataFrame and return a summary/event frame.
+### Custom Loader
+
+```python
+class MyDatabaseLoader:
+    def __init__(self, connection: str):
+        self.conn = connection
+
+    def fetch_data_as_dataframe(self, start: str, end: str) -> pd.DataFrame:
+        # Query database, return DataFrame with uuid, systime, value_*
+        return df
+```
+
+### Custom Transform
+
+```python
+class MyFilter:
+    @staticmethod
+    def filter_business_hours(df: pd.DataFrame, column: str) -> pd.DataFrame:
+        hours = pd.to_datetime(df[column]).dt.hour
+        return df[(hours >= 9) & (hours < 17)]
+```
+
+### Custom Feature
+
+```python
+class MyMetrics:
+    def __init__(self, df: pd.DataFrame, column: str):
+        self.data = df[column].dropna()
+
+    def coefficient_of_variation(self) -> float:
+        return self.data.std() / self.data.mean()
+```
 
 ## When to Use ts-shape
 
-- You need a quick, pythonic path from raw timeseries + context to analysis-ready tables.
-- You want modular building blocks instead of a monolithic framework.
-- You operate across storage backends (parquet, S3/Azure, SQL) and prefer a unified DataFrame API.
+| Use Case | ts-shape? |
+|----------|-----------|
+| Load parquet/S3/Azure/DB into DataFrames | Yes |
+| Filter and transform timeseries | Yes |
+| Compute statistics on signals | Yes |
+| Detect outliers and events | Yes |
+| Real-time streaming | No (use Kafka/Flink) |
+| Sub-millisecond latency | No (use specialized libs) |
+| GPU acceleration | No (use cuDF/Rapids) |
