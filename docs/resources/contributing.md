@@ -167,7 +167,7 @@ Then create a Pull Request on GitHub with:
 ```python
 import pytest
 import pandas as pd
-from ts_shape.production import ModuleName
+from ts_shape.events.production import ModuleName
 
 @pytest.fixture
 def sample_data():
@@ -219,7 +219,7 @@ When adding new features, update:
 
 **Example**:
 \`\`\`python
-from ts_shape.production import NewModule
+from ts_shape.events.production import NewModule
 
 tracker = NewModule(df)
 result = tracker.new_method(param='value')

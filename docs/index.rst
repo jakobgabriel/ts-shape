@@ -16,7 +16,7 @@ Quick Start
 
 .. code-block:: python
 
-   from ts_shape.production import (
+   from ts_shape.events.production import (
        PartProductionTracking,
        CycleTimeTracking,
        ShiftReporting,
@@ -135,7 +135,7 @@ Examples
 .. code-block:: python
 
    # Complete daily performance picture
-   from ts_shape.production import *
+   from ts_shape.events.production import *
 
    # Quantity
    production = PartProductionTracking(df)

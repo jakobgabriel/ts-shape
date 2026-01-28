@@ -2,7 +2,7 @@ import pandas as pd  # type: ignore
 import pytest
 from datetime import datetime, timedelta
 
-from ts_shape.production import DowntimeTracking, QualityTracking
+from ts_shape.events.production import DowntimeTracking, QualityTracking
 
 
 # ============================================================================
@@ -558,7 +558,7 @@ def test_downtime_quality_integration(sample_downtime_data, sample_quality_data)
 
 def test_module_imports():
     """Test that all modules can be imported correctly."""
-    from ts_shape.production import DowntimeTracking, QualityTracking
+    from ts_shape.events.production import DowntimeTracking, QualityTracking
 
     assert DowntimeTracking is not None
     assert QualityTracking is not None

@@ -30,7 +30,7 @@ Quick Example
 
 .. code-block:: python
 
-   from ts_shape.production import (
+   from ts_shape.events.production import (
        PartProductionTracking,
        CycleTimeTracking,
        ShiftReporting,

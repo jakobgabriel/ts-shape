@@ -191,7 +191,7 @@ by_part = tracker.quality_by_part('ok_counter', 'nok_counter', 'part_id')
 Combine all modules for a complete daily performance picture:
 
 ```python
-from ts_shape.production import (
+from ts_shape.events.production import (
     PartProductionTracking,
     CycleTimeTracking,
     ShiftReporting,
@@ -465,7 +465,7 @@ Combined, these modules give you:
 # pip install ts-shape
 
 # Import all production modules
-from ts_shape.production import (
+from ts_shape.events.production import (
     PartProductionTracking,
     CycleTimeTracking,
     ShiftReporting,

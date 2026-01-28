@@ -2,7 +2,7 @@ import pandas as pd  # type: ignore
 import pytest
 from datetime import datetime, timedelta
 
-from ts_shape.production import (
+from ts_shape.events.production import (
     PartProductionTracking,
     CycleTimeTracking,
     ShiftReporting,
@@ -587,7 +587,7 @@ def test_complete_production_workflow(sample_production_data, sample_cycle_data)
 
 def test_module_imports():
     """Test that all modules can be imported correctly."""
-    from ts_shape.production import (
+    from ts_shape.events.production import (
         PartProductionTracking,
         CycleTimeTracking,
         ShiftReporting,

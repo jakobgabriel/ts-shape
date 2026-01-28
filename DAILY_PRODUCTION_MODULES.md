@@ -32,7 +32,7 @@ Tracks production quantities by part number using two simple signals:
 Production quantity per time window
 
 ```python
-from ts_shape.production import PartProductionTracking
+from ts_shape.events.production import PartProductionTracking
 
 tracker = PartProductionTracking(df)
 hourly = tracker.production_by_part(
@@ -87,7 +87,7 @@ Analyzes cycle times by part number using two signals:
 Individual cycle times
 
 ```python
-from ts_shape.production import CycleTimeTracking
+from ts_shape.events.production import CycleTimeTracking
 
 tracker = CycleTimeTracking(df)
 cycles = tracker.cycle_time_by_part(
@@ -157,7 +157,7 @@ Shift-based production analysis with configurable shift times.
 ### Configuration
 
 ```python
-from ts_shape.production import ShiftReporting
+from ts_shape.events.production import ShiftReporting
 
 reporter = ShiftReporting(df, shift_definitions={
     "day": ("06:00", "14:00"),
@@ -228,7 +228,7 @@ Identify top/bottom performers
 
 ```python
 import pandas as pd
-from ts_shape.production import (
+from ts_shape.events.production import (
     PartProductionTracking,
     CycleTimeTracking,
     ShiftReporting
@@ -413,7 +413,7 @@ hourly = cycle_tracker.hourly_cycle_time_summary(
 The modules are already installed in your ts-shape package:
 
 ```python
-from ts_shape.production import (
+from ts_shape.events.production import (
     PartProductionTracking,
     CycleTimeTracking,
     ShiftReporting,

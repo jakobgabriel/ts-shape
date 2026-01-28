@@ -43,7 +43,7 @@ These modules give you complete visibility into manufacturing:
 ## 🚀 Quick Start
 
 ```python
-from ts_shape.production import (
+from ts_shape.events.production import (
     PartProductionTracking,
     CycleTimeTracking,
     ShiftReporting,
