@@ -117,27 +117,18 @@ plugins:
     handlers:
       python:
         paths: [src]
-        inventories:
-          - https://docs.python.org/3/objects.inv
-          - https://mkdocstrings.github.io/autorefs/objects.inv
         options:
-          docstring_options:
-            ignore_init_summary: true
-          docstring_section_style: list
-          filters: ["!^_"]
-          heading_level: 1
-          inherited_members: true
-          merge_init_into_class: true
-          parameter_headings: true
-          separate_signature: true
+          docstring_style: google
+          docstring_section_style: table
+          show_source: false
           show_root_heading: true
-          show_root_full_path: true
+          show_root_full_path: false
+          heading_level: 2
+          members_order: source
+          filters: ["!^_"]
+          merge_init_into_class: true
+          separate_signature: true
           show_signature_annotations: true
-          show_source: true
-          show_symbol_type_heading: true
-          show_symbol_type_toc: true
-          signature_crossrefs: true
-          summary: true
 
 extra:
   social:

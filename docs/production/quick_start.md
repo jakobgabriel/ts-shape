@@ -246,7 +246,7 @@ quality = QualityTracking(df, shift_definitions=custom_shifts)
 - [Daily Production Modules Guide](daily_production.md) - Complete PartProductionTracking, CycleTimeTracking, ShiftReporting docs
 - [Downtime & Quality Guide](downtime_quality.md) - Complete DowntimeTracking and QualityTracking docs
 - [Complete Module Summary](complete_guide.md) - All 5 modules overview with examples
-- [API Reference](../api/production.rst) - Detailed API documentation
+- [API Reference](../reference/ts_shape/events/production/) - Detailed API documentation
 
 ## Common Questions
 
@@ -268,6 +268,6 @@ A: Yes! All methods return pandas DataFrames. Use `.to_csv()`, `.to_excel()`, et
 ## Need Help?
 
 - Check the [complete documentation](complete_guide.md)
-- Review [API reference](../api/production.rst)
-- See [future features](../resources/future_features.md) for upcoming additions
+- Review [API reference](../reference/ts_shape/events/production/)
+- See [future features](future_features.md) for upcoming additions
 - Report issues on GitHub

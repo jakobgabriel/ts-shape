@@ -96,5 +96,5 @@ pip install numba pyarrow
 ## Next Steps
 
 - [Quick Start Guide](quick_start.md)
-- [Daily Production Modules](daily_production.md)
-- [Complete User Guide](complete_guide.md)
+- [Daily Production Modules](../production/daily_production.md)
+- [Complete User Guide](../production/complete_guide.md)
