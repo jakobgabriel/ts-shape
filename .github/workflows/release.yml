@@ -1,0 +1,247 @@
+name: Release Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      skip_version_bump:
+        description: 'Skip version bump (use current version)'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+      dry_run:
+        description: 'Dry run - skip PyPI publish'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "release"
+  cancel-in-progress: false
+
+jobs:
+  # =============================================================================
+  # Job 1: Auto Version Bump
+  # =============================================================================
+  version-bump:
+    name: Bump Version
+    runs-on: ubuntu-latest
+    if: >-
+      github.actor != 'github-actions[bot]' &&
+      !contains(github.event.head_commit.message, '[skip ci]')
+    outputs:
+      version: ${{ steps.bump.outputs.version }}
+      skipped: ${{ steps.check_skip.outputs.skipped }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if version bump should be skipped
+        id: check_skip
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.skip_version_bump }}" == "true" ]]; then
+            echo "skipped=true" >> $GITHUB_OUTPUT
+          else
+            echo "skipped=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Python
+        if: steps.check_skip.outputs.skipped != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Determine bump part
+        if: steps.check_skip.outputs.skipped != 'true'
+        id: bump_part
+        run: |
+          MSG="$(git log -1 --pretty=%B)"
+          if echo "$MSG" | grep -qiE '(BREAKING CHANGE|#major|!:)'; then
+            PART=major
+          elif echo "$MSG" | grep -qiE '(^feat|#minor)'; then
+            PART=minor
+          else
+            PART=patch
+          fi
+          echo "part=$PART" >> $GITHUB_OUTPUT
+          echo "Commit message: $MSG"
+          echo "Bump part: $PART"
+
+      - name: Bump version in setup.py
+        if: steps.check_skip.outputs.skipped != 'true'
+        id: bump
+        env:
+          PART: ${{ steps.bump_part.outputs.part }}
+        run: |
+          python - <<'PY'
+          import os, re, pathlib
+          part = os.environ.get('PART','patch')
+          p = pathlib.Path('setup.py')
+          s = p.read_text(encoding='utf-8')
+          m = re.search(r"version\s*=\s*['\"](\d+)\.(\d+)\.(\d+)['\"]", s)
+          if not m:
+              raise SystemExit('Version not found in setup.py (expected version="X.Y.Z")')
+          major, minor, patch = map(int, m.groups())
+          if part == 'major':
+              major, minor, patch = major + 1, 0, 0
+          elif part == 'minor':
+              minor, patch = minor + 1, 0
+          else:
+              patch += 1
+          new = f"{major}.{minor}.{patch}"
+          s2 = re.sub(r"(version\s*=\s*['\"])\d+\.\d+\.\d+(['\"])", rf"\\1{new}\\2", s)
+          p.write_text(s2, encoding='utf-8')
+          print(f"New version: {new}")
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"version={new}\n")
+          PY
+
+      - name: Get current version (if skipped)
+        if: steps.check_skip.outputs.skipped == 'true'
+        id: current_version
+        run: |
+          VERSION=$(python -c "import re; s=open('setup.py').read(); m=re.search(r\"version\s*=\s*['\\\"](\d+\.\d+\.\d+)['\\\"]\", s); print(m.group(1) if m else '0.0.0')")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Commit and tag
+        if: steps.check_skip.outputs.skipped != 'true'
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add setup.py
+          git commit -m "chore(release): v${VERSION} [skip ci]" || echo "No changes to commit"
+          git tag -a "v${VERSION}" -m "Release v${VERSION}" || echo "Tag already exists"
+          git push origin HEAD:main
+          git push origin "v${VERSION}" || echo "Tag push failed"
+
+  # =============================================================================
+  # Job 2: Build Documentation (Sphinx)
+  # =============================================================================
+  build-docs:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    needs: version-bump
+    if: always() && !cancelled() && !contains(github.event.head_commit.message, '[skip ci]')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints myst-parser
+          pip install -e .
+
+      - name: Build Sphinx documentation
+        run: |
+          cd docs
+          make html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs/_build/html'
+
+  # =============================================================================
+  # Job 3: Deploy Documentation to GitHub Pages
+  # =============================================================================
+  deploy-docs:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    needs: build-docs
+    if: always() && needs.build-docs.result == 'success'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # =============================================================================
+  # Job 4: Build Python Package
+  # =============================================================================
+  build-package:
+    name: Build Package
+    runs-on: ubuntu-latest
+    needs: version-bump
+    if: always() && !cancelled() && !contains(github.event.head_commit.message, '[skip ci]')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Upgrade pip and install build backend
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade build wheel setuptools
+
+      - name: Install runtime requirements
+        if: hashFiles('requirements.txt') != ''
+        run: |
+          python -m pip install -r requirements.txt
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+
+  # =============================================================================
+  # Job 5: Publish to PyPI
+  # =============================================================================
+  publish-pypi:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    needs: [version-bump, build-package]
+    if: >-
+      always() &&
+      needs.build-package.result == 'success' &&
+      (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run == 'false'))
+
+    steps:
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
