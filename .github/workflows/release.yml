@@ -101,7 +101,12 @@ jobs:
           else:
               patch += 1
           new = f"{major}.{minor}.{patch}"
-          s2 = re.sub(r"(version\s*=\s*['\"])\d+\.\d+\.\d+(['\"])", rf"\\1{new}\\2", s)
+          # Use named groups to avoid backreference ambiguity with digits
+          s2 = re.sub(
+              r"(?P<pre>version\s*=\s*['\"])\d+\.\d+\.\d+(?P<suf>['\"])",
+              rf"\g<pre>{new}\g<suf>",
+              s
+          )
           p.write_text(s2, encoding='utf-8')
           print(f"New version: {new}")
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
