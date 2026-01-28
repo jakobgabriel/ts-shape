@@ -17,27 +17,23 @@ nav:
   - Overview: index.md
   - Concept: concept.md
   - Changelog: changelog.md
-#  - Credits: credits.md
   - License: license.md
-  - Summary: reference/SUMMARY.md
+- Getting Started:
+  - Installation: user_guide/installation.md
+  - Quick Start: user_guide/quick_start.md
 - Production Modules:
   - Overview: production/overview.md
   - Quick Start: production/quick_start.md
-  - Daily Production Tracking: production/daily_production.md
+  - Daily Production: production/daily_production.md
   - Downtime & Quality: production/downtime_quality.md
-  - Complete Module Guide: production/complete_guide.md
+  - Complete Guide: production/complete_guide.md
   - Future Features: production/future_features.md
 - Usage:
   - usage/index.md
-# defer to gen-files + literate-nav
-- API References:
-  - ts-shape: reference/
+- API Reference: reference/
 - Development:
   - Contributing: contributing.md
-#  - Code of Conduct: code_of_conduct.md
-  - Getting started:
-    - Installation: insiders/installation.md
-    - Development: insiders/development.md
+  - Development Guide: insiders/development.md
 
 theme:
   name: material
