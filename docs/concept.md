@@ -76,9 +76,11 @@ flowchart LR
 | `StringFilter` | Pattern matching, contains, regex |
 | `DateTimeFilter` | Time range, weekday, hour filters |
 | `BooleanFilter` | Flag-based row filtering |
+| `CustomFilter` | Flexible pandas query syntax filtering |
 | `NumericCalc` | Derived columns, calculations |
 | `TimezoneShift` | Convert between timezones |
 | `TimestampConverter` | Parse/format timestamps |
+| `LambdaProcessor` | Apply custom functions to columns |
 
 ### Features
 
@@ -87,18 +89,87 @@ flowchart LR
 | `NumericStatistics` | min, max, mean, std, percentiles |
 | `TimestampStats` | first, last, count, coverage |
 | `StringStatistics` | value counts, cardinality |
-| `CycleExtractor` | Cycle detection and metrics |
+| `CycleExtractor` | Cycle detection, validation, method suggestion |
 
-### Events
+### Events - Quality
 
 | Module | Detection |
 |--------|-----------|
-| `OutlierDetection` | Z-score, IQR outliers |
-| `StatisticalProcessControl` | SPC/control chart rules |
-| `ToleranceDeviation` | Specification violations |
-| `MachineStateEvents` | Run/idle state changes |
+| `OutlierDetection` | Z-score, IQR, MAD, IsolationForest |
+| `StatisticalProcessControl` | Western Electric Rules, CUSUM shifts |
+| `ToleranceDeviation` | Specification violations, Cp/Cpk indices |
+
+### Events - Production (Traceability)
+
+| Module | Purpose |
+|--------|---------|
+| `PartProductionTracking` | Production by part, daily summaries, totals |
+| `QualityTracking` | NOK/scrap analysis, FPY, defect reasons |
+| `CycleTimeTracking` | Cycle times, slow cycles, trends |
+| `DowntimeTracking` | Downtime by shift/reason, availability |
+| `ShiftReporting` | Shift production, targets, comparisons |
+| `MachineStateEvents` | Run/idle intervals, transitions |
+| `ChangeoverEvents` | Product changeover detection, windows |
+
+### Events - Engineering
+
+| Module | Purpose |
+|--------|---------|
+| `SetpointChangeEvents` | Step/ramp detection, settling, overshoot |
 | `StartupEvents` | Startup detection |
-| `SetpointEvents` | Setpoint changes |
+
+## Advanced Capabilities
+
+### Quality & SPC
+
+| Feature | Module | Method |
+|---------|--------|--------|
+| CUSUM Shift Detection | `StatisticalProcessControl` | `detect_cusum_shifts()` |
+| Western Electric Rules | `StatisticalProcessControl` | `apply_rules_vectorized()` |
+| Rule Interpretations | `StatisticalProcessControl` | `interpret_violations()` |
+| Dynamic Control Limits | `StatisticalProcessControl` | `calculate_dynamic_control_limits()` |
+| Process Capability (Cp/Cpk) | `ToleranceDeviation` | `compute_capability_indices()` |
+
+### Outlier Detection Methods
+
+| Method | Description | Best For |
+|--------|-------------|----------|
+| Z-score | Distance from mean in std units | Normal distributions |
+| IQR | Interquartile range based | Skewed distributions |
+| MAD | Median Absolute Deviation | Robust to extremes |
+| IsolationForest | ML-based anomaly detection | Complex patterns |
+
+### Cycle Analysis
+
+| Feature | Method | Description |
+|---------|--------|-------------|
+| Method Suggestion | `suggest_method()` | Auto-detect best extraction method |
+| Cycle Validation | `validate_cycles()` | Validate duration constraints |
+| Overlap Detection | `detect_overlapping_cycles()` | Find and resolve overlaps |
+| Extraction Stats | `get_extraction_stats()` | Track success rate |
+
+### Production Traceability
+
+| Feature | Module | Key Methods |
+|---------|--------|-------------|
+| Part Tracking | `PartProductionTracking` | `production_by_part()`, `daily_production_summary()` |
+| Quality/NOK | `QualityTracking` | `nok_by_shift()`, `quality_by_part()`, `nok_by_reason()` |
+| Cycle Times | `CycleTimeTracking` | `cycle_time_statistics()`, `detect_slow_cycles()`, `cycle_time_trend()` |
+| Downtime | `DowntimeTracking` | `downtime_by_shift()`, `downtime_by_reason()`, `availability_trend()` |
+| Shift Reports | `ShiftReporting` | `shift_production()`, `shift_targets()`, `shift_comparison()` |
+| Machine State | `MachineStateEvents` | `detect_run_idle()`, `transition_events()`, `state_quality_metrics()` |
+| Changeovers | `ChangeoverEvents` | `detect_changeover()`, `changeover_window()` |
+
+### Control Quality KPIs
+
+| Feature | Module | Method |
+|---------|--------|--------|
+| Time to Settle | `SetpointChangeEvents` | `time_to_settle()` |
+| Rise Time | `SetpointChangeEvents` | `rise_time()` |
+| Overshoot/Undershoot | `SetpointChangeEvents` | `overshoot_metrics()` |
+| Oscillation Analysis | `SetpointChangeEvents` | `oscillation_frequency()` |
+| Decay Rate | `SetpointChangeEvents` | `decay_rate()` |
+| Comprehensive Metrics | `SetpointChangeEvents` | `control_quality_metrics()` |
 
 ## Pipeline Pattern
 
