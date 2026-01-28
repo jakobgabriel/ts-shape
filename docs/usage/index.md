@@ -403,6 +403,283 @@ Exported to output/clean_data.parquet
 
 ---
 
+## Production Traceability
+
+### Part Production Tracking
+
+Track production quantities by part number with time-based aggregation.
+
+```python
+from ts_shape.events.production.part_tracking import PartProductionTracking
+
+tracker = PartProductionTracking(df)
+
+# Production by part with hourly windows
+hourly = tracker.production_by_part(
+    part_id_uuid='part_number_signal',
+    counter_uuid='counter_signal',
+    window='1h'
+)
+#     window_start         part_number  quantity  first_count  last_count
+# 0   2024-01-01 08:00:00  PART_A       150       1000        1150
+
+# Daily production summary
+daily = tracker.daily_production_summary(
+    part_id_uuid='part_number_signal',
+    counter_uuid='counter_signal'
+)
+
+# Total production for date range
+totals = tracker.production_totals(
+    part_id_uuid='part_number_signal',
+    counter_uuid='counter_signal',
+    start_date='2024-01-01',
+    end_date='2024-01-31'
+)
+```
+
+### Quality Tracking (NOK/Scrap)
+
+Track defective parts, first-pass yield, and defect reasons.
+
+```python
+from ts_shape.events.production.quality_tracking import QualityTracking
+
+tracker = QualityTracking(df, shift_definitions={
+    "day": ("06:00", "14:00"),
+    "afternoon": ("14:00", "22:00"),
+    "night": ("22:00", "06:00"),
+})
+
+# NOK parts per shift with first-pass yield
+shift_quality = tracker.nok_by_shift(
+    ok_counter_uuid='good_parts',
+    nok_counter_uuid='bad_parts'
+)
+#     date        shift    ok_parts  nok_parts  nok_rate_pct  first_pass_yield_pct
+# 0   2024-01-01  day      450       12         2.6           97.4
+
+# Quality by part number
+part_quality = tracker.quality_by_part(
+    ok_counter_uuid='good_parts',
+    nok_counter_uuid='bad_parts',
+    part_id_uuid='part_number'
+)
+
+# Pareto analysis of defect reasons
+reasons = tracker.nok_by_reason(
+    nok_counter_uuid='bad_parts',
+    defect_reason_uuid='defect_code'
+)
+```
+
+### Cycle Time Tracking
+
+Analyze cycle times with trend detection and slow cycle identification.
+
+```python
+from ts_shape.events.production.cycle_time_tracking import CycleTimeTracking
+
+tracker = CycleTimeTracking(df)
+
+# Cycle times per part
+cycles = tracker.cycle_time_by_part(
+    part_id_uuid='part_number_signal',
+    cycle_trigger_uuid='cycle_complete_signal'
+)
+
+# Statistics by part (min, avg, max, std, median)
+stats = tracker.cycle_time_statistics(
+    part_id_uuid='part_number_signal',
+    cycle_trigger_uuid='cycle_complete_signal'
+)
+
+# Detect slow cycles (>1.5x median)
+slow = tracker.detect_slow_cycles(
+    part_id_uuid='part_number_signal',
+    cycle_trigger_uuid='cycle_complete_signal',
+    threshold_factor=1.5
+)
+
+# Trend analysis for specific part
+trend = tracker.cycle_time_trend(
+    part_id_uuid='part_number_signal',
+    cycle_trigger_uuid='cycle_complete_signal',
+    part_number='PART_A',
+    window_size=20
+)
+```
+
+### Downtime Tracking
+
+Track machine downtime by shift, reason, and availability trends.
+
+```python
+from ts_shape.events.production.downtime_tracking import DowntimeTracking
+
+tracker = DowntimeTracking(df)
+
+# Downtime per shift with availability
+shift_downtime = tracker.downtime_by_shift(
+    state_uuid='machine_state',
+    running_value='Running'
+)
+#     date        shift    downtime_minutes  uptime_minutes  availability_pct
+# 0   2024-01-01  shift_1  45.2             434.8           90.6
+
+# Downtime by reason (Pareto analysis)
+reasons = tracker.downtime_by_reason(
+    state_uuid='machine_state',
+    reason_uuid='downtime_reason',
+    stopped_value='Stopped'
+)
+
+# Top 5 downtime reasons
+top_reasons = tracker.top_downtime_reasons(
+    state_uuid='machine_state',
+    reason_uuid='downtime_reason',
+    top_n=5
+)
+
+# Availability trend over time
+trend = tracker.availability_trend(
+    state_uuid='machine_state',
+    running_value='Running',
+    window='1D'
+)
+```
+
+### Shift Reporting
+
+Compare shift performance and track against targets.
+
+```python
+from ts_shape.events.production.shift_reporting import ShiftReporting
+
+reporter = ShiftReporting(df)
+
+# Production per shift
+shift_prod = reporter.shift_production(
+    counter_uuid='counter_signal',
+    part_id_uuid='part_number_signal'
+)
+
+# Compare shifts (last 7 days)
+comparison = reporter.shift_comparison(counter_uuid='counter_signal', days=7)
+
+# Track against targets
+targets = reporter.shift_targets(
+    counter_uuid='counter_signal',
+    targets={'shift_1': 450, 'shift_2': 450, 'shift_3': 400}
+)
+
+# Best and worst shifts
+results = reporter.best_and_worst_shifts(counter_uuid='counter_signal')
+```
+
+### Machine State Events
+
+Detect run/idle intervals and state transitions.
+
+```python
+from ts_shape.events.production.machine_state import MachineStateEvents
+
+state = MachineStateEvents(df, run_state_uuid='machine_running')
+
+# Run/idle intervals with minimum duration
+intervals = state.detect_run_idle(min_duration='30s')
+
+# State transitions
+transitions = state.transition_events()
+
+# Detect rapid state changes (suspicious)
+rapid = state.detect_rapid_transitions(threshold='5s', min_count=3)
+
+# Quality metrics
+metrics = state.state_quality_metrics()
+print(f"Run/Idle ratio: {metrics['run_idle_ratio']:.2f}")
+```
+
+### Changeover Detection
+
+Detect product/recipe changes and compute changeover windows.
+
+```python
+from ts_shape.events.production.changeover import ChangeoverEvents
+
+changeover = ChangeoverEvents(df)
+
+# Detect changeovers
+changes = changeover.detect_changeover(
+    product_uuid='product_signal',
+    min_hold='5m'
+)
+
+# Compute changeover windows (fixed duration)
+windows = changeover.changeover_window(
+    product_uuid='product_signal',
+    until='fixed_window',
+    config={'duration': '10m'}
+)
+
+# Compute changeover windows (stable band - waits for process stability)
+windows = changeover.changeover_window(
+    product_uuid='product_signal',
+    until='stable_band',
+    config={
+        'metrics': [
+            {'uuid': 'temperature', 'band': 2.0, 'hold': '2m'},
+            {'uuid': 'pressure', 'band': 5.0, 'hold': '2m'},
+        ],
+        'reference_method': 'ewma'
+    }
+)
+```
+
+---
+
+## Engineering Events
+
+### Setpoint Change Analysis
+
+Comprehensive setpoint change detection with control quality KPIs.
+
+```python
+from ts_shape.events.engineering.setpoint_events import SetpointChangeEvents
+
+setpoint = SetpointChangeEvents(df, setpoint_uuid='temperature_setpoint')
+
+# Detect step changes
+steps = setpoint.detect_setpoint_steps(min_delta=5.0, min_hold='30s')
+
+# Detect ramp changes
+ramps = setpoint.detect_setpoint_ramps(min_rate=0.1, min_duration='10s')
+
+# Time to settle
+settling = setpoint.time_to_settle(
+    actual_uuid='temperature_actual',
+    tol=1.0,
+    hold='10s',
+    lookahead='5m'
+)
+
+# Overshoot/undershoot metrics
+overshoot = setpoint.overshoot_metrics(actual_uuid='temperature_actual')
+
+# Rise time (10% to 90%)
+rise = setpoint.rise_time(actual_uuid='temperature_actual')
+
+# Comprehensive control quality metrics (all-in-one)
+quality = setpoint.control_quality_metrics(
+    actual_uuid='temperature_actual',
+    tol=1.0,
+    hold='10s'
+)
+# Returns: t_settle, rise_time, overshoot, undershoot, oscillations, decay_rate
+```
+
+---
+
 ## Advanced Features
 
 ### Cycle Extraction
