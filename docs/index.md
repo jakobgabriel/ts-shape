@@ -14,17 +14,17 @@ hide:
 
 # **ts-shape**
 
-### Timeseries Shaper
+### Shape Your Timeseries Data
 
 [![PyPI](https://img.shields.io/pypi/v/ts-shape.svg)](https://pypi.org/project/ts-shape/)
-[![Downloads](https://static.pepy.tech/badge/ts-shape/week)](https://pepy.tech/projects/ts-shape)
+[![Downloads](https://static.pepy.tech/badge/ts-shape)](https://pepy.tech/projects/ts-shape)
 [![Python](https://img.shields.io/pypi/pyversions/ts-shape.svg)](https://pypi.org/project/ts-shape/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](license.md)
 
-**A lightweight, composable toolkit to load, shape, and analyze time series data.**
+**Load, transform, and analyze timeseries data with a clean, composable API.**
 
 [Get Started](user_guide/installation.md){ .md-button .md-button--primary }
-[API Reference](reference/SUMMARY.md){ .md-button }
+[Usage Examples](usage/index.md){ .md-button }
 
 </div>
 
@@ -38,69 +38,46 @@ hide:
 
     ---
 
-    Every operation accepts and returns Pandas DataFrames. No proprietary formats, no lock-in. Just simple, composable data pipelines.
+    Every operation accepts and returns Pandas DataFrames. No proprietary formats, no lock-in.
 
 -   :material-puzzle:{ .lg .middle } **Modular Design**
 
     ---
 
-    Use only what you need. Loaders, transforms, features, and event detectors are fully decoupled and independently usable.
+    Use only what you need. Loaders, transforms, features, and events are fully decoupled.
 
 -   :material-cloud-sync:{ .lg .middle } **Multi-Source Loading**
 
     ---
 
-    Load from local Parquet, S3, Azure Blob Storage, or TimescaleDB with a unified interface. Mix and match as needed.
+    Load from Parquet, S3, Azure Blob, or TimescaleDB with a unified interface.
 
--   :material-chart-timeline-variant:{ .lg .middle } **Production Ready**
+-   :material-chart-timeline-variant:{ .lg .middle } **Analysis Ready**
 
     ---
 
-    Built-in support for cycle detection, quality events, downtime tracking, and production analytics.
+    Built-in statistics, cycle detection, outlier detection, and event extraction.
 
 </div>
 
 ---
 
-## Quick Start
-
-### Installation
-
-```bash
-pip install ts-shape
-```
-
-Optional dependencies for specific backends:
-
-```bash
-# Parquet engine (recommended)
-pip install pyarrow
-
-# Azure Blob Storage
-pip install azure-storage-blob
-
-# TimescaleDB
-pip install sqlalchemy psycopg2-binary
-```
-
-### Basic Usage
+## Quick Example
 
 ```python
 import pandas as pd
 from ts_shape.transform.filter.numeric_filter import NumericFilter
 from ts_shape.features.stats.numeric_stats import NumericStatistics
 
-# Load your timeseries data
-df = pd.read_parquet("sensor_data.parquet")
+# Load your data
+df = pd.read_parquet("sensors.parquet")
 
-# Filter values within range
-filtered = NumericFilter.filter_value_in_range(
-    df, column="value_double", min_value=0, max_value=100
-)
+# Filter to valid range
+clean = NumericFilter.filter_value_in_range(df, "value_double", 0, 100)
 
-# Compute statistics
-stats = NumericStatistics(filtered, column="value_double")
-print(f"Mean: {stats.mean()}, Std: {stats.std()}")
+# Get statistics
+stats = NumericStatistics(clean, "value_double")
+print(f"Mean: {stats.mean():.2f}, Std: {stats.std():.2f}")
 ```
 
 ---
@@ -109,29 +86,20 @@ print(f"Mean: {stats.mean()}, Std: {stats.std()}")
 
 ```mermaid
 flowchart LR
-    subgraph Load
-        A1[Parquet] --> B
-        A2[S3/Azure] --> B
-        A3[TimescaleDB] --> B
-        A4[Metadata JSON] --> B
+    subgraph Input
+        A1[Parquet]
+        A2[S3/Azure]
+        A3[TimescaleDB]
     end
 
-    B[Combine] --> C
+    A1 --> L[Load]
+    A2 --> L
+    A3 --> L
 
-    subgraph Transform
-        C[Filters]
-        C --> D[Functions]
-        D --> E[Calculator]
-    end
-
-    E --> F
-
-    subgraph Analyze
-        F[Features]
-        F --> G[Events]
-    end
-
-    G --> H[Output DataFrame]
+    L --> T[Transform]
+    T --> F[Features]
+    F --> E[Events]
+    E --> O[Output DataFrame]
 ```
 
 ---
@@ -144,13 +112,11 @@ flowchart LR
 
 ### :material-database-import: Loaders
 
-Load timeseries and metadata from multiple sources:
-
-- **Parquet** - Local and remote parquet files
-- **S3 Proxy** - S3-compatible storage via `s3fs`
-- **Azure Blob** - Time-partitioned container layouts
-- **TimescaleDB** - Chunked reads with parquet export
-- **Metadata JSON** - Flexible JSON ingestion
+- **Parquet** - Local and remote files
+- **S3 Proxy** - S3-compatible storage
+- **Azure Blob** - Container layouts
+- **TimescaleDB** - SQL timeseries
+- **Metadata JSON** - Context enrichment
 
 </div>
 
@@ -158,13 +124,11 @@ Load timeseries and metadata from multiple sources:
 
 ### :material-filter: Transforms
 
-Clean and reshape your data:
-
-- **Numeric Filter** - Range, threshold, null handling
-- **String Filter** - Pattern matching, contains, regex
-- **DateTime Filter** - Time range, weekday, hour filters
-- **Boolean Filter** - Flag-based filtering
-- **Calculator** - Derived columns, rolling windows
+- **Numeric Filter** - Range, threshold
+- **String Filter** - Pattern matching
+- **DateTime Filter** - Time ranges
+- **Boolean Filter** - Flag filtering
+- **Calculator** - Derived columns
 
 </div>
 
@@ -172,12 +136,10 @@ Clean and reshape your data:
 
 ### :material-chart-box: Features
 
-Extract summary statistics:
-
-- **Numeric Stats** - min, max, mean, std, percentiles
-- **Time Stats** - coverage, gaps, frequency analysis
-- **String Stats** - value counts, cardinality
-- **Cycle Detection** - Identify repeating patterns
+- **Numeric Stats** - min, max, mean, std
+- **Time Stats** - Coverage, gaps
+- **String Stats** - Value counts
+- **Cycles** - Pattern detection
 
 </div>
 
@@ -185,12 +147,9 @@ Extract summary statistics:
 
 ### :material-alert-circle: Events
 
-Detect domain-specific patterns:
-
-- **Quality** - Outliers, SPC rules, tolerance deviation
-- **Production** - Cycle times, downtime, throughput
-- **Engineering** - Startup events, setpoint changes
-- **Maintenance** - Operational event detection
+- **Quality** - Outliers, SPC
+- **Engineering** - Setpoints, startup
+- **Production** - Cycles, downtime
 
 </div>
 
@@ -200,93 +159,55 @@ Detect domain-specific patterns:
 
 ## Data Model
 
-ts-shape uses a simple, consistent schema:
+ts-shape uses a simple schema:
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `uuid` | string | Unique signal/series identifier |
-| `systime` | datetime | Timestamp (tz-aware recommended) |
-| `value_double` | float | Numeric value channel |
-| `value_integer` | int | Integer value channel |
-| `value_string` | string | String value channel |
-| `value_bool` | bool | Boolean value channel |
+| `uuid` | string | Signal identifier |
+| `systime` | datetime | Timestamp |
+| `value_double` | float | Numeric values |
+| `value_integer` | int | Integer values |
+| `value_string` | string | String values |
+| `value_bool` | bool | Boolean values |
 
-!!! tip "Flexible Schema"
-    Not all columns are required. Use only the value channels relevant to your data.
-
----
-
-## Example Pipeline
-
-```python
-from ts_shape.loader.timeseries.parquet_loader import ParquetLoader
-from ts_shape.loader.metadata.metadata_json_loader import MetadataLoader
-from ts_shape.loader.combine.integrator import DataIntegratorHybrid
-from ts_shape.transform.filter.datetime_filter import DateTimeFilter
-from ts_shape.features.stats.numeric_stats import NumericStatistics
-from ts_shape.events.quality.outlier_detection import OutlierDetection
-
-# 1. Load data
-ts_df = ParquetLoader("data/sensors/").load()
-meta_df = MetadataLoader("config/metadata.json").to_df()
-
-# 2. Combine timeseries with metadata
-combined = DataIntegratorHybrid.combine_data(
-    timeseries_sources=[ts_df],
-    metadata_sources=[meta_df],
-    join_key="uuid"
-)
-
-# 3. Filter to time range
-filtered = DateTimeFilter.filter_after(
-    combined, column="systime", date="2024-01-01"
-)
-
-# 4. Detect outliers
-outliers = OutlierDetection.detect_zscore_outliers(
-    filtered, column="value_double", threshold=3.0
-)
-
-# 5. Compute statistics on clean data
-clean = filtered[~filtered.index.isin(outliers.index)]
-stats = NumericStatistics(clean, column="value_double")
-```
+!!! tip "Flexible"
+    Use only the columns you need. Not all are required.
 
 ---
 
 <div class="grid cards" markdown>
 
--   :material-book-open-variant:{ .lg .middle } **Concept Guide**
+-   :material-book-open-variant:{ .lg .middle } **Concept**
 
     ---
 
-    Deep dive into ts-shape's architecture and design principles.
+    Architecture and design principles.
 
-    [:octicons-arrow-right-24: Read the concept guide](concept.md)
+    [:octicons-arrow-right-24: Learn more](concept.md)
+
+-   :material-code-tags:{ .lg .middle } **Usage**
+
+    ---
+
+    Practical examples and patterns.
+
+    [:octicons-arrow-right-24: See examples](usage/index.md)
 
 -   :material-api:{ .lg .middle } **API Reference**
 
     ---
 
-    Complete API documentation for all modules.
+    Complete API documentation.
 
-    [:octicons-arrow-right-24: Browse the API](reference/SUMMARY.md)
+    [:octicons-arrow-right-24: Browse API](reference/)
 
--   :material-factory:{ .lg .middle } **Production Modules**
-
-    ---
-
-    Specialized tools for manufacturing analytics.
-
-    [:octicons-arrow-right-24: Explore production](production/overview.md)
-
--   :material-github:{ .lg .middle } **Source Code**
+-   :material-github:{ .lg .middle } **GitHub**
 
     ---
 
-    View the source, report issues, or contribute.
+    Source code and issues.
 
-    [:octicons-arrow-right-24: GitHub](https://github.com/jakobgabriel/ts-shape)
+    [:octicons-arrow-right-24: View source](https://github.com/jakobgabriel/ts-shape)
 
 </div>
 
@@ -294,6 +215,6 @@ stats = NumericStatistics(clean, column="value_double")
 
 <div align="center" markdown>
 
-**MIT License** - Made with :material-heart: for the timeseries community
+**MIT License** - Built for the timeseries community
 
 </div>

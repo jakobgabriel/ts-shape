@@ -2,9 +2,9 @@
 
 ## Requirements
 
-- Python 3.8 or higher
-- pandas >= 1.3.0
-- numpy >= 1.20.0
+- Python 3.10 or higher
+- pandas >= 2.0.0
+- numpy >= 1.24.0
 
 ## Install from PyPI
 
@@ -15,7 +15,7 @@ pip install ts-shape
 ## Install from Source
 
 ```bash
-git clone https://github.com/your-org/ts-shape.git
+git clone https://github.com/jakobgabriel/ts-shape.git
 cd ts-shape
 pip install -e .
 ```
@@ -24,77 +24,71 @@ pip install -e .
 
 ```python
 import ts_shape
-from ts_shape.events.production import PartProductionTracking
+from ts_shape.transform.filter.numeric_filter import NumericFilter
 
 print("ts-shape installed successfully!")
 ```
 
 ## Optional Dependencies
 
-For enhanced functionality:
+Install extras for specific backends:
 
 ```bash
-# For advanced analytics
-pip install scikit-learn
+# Parquet support (recommended)
+pip install pyarrow
 
-# For visualization
-pip install matplotlib seaborn
+# S3 storage
+pip install s3fs
 
-# For Jupyter notebook support
-pip install jupyter ipywidgets
+# Azure Blob storage
+pip install azure-storage-blob
+
+# TimescaleDB
+pip install sqlalchemy psycopg2-binary
 ```
 
 ## Development Installation
 
-If you want to contribute:
+For contributing:
 
 ```bash
-git clone https://github.com/your-org/ts-shape.git
+git clone https://github.com/jakobgabriel/ts-shape.git
 cd ts-shape
 
-# Install with development dependencies
-pip install -e ".[dev]"
+# Install in development mode
+pip install -e .
+
+# Install dev dependencies
+pip install pytest black flake8
 
 # Run tests
 pytest
 
-# Run linting
+# Format code
 black src/
-flake8 src/
-```
-
-## Docker Installation
-
-```bash
-docker pull your-org/ts-shape:latest
-docker run -it your-org/ts-shape:latest python
 ```
 
 ## Troubleshooting
 
-### Common Issues
-
-**Issue**: ImportError for ts_shape
+**ImportError for ts_shape**
 ```bash
-# Solution: Make sure you're in the right environment
+# Check your environment
 which python
 pip list | grep ts-shape
 ```
 
-**Issue**: pandas version conflict
+**pandas version conflict**
 ```bash
-# Solution: Upgrade pandas
 pip install --upgrade pandas
 ```
 
-**Issue**: Performance issues with large datasets
+**Performance with large datasets**
 ```bash
-# Solution: Install optional performance packages
-pip install numba pyarrow
+pip install pyarrow  # Faster parquet loading
 ```
 
 ## Next Steps
 
-- [Quick Start Guide](quick_start.md)
-- [Daily Production Modules](../production/daily_production.md)
-- [Complete User Guide](../production/complete_guide.md)
+- [Quick Start](quick_start.md) - Get started in 5 minutes
+- [Usage Examples](../usage/index.md) - Practical examples
+- [Concept Guide](../concept.md) - Architecture overview
