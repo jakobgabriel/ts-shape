@@ -76,9 +76,11 @@ flowchart LR
 | `StringFilter` | Pattern matching, contains, regex |
 | `DateTimeFilter` | Time range, weekday, hour filters |
 | `BooleanFilter` | Flag-based row filtering |
+| `CustomFilter` | Flexible pandas query syntax filtering |
 | `NumericCalc` | Derived columns, calculations |
 | `TimezoneShift` | Convert between timezones |
 | `TimestampConverter` | Parse/format timestamps |
+| `LambdaProcessor` | Apply custom functions to columns |
 
 ### Features
 
@@ -87,18 +89,48 @@ flowchart LR
 | `NumericStatistics` | min, max, mean, std, percentiles |
 | `TimestampStats` | first, last, count, coverage |
 | `StringStatistics` | value counts, cardinality |
-| `CycleExtractor` | Cycle detection and metrics |
+| `CycleExtractor` | Cycle detection, validation, method suggestion |
 
 ### Events
 
 | Module | Detection |
 |--------|-----------|
-| `OutlierDetection` | Z-score, IQR outliers |
-| `StatisticalProcessControl` | SPC/control chart rules |
-| `ToleranceDeviation` | Specification violations |
+| `OutlierDetection` | Z-score, IQR, MAD, IsolationForest |
+| `StatisticalProcessControl` | Western Electric Rules, CUSUM shifts |
+| `ToleranceDeviation` | Specification violations, Cp/Cpk indices |
 | `MachineStateEvents` | Run/idle state changes |
 | `StartupEvents` | Startup detection |
 | `SetpointEvents` | Setpoint changes |
+
+## Advanced Capabilities
+
+### Quality & SPC
+
+| Feature | Module | Method |
+|---------|--------|--------|
+| CUSUM Shift Detection | `StatisticalProcessControl` | `detect_cusum_shifts()` |
+| Western Electric Rules | `StatisticalProcessControl` | `apply_rules_vectorized()` |
+| Rule Interpretations | `StatisticalProcessControl` | `interpret_violations()` |
+| Dynamic Control Limits | `StatisticalProcessControl` | `calculate_dynamic_control_limits()` |
+| Process Capability (Cp/Cpk) | `ToleranceDeviation` | `compute_capability_indices()` |
+
+### Outlier Detection Methods
+
+| Method | Description | Best For |
+|--------|-------------|----------|
+| Z-score | Distance from mean in std units | Normal distributions |
+| IQR | Interquartile range based | Skewed distributions |
+| MAD | Median Absolute Deviation | Robust to extremes |
+| IsolationForest | ML-based anomaly detection | Complex patterns |
+
+### Cycle Analysis
+
+| Feature | Method | Description |
+|---------|--------|-------------|
+| Method Suggestion | `suggest_method()` | Auto-detect best extraction method |
+| Cycle Validation | `validate_cycles()` | Validate duration constraints |
+| Overlap Detection | `detect_overlapping_cycles()` | Find and resolve overlaps |
+| Extraction Stats | `get_extraction_stats()` | Track success rate |
 
 ## Pipeline Pattern
 

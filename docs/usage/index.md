@@ -403,6 +403,227 @@ Exported to output/clean_data.parquet
 
 ---
 
+## Advanced Features
+
+### Cycle Extraction
+
+ts-shape includes powerful cycle detection capabilities for industrial processes.
+
+```python
+from ts_shape.features.cycles.cycles_extractor import CycleExtractor
+
+# Initialize extractor with start/end signals
+extractor = CycleExtractor(
+    dataframe=df,
+    start_uuid="cycle_start_signal",
+    end_uuid="cycle_end_signal",
+    value_change_threshold=0.1
+)
+
+# Get recommendations for best extraction method
+suggestions = extractor.suggest_method()
+print(f"Recommended: {suggestions['recommended_methods']}")
+print(f"Reason: {suggestions['reasoning']}")
+
+# Extract cycles using the recommended method
+if 'process_persistent_cycle' in suggestions['recommended_methods']:
+    cycles = extractor.process_persistent_cycle()
+elif 'process_step_sequence' in suggestions['recommended_methods']:
+    cycles = extractor.process_step_sequence(start_step=1, end_step=10)
+else:
+    cycles = extractor.process_value_change_cycle()
+
+# Validate cycles
+validated = extractor.validate_cycles(
+    cycles,
+    min_duration='1s',
+    max_duration='1h'
+)
+
+# Detect and resolve overlapping cycles
+clean_cycles = extractor.detect_overlapping_cycles(
+    validated,
+    resolve='keep_longest'
+)
+
+# Get extraction statistics
+stats = extractor.get_extraction_stats()
+print(f"Total: {stats['total_cycles']}, Complete: {stats['complete_cycles']}")
+```
+
+### Advanced Outlier Detection
+
+Multiple robust outlier detection methods beyond basic z-score.
+
+```python
+from ts_shape.events.quality.outlier_detection import OutlierDetectionEvents
+
+detector = OutlierDetectionEvents(
+    dataframe=df,
+    value_column="value_double",
+    event_uuid="outlier_event",
+    time_threshold="5min"
+)
+
+# Z-score method (standard)
+outliers_zscore = detector.detect_outliers_zscore(threshold=3.0)
+
+# IQR method (resistant to extreme values)
+outliers_iqr = detector.detect_outliers_iqr(threshold=(1.5, 1.5))
+
+# MAD method (most robust to outliers)
+outliers_mad = detector.detect_outliers_mad(threshold=3.5)
+
+# IsolationForest (machine learning based)
+outliers_ml = detector.detect_outliers_isolation_forest(
+    contamination=0.1,
+    random_state=42
+)
+
+# All methods return severity scores
+print(outliers_mad[['systime', 'value_double', 'severity_score']])
+```
+
+### Statistical Process Control (SPC)
+
+Full Western Electric Rules and CUSUM shift detection.
+
+```python
+from ts_shape.events.quality.statistical_process_control import StatisticalProcessControlRuleBased
+
+spc = StatisticalProcessControlRuleBased(
+    dataframe=df,
+    value_column="value_double",
+    tolerance_uuid="control_limits",
+    actual_uuid="measurements",
+    event_uuid="spc_violation"
+)
+
+# Calculate control limits
+limits = spc.calculate_control_limits()
+print(f"Mean: {limits['mean'][0]:.2f}")
+print(f"UCL (3σ): {limits['3sigma_upper'][0]:.2f}")
+print(f"LCL (3σ): {limits['3sigma_lower'][0]:.2f}")
+
+# Dynamic control limits (adapts over time)
+dynamic_limits = spc.calculate_dynamic_control_limits(
+    method='ewma',  # or 'moving_range'
+    window=20
+)
+
+# Apply Western Electric Rules (all 8 rules)
+violations = spc.apply_rules_vectorized()
+
+# Or select specific rules
+violations = spc.apply_rules_vectorized(
+    selected_rules=['rule_1', 'rule_2', 'rule_3']
+)
+
+# Get human-readable interpretations
+interpreted = spc.interpret_violations(violations)
+print(interpreted[['systime', 'rule', 'interpretation', 'recommendation']])
+
+# CUSUM shift detection (sensitive to small shifts)
+shifts = spc.detect_cusum_shifts(
+    k=0.5,    # Slack parameter
+    h=5.0     # Decision threshold
+)
+print(shifts[['systime', 'shift_direction', 'severity']])
+```
+
+### Process Capability Indices
+
+Calculate Cp, Cpk, Pp, Ppk for quality assessment.
+
+```python
+from ts_shape.events.quality.tolerance_deviation import ToleranceDeviationEvents
+
+# With separate upper/lower tolerances
+tolerance_checker = ToleranceDeviationEvents(
+    dataframe=df,
+    tolerance_column="value_double",
+    actual_column="value_double",
+    upper_tolerance_uuid="upper_spec_limit",
+    lower_tolerance_uuid="lower_spec_limit",
+    actual_uuid="measurements",
+    event_uuid="deviation_event",
+    warning_threshold=0.8  # 80% of tolerance = warning zone
+)
+
+# Calculate capability indices
+capability = tolerance_checker.compute_capability_indices()
+print(f"Cp:  {capability['Cp']:.3f}")   # Potential capability
+print(f"Cpk: {capability['Cpk']:.3f}")  # Actual capability
+print(f"Mean: {capability['mean']:.2f}")
+print(f"Std:  {capability['std']:.2f}")
+
+# Interpret results
+if capability['Cpk'] >= 1.33:
+    print("Process is capable")
+elif capability['Cpk'] >= 1.0:
+    print("Process needs improvement")
+else:
+    print("Process is not capable")
+```
+
+### Custom Filtering with Query Syntax
+
+Use pandas query syntax for flexible filtering.
+
+```python
+from ts_shape.transform.filter.custom_filter import CustomFilter
+
+# Complex multi-condition filtering
+df = CustomFilter.filter_custom_conditions(
+    df,
+    "value_double > 50 and value_double < 100 and uuid == 'temperature'"
+)
+
+# With computed expressions
+df = CustomFilter.filter_custom_conditions(
+    df,
+    "value_double > value_double.mean() * 1.5"
+)
+
+# Multiple OR conditions
+df = CustomFilter.filter_custom_conditions(
+    df,
+    "uuid == 'temp_1' or uuid == 'temp_2' or uuid == 'temp_3'"
+)
+```
+
+### Lambda Processing
+
+Apply custom transformations to columns.
+
+```python
+from ts_shape.transform.functions.lambda_func import LambdaProcessor
+import numpy as np
+
+# Apply custom transformations
+df = LambdaProcessor.apply_function(
+    df,
+    "value_double",
+    lambda x: np.log1p(x)  # Log transform
+)
+
+# Scale values
+df = LambdaProcessor.apply_function(
+    df,
+    "value_double",
+    lambda x: (x - x.mean()) / x.std()  # Z-score normalization
+)
+
+# Clip extreme values
+df = LambdaProcessor.apply_function(
+    df,
+    "value_double",
+    lambda x: np.clip(x, 0, 100)
+)
+```
+
+---
+
 ## Next Steps
 
 - [Concept Guide](../concept.md) - Understand the architecture
