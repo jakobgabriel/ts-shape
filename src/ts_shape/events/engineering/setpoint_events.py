@@ -96,13 +96,14 @@ class SetpointChangeEvents(Base):
         # Apply noise filtering if requested
         if filter_noise:
             # Group consecutive values within noise_threshold and use mean
-            sp["filtered_value"] = sp[self.value_column]
-            current_group = sp["filtered_value"].iloc[0]
-            for i in range(1, len(sp)):
-                if abs(sp["filtered_value"].iloc[i] - current_group) <= noise_threshold:
-                    sp.loc[sp.index[i], "filtered_value"] = current_group
+            vals = sp[self.value_column].values.copy()
+            current_group = vals[0]
+            for i in range(1, len(vals)):
+                if abs(vals[i] - current_group) <= noise_threshold:
+                    vals[i] = current_group
                 else:
-                    current_group = sp["filtered_value"].iloc[i]
+                    current_group = vals[i]
+            sp["filtered_value"] = vals
             sp[self.value_column] = sp["filtered_value"]
             sp = sp.drop(columns=["filtered_value"])
 

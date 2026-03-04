@@ -10,7 +10,7 @@ def test_spc_rule_1_violation_and_process():
 
     df = pd.DataFrame({
         'uuid': [tol_uuid]*10 + [act_uuid]*5,
-        'systime': pd.date_range('2024-01-01', periods=15, freq='T'),
+        'systime': pd.date_range('2024-01-01', periods=15, freq='min'),
         'value_double': [10]*10 + [9, 10, 20, 10, 9],  # 20 should be a 3σ outlier if sigma small
         'is_delta': [True]*15,
     })

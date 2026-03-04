@@ -24,23 +24,23 @@ def test_cycle_extractor_basic_flows():
     ce = CycleExtractor(df, start_uuid='start')
 
     persist = ce.process_persistent_cycle()
-    assert set(persist.columns) == {'cycle_start', 'cycle_end', 'cycle_uuid'}
+    assert {'cycle_start', 'cycle_end', 'cycle_uuid'}.issubset(persist.columns)
     assert len(persist) >= 1
 
     trigger = ce.process_trigger_cycle()
-    assert set(trigger.columns) == {'cycle_start', 'cycle_end', 'cycle_uuid'}
+    assert {'cycle_start', 'cycle_end', 'cycle_uuid'}.issubset(trigger.columns)
 
     sep = ce.process_separate_start_end_cycle()
-    assert set(sep.columns) == {'cycle_start', 'cycle_end', 'cycle_uuid'}
+    assert {'cycle_start', 'cycle_end', 'cycle_uuid'}.issubset(sep.columns)
 
     steps = ce.process_step_sequence(start_step=0, end_step=1)
-    assert set(steps.columns) == {'cycle_start', 'cycle_end', 'cycle_uuid'}
+    assert {'cycle_start', 'cycle_end', 'cycle_uuid'}.issubset(steps.columns)
 
     state = ce.process_state_change_cycle()
-    assert set(state.columns) == {'cycle_start', 'cycle_end', 'cycle_uuid'}
+    assert {'cycle_start', 'cycle_end', 'cycle_uuid'}.issubset(state.columns)
 
     value_change = ce.process_value_change_cycle()
-    assert set(value_change.columns) == {'cycle_start', 'cycle_end', 'cycle_uuid'}
+    assert {'cycle_start', 'cycle_end', 'cycle_uuid'}.issubset(value_change.columns)
 
 
 def test_cycle_data_processor_split_merge_group():

@@ -48,6 +48,25 @@ Daily Production Tracking Classes:
   - quality_by_part: Quality metrics by part number.
   - nok_by_reason: Defect type analysis.
   - daily_quality_summary: Daily quality rollup.
+
+OEE and Advanced Analytics:
+- OEECalculator: Overall Equipment Effectiveness (Availability x Performance x Quality).
+  - calculate_availability: Availability % from run/idle intervals.
+  - calculate_performance: Actual vs ideal throughput.
+  - calculate_quality: Good parts / total parts.
+  - calculate_oee: Combined daily OEE metric.
+
+- AlarmManagementEvents: ISA-18.2 style alarm analysis.
+  - alarm_frequency: Alarm activations per time window.
+  - alarm_duration_stats: Min/avg/max/total duration of alarm ON states.
+  - chattering_detection: Detect nuisance chattering alarms.
+  - standing_alarms: Identify alarms that stay active too long.
+
+- BatchTrackingEvents: Batch/recipe production tracking.
+  - detect_batches: Detect batch start/end from value changes.
+  - batch_duration_stats: Duration statistics per batch type.
+  - batch_yield: Production quantity per batch.
+  - batch_transition_matrix: Batch-to-batch transition frequencies.
 """
 
 # Event Detection Classes
@@ -63,6 +82,11 @@ from .shift_reporting import ShiftReporting
 from .downtime_tracking import DowntimeTracking
 from .quality_tracking import QualityTracking
 
+# OEE and Advanced Analytics
+from .oee_calculator import OEECalculator
+from .alarm_management import AlarmManagementEvents
+from .batch_tracking import BatchTrackingEvents
+
 __all__ = [
     # Event Detection
     "MachineStateEvents",
@@ -75,4 +99,8 @@ __all__ = [
     "ShiftReporting",
     "DowntimeTracking",
     "QualityTracking",
+    # OEE and Advanced Analytics
+    "OEECalculator",
+    "AlarmManagementEvents",
+    "BatchTrackingEvents",
 ]

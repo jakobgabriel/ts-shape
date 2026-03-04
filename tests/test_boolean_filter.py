@@ -5,7 +5,7 @@ from ts_shape.transform.filter.boolean_filter import IsDeltaFilter, BooleanFilte
 def test_is_delta_true():
     data = {
         'is_delta': [True, False, True, False, True],
-        'systime': pd.date_range(start='2022-01-01', periods=5, freq='T'),
+        'systime': pd.date_range(start='2022-01-01', periods=5, freq='min'),
     }
     df = pd.DataFrame(data)
 
@@ -18,7 +18,7 @@ def test_is_delta_true():
 def test_is_delta_false():
     data = {
         'is_delta': [True, False, True, False, True],
-        'systime': pd.date_range(start='2022-01-01', periods=5, freq='T'),
+        'systime': pd.date_range(start='2022-01-01', periods=5, freq='min'),
     }
     df = pd.DataFrame(data)
 
@@ -31,7 +31,7 @@ def test_is_delta_false():
 def test_boolean_filter_falling():
     data = {
         'value_bool': [True, True, False, True, False],
-        'systime': pd.date_range(start='2022-01-01', periods=5, freq='T'),
+        'systime': pd.date_range(start='2022-01-01', periods=5, freq='min'),
     }
     df = pd.DataFrame(data)
 
@@ -45,7 +45,7 @@ def test_boolean_filter_falling():
 def test_boolean_filter_raising():
     data = {
         'value_bool': [False, True, False, True, False],
-        'systime': pd.date_range(start='2022-01-01', periods=5, freq='T'),
+        'systime': pd.date_range(start='2022-01-01', periods=5, freq='min'),
     }
     df = pd.DataFrame(data)
 

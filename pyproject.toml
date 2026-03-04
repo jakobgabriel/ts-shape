@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ts_shape"
+dynamic = ["version"]
+description = "ts-shape filters, transforms and engineers your timeseries dataframe"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Jakob Gabriel", email = "jakob.gabriel5@googlemail.com" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pandas>=2.1.0",
+    "scipy>=1.13.1",
+    "s3fs>=2024.10.0",
+    "numpy>=1.26.4",
+    "requests>=2.32.3",
+    "pytz>=2024.1",
+    "psycopg2-binary>=2.9.9",
+    "sqlalchemy>=2.0.32",
+    "azure-storage-blob>=12.19.1",
+]
+
+[project.urls]
+Homepage = "https://jakobgabriel.github.io/ts-shape/"
+Repository = "https://github.com/jakobgabriel/ts-shape"
+"Bug Tracker" = "https://github.com/jakobgabriel/ts-shape/issues"
+
+[project.optional-dependencies]
+azure = [
+    "azure-storage-blob>=12.19.1",
+]
+docs = [
+    "mkdocs>=1.5",
+    "mkdocs-material>=9.0",
+    "mkdocs-literate-nav",
+    "mkdocs-gen-files",
+    "mkdocs-callouts",
+    "mkdocstrings[python]>=0.24",
+    "black",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black",
+    "ruff",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools-scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+fallback_version = "0.1.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.coverage.run]
+source = ["ts_shape"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true

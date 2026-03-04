@@ -55,15 +55,19 @@ class OutlierDetectionEvents(Base):
         # Prepare events DataFrame
         events_data = []
 
-        for group_id in outliers_df['group_id'].unique():
-            group_data = outliers_df[outliers_df['group_id'] == group_id]
-            if group_data.shape[0] > 1:  # Multiple outliers in group
-                first_row = group_data.nsmallest(1, 'systime')
-                last_row = group_data.nlargest(1, 'systime')
-                combined_rows = pd.concat([first_row, last_row])
-                events_data.append(combined_rows)
-            elif include_singles:  # Single outlier
-                events_data.append(group_data)
+        group_sizes = outliers_df.groupby('group_id').size()
+        multi_groups = group_sizes[group_sizes > 1].index
+        single_groups = group_sizes[group_sizes == 1].index
+
+        if len(multi_groups) > 0:
+            multi_df = outliers_df[outliers_df['group_id'].isin(multi_groups)]
+            firsts = multi_df.loc[multi_df.groupby('group_id')['systime'].idxmin()]
+            lasts = multi_df.loc[multi_df.groupby('group_id')['systime'].idxmax()]
+            events_data.append(pd.concat([firsts, lasts]).sort_values('systime'))
+
+        if include_singles and len(single_groups) > 0:
+            singles_df = outliers_df[outliers_df['group_id'].isin(single_groups)]
+            events_data.append(singles_df)
 
         # Convert list of DataFrame slices to a single DataFrame
         if events_data:
