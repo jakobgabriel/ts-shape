@@ -55,7 +55,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     outputs:
-      new_tag: ${{ steps.bump.outputs.new_tag }}
       new_version: ${{ steps.bump.outputs.new_version }}
 
     steps:
@@ -80,17 +79,15 @@ jobs:
           PATCH=$(echo "$LATEST_TAG" | cut -d. -f3)
           NEW_PATCH=$((PATCH + 1))
           NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
-          NEW_TAG="${NEW_VERSION}"
 
           echo "New version: $NEW_VERSION"
-          echo "new_tag=$NEW_TAG" >> "$GITHUB_OUTPUT"
           echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
 
           # Create and push the new tag
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -a "$NEW_TAG" -m "Release $NEW_VERSION"
-          git push origin "$NEW_TAG"
+          git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
+          git push origin "$NEW_VERSION"
 
   # =============================================================================
   # Job 2: Build Documentation (MkDocs Material)
@@ -155,12 +152,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: auto-tag
 
-    env:
-      SETUPTOOLS_SCM_PRETEND_VERSION: ${{ needs.auto-tag.outputs.new_version }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch all tags
+        run: git fetch --tags --force
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -170,14 +169,47 @@ jobs:
       - name: Install build tools
         run: |
           python -m pip install --upgrade pip
-          pip install build wheel setuptools setuptools-scm
+          pip install build wheel setuptools 'setuptools-scm>=8'
+
+      - name: Write version file
+        run: |
+          VERSION="${{ needs.auto-tag.outputs.new_version }}"
+          echo "Version from auto-tag: '$VERSION'"
+          if [ -z "$VERSION" ]; then
+            echo "::error::Version output from auto-tag job is empty!"
+            exit 1
+          fi
+          # Write version file that setuptools-scm can use as fallback
+          mkdir -p src/ts_shape
+          echo "$VERSION" > src/ts_shape/_version_stamp.txt
+          echo "Wrote version $VERSION to _version_stamp.txt"
 
       - name: Build sdist and wheel
+        env:
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ needs.auto-tag.outputs.new_version }}
         run: |
-          echo "Building version: $SETUPTOOLS_SCM_PRETEND_VERSION"
-          python -m build
+          echo "SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION"
+          python -m build --no-isolation
 
-      - name: Verify package
+      - name: Verify built version
+        run: |
+          EXPECTED="${{ needs.auto-tag.outputs.new_version }}"
+          echo "Expected version: $EXPECTED"
+          echo "Built artifacts:"
+          ls -la dist/
+          # Fail if any artifact contains 0.0.0
+          if ls dist/ | grep -q "0.0.0"; then
+            echo "::error::Build produced version 0.0.0 instead of $EXPECTED!"
+            exit 1
+          fi
+          # Verify expected version appears in filenames
+          if ! ls dist/ | grep -q "$EXPECTED"; then
+            echo "::error::No artifact found with expected version $EXPECTED!"
+            ls dist/
+            exit 1
+          fi
+
+      - name: Verify package metadata
         run: |
           pip install twine
           twine check dist/*
