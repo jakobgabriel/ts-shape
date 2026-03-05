@@ -155,11 +155,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Fetch all tags
-        run: git fetch --tags --force
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -169,43 +164,39 @@ jobs:
       - name: Install build tools
         run: |
           python -m pip install --upgrade pip
-          pip install build wheel setuptools 'setuptools-scm>=8'
+          pip install build wheel setuptools
 
-      - name: Write version file
+      - name: Inject static version into pyproject.toml
         run: |
           VERSION="${{ needs.auto-tag.outputs.new_version }}"
-          echo "Version from auto-tag: '$VERSION'"
+          echo "Injecting version: $VERSION"
           if [ -z "$VERSION" ]; then
             echo "::error::Version output from auto-tag job is empty!"
             exit 1
           fi
-          # Write version file that setuptools-scm can use as fallback
-          mkdir -p src/ts_shape
-          echo "$VERSION" > src/ts_shape/_version_stamp.txt
-          echo "Wrote version $VERSION to _version_stamp.txt"
+          # Replace dynamic version with static version
+          sed -i 's/^dynamic = \["version"\]/version = "'"$VERSION"'"/' pyproject.toml
+          # Remove setuptools-scm from build requires
+          sed -i 's/, "setuptools-scm>=8"//' pyproject.toml
+          # Remove [tool.setuptools-scm] section
+          sed -i '/^\[tool\.setuptools-scm\]/,/^$/d' pyproject.toml
+          echo "--- pyproject.toml (relevant lines) ---"
+          head -10 pyproject.toml
 
       - name: Build sdist and wheel
-        env:
-          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ needs.auto-tag.outputs.new_version }}
-        run: |
-          echo "SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION"
-          python -m build --no-isolation
+        run: python -m build
 
       - name: Verify built version
         run: |
           EXPECTED="${{ needs.auto-tag.outputs.new_version }}"
           echo "Expected version: $EXPECTED"
-          echo "Built artifacts:"
           ls -la dist/
-          # Fail if any artifact contains 0.0.0
           if ls dist/ | grep -q "0.0.0"; then
             echo "::error::Build produced version 0.0.0 instead of $EXPECTED!"
             exit 1
           fi
-          # Verify expected version appears in filenames
           if ! ls dist/ | grep -q "$EXPECTED"; then
             echo "::error::No artifact found with expected version $EXPECTED!"
-            ls dist/
             exit 1
           fi
 
