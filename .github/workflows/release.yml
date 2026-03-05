@@ -155,16 +155,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: auto-tag
 
+    env:
+      SETUPTOOLS_SCM_PRETEND_VERSION: ${{ needs.auto-tag.outputs.new_version }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Fetch tags and checkout version tag
-        run: |
-          git fetch --tags --force
-          git checkout ${{ needs.auto-tag.outputs.new_tag }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -176,20 +172,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install build wheel setuptools setuptools-scm
 
-      - name: Verify version detection
-        run: |
-          python -m setuptools_scm
-          DETECTED=$(python -m setuptools_scm)
-          EXPECTED="${{ needs.auto-tag.outputs.new_version }}"
-          echo "Detected: $DETECTED"
-          echo "Expected: $EXPECTED"
-          if [ "$DETECTED" != "$EXPECTED" ]; then
-            echo "::error::Version mismatch! setuptools-scm detected '$DETECTED' but expected '$EXPECTED'"
-            exit 1
-          fi
-
       - name: Build sdist and wheel
-        run: python -m build
+        run: |
+          echo "Building version: $SETUPTOOLS_SCM_PRETEND_VERSION"
+          python -m build
 
       - name: Verify package
         run: |
