@@ -85,6 +85,32 @@ OEE and Advanced Analytics:
   - on_off_intervals: List every on/off interval with duration.
   - cycle_count: Transition counts per window.
   - excessive_cycling: Flag windows with too many transitions.
+
+Performance and Target Tracking:
+- PerformanceLossTracking: Track speed losses against target cycle times.
+  - performance_by_shift: Performance % per shift.
+  - slow_periods: Identify windows below target performance.
+  - performance_trend: Performance trend over time.
+
+- ScrapTracking: Track material scrap and waste.
+  - scrap_by_shift: Scrap quantity per shift.
+  - scrap_by_reason: Scrap by reason code.
+  - scrap_cost: Convert scrap to monetary cost.
+  - scrap_trend: Scrap trend over time.
+
+- TargetTracking: Compare any metric to targets.
+  - compare_to_target: Actual vs per-shift targets.
+  - target_achievement_summary: Daily target achievement.
+  - target_hit_rate: Percentage of days meeting targets.
+
+- ShiftHandoverReport: Automated shift handover report generation.
+  - generate_report: Full shift report with production, quality, downtime.
+  - highlight_issues: Auto-identify metrics below thresholds.
+
+- PeriodSummary: Weekly/monthly summary aggregation.
+  - weekly_summary: Roll up daily metrics to weekly.
+  - monthly_summary: Roll up daily metrics to monthly.
+  - compare_periods: Period-over-period comparison.
 """
 
 # Event Detection Classes
@@ -108,6 +134,13 @@ from .bottleneck_detection import BottleneckDetectionEvents
 from .micro_stop_detection import MicroStopEvents
 from .duty_cycle import DutyCycleEvents
 
+# Performance, Target, and Reporting
+from .performance_loss import PerformanceLossTracking
+from .scrap_tracking import ScrapTracking
+from .target_tracking import TargetTracking
+from .shift_handover import ShiftHandoverReport
+from .period_summary import PeriodSummary
+
 __all__ = [
     # Event Detection
     "MachineStateEvents",
@@ -128,4 +161,10 @@ __all__ = [
     "BottleneckDetectionEvents",
     "MicroStopEvents",
     "DutyCycleEvents",
+    # Performance, Target, and Reporting
+    "PerformanceLossTracking",
+    "ScrapTracking",
+    "TargetTracking",
+    "ShiftHandoverReport",
+    "PeriodSummary",
 ]
