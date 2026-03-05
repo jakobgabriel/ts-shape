@@ -24,4 +24,16 @@ Classes:
 - ToleranceDeviationEvents: Flag intervals where actual values cross/compare against
   tolerance settings and group them into start/end events.
   - process_and_group_data_with_events: Build grouped deviation events with event UUIDs.
+
+- AnomalyClassificationEvents: Classify anomaly types in numeric signals.
+  - classify_anomalies: Detect and classify by type (spike/drift/oscillation/flatline/level_shift).
+  - detect_flatline: Signal stuck at constant value.
+  - detect_oscillation: Periodic instability detection.
+  - detect_drift: Short-term slope-based drift events.
+
+- SignalQualityEvents: Signal data quality monitoring.
+  - detect_missing_data: Find gaps exceeding expected sampling frequency.
+  - sampling_regularity: Inter-sample interval statistics per window.
+  - detect_out_of_range: Flag values outside physical/expected bounds.
+  - data_completeness: Percentage of expected samples received per window.
 """

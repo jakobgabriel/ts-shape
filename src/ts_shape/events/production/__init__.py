@@ -67,6 +67,24 @@ OEE and Advanced Analytics:
   - batch_duration_stats: Duration statistics per batch type.
   - batch_yield: Production quantity per batch.
   - batch_transition_matrix: Batch-to-batch transition frequencies.
+
+- BottleneckDetectionEvents: Identify production line bottlenecks.
+  - station_utilization: Per-station uptime percentage per window.
+  - detect_bottleneck: Identify bottleneck station per window.
+  - shifting_bottleneck: Track when the bottleneck moves.
+  - throughput_constraint_summary: Summary statistics.
+
+- MicroStopEvents: Detect brief idle intervals that accumulate into losses.
+  - detect_micro_stops: Find idle intervals shorter than max_duration.
+  - micro_stop_frequency: Count micro-stops per window.
+  - micro_stop_impact: Time lost to micro-stops per window.
+  - micro_stop_patterns: Group micro-stops by hour-of-day.
+
+- DutyCycleEvents: Analyze on/off patterns from boolean signals.
+  - duty_cycle_per_window: On-time percentage per window.
+  - on_off_intervals: List every on/off interval with duration.
+  - cycle_count: Transition counts per window.
+  - excessive_cycling: Flag windows with too many transitions.
 """
 
 # Event Detection Classes
@@ -86,6 +104,9 @@ from .quality_tracking import QualityTracking
 from .oee_calculator import OEECalculator
 from .alarm_management import AlarmManagementEvents
 from .batch_tracking import BatchTrackingEvents
+from .bottleneck_detection import BottleneckDetectionEvents
+from .micro_stop_detection import MicroStopEvents
+from .duty_cycle import DutyCycleEvents
 
 __all__ = [
     # Event Detection
@@ -103,4 +124,8 @@ __all__ = [
     "OEECalculator",
     "AlarmManagementEvents",
     "BatchTrackingEvents",
+    # Bottleneck, Micro-Stop, and Duty Cycle Analysis
+    "BottleneckDetectionEvents",
+    "MicroStopEvents",
+    "DutyCycleEvents",
 ]
