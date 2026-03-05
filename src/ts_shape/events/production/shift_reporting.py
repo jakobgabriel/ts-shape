@@ -19,6 +19,16 @@ class ShiftReporting(Base):
     - counter_uuid: production counter
     - part_id_uuid: part number (optional)
 
+    Merge keys: [date, shift] for shift-level outputs.
+
+    Pipeline example::
+
+        reporter = ShiftReporting(df)
+        prod = reporter.shift_production('counter')
+        # → merge with QualityTracking.nok_by_shift() on [date, shift]
+        # → merge with DowntimeTracking.downtime_by_shift() on [date, shift]
+        # → feed combined DataFrame into ShiftHandoverReport.from_shift_data()
+
     Example usage:
         reporter = ShiftReporting(df, shift_definitions={
             "day": ("06:00", "14:00"),

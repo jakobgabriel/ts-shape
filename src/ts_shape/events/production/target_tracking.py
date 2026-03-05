@@ -19,6 +19,16 @@ class TargetTracking(Base):
     Every plant has daily/shift targets.  This module provides a generic way to
     compare actual performance against those targets.
 
+    Merge keys: [date, shift] for shift-level, [date] for daily.
+
+    Pipeline example::
+
+        target = TargetTracking(df)
+        result = target.compare_to_target('counter', {'shift_1': 450})
+        # → merge with PerformanceLossTracking.performance_by_shift() on [date, shift]
+        # → merge with QualityTracking.nok_by_shift() on [date, shift]
+        # → result['status'] column enables filtering/alerting
+
     Example usage:
         tracker = TargetTracking(df)
 

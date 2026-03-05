@@ -23,6 +23,12 @@ class QualityTracking(Base):
     - part_id_uuid: part number signal (optional)
     - defect_reason_uuid: defect reason code (optional)
 
+    Merge keys: [date, shift] for shift-level, [date] for daily, [part_number] for part-level.
+
+    Pipeline outputs include ``quality_pct`` (alias for ``first_pass_yield_pct``)
+    so downstream modules (ShiftHandoverReport, PeriodSummary, OEECalculator)
+    can join on a consistent column name.
+
     Example usage:
         tracker = QualityTracking(df)
 
@@ -38,7 +44,15 @@ class QualityTracking(Base):
             nok_counter_uuid='bad_parts',
             part_id_uuid='part_number'
         )
+
+        # Pipeline: feed into PeriodSummary
+        daily = tracker.daily_quality_summary('good', 'bad')
+        # daily has [date, ok_parts, nok_parts, total_parts, quality_pct, ...]
     """
+
+    MERGE_KEYS_SHIFT = ["date", "shift"]
+    MERGE_KEYS_DAILY = ["date"]
+    MERGE_KEYS_PART = ["part_number"]
 
     def __init__(
         self,
@@ -200,6 +214,7 @@ class QualityTracking(Base):
                 "total_parts": total_parts,
                 "nok_rate_pct": round(nok_rate, 1),
                 "first_pass_yield_pct": round(fpy, 1),
+                "quality_pct": round(fpy, 1),
             })
 
         return pd.DataFrame(results)
@@ -342,6 +357,7 @@ class QualityTracking(Base):
                 "total_parts": total_parts,
                 "nok_rate_pct": round(nok_rate, 1),
                 "first_pass_yield_pct": round(fpy, 1),
+                "quality_pct": round(fpy, 1),
             })
 
         return pd.DataFrame(results)
@@ -486,7 +502,7 @@ class QualityTracking(Base):
         if shift_quality.empty:
             return pd.DataFrame(
                 columns=["date", "ok_parts", "nok_parts", "total_parts",
-                        "nok_rate_pct", "first_pass_yield_pct"]
+                        "nok_rate_pct", "first_pass_yield_pct", "quality_pct"]
             )
 
         # Aggregate by date
@@ -503,5 +519,6 @@ class QualityTracking(Base):
         daily["first_pass_yield_pct"] = (
             daily["ok_parts"] / daily["total_parts"] * 100
         ).round(1)
+        daily["quality_pct"] = daily["first_pass_yield_pct"]
 
         return daily

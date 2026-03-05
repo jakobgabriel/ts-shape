@@ -23,6 +23,16 @@ class PerformanceLossTracking(Base):
     - cycle_uuid: cycle trigger or production counter
     - part_id_uuid: part number signal (optional, for per-part targets)
 
+    Merge keys: [date, shift] for shift-level, [period] for trend data.
+
+    Pipeline example::
+
+        perf = PerformanceLossTracking(df)
+        shift_perf = perf.performance_by_shift('cycle', target_cycle_time=45)
+        # → merge with DowntimeTracking.downtime_by_shift() on [date, shift]
+        # → merge with QualityTracking.nok_by_shift() on [date, shift]
+        # → feed into ShiftHandoverReport.from_shift_data()
+
     Example usage:
         tracker = PerformanceLossTracking(df)
 

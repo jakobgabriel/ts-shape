@@ -4,11 +4,15 @@ Roll up daily metrics to weekly/monthly summaries:
 - Weekly summary of KPIs
 - Monthly totals and averages
 - Period-over-period comparison
+
+Two modes of operation:
+1. From raw signals: ``weekly_summary(counter_uuid, ...)``
+2. From pre-computed daily DataFrames: ``from_daily_data(daily_df)``
 """
 
 import pandas as pd  # type: ignore
 import numpy as np
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 from ts_shape.utils.base import Base
 
@@ -16,27 +20,27 @@ from ts_shape.utils.base import Base
 class PeriodSummary(Base):
     """Aggregate daily metrics into weekly/monthly summaries.
 
-    Example usage:
+    Merge keys: [week_start, week_end] for weekly, [year, month] for monthly.
+
+    Two usage patterns:
+
+    **Pattern A — from raw signals:**
+
         summary = PeriodSummary(df)
+        weekly = summary.weekly_summary(counter_uuid='prod')
 
-        # Weekly rollup
-        weekly = summary.weekly_summary(
-            counter_uuid='production_counter',
-            ok_counter_uuid='good_parts',
-            nok_counter_uuid='bad_parts',
-        )
+    **Pattern B — pipeline (compose from upstream modules):**
 
-        # Monthly rollup
-        monthly = summary.monthly_summary(
-            counter_uuid='production_counter',
-        )
+        # Build a daily DataFrame from any combination of upstream modules
+        quality = QualityTracking(df).daily_quality_summary('ok', 'nok')
+        downtime = DowntimeTracking(df).availability_trend('state', window='1D')
 
-        # Compare two periods
-        comparison = summary.compare_periods(
-            counter_uuid='production_counter',
-            period1=('2024-01-01', '2024-01-07'),
-            period2=('2024-01-08', '2024-01-14'),
-        )
+        # Merge on date
+        daily = quality.merge(downtime.rename(columns={'period': 'date'}), on='date')
+
+        # Roll up to weekly/monthly
+        weekly = PeriodSummary.from_daily_data(daily, freq='W')
+        monthly = PeriodSummary.from_daily_data(daily, freq='MS')
     """
 
     def __init__(
@@ -73,6 +77,103 @@ class PeriodSummary(Base):
 
         return pd.DataFrame(results)
 
+    # ------------------------------------------------------------------
+    # Pipeline entry-point: roll up any daily DataFrame
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def from_daily_data(
+        daily_df: pd.DataFrame,
+        *,
+        freq: str = "W",
+        date_column: str = "date",
+    ) -> pd.DataFrame:
+        """Roll up a pre-computed daily DataFrame to weekly or monthly.
+
+        This is the **pipeline-friendly** entry-point.  It accepts any daily
+        DataFrame (e.g. merged output of QualityTracking, DowntimeTracking,
+        OEECalculator) and aggregates numeric columns.
+
+        Numeric columns are aggregated as follows:
+        - Columns containing ``_pct`` or ``pct``: averaged (mean).
+        - Columns containing ``parts``, ``quantity``, ``production``, ``minutes``:
+          summed.
+        - All other numeric columns: summed.
+
+        The output always includes ``period_start``, ``period_end``, and
+        ``days`` columns.
+
+        Args:
+            daily_df: DataFrame with a date column and numeric metric columns.
+                Expected merge key: [date].
+            freq: Pandas frequency string.
+                'W' = weekly (Monday start), 'MS' = monthly.
+            date_column: Name of the date column.
+
+        Returns:
+            DataFrame with period_start, period_end, days, and aggregated
+            metric columns.
+
+        Example::
+
+            quality = QualityTracking(df).daily_quality_summary('ok', 'nok')
+            weekly = PeriodSummary.from_daily_data(quality, freq='W')
+            # → [period_start, period_end, days, ok_parts, nok_parts,
+            #    total_parts, quality_pct, ...]
+        """
+        if daily_df.empty:
+            return pd.DataFrame(columns=["period_start", "period_end", "days"])
+
+        data = daily_df.copy()
+        data[date_column] = pd.to_datetime(data[date_column])
+        data = data.set_index(date_column)
+
+        # Classify numeric columns by aggregation type
+        numeric_cols = data.select_dtypes(include="number").columns.tolist()
+        avg_cols = [c for c in numeric_cols if "pct" in c.lower()]
+        sum_cols = [c for c in numeric_cols if c not in avg_cols]
+
+        agg_spec = {}
+        for c in avg_cols:
+            agg_spec[c] = "mean"
+        for c in sum_cols:
+            agg_spec[c] = "sum"
+
+        if freq.startswith("W"):
+            grouper = pd.Grouper(freq="W-MON", label="left", closed="left")
+        else:
+            grouper = pd.Grouper(freq=freq)
+
+        results = []
+        for period_start, grp in data.groupby(grouper):
+            if grp.empty:
+                continue
+
+            row = {"period_start": period_start.date(), "days": len(grp)}
+
+            if freq.startswith("W"):
+                row["period_end"] = (period_start + pd.Timedelta(days=6)).date()
+            elif freq == "MS":
+                row["period_end"] = (period_start + pd.offsets.MonthEnd(0)).date()
+            else:
+                row["period_end"] = grp.index.max().date()
+
+            for col in avg_cols:
+                if col in grp.columns:
+                    row[col] = round(grp[col].mean(), 1)
+            for col in sum_cols:
+                if col in grp.columns:
+                    val = grp[col].sum()
+                    row[col] = int(val) if pd.api.types.is_integer_dtype(grp[col]) else round(val, 1)
+
+            results.append(row)
+
+        return pd.DataFrame(results)
+
+    # ------------------------------------------------------------------
+    # Raw-signal entry-points
+    # ------------------------------------------------------------------
+
     def weekly_summary(
         self,
         counter_uuid: str,
@@ -81,7 +182,10 @@ class PeriodSummary(Base):
         *,
         value_column: str = "value_integer",
     ) -> pd.DataFrame:
-        """Roll up daily production to weekly summaries.
+        """Roll up daily production to weekly summaries from raw signals.
+
+        For pipeline usage with pre-computed DataFrames, use
+        :meth:`from_daily_data` instead.
 
         Args:
             counter_uuid: UUID of production counter.
@@ -166,7 +270,10 @@ class PeriodSummary(Base):
         *,
         value_column: str = "value_integer",
     ) -> pd.DataFrame:
-        """Roll up daily production to monthly summaries.
+        """Roll up daily production to monthly summaries from raw signals.
+
+        For pipeline usage with pre-computed DataFrames, use
+        :meth:`from_daily_data` instead.
 
         Args:
             counter_uuid: UUID of production counter.

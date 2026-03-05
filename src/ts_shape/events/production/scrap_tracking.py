@@ -21,6 +21,18 @@ class ScrapTracking(Base):
     - reason_uuid: scrap reason code (optional)
     - part_id_uuid: part number / material type (optional)
 
+    Merge keys: [date, shift] for shift-level, [period] for trend,
+    [reason] for reason-level, [part_number] for part-level.
+
+    Pipeline example::
+
+        scrap = ScrapTracking(df)
+        shift_scrap = scrap.scrap_by_shift('scrap_weight')
+        # → merge with ShiftReporting.shift_production() on [date, shift]
+        # → merge with QualityTracking.nok_by_shift() on [date, shift]
+        cost = scrap.scrap_cost('scrap_weight', 'part_id', {'A': 12.5})
+        # → merge with QualityTracking.quality_by_part() on [part_number]
+
     Example usage:
         tracker = ScrapTracking(df)
 
