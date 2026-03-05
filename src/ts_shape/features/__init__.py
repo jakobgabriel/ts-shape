@@ -92,4 +92,20 @@ Classes:
   - merge_dataframes_by_cycle: Annotate values with cycle UUIDs.
   - group_by_cycle_uuid: Group values by cycle key.
   - split_dataframes_by_group: Further split by column groupings.
+
+- CrossSignalAnalytics: Cross-signal analytics for multi-signal timeseries.
+  - granger_causality: Test if one signal Granger-causes another.
+  - transfer_entropy: Estimate information transfer between signals.
+  - pairwise_transfer_entropy: Transfer entropy for all directed pairs.
+  - synchronization_index: Phase or amplitude synchronization.
+  - pairwise_synchronization: Synchronization for all pairs.
+  - lead_lag: Detect lead-lag relationships via cross-correlation.
+  - lead_lag_matrix: Lead-lag for all pairs.
+
+- PatternRecognition: Pattern discovery for univariate timeseries.
+  - discover_motifs: Find top-k recurring subsequence patterns.
+  - discover_discords: Find top-k anomalous subsequences.
+  - similarity_search: Find subsequences most similar to a query (DTW).
+  - template_match: Find all occurrences of a reference template.
+  - compute_distance_profile: Distance from query to every subsequence.
 """

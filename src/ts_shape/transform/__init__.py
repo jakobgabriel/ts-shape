@@ -60,4 +60,12 @@ Classes:
   - detect_timezone_awareness: Check tz-awareness of a column.
   - revert_to_original_timezone: Convert back to original tz.
   - calculate_time_difference: Difference between two timestamp columns.
+
+- DataHarmonizer: Multi-signal data harmonization.
+  - pivot_to_wide: Pivot long-format to wide-format (one column per UUID).
+  - resample_to_uniform: Resample to uniform time grid with interpolation.
+  - detect_gaps: Identify time gaps per UUID exceeding a threshold.
+  - fill_gaps: Fill gaps using interpolation, forward/back fill, or constant.
+  - align_asof: Align two UUID signals using merge_asof.
+  - merge_multi_signals: End-to-end harmonization pipeline.
 """
