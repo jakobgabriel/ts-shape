@@ -91,9 +91,10 @@ class MachineStateEvents(Base):
                 columns=["systime", "uuid", "source_uuid", "is_delta", "transition", "time_since_last_transition_seconds"]
             )
         changes = changes.rename(columns={self.time_column: "systime"})
-        changes["transition"] = changes.apply(
-            lambda r: "idle_to_run" if (r["prev"] is False and r["state"] is True) else "run_to_idle",
-            axis=1,
+        changes["transition"] = np.where(
+            changes["state"] & ~changes["prev"].astype(bool),
+            "idle_to_run",
+            "run_to_idle",
         )
         changes["time_since_last_transition_seconds"] = changes["systime"].diff().dt.total_seconds()
         return pd.DataFrame(

@@ -25,6 +25,7 @@ def _make_loader_without_init(prefix="", files=None):
     loader.container_client = DummyClient(files or [])
     loader.prefix = prefix
     loader.max_workers = 2
+    loader.hour_pattern = "{Y}/{m}/{d}/{H}/"
     return loader
 
 
@@ -43,6 +44,7 @@ def _make_flexible_without_init(prefix="", files=None):
     loader.container_client = DummyClient(files or [])
     loader.prefix = prefix
     loader.max_workers = 2
+    loader.hour_pattern = "{Y}/{m}/{d}/{H}/"
     return loader
 
 

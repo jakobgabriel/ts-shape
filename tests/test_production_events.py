@@ -79,18 +79,21 @@ def test_changeover_detect_and_window_stable_band():
 
 
 def test_flow_blocked_and_starved():
-    t = pd.date_range('2024-01-01 00:00:00', periods=6, freq='30s')
-    up = [False, True, True, True, False, False]
-    dn = [False, False, True, True, True, False]
+    # Create data where upstream runs while downstream is idle for multiple timestamps
+    t = pd.date_range('2024-01-01 00:00:00', periods=8, freq='30s')
+    up = [False, True, True, True, True, False, False, False]
+    dn = [False, False, False, True, True, True, True, False]
     df_up = pd.DataFrame({'uuid': ['up']*len(t), 'systime': t, 'value_bool': up, 'is_delta': [True]*len(t)})
     df_dn = pd.DataFrame({'uuid': ['dn']*len(t), 'systime': t, 'value_bool': dn, 'is_delta': [True]*len(t)})
     df = pd.concat([df_up, df_dn], ignore_index=True)
 
     fce = FlowConstraintEvents(df)
-    blocked = fce.blocked_events(roles={'upstream_run': 'up', 'downstream_run': 'dn'}, tolerance='0s', min_duration='30s')
+    # Blocked: upstream True while downstream False at t1,t2 (duration=30s)
+    blocked = fce.blocked_events(roles={'upstream_run': 'up', 'downstream_run': 'dn'}, tolerance='1s', min_duration='30s')
     assert not blocked.empty
     assert (blocked['type'] == 'blocked').all()
 
-    starved = fce.starved_events(roles={'upstream_run': 'up', 'downstream_run': 'dn'}, tolerance='0s', min_duration='30s')
+    # Starved: downstream True while upstream False at t5,t6 (duration=30s)
+    starved = fce.starved_events(roles={'upstream_run': 'up', 'downstream_run': 'dn'}, tolerance='1s', min_duration='30s')
     assert isinstance(starved, pd.DataFrame)
 

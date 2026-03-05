@@ -2,49 +2,354 @@
 
 [![pypi version](https://img.shields.io/pypi/v/ts-shape.svg)](https://pypi.org/project/ts-shape/)
 [![downloads](https://static.pepy.tech/badge/ts-shape/week)](https://pepy.tech/projects/ts-shape)
+[![CI](https://github.com/jakobgabriel/ts-shape/actions/workflows/ci.yml/badge.svg)](https://github.com/jakobgabriel/ts-shape/actions/workflows/ci.yml)
 [![docs](https://img.shields.io/badge/docs-mkdocs-708FCC.svg?style=flat)](https://jakobgabriel.github.io/ts-shape/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 
-ts-shape is a lightweight, composable toolkit to load, shape, and analyze time series data. It embraces a simple DataFrame-in → DataFrame-out philosophy across loaders, transforms, feature extractors, and event detectors.
+**ts-shape** is a composable, production-ready Python toolkit for loading, shaping, and analysing industrial timeseries data. Built for manufacturing and IoT, it follows a simple **DataFrame-in, DataFrame-out** philosophy across loaders, transforms, feature extractors, and event detectors.
 
-Key ideas:
+---
 
-- Unified DataFrame workflow: Load timeseries + metadata, join on `uuid`, and process.
-- Modular building blocks: Use only what you need; components are decoupled and easy to extend.
-- Performance aware: Vectorized ops, chunked DB reads, and concurrent I/O for remote storage.
+## Key Features
 
-## Install
+- **Unified DataFrame workflow** -- Load timeseries + metadata, join on `uuid`, process.
+- **Modular packs** -- Quality, Production, Engineering, Maintenance, Supply Chain events.
+- **Performance-aware** -- Vectorised ops, chunked DB reads, concurrent I/O.
+- **Zero ML dependencies** -- Core uses only pandas, numpy, scipy.
+- **Multi-source loaders** -- Parquet, S3, Azure Blob, TimescaleDB, REST APIs.
+
+---
+
+## Installation
 
 ```bash
 pip install ts-shape
-# Parquet engine (recommended)
-pip install pyarrow  # or: pip install fastparquet
+
+# Recommended: parquet engine
+pip install pyarrow          # or: pip install fastparquet
 ```
 
 Optional integrations:
 
-- Azure Blob Storage: `pip install azure-storage-blob`
-- Azure AAD + management (optional): `pip install azure-identity azure-mgmt-storage`
-- S3 proxy access: already included via `s3fs`
-- TimescaleDB: `pip install sqlalchemy psycopg2-binary`
+| Integration | Install |
+|-------------|---------|
+| Azure Blob Storage | `pip install azure-storage-blob` |
+| Azure AAD + management | `pip install azure-identity azure-mgmt-storage` |
+| S3 proxy access | Included via `s3fs` |
+| TimescaleDB | `pip install sqlalchemy psycopg2-binary` |
 
-## What’s Inside
+---
 
-- Loaders (timeseries):
-  - Parquet folders (local)
-  - S3 proxy parquet via `s3fs`
-  - Azure Blob parquet (hourly layout, UUID filters, time range)
-  - TimescaleDB (chunked reads, parquet export by hour)
-- Loaders (metadata):
-  - JSON metadata loader (robust input shapes, flattens config)
-- Transformations:
-  - Filters (numeric/string/boolean/datetime), generic functions, time functions, calculators
-- Features:
-  - Descriptive stats, time stats, cycles utilities
-- Events:
-  - Quality (outlier detection, SPC, tolerance deviation), production/maintenance patterns
+## Quick Start
 
-See the extended concept overview in `docs/concept.md`.
+```python
+import pandas as pd
+from ts_shape.events.quality.outlier_detection import OutlierDetectionEvents
+from ts_shape.events.quality.statistical_process_control import StatisticalProcessControlRuleBased
+
+# Load your timeseries data
+df = pd.read_parquet("my_data.parquet")
+
+# Detect outliers
+detector = OutlierDetectionEvents(df, value_column="value_double")
+outliers = detector.detect_outliers_zscore(threshold=3.0)
+
+# Run SPC analysis
+spc = StatisticalProcessControlRuleBased(
+    df, actual_uuid="sensor:temp", tolerance_uuid="limit:temp"
+)
+violations = spc.process()
+```
+
+---
+
+## Data Model
+
+ts-shape works with a standardised timeseries DataFrame schema:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `systime` | `datetime64[ns]` | Timestamp (sorted, tz-aware supported) |
+| `uuid` | `str` | Signal identifier |
+| `value_double` | `float64` | Numeric values |
+| `value_integer` | `int64` | Integer values |
+| `value_bool` | `bool` | Boolean values |
+| `value_string` | `str` | String values |
+| `is_delta` | `bool` | Change indicator |
+
+All classes inherit from a common `Base` class that automatically detects time columns, converts to datetime, and sorts by timestamp.
+
+---
+
+## Architecture
+
+```
+ts_shape/
+├── loader/              # Data Loading & Integration
+│   ├── timeseries/      # Parquet, S3, Azure Blob, TimescaleDB, Energy API
+│   ├── metadata/        # JSON, REST API, Database metadata
+│   └── combine/         # DataIntegratorHybrid (merge timeseries + metadata)
+│
+├── transform/           # Data Transformation
+│   ├── filter/          # Numeric, String, Boolean, DateTime, Custom filters
+│   ├── calculator/      # Arithmetic operations (scale, offset, power, etc.)
+│   ├── functions/       # Lambda/callable application
+│   └── time_functions/  # Timestamp conversion, timezone operations
+│
+├── features/            # Feature Extraction
+│   ├── stats/           # Numeric, String, Boolean, Timestamp statistics
+│   ├── time_stats/      # Time-windowed aggregations
+│   └── cycles/          # Cycle detection & processing (6 methods)
+│
+├── events/              # Event Detection (Domain Packs)
+│   ├── quality/         # Outlier detection, SPC (8 rules), tolerance deviation
+│   ├── production/      # OEE, machine state, throughput, shift, downtime, alarms, batches
+│   ├── engineering/     # Setpoint changes, startup detection, control quality
+│   ├── maintenance/     # Degradation, failure prediction, vibration analysis
+│   └── supplychain/     # Inventory monitoring, lead time, demand patterns
+│
+├── context/             # Value mapping (categorical codes → labels)
+└── utils/               # Base class and shared utilities
+```
+
+---
+
+## Packs Overview
+
+### Quality Events
+Detect anomalies and process deviations in sensor data.
+
+```python
+from ts_shape.events.quality.outlier_detection import OutlierDetectionEvents
+from ts_shape.events.quality.statistical_process_control import StatisticalProcessControlRuleBased
+from ts_shape.events.quality.tolerance_deviation import ToleranceDeviationEvents
+
+# Outlier detection (Z-score, IQR, MAD, Isolation Forest)
+outliers = OutlierDetectionEvents(df, value_column="value_double")
+result = outliers.detect_outliers_zscore(threshold=3.0)
+
+# Statistical Process Control -- 8 Western Electric rules
+spc = StatisticalProcessControlRuleBased(df, actual_uuid="sensor", tolerance_uuid="limit")
+violations = spc.process()
+
+# Tolerance deviation with severity classification
+tol = ToleranceDeviationEvents(df, actual_uuid="sensor", tolerance_uuid="limit")
+deviations = tol.process_and_group_data_with_events()
+```
+
+### Production Events
+Track production performance, equipment states, and operational metrics.
+
+```python
+from ts_shape.events.production.machine_state import MachineStateEvents
+from ts_shape.events.production.oee_calculator import OEECalculator
+from ts_shape.events.production.shift_reporting import ShiftReporting
+from ts_shape.events.production.alarm_management import AlarmManagementEvents
+from ts_shape.events.production.batch_tracking import BatchTrackingEvents
+
+# Machine state detection (run/idle intervals)
+mse = MachineStateEvents(df, run_state_uuid="machine:running")
+intervals = mse.detect_run_idle(min_duration="30s")
+
+# OEE calculation (Availability x Performance x Quality)
+oee = OEECalculator(df)
+result = oee.calculate_oee(
+    run_state_uuid="machine:state",
+    counter_uuid="parts:count",
+    ideal_cycle_time=10.0,
+)
+
+# Alarm analysis (ISA-18.2 style)
+alarms = AlarmManagementEvents(df, alarm_uuid="alarm:overtemp")
+chattering = alarms.chattering_detection(min_transitions=5, window="10m")
+
+# Batch tracking
+batches = BatchTrackingEvents(df, batch_uuid="batch:id")
+batch_list = batches.detect_batches()
+```
+
+### Engineering Events
+Analyse control system behaviour and setpoint responses.
+
+```python
+from ts_shape.events.engineering.setpoint_events import SetpointChangeEvents
+from ts_shape.events.engineering.startup_events import StartupDetectionEvents
+
+# Setpoint change detection + settling time + overshoot
+sp = SetpointChangeEvents(df, setpoint_uuid="setpoint:temp")
+steps = sp.detect_setpoint_steps(min_delta=2.0)
+settle = sp.time_to_settle(actual_uuid="actual:temp", tol=0.5)
+quality = sp.control_quality_metrics(actual_uuid="actual:temp")
+
+# Startup detection
+startup = StartupDetectionEvents(df, signal_uuid="motor:speed")
+events = startup.detect_startup_by_threshold(threshold=100.0)
+```
+
+### Maintenance Events
+Predictive maintenance through degradation detection and failure prediction.
+
+```python
+from ts_shape.events.maintenance.degradation_detection import DegradationDetectionEvents
+from ts_shape.events.maintenance.failure_prediction import FailurePredictionEvents
+from ts_shape.events.maintenance.vibration_analysis import VibrationAnalysisEvents
+
+# Degradation detection (trend, variance, level shift, health score)
+deg = DegradationDetectionEvents(df, signal_uuid="sensor:bearing_temp")
+trends = deg.detect_trend_degradation(window="1h", direction="increasing")
+health = deg.health_score(window="1h", baseline_window="24h")
+
+# Remaining Useful Life estimation
+fp = FailurePredictionEvents(df, signal_uuid="sensor:bearing_temp")
+rul = fp.remaining_useful_life(degradation_rate=0.01, failure_threshold=120.0)
+
+# Vibration analysis (RMS, crest factor, kurtosis)
+vib = VibrationAnalysisEvents(df, signal_uuid="sensor:vibration")
+indicators = vib.bearing_health_indicators(window="5m")
+```
+
+### Supply Chain Events
+Monitor inventory, lead times, and demand patterns.
+
+```python
+from ts_shape.events.supplychain.inventory_monitoring import InventoryMonitoringEvents
+from ts_shape.events.supplychain.lead_time_analysis import LeadTimeAnalysisEvents
+from ts_shape.events.supplychain.demand_pattern import DemandPatternEvents
+
+# Inventory monitoring with stockout prediction
+inv = InventoryMonitoringEvents(df, level_uuid="inventory:raw_material")
+low_stock = inv.detect_low_stock(min_level=100, hold="30m")
+prediction = inv.stockout_prediction(consumption_rate_window="4h")
+
+# Lead time analysis
+lt = LeadTimeAnalysisEvents(df)
+lead_times = lt.calculate_lead_times(order_uuid="order:placed", delivery_uuid="order:delivered")
+anomalies = lt.detect_lead_time_anomalies(order_uuid="order:placed", delivery_uuid="order:delivered")
+
+# Demand patterns and seasonality
+demand = DemandPatternEvents(df, demand_uuid="demand:daily")
+spikes = demand.detect_demand_spikes(threshold_factor=2.0)
+seasonal = demand.seasonality_summary(period="1D")
+```
+
+### Loaders
+Load data from multiple sources into the standard schema.
+
+```python
+from ts_shape.loader.timeseries.parquet_loader import ParquetLoader
+from ts_shape.loader.timeseries.azure_blob_loader import AzureBlobParquetLoader
+from ts_shape.loader.metadata.metadata_json_loader import MetadataJsonLoader
+from ts_shape.loader.combine.integrator import DataIntegratorHybrid
+
+# Load parquet files
+df = ParquetLoader.load_all_files("/data/timeseries")
+df_range = ParquetLoader.load_by_time_range("/data/timeseries", start, end)
+
+# Load metadata and combine
+meta = MetadataJsonLoader.from_file("metadata.json")
+combined = DataIntegratorHybrid.combine_data(timeseries_df=df, metadata_df=meta.to_df())
+```
+
+### Features & Statistics
+Extract statistical features and detect cycles.
+
+```python
+from ts_shape.features.stats.numeric_stats import NumericStatistics
+from ts_shape.features.stats.time_stats_numeric import TimeGroupedStatistics
+from ts_shape.features.cycles.cycles_extractor import CycleExtractor
+
+# Descriptive statistics
+stats = NumericStatistics.summary_as_dict(df, "value_double")
+
+# Time-windowed aggregations
+tgs = TimeGroupedStatistics(df, value_column="value_double")
+hourly = tgs.calculate_statistic(freq="1h", stat="mean")
+
+# Cycle extraction (6 detection methods)
+extractor = CycleExtractor(df, start_uuid="cycle:trigger")
+cycles = extractor.process_persistent_cycle()
+```
+
+---
+
+## Development
+
+```bash
+# Clone and install in development mode
+git clone https://github.com/jakobgabriel/ts-shape.git
+cd ts-shape
+pip install -e ".[dev]"
+
+# Run tests
+pytest tests/ -v
+
+# Run tests with coverage
+pytest tests/ --cov=ts_shape --cov-report=term-missing
+
+# Build documentation
+pip install -r requirements-docs.txt
+mkdocs serve
+```
+
+---
+
+## CI/CD
+
+The project uses GitHub Actions for continuous integration and deployment:
+
+| Workflow | Trigger | Description |
+|----------|---------|-------------|
+| **CI** | Push / PR | Runs tests on Python 3.10, 3.11, 3.12 |
+| **Release** | Push to `main` / Tag `v*` | Build docs, deploy to GitHub Pages, publish to PyPI |
+
+Versioning is managed with `setuptools-scm` -- version numbers are derived automatically from git tags. To release:
+
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+---
+
+## Project Structure
+
+```
+ts-shape/
+├── src/ts_shape/           # Library source code
+├── tests/                  # pytest test suite (100+ tests)
+├── examples/               # Runnable demo scripts
+├── docs/                   # MkDocs documentation
+├── .github/workflows/      # CI/CD pipelines
+├── pyproject.toml          # Package configuration + auto-versioning
+├── setup.py                # Legacy setup (delegates to pyproject.toml)
+├── requirements.txt        # Runtime dependencies
+└── requirements-docs.txt   # Documentation dependencies
+```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please see `docs/contributing.md` for guidelines.
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Write tests for your changes
+4. Ensure all tests pass (`pytest tests/ -v`)
+5. Submit a pull request
+
+---
 
 ## License
 
-MIT — see `LICENSE.txt`.
+MIT -- see [LICENSE.txt](LICENSE.txt).
+
+---
+
+## Links
+
+- [Documentation](https://jakobgabriel.github.io/ts-shape/)
+- [PyPI](https://pypi.org/project/ts-shape/)
+- [GitHub](https://github.com/jakobgabriel/ts-shape)
+- [Bug Tracker](https://github.com/jakobgabriel/ts-shape/issues)
