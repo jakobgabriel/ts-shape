@@ -55,9 +55,17 @@ class AzureBlobParquetLoader:
         else:
             if not connection_string:
                 raise ValueError("Either connection_string or (account_url + credential) must be provided")
-            self.container_client = ContainerClient.from_connection_string(
-                conn_str=connection_string, container_name=container_name
-            )
+            try:
+                self.container_client = ContainerClient.from_connection_string(
+                    conn_str=connection_string, container_name=container_name
+                )
+            except (KeyError, ValueError) as exc:
+                raise ValueError(
+                    "Invalid connection string. Ensure it contains "
+                    "'AccountName=...' and 'AccountKey=...' (or use "
+                    "account_url + credential for AAD auth). "
+                    "Find the full string in Azure Portal → Storage Account → Access keys."
+                ) from exc
         self.prefix = prefix
         self.max_workers = max_workers if max_workers > 0 else 1
         # Pattern for hour-level subpath; tokens: {Y} {m} {d} {H}
@@ -474,9 +482,17 @@ class AzureBlobFlexibleFileLoader:
         else:
             if not connection_string:
                 raise ValueError("Either connection_string or (account_url + credential) must be provided")
-            self.container_client = ContainerClient.from_connection_string(
-                conn_str=connection_string, container_name=container_name
-            )
+            try:
+                self.container_client = ContainerClient.from_connection_string(
+                    conn_str=connection_string, container_name=container_name
+                )
+            except (KeyError, ValueError) as exc:
+                raise ValueError(
+                    "Invalid connection string. Ensure it contains "
+                    "'AccountName=...' and 'AccountKey=...' (or use "
+                    "account_url + credential for AAD auth). "
+                    "Find the full string in Azure Portal → Storage Account → Access keys."
+                ) from exc
         self.prefix = prefix
         self.max_workers = max_workers if max_workers > 0 else 1
         # Pattern for hour-level subpath; tokens: {Y} {m} {d} {H}
