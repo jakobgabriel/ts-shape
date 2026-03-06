@@ -99,6 +99,14 @@ Traceability:
   - station_statistics: Dwell-time stats per station.
   - routing_paths: Most common routing path sequences.
 
+- MultiProcessTraceabilityEvents: Multi-station topology with parallel paths and handovers.
+  - build_timeline: Full timeline with parallel-station awareness.
+  - lead_time: End-to-end lead time with parallel flag.
+  - parallel_activity: Detect overlapping station intervals per item.
+  - handover_log: Extract and correlate handover events with item IDs.
+  - station_statistics: Per-station/cell dwell-time stats.
+  - routing_paths: Path frequency analysis with parallel flag.
+
 Performance and Target Tracking:
 - PerformanceLossTracking: Track speed losses against target cycle times.
   - performance_by_shift: Performance % per shift.
@@ -150,6 +158,7 @@ from .duty_cycle import DutyCycleEvents
 # Traceability
 from .order_traceability import OrderTraceabilityEvents
 from .routing_traceability import RoutingTraceabilityEvents
+from .multi_process_traceability import MultiProcessTraceabilityEvents
 
 # Performance, Target, and Reporting
 from .performance_loss import PerformanceLossTracking
@@ -181,6 +190,7 @@ __all__ = [
     # Traceability
     "OrderTraceabilityEvents",
     "RoutingTraceabilityEvents",
+    "MultiProcessTraceabilityEvents",
     # Performance, Target, and Reporting
     "PerformanceLossTracking",
     "ScrapTracking",
