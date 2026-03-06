@@ -1001,6 +1001,176 @@ df = LambdaProcessor.apply_function(
 
 ---
 
+## End-to-End Example: Azure → Load → Transform → Filter → Detect Startup
+
+A complete pipeline that loads parquet data from Azure Blob Storage using a SAS URL,
+converts timestamps to a local timezone, filters to a specific time window and signal,
+and then detects machine startup events.
+
+```python
+from ts_shape.loader.timeseries.azure_blob_loader import AzureBlobParquetLoader
+from ts_shape.transform.time_functions.timezone_shift import TimezoneShift
+from ts_shape.transform.time_functions.timestamp_converter import TimestampConverter
+from ts_shape.transform.filter.datetime_filter import DateTimeFilter
+from ts_shape.transform.filter.string_filter import StringFilter
+from ts_shape.transform.filter.numeric_filter import NumericFilter
+from ts_shape.events.engineering.startup_events import StartupDetectionEvents
+
+# ── 1. Connect to Azure Blob Storage with a SAS URL ─────────────────
+loader = AzureBlobParquetLoader(
+    sas_url="https://myaccount.blob.core.windows.net/timeseries?sv=2021-06-08&st=...&se=...&sr=c&sp=rl&sig=...",
+    prefix="parquet/",
+)
+
+# Optional: inspect the container structure first
+structure = loader.list_structure(limit=10)
+print("Folders:", structure["folders"])
+print("Files:",   structure["files"])
+
+# ── 2. Load parquet data for a specific time range ───────────────────
+df = loader.load_by_time_range("2024-03-01 06:00", "2024-03-01 18:00")
+print(f"Loaded {len(df)} rows")
+print(df.head())
+#          uuid  systime                          value_double
+# 0  motor_rpm  2024-03-01 06:00:01.123+00:00         0.0
+# 1  motor_rpm  2024-03-01 06:00:02.456+00:00         0.0
+# 2  motor_temp 2024-03-01 06:00:01.789+00:00        21.3
+
+# ── 3. Convert timestamps to local timezone ──────────────────────────
+# If timestamps are stored as Unix nanoseconds, convert them first:
+# df = TimestampConverter.convert_to_datetime(df, columns=["systime"], unit="ns", timezone="UTC")
+
+# Shift from UTC to local timezone
+df = TimezoneShift.shift_timezone(
+    df,
+    time_column="systime",
+    input_timezone="UTC",
+    target_timezone="Europe/Berlin",
+)
+print(df["systime"].iloc[0])
+# 2024-03-01 07:00:01.123000+01:00
+
+# ── 4. Filter to the signal of interest ──────────────────────────────
+df_motor = StringFilter.filter_equals(df, "uuid", "motor_rpm")
+print(f"Motor RPM rows: {len(df_motor)}")
+
+# Narrow to morning shift (07:00–15:00 local time)
+df_motor = DateTimeFilter.filter_between(
+    df_motor, "systime", "2024-03-01 07:00+01:00", "2024-03-01 15:00+01:00"
+)
+
+# Remove null / invalid readings
+df_motor = NumericFilter.filter_not_null(df_motor, "value_double")
+print(f"After filtering: {len(df_motor)} rows")
+
+# ── 5. Detect startup events ────────────────────────────────────────
+startup = StartupDetectionEvents(
+    dataframe=df_motor,
+    target_uuid="motor_rpm",
+)
+
+# Simple threshold-based startup detection
+# Motor is "starting" when RPM crosses above 100 and stays there for ≥30s
+events = startup.detect_startup_by_threshold(
+    threshold=100.0,
+    min_above="30s",
+)
+print(f"\nDetected {len(events)} startup event(s):")
+print(events[["start", "end", "method", "threshold"]])
+#                      start                       end       method  threshold
+# 0  2024-03-01 07:12:33+01:00  2024-03-01 07:14:01+01:00  threshold      100.0
+# 1  2024-03-01 12:30:15+01:00  2024-03-01 12:32:44+01:00  threshold      100.0
+
+# ── 6. Assess startup quality ────────────────────────────────────────
+quality = startup.assess_startup_quality(events)
+print("\nStartup quality:")
+print(quality[["start", "end", "duration", "smoothness_score", "stability_score"]])
+
+# ── 7. Detect failed startups ────────────────────────────────────────
+failed = startup.detect_failed_startups(
+    threshold=100.0,
+    min_rise_duration="5s",
+    max_completion_time="5m",
+    completion_threshold=500.0,   # expected operating RPM
+    required_stability="10s",
+)
+if not failed.empty:
+    print(f"\nFailed startups: {len(failed)}")
+    print(failed[["start", "end", "failure_reason", "max_value_reached"]])
+else:
+    print("\nNo failed startups detected.")
+```
+
+### Slope-Based Startup Detection
+
+For signals where the absolute value varies (e.g., temperature), detect startups
+by sustained positive slope instead of a fixed threshold.
+
+```python
+events = startup.detect_startup_by_slope(
+    min_slope=0.5,         # ≥0.5 units/second rate of change
+    min_duration="20s",    # slope must be sustained for ≥20s
+)
+print(events[["start", "end", "min_slope", "avg_slope"]])
+```
+
+### Adaptive Startup Detection
+
+Automatically adapts the threshold based on the recent baseline — useful when
+operating conditions drift over time.
+
+```python
+events = startup.detect_startup_adaptive(
+    baseline_window="1h",   # compute baseline from last 1h of idle data
+    sensitivity=2.0,        # threshold = mean + 2×std
+    min_above="10s",
+)
+print(events[["start", "end", "adaptive_threshold", "baseline_mean"]])
+```
+
+### Multi-Signal Startup Detection
+
+Confirm a startup by requiring multiple signals to trigger simultaneously
+(e.g., RPM rises AND temperature rises within 30 s of each other).
+
+```python
+# Build a loader with both signals
+df_both = StringFilter.filter_in_list(df, "uuid", ["motor_rpm", "motor_temp"])
+
+startup_multi = StartupDetectionEvents(
+    dataframe=df_both,
+    target_uuid="motor_rpm",
+)
+
+events = startup_multi.detect_startup_multi_signal(
+    signals={
+        "motor_rpm":  {"method": "threshold", "threshold": 100.0, "min_above": "30s"},
+        "motor_temp": {"method": "slope",     "min_slope": 0.1,   "min_duration": "20s"},
+    },
+    logic="all",              # both must trigger
+    time_tolerance="30s",     # within 30s of each other
+)
+print(events[["start", "end", "signals_triggered"]])
+```
+
+### Startup Phase Tracking
+
+Define the phases of a startup sequence and track progression through them.
+
+```python
+phases = startup.track_startup_phases(
+    phases=[
+        {"name": "ignition",  "condition": "threshold", "threshold": 50.0},
+        {"name": "ramp_up",   "condition": "range",     "lower": 50.0, "upper": 400.0},
+        {"name": "operating", "condition": "threshold", "threshold": 500.0},
+    ],
+    min_phase_duration="5s",
+)
+print(phases[["phase_name", "start", "end", "duration", "completed"]])
+```
+
+---
+
 ## Next Steps
 
 - [Concept Guide](../concept.md) - Understand the architecture
