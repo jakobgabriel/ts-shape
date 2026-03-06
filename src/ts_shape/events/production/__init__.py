@@ -86,6 +86,19 @@ OEE and Advanced Analytics:
   - cycle_count: Transition counts per window.
   - excessive_cycling: Flag windows with too many transitions.
 
+Traceability:
+- OrderTraceabilityEvents: Trace order/serial movement across multiple stations.
+  - build_timeline: Full timeline of every order at every station.
+  - lead_time: End-to-end lead time per order.
+  - current_status: Last-known station for each order.
+  - station_dwell_statistics: Dwell-time stats per station.
+
+- RoutingTraceabilityEvents: Trace item routing using ID + handover signals.
+  - build_routing_timeline: Correlate ID signal with routing signal.
+  - lead_time: End-to-end lead time per item.
+  - station_statistics: Dwell-time stats per station.
+  - routing_paths: Most common routing path sequences.
+
 Performance and Target Tracking:
 - PerformanceLossTracking: Track speed losses against target cycle times.
   - performance_by_shift: Performance % per shift.
@@ -134,6 +147,10 @@ from .bottleneck_detection import BottleneckDetectionEvents
 from .micro_stop_detection import MicroStopEvents
 from .duty_cycle import DutyCycleEvents
 
+# Traceability
+from .order_traceability import OrderTraceabilityEvents
+from .routing_traceability import RoutingTraceabilityEvents
+
 # Performance, Target, and Reporting
 from .performance_loss import PerformanceLossTracking
 from .scrap_tracking import ScrapTracking
@@ -161,6 +178,9 @@ __all__ = [
     "BottleneckDetectionEvents",
     "MicroStopEvents",
     "DutyCycleEvents",
+    # Traceability
+    "OrderTraceabilityEvents",
+    "RoutingTraceabilityEvents",
     # Performance, Target, and Reporting
     "PerformanceLossTracking",
     "ScrapTracking",
