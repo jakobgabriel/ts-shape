@@ -331,11 +331,14 @@ def test_nok_by_shift_basic(sample_quality_data):
     assert 'total_parts' in result.columns
     assert 'nok_rate_pct' in result.columns
     assert 'first_pass_yield_pct' in result.columns
+    assert 'quality_pct' in result.columns
 
     # Check that percentages sum to approximately 100
     for _, row in result.iterrows():
         total_pct = row['nok_rate_pct'] + row['first_pass_yield_pct']
         assert abs(total_pct - 100.0) < 0.5
+        # quality_pct should equal first_pass_yield_pct
+        assert row['quality_pct'] == row['first_pass_yield_pct']
 
 
 def test_nok_by_shift_calculations(sample_quality_data):

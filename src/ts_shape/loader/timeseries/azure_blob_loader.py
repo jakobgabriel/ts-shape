@@ -18,11 +18,12 @@ class AzureBlobParquetLoader:
 
     def __init__(
         self,
-        container_name: str,
+        container_name: Optional[str] = None,
         *,
         connection_string: Optional[str] = None,
         account_url: Optional[str] = None,
         credential: Optional[object] = None,
+        sas_url: Optional[str] = None,
         prefix: str = "",
         max_workers: int = 8,
         hour_pattern: str = "{Y}/{m}/{d}/{H}/",
@@ -30,11 +31,40 @@ class AzureBlobParquetLoader:
         """
         Initialize the loader with Azure connection details.
 
+        Supports three authentication methods:
+
+        1. **SAS URL** (simplest)::
+
+            loader = AzureBlobParquetLoader(
+                sas_url="https://account.blob.core.windows.net/container?sv=...&sig=..."
+            )
+
+           A SAS URL is also auto-detected when passed as ``connection_string``.
+
+        2. **Connection string**::
+
+            loader = AzureBlobParquetLoader(
+                connection_string="DefaultEndpointsProtocol=https;AccountName=...;AccountKey=...",
+                container_name="mycontainer",
+            )
+
+        3. **AAD credential** (account_url + credential)::
+
+            loader = AzureBlobParquetLoader(
+                account_url="https://account.blob.core.windows.net",
+                container_name="mycontainer",
+                credential=DefaultAzureCredential(),
+            )
+
         Args:
+            container_name: Target container name (not needed when using sas_url).
             connection_string: Azure Storage connection string.
-            container_name: Target container name.
+            account_url: Full account URL for AAD auth.
+            credential: Azure credential object for AAD auth.
+            sas_url: Full Blob SAS URL including container and SAS token.
             prefix: Optional path prefix to narrow listing (e.g. "year/month/").
             max_workers: Max concurrent downloads/reads.
+            hour_pattern: Pattern for hour-level subpath; tokens: {Y} {m} {d} {H}.
         """
         try:
             from azure.storage.blob import ContainerClient  # type: ignore
@@ -45,19 +75,41 @@ class AzureBlobParquetLoader:
             ) from exc
 
         self._ContainerClient = ContainerClient
-        # Prefer AAD credential path if account_url provided or credential is given
-        if account_url or (credential is not None and not connection_string):
+
+        # Auto-detect: if connection_string looks like a URL, treat it as sas_url
+        if connection_string and connection_string.strip().startswith("http"):
+            sas_url = connection_string
+            connection_string = None
+
+        if sas_url:
+            # SAS URL: https://account.blob.core.windows.net/container?sig=...
+            self.container_client = ContainerClient.from_container_url(sas_url)
+        elif account_url or (credential is not None and not connection_string):
             if not account_url:
                 raise ValueError("account_url must be provided when using AAD credential auth")
             if credential is None:
                 raise ValueError("credential must be provided when using AAD credential auth")
+            if not container_name:
+                raise ValueError("container_name is required when using account_url + credential")
             self.container_client = ContainerClient(account_url=account_url, container_name=container_name, credential=credential)
         else:
             if not connection_string:
-                raise ValueError("Either connection_string or (account_url + credential) must be provided")
-            self.container_client = ContainerClient.from_connection_string(
-                conn_str=connection_string, container_name=container_name
-            )
+                raise ValueError(
+                    "Provide one of: sas_url, connection_string, or (account_url + credential)"
+                )
+            if not container_name:
+                raise ValueError("container_name is required when using connection_string")
+            try:
+                self.container_client = ContainerClient.from_connection_string(
+                    conn_str=connection_string, container_name=container_name
+                )
+            except (KeyError, ValueError) as exc:
+                raise ValueError(
+                    "Invalid connection string. Ensure it contains "
+                    "'AccountName=...' and 'AccountKey=...' (or use "
+                    "sas_url for SAS token auth, or account_url + credential for AAD). "
+                    "Find the full string in Azure Portal → Storage Account → Access keys."
+                ) from exc
         self.prefix = prefix
         self.max_workers = max_workers if max_workers > 0 else 1
         # Pattern for hour-level subpath; tokens: {Y} {m} {d} {H}
@@ -447,15 +499,24 @@ class AzureBlobFlexibleFileLoader:
 
     def __init__(
         self,
-        container_name: str,
+        container_name: Optional[str] = None,
         *,
         connection_string: Optional[str] = None,
         account_url: Optional[str] = None,
         credential: Optional[object] = None,
+        sas_url: Optional[str] = None,
         prefix: str = "",
         max_workers: int = 8,
         hour_pattern: str = "{Y}/{m}/{d}/{H}/",
     ) -> None:
+        """
+        Initialize the loader with Azure connection details.
+
+        Supports SAS URL, connection string, and AAD credential auth.
+        See :class:`AzureBlobParquetLoader` for full parameter docs.
+
+        A SAS URL is auto-detected when passed as ``connection_string``.
+        """
         try:
             from azure.storage.blob import ContainerClient  # type: ignore
         except Exception as exc:  # pragma: no cover - import guard
@@ -464,19 +525,39 @@ class AzureBlobFlexibleFileLoader:
                 "Install with `pip install azure-storage-blob`."
             ) from exc
 
-        # Prefer AAD credential path if account_url provided or credential is given
-        if account_url or (credential is not None and not connection_string):
+        # Auto-detect: if connection_string looks like a URL, treat it as sas_url
+        if connection_string and connection_string.strip().startswith("http"):
+            sas_url = connection_string
+            connection_string = None
+
+        if sas_url:
+            self.container_client = ContainerClient.from_container_url(sas_url)
+        elif account_url or (credential is not None and not connection_string):
             if not account_url:
                 raise ValueError("account_url must be provided when using AAD credential auth")
             if credential is None:
                 raise ValueError("credential must be provided when using AAD credential auth")
+            if not container_name:
+                raise ValueError("container_name is required when using account_url + credential")
             self.container_client = ContainerClient(account_url=account_url, container_name=container_name, credential=credential)
         else:
             if not connection_string:
-                raise ValueError("Either connection_string or (account_url + credential) must be provided")
-            self.container_client = ContainerClient.from_connection_string(
-                conn_str=connection_string, container_name=container_name
-            )
+                raise ValueError(
+                    "Provide one of: sas_url, connection_string, or (account_url + credential)"
+                )
+            if not container_name:
+                raise ValueError("container_name is required when using connection_string")
+            try:
+                self.container_client = ContainerClient.from_connection_string(
+                    conn_str=connection_string, container_name=container_name
+                )
+            except (KeyError, ValueError) as exc:
+                raise ValueError(
+                    "Invalid connection string. Ensure it contains "
+                    "'AccountName=...' and 'AccountKey=...' (or use "
+                    "sas_url for SAS token auth, or account_url + credential for AAD). "
+                    "Find the full string in Azure Portal → Storage Account → Access keys."
+                ) from exc
         self.prefix = prefix
         self.max_workers = max_workers if max_workers > 0 else 1
         # Pattern for hour-level subpath; tokens: {Y} {m} {d} {H}

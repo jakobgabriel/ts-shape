@@ -21,6 +21,16 @@ class DowntimeTracking(Base):
     - state_uuid: machine state (running/stopped/idle)
     - reason_uuid: downtime reason code (optional)
 
+    Merge keys: [date, shift] for shift-level, [period] for trend data.
+
+    Pipeline example::
+
+        downtime = DowntimeTracking(df)
+        shift_dt = downtime.downtime_by_shift('machine_state')
+        # → merge with QualityTracking.nok_by_shift() on [date, shift]
+        # → merge with ShiftReporting.shift_production() on [date, shift]
+        # → feed into ShiftHandoverReport.from_shift_data()
+
     Example usage:
         tracker = DowntimeTracking(df)
 
