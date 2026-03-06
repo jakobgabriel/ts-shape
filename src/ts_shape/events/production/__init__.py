@@ -86,6 +86,29 @@ OEE and Advanced Analytics:
   - cycle_count: Transition counts per window.
   - excessive_cycling: Flag windows with too many transitions.
 
+Traceability:
+- ValueTraceabilityEvents: Trace any shared identifier across multiple stations.
+  - build_timeline: Full timeline of every identifier at every station.
+  - lead_time: End-to-end lead time per identifier.
+  - current_status: Last-known station for each identifier.
+  - station_dwell_statistics: Dwell-time stats per station.
+  (OrderTraceabilityEvents is a backwards-compatible alias.)
+
+- RoutingTraceabilityEvents: Trace item routing using ID + state/routing signal.
+  - state_map: Maps signal values (PLC steps, station codes) to station names.
+  - build_routing_timeline: Correlate ID signal with state signal.
+  - lead_time: End-to-end lead time per item.
+  - station_statistics: Dwell-time stats per station/step.
+  - routing_paths: Most common routing path sequences.
+
+- MultiProcessTraceabilityEvents: Multi-station topology with parallel paths and handovers.
+  - build_timeline: Full timeline with parallel-station awareness.
+  - lead_time: End-to-end lead time with parallel flag.
+  - parallel_activity: Detect overlapping station intervals per item.
+  - handover_log: Extract and correlate handover events with item IDs.
+  - station_statistics: Per-station/cell dwell-time stats.
+  - routing_paths: Path frequency analysis with parallel flag.
+
 Performance and Target Tracking:
 - PerformanceLossTracking: Track speed losses against target cycle times.
   - performance_by_shift: Performance % per shift.
@@ -134,6 +157,11 @@ from .bottleneck_detection import BottleneckDetectionEvents
 from .micro_stop_detection import MicroStopEvents
 from .duty_cycle import DutyCycleEvents
 
+# Traceability
+from .order_traceability import ValueTraceabilityEvents, OrderTraceabilityEvents
+from .routing_traceability import RoutingTraceabilityEvents
+from .multi_process_traceability import MultiProcessTraceabilityEvents
+
 # Performance, Target, and Reporting
 from .performance_loss import PerformanceLossTracking
 from .scrap_tracking import ScrapTracking
@@ -161,6 +189,11 @@ __all__ = [
     "BottleneckDetectionEvents",
     "MicroStopEvents",
     "DutyCycleEvents",
+    # Traceability
+    "ValueTraceabilityEvents",
+    "OrderTraceabilityEvents",  # backwards-compatible alias
+    "RoutingTraceabilityEvents",
+    "MultiProcessTraceabilityEvents",
     # Performance, Target, and Reporting
     "PerformanceLossTracking",
     "ScrapTracking",

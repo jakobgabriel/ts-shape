@@ -20,21 +20,121 @@ print(df.head())
 # 2     pressure  2024-01-01 00:00:00+00:00       1013.2
 ```
 
-### From Azure Blob Storage
+### From Azure Blob Storage (Parquet)
+
+Three authentication methods are supported. Pick whichever matches your setup.
+
+#### Connect with a SAS URL (simplest)
 
 ```python
-from ts_shape.loader.timeseries.azure_blob_loader import AzureBlobLoader
+from ts_shape.loader.timeseries.azure_blob_loader import AzureBlobParquetLoader
 
-loader = AzureBlobLoader(
-    connection_string="DefaultEndpointsProtocol=https;...",
+# SAS URL — no container_name needed, it's embedded in the URL
+loader = AzureBlobParquetLoader(
+    sas_url="https://myaccount.blob.core.windows.net/timeseries?sv=2021-06-08&st=...&se=...&sr=c&sp=rl&sig=...",
+    prefix="parquet/",         # optional path prefix to narrow listing
+)
+```
+
+#### Connect with a connection string
+
+```python
+loader = AzureBlobParquetLoader(
+    connection_string="DefaultEndpointsProtocol=https;AccountName=...;AccountKey=...",
     container_name="timeseries",
-    base_path="sensors/"
+    prefix="parquet/",
+)
+```
+
+#### Connect with AAD credential (DefaultAzureCredential)
+
+```python
+from azure.identity import DefaultAzureCredential
+
+loader = AzureBlobParquetLoader(
+    account_url="https://myaccount.blob.core.windows.net",
+    container_name="timeseries",
+    credential=DefaultAzureCredential(),
+    prefix="parquet/",
+)
+```
+
+#### Explore the container structure
+
+```python
+# List folders and files to understand the layout
+structure = loader.list_structure(limit=20)
+print("Folders:", structure["folders"])
+print("Files:",   structure["files"])
+# Folders: ['parquet/2024/01/15/08/', 'parquet/2024/01/15/09/', ...]
+# Files:   ['parquet/2024/01/15/08/temperature.parquet', ...]
+```
+
+#### Load all parquet files
+
+```python
+df = loader.load_all_files()
+print(df.head())
+```
+
+#### Load by time range
+
+```python
+# Requires time-structured folders: prefix/YYYY/MM/DD/HH/
+df = loader.load_by_time_range("2024-01-15 08:00", "2024-01-15 12:00")
+```
+
+#### Load by time range and specific UUIDs
+
+```python
+df = loader.load_files_by_time_range_and_uuids(
+    start_timestamp="2024-01-15 08:00",
+    end_timestamp="2024-01-15 12:00",
+    uuid_list=["temperature", "pressure", "humidity"],
+)
+```
+
+#### Stream results (low memory)
+
+```python
+# Yields (blob_name, DataFrame) one at a time
+for blob_name, chunk_df in loader.stream_by_time_range("2024-01-15 08:00", "2024-01-15 12:00"):
+    print(f"{blob_name}: {len(chunk_df)} rows")
+    process(chunk_df)
+```
+
+### From Azure Blob Storage (Any File Type)
+
+Use `AzureBlobFlexibleFileLoader` for non-parquet files (CSV, JSON, XML, etc.)
+under the same time-structured layout.
+
+```python
+from ts_shape.loader.timeseries.azure_blob_loader import AzureBlobFlexibleFileLoader
+
+# Same three auth methods are supported (sas_url, connection_string, AAD)
+loader = AzureBlobFlexibleFileLoader(
+    sas_url="https://myaccount.blob.core.windows.net/rawdata?sv=...&sig=...",
+    prefix="incoming/",
 )
 
-df = loader.fetch_data_as_dataframe(
-    start_date="2024-01-01",
-    end_date="2024-01-31"
+# List blob names for a time range, filtering by extension
+names = loader.list_files_by_time_range(
+    start_timestamp="2024-01-15 08:00",
+    end_timestamp="2024-01-15 12:00",
+    extensions=[".csv", ".json"],
 )
+print(names)
+# ['incoming/2024/01/15/08/report.csv', 'incoming/2024/01/15/09/data.json', ...]
+
+# Download and auto-parse files (CSV → DataFrame, JSON → dict, etc.)
+results = loader.fetch_files_by_time_range(
+    start_timestamp="2024-01-15 08:00",
+    end_timestamp="2024-01-15 12:00",
+    extensions=[".csv"],
+    parse=True,
+)
+for blob_name, parsed in results.items():
+    print(f"{blob_name}: {type(parsed)}")
 ```
 
 ### From S3-Compatible Storage
@@ -897,6 +997,258 @@ df = LambdaProcessor.apply_function(
     "value_double",
     lambda x: np.clip(x, 0, 100)
 )
+```
+
+---
+
+## End-to-End Example: Multi-Machine Startup Heatup Analysis
+
+A real-world pipeline that loads data for multiple machines from Azure,
+maps each UUID to a human-readable machine name, detects heatup startups
+per machine, and classifies whether each heatup started early, on time,
+or late relative to the planned shift.
+
+### Step 1 -- Define a machine registry
+
+Map each UUID to a machine name and its detection parameters.
+This replaces hard-coded UUIDs scattered through the code with a single
+configuration dict that is easy to extend.
+
+```python
+import pandas as pd
+from ts_shape.loader.timeseries.azure_blob_loader import AzureBlobParquetLoader
+from ts_shape.transform.time_functions.timestamp_converter import TimestampConverter
+from ts_shape.events.engineering.startup_events import StartupDetectionEvents
+
+# UUID -> machine name + startup detection config
+MACHINES = {
+    "9cd63e77-36b4-47f6-bb27-ec27eaaf711d": {
+        "name": "Curing Oven SO_17 - Temp",
+        "threshold": 60.0,
+        "hysteresis": (100.0, 30.0),
+        "min_above": "90s",
+        "shift_start": "06:00",
+        "heatup_offset_min": 30,
+    },
+    "afe57364-05c3-43cd-a469-7b51e782006e": {
+        "name": "Curing Oven SO_17 - ConvSpeed",
+        "threshold": 5.0,
+        "hysteresis": None,
+        "min_above": "60s",
+        "shift_start": "06:00",
+        "heatup_offset_min": 30,
+    },
+    # add more machines / signals here ...
+}
+```
+
+### Step 2 -- Connect and load all UUIDs in one call
+
+```python
+loader = AzureBlobParquetLoader(
+    connection_string="DefaultEndpointsProtocol=https;AccountName=...;AccountKey=...",
+    container_name="timeseries",
+    prefix="data",
+    max_workers=4,
+)
+
+# Or connect with a SAS URL instead:
+# loader = AzureBlobParquetLoader(
+#     sas_url="https://myaccount.blob.core.windows.net/timeseries?sv=...&sig=...",
+#     prefix="data",
+# )
+
+# Fetch all machine UUIDs at once -- one round trip
+df = loader.load_files_by_time_range_and_uuids(
+    start_timestamp="2026-01-01 00:00",
+    end_timestamp="2026-03-06 08:00",
+    uuid_list=list(MACHINES.keys()),
+)
+print(f"Loaded {len(df)} rows across {df['uuid'].nunique()} signal(s)")
+```
+
+### Step 3 -- Convert timestamps to local timezone
+
+```python
+df = TimestampConverter.convert_to_datetime(
+    dataframe=df,
+    columns=["systime"],
+    timezone="Europe/Bucharest",
+)
+```
+
+### Step 4 -- Loop per machine: detect startups and classify timing
+
+```python
+results = []
+
+for uuid, cfg in MACHINES.items():
+    # StartupDetectionEvents filters to target_uuid internally
+    detector = StartupDetectionEvents(
+        dataframe=df,
+        target_uuid=uuid,
+        value_column="value_double",
+        time_column="systime",
+    )
+
+    events = detector.detect_startup_by_threshold(
+        threshold=cfg["threshold"],
+        hysteresis=cfg["hysteresis"],
+        min_above=cfg["min_above"],
+    )
+
+    if events.empty:
+        print(f"  {cfg['name']}: no startups detected")
+        continue
+
+    # Build result with machine name and shift-relative timing
+    out = events[["start", "end"]].copy()
+    out["machine"]  = cfg["name"]
+    out["uuid"]     = uuid
+    out["start"]    = pd.to_datetime(out["start"]).dt.tz_localize(None)
+    out["end"]      = pd.to_datetime(out["end"]).dt.tz_localize(None)
+    out["date"]     = out["start"].dt.date
+
+    out["shift_start"] = pd.to_datetime(
+        out["date"].astype(str) + " " + cfg["shift_start"]
+    )
+    offset = pd.Timedelta(minutes=cfg["heatup_offset_min"])
+    out["theoretical_heatup"] = out["shift_start"] - offset
+    out["diff_minutes"] = (
+        (out["start"] - out["theoretical_heatup"]).dt.total_seconds() / 60
+    ).round(1)
+    out["classification"] = pd.cut(
+        out["diff_minutes"],
+        bins=[-float("inf"), -5, 5, float("inf")],
+        labels=["early", "on_time", "late"],
+    )
+    out["started_before_theoretical"] = out["diff_minutes"] < 0
+    results.append(out)
+
+df_all = pd.concat(results, ignore_index=True)
+```
+
+### Step 5 -- View results grouped by machine
+
+```python
+for machine_name, group in df_all.groupby("machine"):
+    print(f"\n{'=' * 60}")
+    print(f"  {machine_name}")
+    print(f"{'=' * 60}")
+    print(
+        group[["date", "start", "theoretical_heatup", "diff_minutes", "classification"]]
+        .to_string(index=False)
+    )
+
+# Output:
+# ============================================================
+#   Curing Oven SO_17 - ConvSpeed
+# ============================================================
+#        date               start   theoretical_heatup  diff_minutes classification
+#  2026-01-02 2026-01-02 05:28:00  2026-01-02 05:30:00          -2.0        on_time
+#  2026-01-03 2026-01-03 05:15:00  2026-01-03 05:30:00         -15.0          early
+#
+# ============================================================
+#   Curing Oven SO_17 - Temp
+# ============================================================
+#        date               start   theoretical_heatup  diff_minutes classification
+#  2026-01-02 2026-01-02 05:32:00  2026-01-02 05:30:00           2.0        on_time
+#  2026-01-03 2026-01-03 05:42:00  2026-01-03 05:30:00          12.0           late
+```
+
+### Step 6 -- Summary statistics per machine
+
+```python
+summary = (
+    df_all
+    .groupby("machine")
+    .agg(
+        total_startups=("date", "count"),
+        early=("classification", lambda s: (s == "early").sum()),
+        on_time=("classification", lambda s: (s == "on_time").sum()),
+        late=("classification", lambda s: (s == "late").sum()),
+        avg_diff_min=("diff_minutes", "mean"),
+    )
+)
+summary["early_pct"] = (summary["early"] / summary["total_startups"] * 100).round(1)
+print(summary)
+```
+
+---
+
+### Alternative detection methods
+
+The examples above use threshold-based detection. The same loop pattern works
+with any `StartupDetectionEvents` method -- just swap the detection call inside
+the loop.
+
+#### Slope-based (for signals where the absolute value varies)
+
+```python
+events = detector.detect_startup_by_slope(
+    min_slope=0.5,         # units/second
+    min_duration="20s",
+)
+```
+
+#### Adaptive (auto-adjusts threshold from recent baseline)
+
+```python
+events = detector.detect_startup_adaptive(
+    baseline_window="1h",
+    sensitivity=2.0,       # threshold = mean + 2 * std
+    min_above="10s",
+)
+```
+
+#### Multi-signal (require speed AND temperature to rise together)
+
+```python
+events = detector.detect_startup_multi_signal(
+    signals={
+        "afe57364-05c3-43cd-a469-7b51e782006e": {
+            "method": "threshold", "threshold": 5.0, "min_above": "60s"
+        },
+        "9cd63e77-36b4-47f6-bb27-ec27eaaf711d": {
+            "method": "threshold", "threshold": 60.0, "min_above": "90s"
+        },
+    },
+    logic="all",
+    time_tolerance="30s",
+)
+```
+
+#### Startup quality assessment
+
+```python
+quality = detector.assess_startup_quality(events)
+print(quality[["start", "end", "duration", "smoothness_score", "stability_score"]])
+```
+
+#### Failed startup detection
+
+```python
+failed = detector.detect_failed_startups(
+    threshold=60.0,
+    min_rise_duration="5s",
+    max_completion_time="5m",
+    completion_threshold=120.0,
+    required_stability="10s",
+)
+```
+
+#### Startup phase tracking
+
+```python
+phases = detector.track_startup_phases(
+    phases=[
+        {"name": "preheat",   "condition": "threshold", "threshold": 40.0},
+        {"name": "ramp_up",   "condition": "range",     "lower": 40.0, "upper": 100.0},
+        {"name": "operating", "condition": "threshold", "threshold": 100.0},
+    ],
+    min_phase_duration="5s",
+)
+print(phases[["phase_name", "start", "end", "duration", "completed"]])
 ```
 
 ---
