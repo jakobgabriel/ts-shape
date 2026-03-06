@@ -20,21 +20,121 @@ print(df.head())
 # 2     pressure  2024-01-01 00:00:00+00:00       1013.2
 ```
 
-### From Azure Blob Storage
+### From Azure Blob Storage (Parquet)
+
+Three authentication methods are supported. Pick whichever matches your setup.
+
+#### Connect with a SAS URL (simplest)
 
 ```python
-from ts_shape.loader.timeseries.azure_blob_loader import AzureBlobLoader
+from ts_shape.loader.timeseries.azure_blob_loader import AzureBlobParquetLoader
 
-loader = AzureBlobLoader(
-    connection_string="DefaultEndpointsProtocol=https;...",
+# SAS URL — no container_name needed, it's embedded in the URL
+loader = AzureBlobParquetLoader(
+    sas_url="https://myaccount.blob.core.windows.net/timeseries?sv=2021-06-08&st=...&se=...&sr=c&sp=rl&sig=...",
+    prefix="parquet/",         # optional path prefix to narrow listing
+)
+```
+
+#### Connect with a connection string
+
+```python
+loader = AzureBlobParquetLoader(
+    connection_string="DefaultEndpointsProtocol=https;AccountName=...;AccountKey=...",
     container_name="timeseries",
-    base_path="sensors/"
+    prefix="parquet/",
+)
+```
+
+#### Connect with AAD credential (DefaultAzureCredential)
+
+```python
+from azure.identity import DefaultAzureCredential
+
+loader = AzureBlobParquetLoader(
+    account_url="https://myaccount.blob.core.windows.net",
+    container_name="timeseries",
+    credential=DefaultAzureCredential(),
+    prefix="parquet/",
+)
+```
+
+#### Explore the container structure
+
+```python
+# List folders and files to understand the layout
+structure = loader.list_structure(limit=20)
+print("Folders:", structure["folders"])
+print("Files:",   structure["files"])
+# Folders: ['parquet/2024/01/15/08/', 'parquet/2024/01/15/09/', ...]
+# Files:   ['parquet/2024/01/15/08/temperature.parquet', ...]
+```
+
+#### Load all parquet files
+
+```python
+df = loader.load_all_files()
+print(df.head())
+```
+
+#### Load by time range
+
+```python
+# Requires time-structured folders: prefix/YYYY/MM/DD/HH/
+df = loader.load_by_time_range("2024-01-15 08:00", "2024-01-15 12:00")
+```
+
+#### Load by time range and specific UUIDs
+
+```python
+df = loader.load_files_by_time_range_and_uuids(
+    start_timestamp="2024-01-15 08:00",
+    end_timestamp="2024-01-15 12:00",
+    uuid_list=["temperature", "pressure", "humidity"],
+)
+```
+
+#### Stream results (low memory)
+
+```python
+# Yields (blob_name, DataFrame) one at a time
+for blob_name, chunk_df in loader.stream_by_time_range("2024-01-15 08:00", "2024-01-15 12:00"):
+    print(f"{blob_name}: {len(chunk_df)} rows")
+    process(chunk_df)
+```
+
+### From Azure Blob Storage (Any File Type)
+
+Use `AzureBlobFlexibleFileLoader` for non-parquet files (CSV, JSON, XML, etc.)
+under the same time-structured layout.
+
+```python
+from ts_shape.loader.timeseries.azure_blob_loader import AzureBlobFlexibleFileLoader
+
+# Same three auth methods are supported (sas_url, connection_string, AAD)
+loader = AzureBlobFlexibleFileLoader(
+    sas_url="https://myaccount.blob.core.windows.net/rawdata?sv=...&sig=...",
+    prefix="incoming/",
 )
 
-df = loader.fetch_data_as_dataframe(
-    start_date="2024-01-01",
-    end_date="2024-01-31"
+# List blob names for a time range, filtering by extension
+names = loader.list_files_by_time_range(
+    start_timestamp="2024-01-15 08:00",
+    end_timestamp="2024-01-15 12:00",
+    extensions=[".csv", ".json"],
 )
+print(names)
+# ['incoming/2024/01/15/08/report.csv', 'incoming/2024/01/15/09/data.json', ...]
+
+# Download and auto-parse files (CSV → DataFrame, JSON → dict, etc.)
+results = loader.fetch_files_by_time_range(
+    start_timestamp="2024-01-15 08:00",
+    end_timestamp="2024-01-15 12:00",
+    extensions=[".csv"],
+    parse=True,
+)
+for blob_name, parsed in results.items():
+    print(f"{blob_name}: {type(parsed)}")
 ```
 
 ### From S3-Compatible Storage
