@@ -1001,168 +1001,250 @@ df = LambdaProcessor.apply_function(
 
 ---
 
-## End-to-End Example: Azure → Load → Transform → Filter → Detect Startup
+## End-to-End Example: Multi-Machine Startup Heatup Analysis
 
-A complete pipeline that loads parquet data from Azure Blob Storage using a SAS URL,
-converts timestamps to a local timezone, filters to a specific time window and signal,
-and then detects machine startup events.
+A real-world pipeline that loads data for multiple machines from Azure,
+maps each UUID to a human-readable machine name, detects heatup startups
+per machine, and classifies whether each heatup started early, on time,
+or late relative to the planned shift.
+
+### Step 1 -- Define a machine registry
+
+Map each UUID to a machine name and its detection parameters.
+This replaces hard-coded UUIDs scattered through the code with a single
+configuration dict that is easy to extend.
 
 ```python
+import pandas as pd
 from ts_shape.loader.timeseries.azure_blob_loader import AzureBlobParquetLoader
-from ts_shape.transform.time_functions.timezone_shift import TimezoneShift
 from ts_shape.transform.time_functions.timestamp_converter import TimestampConverter
-from ts_shape.transform.filter.datetime_filter import DateTimeFilter
-from ts_shape.transform.filter.string_filter import StringFilter
-from ts_shape.transform.filter.numeric_filter import NumericFilter
 from ts_shape.events.engineering.startup_events import StartupDetectionEvents
 
-# ── 1. Connect to Azure Blob Storage with a SAS URL ─────────────────
+# UUID -> machine name + startup detection config
+MACHINES = {
+    "9cd63e77-36b4-47f6-bb27-ec27eaaf711d": {
+        "name": "Curing Oven SO_17 - Temp",
+        "threshold": 60.0,
+        "hysteresis": (100.0, 30.0),
+        "min_above": "90s",
+        "shift_start": "06:00",
+        "heatup_offset_min": 30,
+    },
+    "afe57364-05c3-43cd-a469-7b51e782006e": {
+        "name": "Curing Oven SO_17 - ConvSpeed",
+        "threshold": 5.0,
+        "hysteresis": None,
+        "min_above": "60s",
+        "shift_start": "06:00",
+        "heatup_offset_min": 30,
+    },
+    # add more machines / signals here ...
+}
+```
+
+### Step 2 -- Connect and load all UUIDs in one call
+
+```python
 loader = AzureBlobParquetLoader(
-    sas_url="https://myaccount.blob.core.windows.net/timeseries?sv=2021-06-08&st=...&se=...&sr=c&sp=rl&sig=...",
-    prefix="parquet/",
+    connection_string="DefaultEndpointsProtocol=https;AccountName=...;AccountKey=...",
+    container_name="timeseries",
+    prefix="data",
+    max_workers=4,
 )
 
-# Optional: inspect the container structure first
-structure = loader.list_structure(limit=10)
-print("Folders:", structure["folders"])
-print("Files:",   structure["files"])
+# Or connect with a SAS URL instead:
+# loader = AzureBlobParquetLoader(
+#     sas_url="https://myaccount.blob.core.windows.net/timeseries?sv=...&sig=...",
+#     prefix="data",
+# )
 
-# ── 2. Load parquet data for a specific time range ───────────────────
-df = loader.load_by_time_range("2024-03-01 06:00", "2024-03-01 18:00")
-print(f"Loaded {len(df)} rows")
-print(df.head())
-#          uuid  systime                          value_double
-# 0  motor_rpm  2024-03-01 06:00:01.123+00:00         0.0
-# 1  motor_rpm  2024-03-01 06:00:02.456+00:00         0.0
-# 2  motor_temp 2024-03-01 06:00:01.789+00:00        21.3
-
-# ── 3. Convert timestamps to local timezone ──────────────────────────
-# If timestamps are stored as Unix nanoseconds, convert them first:
-# df = TimestampConverter.convert_to_datetime(df, columns=["systime"], unit="ns", timezone="UTC")
-
-# Shift from UTC to local timezone
-df = TimezoneShift.shift_timezone(
-    df,
-    time_column="systime",
-    input_timezone="UTC",
-    target_timezone="Europe/Berlin",
+# Fetch all machine UUIDs at once -- one round trip
+df = loader.load_files_by_time_range_and_uuids(
+    start_timestamp="2026-01-01 00:00",
+    end_timestamp="2026-03-06 08:00",
+    uuid_list=list(MACHINES.keys()),
 )
-print(df["systime"].iloc[0])
-# 2024-03-01 07:00:01.123000+01:00
-
-# ── 4. Filter to the signal of interest ──────────────────────────────
-df_motor = StringFilter.filter_equals(df, "uuid", "motor_rpm")
-print(f"Motor RPM rows: {len(df_motor)}")
-
-# Narrow to morning shift (07:00–15:00 local time)
-df_motor = DateTimeFilter.filter_between(
-    df_motor, "systime", "2024-03-01 07:00+01:00", "2024-03-01 15:00+01:00"
-)
-
-# Remove null / invalid readings
-df_motor = NumericFilter.filter_not_null(df_motor, "value_double")
-print(f"After filtering: {len(df_motor)} rows")
-
-# ── 5. Detect startup events ────────────────────────────────────────
-startup = StartupDetectionEvents(
-    dataframe=df_motor,
-    target_uuid="motor_rpm",
-)
-
-# Simple threshold-based startup detection
-# Motor is "starting" when RPM crosses above 100 and stays there for ≥30s
-events = startup.detect_startup_by_threshold(
-    threshold=100.0,
-    min_above="30s",
-)
-print(f"\nDetected {len(events)} startup event(s):")
-print(events[["start", "end", "method", "threshold"]])
-#                      start                       end       method  threshold
-# 0  2024-03-01 07:12:33+01:00  2024-03-01 07:14:01+01:00  threshold      100.0
-# 1  2024-03-01 12:30:15+01:00  2024-03-01 12:32:44+01:00  threshold      100.0
-
-# ── 6. Assess startup quality ────────────────────────────────────────
-quality = startup.assess_startup_quality(events)
-print("\nStartup quality:")
-print(quality[["start", "end", "duration", "smoothness_score", "stability_score"]])
-
-# ── 7. Detect failed startups ────────────────────────────────────────
-failed = startup.detect_failed_startups(
-    threshold=100.0,
-    min_rise_duration="5s",
-    max_completion_time="5m",
-    completion_threshold=500.0,   # expected operating RPM
-    required_stability="10s",
-)
-if not failed.empty:
-    print(f"\nFailed startups: {len(failed)}")
-    print(failed[["start", "end", "failure_reason", "max_value_reached"]])
-else:
-    print("\nNo failed startups detected.")
+print(f"Loaded {len(df)} rows across {df['uuid'].nunique()} signal(s)")
 ```
 
-### Slope-Based Startup Detection
-
-For signals where the absolute value varies (e.g., temperature), detect startups
-by sustained positive slope instead of a fixed threshold.
+### Step 3 -- Convert timestamps to local timezone
 
 ```python
-events = startup.detect_startup_by_slope(
-    min_slope=0.5,         # ≥0.5 units/second rate of change
-    min_duration="20s",    # slope must be sustained for ≥20s
+df = TimestampConverter.convert_to_datetime(
+    dataframe=df,
+    columns=["systime"],
+    timezone="Europe/Bucharest",
 )
-print(events[["start", "end", "min_slope", "avg_slope"]])
 ```
 
-### Adaptive Startup Detection
-
-Automatically adapts the threshold based on the recent baseline — useful when
-operating conditions drift over time.
+### Step 4 -- Loop per machine: detect startups and classify timing
 
 ```python
-events = startup.detect_startup_adaptive(
-    baseline_window="1h",   # compute baseline from last 1h of idle data
-    sensitivity=2.0,        # threshold = mean + 2×std
+results = []
+
+for uuid, cfg in MACHINES.items():
+    # StartupDetectionEvents filters to target_uuid internally
+    detector = StartupDetectionEvents(
+        dataframe=df,
+        target_uuid=uuid,
+        value_column="value_double",
+        time_column="systime",
+    )
+
+    events = detector.detect_startup_by_threshold(
+        threshold=cfg["threshold"],
+        hysteresis=cfg["hysteresis"],
+        min_above=cfg["min_above"],
+    )
+
+    if events.empty:
+        print(f"  {cfg['name']}: no startups detected")
+        continue
+
+    # Build result with machine name and shift-relative timing
+    out = events[["start", "end"]].copy()
+    out["machine"]  = cfg["name"]
+    out["uuid"]     = uuid
+    out["start"]    = pd.to_datetime(out["start"]).dt.tz_localize(None)
+    out["end"]      = pd.to_datetime(out["end"]).dt.tz_localize(None)
+    out["date"]     = out["start"].dt.date
+
+    out["shift_start"] = pd.to_datetime(
+        out["date"].astype(str) + " " + cfg["shift_start"]
+    )
+    offset = pd.Timedelta(minutes=cfg["heatup_offset_min"])
+    out["theoretical_heatup"] = out["shift_start"] - offset
+    out["diff_minutes"] = (
+        (out["start"] - out["theoretical_heatup"]).dt.total_seconds() / 60
+    ).round(1)
+    out["classification"] = pd.cut(
+        out["diff_minutes"],
+        bins=[-float("inf"), -5, 5, float("inf")],
+        labels=["early", "on_time", "late"],
+    )
+    out["started_before_theoretical"] = out["diff_minutes"] < 0
+    results.append(out)
+
+df_all = pd.concat(results, ignore_index=True)
+```
+
+### Step 5 -- View results grouped by machine
+
+```python
+for machine_name, group in df_all.groupby("machine"):
+    print(f"\n{'=' * 60}")
+    print(f"  {machine_name}")
+    print(f"{'=' * 60}")
+    print(
+        group[["date", "start", "theoretical_heatup", "diff_minutes", "classification"]]
+        .to_string(index=False)
+    )
+
+# Output:
+# ============================================================
+#   Curing Oven SO_17 - ConvSpeed
+# ============================================================
+#        date               start   theoretical_heatup  diff_minutes classification
+#  2026-01-02 2026-01-02 05:28:00  2026-01-02 05:30:00          -2.0        on_time
+#  2026-01-03 2026-01-03 05:15:00  2026-01-03 05:30:00         -15.0          early
+#
+# ============================================================
+#   Curing Oven SO_17 - Temp
+# ============================================================
+#        date               start   theoretical_heatup  diff_minutes classification
+#  2026-01-02 2026-01-02 05:32:00  2026-01-02 05:30:00           2.0        on_time
+#  2026-01-03 2026-01-03 05:42:00  2026-01-03 05:30:00          12.0           late
+```
+
+### Step 6 -- Summary statistics per machine
+
+```python
+summary = (
+    df_all
+    .groupby("machine")
+    .agg(
+        total_startups=("date", "count"),
+        early=("classification", lambda s: (s == "early").sum()),
+        on_time=("classification", lambda s: (s == "on_time").sum()),
+        late=("classification", lambda s: (s == "late").sum()),
+        avg_diff_min=("diff_minutes", "mean"),
+    )
+)
+summary["early_pct"] = (summary["early"] / summary["total_startups"] * 100).round(1)
+print(summary)
+```
+
+---
+
+### Alternative detection methods
+
+The examples above use threshold-based detection. The same loop pattern works
+with any `StartupDetectionEvents` method -- just swap the detection call inside
+the loop.
+
+#### Slope-based (for signals where the absolute value varies)
+
+```python
+events = detector.detect_startup_by_slope(
+    min_slope=0.5,         # units/second
+    min_duration="20s",
+)
+```
+
+#### Adaptive (auto-adjusts threshold from recent baseline)
+
+```python
+events = detector.detect_startup_adaptive(
+    baseline_window="1h",
+    sensitivity=2.0,       # threshold = mean + 2 * std
     min_above="10s",
 )
-print(events[["start", "end", "adaptive_threshold", "baseline_mean"]])
 ```
 
-### Multi-Signal Startup Detection
-
-Confirm a startup by requiring multiple signals to trigger simultaneously
-(e.g., RPM rises AND temperature rises within 30 s of each other).
+#### Multi-signal (require speed AND temperature to rise together)
 
 ```python
-# Build a loader with both signals
-df_both = StringFilter.filter_in_list(df, "uuid", ["motor_rpm", "motor_temp"])
-
-startup_multi = StartupDetectionEvents(
-    dataframe=df_both,
-    target_uuid="motor_rpm",
-)
-
-events = startup_multi.detect_startup_multi_signal(
+events = detector.detect_startup_multi_signal(
     signals={
-        "motor_rpm":  {"method": "threshold", "threshold": 100.0, "min_above": "30s"},
-        "motor_temp": {"method": "slope",     "min_slope": 0.1,   "min_duration": "20s"},
+        "afe57364-05c3-43cd-a469-7b51e782006e": {
+            "method": "threshold", "threshold": 5.0, "min_above": "60s"
+        },
+        "9cd63e77-36b4-47f6-bb27-ec27eaaf711d": {
+            "method": "threshold", "threshold": 60.0, "min_above": "90s"
+        },
     },
-    logic="all",              # both must trigger
-    time_tolerance="30s",     # within 30s of each other
+    logic="all",
+    time_tolerance="30s",
 )
-print(events[["start", "end", "signals_triggered"]])
 ```
 
-### Startup Phase Tracking
-
-Define the phases of a startup sequence and track progression through them.
+#### Startup quality assessment
 
 ```python
-phases = startup.track_startup_phases(
+quality = detector.assess_startup_quality(events)
+print(quality[["start", "end", "duration", "smoothness_score", "stability_score"]])
+```
+
+#### Failed startup detection
+
+```python
+failed = detector.detect_failed_startups(
+    threshold=60.0,
+    min_rise_duration="5s",
+    max_completion_time="5m",
+    completion_threshold=120.0,
+    required_stability="10s",
+)
+```
+
+#### Startup phase tracking
+
+```python
+phases = detector.track_startup_phases(
     phases=[
-        {"name": "ignition",  "condition": "threshold", "threshold": 50.0},
-        {"name": "ramp_up",   "condition": "range",     "lower": 50.0, "upper": 400.0},
-        {"name": "operating", "condition": "threshold", "threshold": 500.0},
+        {"name": "preheat",   "condition": "threshold", "threshold": 40.0},
+        {"name": "ramp_up",   "condition": "range",     "lower": 40.0, "upper": 100.0},
+        {"name": "operating", "condition": "threshold", "threshold": 100.0},
     ],
     min_phase_duration="5s",
 )
