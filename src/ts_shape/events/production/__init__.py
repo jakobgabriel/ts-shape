@@ -87,16 +87,18 @@ OEE and Advanced Analytics:
   - excessive_cycling: Flag windows with too many transitions.
 
 Traceability:
-- OrderTraceabilityEvents: Trace order/serial movement across multiple stations.
-  - build_timeline: Full timeline of every order at every station.
-  - lead_time: End-to-end lead time per order.
-  - current_status: Last-known station for each order.
+- ValueTraceabilityEvents: Trace any shared identifier across multiple stations.
+  - build_timeline: Full timeline of every identifier at every station.
+  - lead_time: End-to-end lead time per identifier.
+  - current_status: Last-known station for each identifier.
   - station_dwell_statistics: Dwell-time stats per station.
+  (OrderTraceabilityEvents is a backwards-compatible alias.)
 
-- RoutingTraceabilityEvents: Trace item routing using ID + handover signals.
-  - build_routing_timeline: Correlate ID signal with routing signal.
+- RoutingTraceabilityEvents: Trace item routing using ID + state/routing signal.
+  - state_map: Maps signal values (PLC steps, station codes) to station names.
+  - build_routing_timeline: Correlate ID signal with state signal.
   - lead_time: End-to-end lead time per item.
-  - station_statistics: Dwell-time stats per station.
+  - station_statistics: Dwell-time stats per station/step.
   - routing_paths: Most common routing path sequences.
 
 - MultiProcessTraceabilityEvents: Multi-station topology with parallel paths and handovers.
@@ -156,7 +158,7 @@ from .micro_stop_detection import MicroStopEvents
 from .duty_cycle import DutyCycleEvents
 
 # Traceability
-from .order_traceability import OrderTraceabilityEvents
+from .order_traceability import ValueTraceabilityEvents, OrderTraceabilityEvents
 from .routing_traceability import RoutingTraceabilityEvents
 from .multi_process_traceability import MultiProcessTraceabilityEvents
 
@@ -188,7 +190,8 @@ __all__ = [
     "MicroStopEvents",
     "DutyCycleEvents",
     # Traceability
-    "OrderTraceabilityEvents",
+    "ValueTraceabilityEvents",
+    "OrderTraceabilityEvents",  # backwards-compatible alias
     "RoutingTraceabilityEvents",
     "MultiProcessTraceabilityEvents",
     # Performance, Target, and Reporting

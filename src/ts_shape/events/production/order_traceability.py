@@ -1,12 +1,13 @@
-"""Order / serial number traceability across stations.
+"""Value-based traceability across stations.
 
-Given multiple station UUIDs that each carry a string signal (order number,
-serial number, batch ID, etc.), build an end-to-end timeline showing when
-each item was at each station, with durations and total lead times.
+Given multiple station UUIDs that each carry a string signal (any shared
+identifier — serial number, order number, batch ID, lot number, etc.),
+build an end-to-end timeline showing when each identifier was at each
+station, with durations and total lead times.
 
-Typical use case: every machine on a production line writes the current order
-or serial number to its own UUID.  This module joins those signals to answer
-"when was order X at station A, then B, then C?"
+Typical use case: every machine on a production line writes the current
+identifier to its own UUID.  This module joins those signals to answer
+"when was identifier X at station A, then B, then C?"
 """
 
 import pandas as pd  # type: ignore
@@ -16,15 +17,16 @@ from typing import List, Dict, Any, Optional
 from ts_shape.utils.base import Base
 
 
-class OrderTraceabilityEvents(Base):
-    """Trace order / serial movement across multiple stations.
+class ValueTraceabilityEvents(Base):
+    """Trace a shared identifier across multiple stations.
 
-    Each station has its own UUID that carries a string value (the order
-    or serial number currently being processed).  This module detects
-    when a given ID appears at each station and builds a timeline.
+    Each station has its own UUID that carries a string value (the identifier
+    currently being processed — serial number, order ID, batch code, etc.).
+    This module detects when a given identifier appears at each station and
+    builds a timeline.
 
     Example usage:
-        trace = OrderTraceabilityEvents(
+        trace = ValueTraceabilityEvents(
             df,
             station_uuids={
                 'station_a_uuid': 'Station A',
@@ -33,13 +35,13 @@ class OrderTraceabilityEvents(Base):
             },
         )
 
-        # Full timeline of every order across all stations
+        # Full timeline of every identifier across all stations
         timeline = trace.build_timeline()
 
         # Lead time from first to last station
         lead = trace.lead_time()
 
-        # Where is each order right now?
+        # Where is each identifier right now?
         status = trace.current_status()
 
         # Station dwell-time statistics
@@ -51,18 +53,18 @@ class OrderTraceabilityEvents(Base):
         dataframe: pd.DataFrame,
         station_uuids: Dict[str, str],
         *,
-        event_uuid: str = "prod:order_trace",
+        event_uuid: str = "prod:value_trace",
         value_column: str = "value_string",
         time_column: str = "systime",
     ) -> None:
-        """Initialize order traceability.
+        """Initialize value traceability.
 
         Args:
             dataframe: Input DataFrame with timeseries data.
             station_uuids: Mapping of UUID -> human-readable station name.
                            e.g. {'uuid_abc': 'Station A', 'uuid_def': 'Station B'}
             event_uuid: UUID to tag derived events with.
-            value_column: Column holding the order/serial string value.
+            value_column: Column holding the identifier string value.
             time_column: Name of timestamp column.
         """
         super().__init__(dataframe, column_name=time_column)
@@ -87,28 +89,28 @@ class OrderTraceabilityEvents(Base):
     # ------------------------------------------------------------------
 
     def _detect_intervals(self, uuid: str) -> pd.DataFrame:
-        """Detect contiguous intervals of each order ID at one station."""
+        """Detect contiguous intervals of each identifier at one station."""
         sdf = self._station_data.get(uuid, pd.DataFrame())
         if sdf.empty:
             return pd.DataFrame(
-                columns=["order_id", "station_uuid", "station_name",
+                columns=["identifier", "station_uuid", "station_name",
                          "start", "end", "duration_seconds", "sample_count"]
             )
 
         s = sdf[[self.time_column, self.value_column]].copy()
-        s["order_id"] = s[self.value_column].fillna("")
-        s["group"] = (s["order_id"] != s["order_id"].shift()).cumsum()
+        s["identifier"] = s[self.value_column].fillna("")
+        s["group"] = (s["identifier"] != s["identifier"].shift()).cumsum()
 
         station_name = self.station_uuids[uuid]
         rows: List[Dict[str, Any]] = []
         for _, seg in s.groupby("group"):
-            order_id = seg["order_id"].iloc[0]
-            if order_id == "":
+            identifier = seg["identifier"].iloc[0]
+            if identifier == "":
                 continue
             start = seg[self.time_column].iloc[0]
             end = seg[self.time_column].iloc[-1]
             rows.append({
-                "order_id": order_id,
+                "identifier": identifier,
                 "station_uuid": uuid,
                 "station_name": station_name,
                 "start": start,
@@ -124,18 +126,18 @@ class OrderTraceabilityEvents(Base):
     # ------------------------------------------------------------------
 
     def build_timeline(self) -> pd.DataFrame:
-        """Build a full timeline of every order at every station.
+        """Build a full timeline of every identifier at every station.
 
         Returns:
             DataFrame with columns:
-            - order_id: The order / serial number string.
+            - identifier: The shared identifier string.
             - station_uuid: UUID of the station signal.
             - station_name: Human-readable station name.
-            - start: Timestamp when the order appeared at the station.
+            - start: Timestamp when the identifier appeared at the station.
             - end: Timestamp of the last sample at the station.
             - duration_seconds: Time spent at the station.
             - sample_count: Number of data points.
-            - station_sequence: Order of visit (1-based) per order_id.
+            - station_sequence: Order of visit (1-based) per identifier.
             - uuid: Event UUID.
         """
         all_intervals: List[pd.DataFrame] = []
@@ -147,17 +149,17 @@ class OrderTraceabilityEvents(Base):
         if not all_intervals:
             return pd.DataFrame(
                 columns=[
-                    "order_id", "station_uuid", "station_name",
+                    "identifier", "station_uuid", "station_name",
                     "start", "end", "duration_seconds", "sample_count",
                     "station_sequence", "uuid",
                 ]
             )
 
         timeline = pd.concat(all_intervals, ignore_index=True)
-        timeline = timeline.sort_values(["order_id", "start"]).reset_index(drop=True)
+        timeline = timeline.sort_values(["identifier", "start"]).reset_index(drop=True)
 
-        # Assign station visit sequence per order
-        timeline["station_sequence"] = timeline.groupby("order_id").cumcount() + 1
+        # Assign station visit sequence per identifier
+        timeline["station_sequence"] = timeline.groupby("identifier").cumcount() + 1
         timeline["uuid"] = self.event_uuid
 
         return timeline
@@ -167,18 +169,18 @@ class OrderTraceabilityEvents(Base):
     # ------------------------------------------------------------------
 
     def lead_time(self) -> pd.DataFrame:
-        """Compute end-to-end lead time per order (first station entry to last station exit).
+        """Compute end-to-end lead time per identifier.
 
         Returns:
             DataFrame with columns:
-            - order_id
+            - identifier
             - first_station: Name of first station visited.
             - last_station: Name of last station visited.
             - first_seen: Earliest timestamp across all stations.
             - last_seen: Latest timestamp across all stations.
             - lead_time_seconds: Total time from first seen to last seen.
             - stations_visited: Number of distinct stations visited.
-            - station_path: Comma-separated ordered station names.
+            - station_path: Arrow-separated ordered station names.
             - uuid: Event UUID.
         """
         timeline = self.build_timeline()
@@ -186,20 +188,20 @@ class OrderTraceabilityEvents(Base):
         if timeline.empty:
             return pd.DataFrame(
                 columns=[
-                    "order_id", "first_station", "last_station",
+                    "identifier", "first_station", "last_station",
                     "first_seen", "last_seen", "lead_time_seconds",
                     "stations_visited", "station_path", "uuid",
                 ]
             )
 
         rows: List[Dict[str, Any]] = []
-        for order_id, grp in timeline.groupby("order_id"):
+        for identifier, grp in timeline.groupby("identifier"):
             grp = grp.sort_values("start")
             first_seen = grp["start"].iloc[0]
             last_seen = grp["end"].iloc[-1]
             station_path = " -> ".join(grp["station_name"].tolist())
             rows.append({
-                "order_id": order_id,
+                "identifier": identifier,
                 "first_station": grp["station_name"].iloc[0],
                 "last_station": grp["station_name"].iloc[-1],
                 "first_seen": first_seen,
@@ -217,14 +219,14 @@ class OrderTraceabilityEvents(Base):
     # ------------------------------------------------------------------
 
     def current_status(self) -> pd.DataFrame:
-        """Determine the last-known station for each order.
+        """Determine the last-known station for each identifier.
 
         Returns:
             DataFrame with columns:
-            - order_id
-            - current_station: Name of the last station where the order was seen.
+            - identifier
+            - current_station: Name of the last station where seen.
             - current_station_uuid: UUID of that station.
-            - arrived_at: When the order arrived at the current station.
+            - arrived_at: When the identifier arrived at the current station.
             - time_at_station_seconds: Dwell time at the current station so far.
             - uuid: Event UUID.
         """
@@ -233,16 +235,16 @@ class OrderTraceabilityEvents(Base):
         if timeline.empty:
             return pd.DataFrame(
                 columns=[
-                    "order_id", "current_station", "current_station_uuid",
+                    "identifier", "current_station", "current_station_uuid",
                     "arrived_at", "time_at_station_seconds", "uuid",
                 ]
             )
 
-        # Latest visit per order
-        latest = timeline.sort_values("start").groupby("order_id").last().reset_index()
+        # Latest visit per identifier
+        latest = timeline.sort_values("start").groupby("identifier").last().reset_index()
 
         return pd.DataFrame({
-            "order_id": latest["order_id"],
+            "identifier": latest["identifier"],
             "current_station": latest["station_name"],
             "current_station_uuid": latest["station_uuid"],
             "arrived_at": latest["start"],
@@ -255,13 +257,13 @@ class OrderTraceabilityEvents(Base):
     # ------------------------------------------------------------------
 
     def station_dwell_statistics(self) -> pd.DataFrame:
-        """Compute dwell-time statistics per station (across all orders).
+        """Compute dwell-time statistics per station (across all identifiers).
 
         Returns:
             DataFrame with columns:
             - station_name
             - station_uuid
-            - order_count: Number of distinct orders seen.
+            - identifier_count: Number of distinct identifiers seen.
             - min_dwell_seconds
             - avg_dwell_seconds
             - max_dwell_seconds
@@ -272,14 +274,14 @@ class OrderTraceabilityEvents(Base):
         if timeline.empty:
             return pd.DataFrame(
                 columns=[
-                    "station_name", "station_uuid", "order_count",
+                    "station_name", "station_uuid", "identifier_count",
                     "min_dwell_seconds", "avg_dwell_seconds",
                     "max_dwell_seconds", "total_dwell_seconds",
                 ]
             )
 
         stats = timeline.groupby(["station_name", "station_uuid"]).agg(
-            order_count=("order_id", "nunique"),
+            identifier_count=("identifier", "nunique"),
             min_dwell_seconds=("duration_seconds", "min"),
             avg_dwell_seconds=("duration_seconds", "mean"),
             max_dwell_seconds=("duration_seconds", "max"),
@@ -291,3 +293,7 @@ class OrderTraceabilityEvents(Base):
             stats[col] = stats[col].round(2)
 
         return stats
+
+
+# Backwards-compatible alias
+OrderTraceabilityEvents = ValueTraceabilityEvents

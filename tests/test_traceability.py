@@ -1,4 +1,4 @@
-"""Tests for OrderTraceabilityEvents and RoutingTraceabilityEvents."""
+"""Tests for ValueTraceabilityEvents and RoutingTraceabilityEvents."""
 
 import pandas as pd  # type: ignore
 import numpy as np
@@ -6,7 +6,8 @@ import pytest
 from datetime import datetime, timedelta
 
 from ts_shape.events.production import (
-    OrderTraceabilityEvents,
+    ValueTraceabilityEvents,
+    OrderTraceabilityEvents,  # backwards-compatible alias
     RoutingTraceabilityEvents,
 )
 
@@ -24,21 +25,21 @@ def _empty_df():
 
 
 # ============================================================================
-# OrderTraceabilityEvents fixtures and tests
+# ValueTraceabilityEvents fixtures and tests
 # ============================================================================
 
 @pytest.fixture
-def order_trace_data():
-    """Create synthetic data: 3 stations, 2 orders flowing through them.
+def value_trace_data():
+    """Create synthetic data: 3 stations, 2 identifiers flowing through them.
 
-    Order flow:
+    Flow:
     - ORD-001: Station A (08:00-08:10) -> Station B (08:12-08:25) -> Station C (08:27-08:40)
     - ORD-002: Station A (08:15-08:30) -> Station B (08:32-08:45) -> Station C (08:47-08:55)
     """
     base = pd.Timestamp("2024-01-15 08:00:00")
     rows = []
 
-    def _add_station_rows(uuid, order_id, start_min, end_min, freq_min=1):
+    def _add_station_rows(uuid, identifier, start_min, end_min, freq_min=1):
         for m in range(start_min, end_min + 1, freq_min):
             rows.append({
                 "systime": base + timedelta(minutes=m),
@@ -46,7 +47,7 @@ def order_trace_data():
                 "value_bool": None,
                 "value_integer": None,
                 "value_double": None,
-                "value_string": order_id,
+                "value_string": identifier,
                 "is_delta": False,
             })
 
@@ -64,9 +65,9 @@ def order_trace_data():
 
 
 @pytest.fixture
-def order_tracer(order_trace_data):
-    return OrderTraceabilityEvents(
-        order_trace_data,
+def value_tracer(value_trace_data):
+    return ValueTraceabilityEvents(
+        value_trace_data,
         station_uuids={
             "station_a": "Station A",
             "station_b": "Station B",
@@ -75,34 +76,34 @@ def order_tracer(order_trace_data):
     )
 
 
-class TestOrderTraceabilityEvents:
+class TestValueTraceabilityEvents:
 
-    def test_build_timeline(self, order_tracer):
-        timeline = order_tracer.build_timeline()
+    def test_build_timeline(self, value_tracer):
+        timeline = value_tracer.build_timeline()
         assert not timeline.empty
-        # 2 orders x 3 stations = 6 rows
+        # 2 identifiers x 3 stations = 6 rows
         assert len(timeline) == 6
-        assert set(timeline["order_id"]) == {"ORD-001", "ORD-002"}
+        assert set(timeline["identifier"]) == {"ORD-001", "ORD-002"}
         assert set(timeline["station_name"]) == {"Station A", "Station B", "Station C"}
-        # Each order should have sequences 1, 2, 3
-        for order_id in ["ORD-001", "ORD-002"]:
-            seqs = timeline[timeline["order_id"] == order_id]["station_sequence"].tolist()
+        # Each identifier should have sequences 1, 2, 3
+        for ident in ["ORD-001", "ORD-002"]:
+            seqs = timeline[timeline["identifier"] == ident]["station_sequence"].tolist()
             assert seqs == [1, 2, 3]
 
-    def test_build_timeline_columns(self, order_tracer):
-        timeline = order_tracer.build_timeline()
+    def test_build_timeline_columns(self, value_tracer):
+        timeline = value_tracer.build_timeline()
         expected_cols = {
-            "order_id", "station_uuid", "station_name",
+            "identifier", "station_uuid", "station_name",
             "start", "end", "duration_seconds", "sample_count",
             "station_sequence", "uuid",
         }
         assert set(timeline.columns) == expected_cols
 
-    def test_lead_time(self, order_tracer):
-        lead = order_tracer.lead_time()
+    def test_lead_time(self, value_tracer):
+        lead = value_tracer.lead_time()
         assert len(lead) == 2
 
-        ord1 = lead[lead["order_id"] == "ORD-001"].iloc[0]
+        ord1 = lead[lead["identifier"] == "ORD-001"].iloc[0]
         assert ord1["first_station"] == "Station A"
         assert ord1["last_station"] == "Station C"
         assert ord1["stations_visited"] == 3
@@ -110,23 +111,23 @@ class TestOrderTraceabilityEvents:
         assert "Station C" in ord1["station_path"]
         assert ord1["lead_time_seconds"] > 0
 
-    def test_current_status(self, order_tracer):
-        status = order_tracer.current_status()
+    def test_current_status(self, value_tracer):
+        status = value_tracer.current_status()
         assert len(status) == 2
-        # Both orders last seen at Station C
+        # Both identifiers last seen at Station C
         assert set(status["current_station"]) == {"Station C"}
 
-    def test_station_dwell_statistics(self, order_tracer):
-        stats = order_tracer.station_dwell_statistics()
+    def test_station_dwell_statistics(self, value_tracer):
+        stats = value_tracer.station_dwell_statistics()
         assert len(stats) == 3  # 3 stations
         assert "avg_dwell_seconds" in stats.columns
-        assert "order_count" in stats.columns
-        # Each station saw 2 orders
+        assert "identifier_count" in stats.columns
+        # Each station saw 2 identifiers
         for _, row in stats.iterrows():
-            assert row["order_count"] == 2
+            assert row["identifier_count"] == 2
 
     def test_empty_data(self):
-        tracer = OrderTraceabilityEvents(
+        tracer = ValueTraceabilityEvents(
             _empty_df(),
             station_uuids={"x": "X"},
         )
@@ -136,7 +137,7 @@ class TestOrderTraceabilityEvents:
         assert tracer.station_dwell_statistics().empty
 
     def test_single_station(self):
-        """Order at only one station."""
+        """Identifier at only one station."""
         base = pd.Timestamp("2024-01-15 08:00:00")
         rows = []
         for m in range(5):
@@ -150,17 +151,31 @@ class TestOrderTraceabilityEvents:
                 "is_delta": False,
             })
 
-        tracer = OrderTraceabilityEvents(
+        tracer = ValueTraceabilityEvents(
             pd.DataFrame(rows),
             station_uuids={"sta": "Only Station"},
         )
         timeline = tracer.build_timeline()
         assert len(timeline) == 1
-        assert timeline.iloc[0]["order_id"] == "SN-100"
+        assert timeline.iloc[0]["identifier"] == "SN-100"
 
         lead = tracer.lead_time()
         assert len(lead) == 1
         assert lead.iloc[0]["stations_visited"] == 1
+
+    def test_backwards_compat_alias(self, value_trace_data):
+        """OrderTraceabilityEvents should work as an alias."""
+        tracer = OrderTraceabilityEvents(
+            value_trace_data,
+            station_uuids={
+                "station_a": "Station A",
+                "station_b": "Station B",
+                "station_c": "Station C",
+            },
+        )
+        timeline = tracer.build_timeline()
+        assert len(timeline) == 6
+        assert "identifier" in timeline.columns
 
 
 # ============================================================================
@@ -169,11 +184,11 @@ class TestOrderTraceabilityEvents:
 
 @pytest.fixture
 def routing_trace_data():
-    """Create synthetic data: ID signal + routing handover signal.
+    """Create synthetic data: ID signal + state/routing signal.
 
     Flow:
-    - Serial "SN-AAA": handover=1 (08:00-08:10), handover=2 (08:12-08:20), handover=3 (08:22-08:30)
-    - Serial "SN-BBB": handover=1 (08:35-08:45), handover=3 (08:47-08:55)  (skips station 2)
+    - Serial "SN-AAA": state=10 (Heating), state=20 (Holding), state=30 (Cooling)
+    - Serial "SN-BBB": state=10 (Heating), state=30 (Cooling) (skips Holding)
     """
     base = pd.Timestamp("2024-01-15 08:00:00")
     rows = []
@@ -200,27 +215,27 @@ def routing_trace_data():
             "is_delta": False,
         })
 
-    # Routing signal: station assignments via integer value
-    def _add_routing(start_min, end_min, station_val):
+    # State signal: PLC step numbers
+    def _add_state(start_min, end_min, state_val):
         for m in range(start_min, end_min + 1):
             rows.append({
                 "systime": base + timedelta(minutes=m),
-                "uuid": "routing_signal",
+                "uuid": "state_signal",
                 "value_bool": None,
-                "value_integer": station_val,
+                "value_integer": state_val,
                 "value_double": None,
                 "value_string": None,
                 "is_delta": False,
             })
 
-    # SN-AAA routing
-    _add_routing(0, 10, 1)
-    _add_routing(12, 20, 2)
-    _add_routing(22, 30, 3)
+    # SN-AAA states
+    _add_state(0, 10, 10)    # Heating
+    _add_state(12, 20, 20)   # Holding
+    _add_state(22, 30, 30)   # Cooling
 
-    # SN-BBB routing
-    _add_routing(35, 45, 1)
-    _add_routing(47, 55, 3)
+    # SN-BBB states
+    _add_state(35, 45, 10)   # Heating
+    _add_state(47, 55, 30)   # Cooling (skips Holding)
 
     return pd.DataFrame(rows)
 
@@ -230,8 +245,8 @@ def routing_tracer(routing_trace_data):
     return RoutingTraceabilityEvents(
         routing_trace_data,
         id_uuid="id_signal",
-        routing_uuid="routing_signal",
-        station_map={1: "Welding", 2: "Painting", 3: "Assembly"},
+        routing_uuid="state_signal",
+        state_map={10: "Heating", 20: "Holding", 30: "Cooling"},
     )
 
 
@@ -240,19 +255,19 @@ class TestRoutingTraceabilityEvents:
     def test_build_routing_timeline(self, routing_tracer):
         timeline = routing_tracer.build_routing_timeline()
         assert not timeline.empty
-        # SN-AAA: 3 stations, SN-BBB: 2 stations = 5 rows
+        # SN-AAA: 3 steps, SN-BBB: 2 steps = 5 rows
         assert len(timeline) == 5
 
         aaa = timeline[timeline["item_id"] == "SN-AAA"]
         assert len(aaa) == 3
-        assert aaa.iloc[0]["station_name"] == "Welding"
-        assert aaa.iloc[1]["station_name"] == "Painting"
-        assert aaa.iloc[2]["station_name"] == "Assembly"
+        assert aaa.iloc[0]["station_name"] == "Heating"
+        assert aaa.iloc[1]["station_name"] == "Holding"
+        assert aaa.iloc[2]["station_name"] == "Cooling"
 
         bbb = timeline[timeline["item_id"] == "SN-BBB"]
         assert len(bbb) == 2
-        assert bbb.iloc[0]["station_name"] == "Welding"
-        assert bbb.iloc[1]["station_name"] == "Assembly"
+        assert bbb.iloc[0]["station_name"] == "Heating"
+        assert bbb.iloc[1]["station_name"] == "Cooling"
 
     def test_timeline_columns(self, routing_tracer):
         timeline = routing_tracer.build_routing_timeline()
@@ -268,31 +283,30 @@ class TestRoutingTraceabilityEvents:
         assert len(lead) == 2
 
         aaa = lead[lead["item_id"] == "SN-AAA"].iloc[0]
-        assert aaa["first_station"] == "Welding"
-        assert aaa["last_station"] == "Assembly"
+        assert aaa["first_station"] == "Heating"
+        assert aaa["last_station"] == "Cooling"
         assert aaa["stations_visited"] == 3
         assert aaa["lead_time_seconds"] > 0
-        assert "Welding" in aaa["routing_path"]
-        assert "Assembly" in aaa["routing_path"]
+        assert "Heating" in aaa["routing_path"]
+        assert "Cooling" in aaa["routing_path"]
 
         bbb = lead[lead["item_id"] == "SN-BBB"].iloc[0]
-        assert bbb["stations_visited"] == 2  # skipped Painting
+        assert bbb["stations_visited"] == 2  # skipped Holding
 
     def test_station_statistics(self, routing_tracer):
         stats = routing_tracer.station_statistics()
-        assert len(stats) == 3  # Welding, Painting, Assembly
+        assert len(stats) == 3  # Heating, Holding, Cooling
         assert "item_count" in stats.columns
 
-        welding = stats[stats["station_name"] == "Welding"].iloc[0]
-        assert welding["item_count"] == 2  # Both items went through Welding
+        heating = stats[stats["station_name"] == "Heating"].iloc[0]
+        assert heating["item_count"] == 2  # Both items
 
-        painting = stats[stats["station_name"] == "Painting"].iloc[0]
-        assert painting["item_count"] == 1  # Only SN-AAA
+        holding = stats[stats["station_name"] == "Holding"].iloc[0]
+        assert holding["item_count"] == 1  # Only SN-AAA
 
     def test_routing_paths(self, routing_tracer):
         paths = routing_tracer.routing_paths()
         assert len(paths) == 2  # Two distinct paths
-        # Path with most items first (both have 1 item each, but check columns)
         assert "routing_path" in paths.columns
         assert "item_count" in paths.columns
         assert "avg_lead_time_seconds" in paths.columns
@@ -308,8 +322,8 @@ class TestRoutingTraceabilityEvents:
         assert tracer.station_statistics().empty
         assert tracer.routing_paths().empty
 
-    def test_no_station_map(self):
-        """Without station_map, should use 'Station N' naming."""
+    def test_no_state_map(self):
+        """Without state_map, should use 'State N' naming."""
         base = pd.Timestamp("2024-01-15 08:00:00")
         rows = []
         for m in range(5):
@@ -339,7 +353,19 @@ class TestRoutingTraceabilityEvents:
         )
         timeline = tracer.build_routing_timeline()
         assert len(timeline) == 1
-        assert timeline.iloc[0]["station_name"] == "Station 5"
+        assert timeline.iloc[0]["station_name"] == "State 5"
+
+    def test_backwards_compat_station_map(self, routing_trace_data):
+        """Old station_map parameter should still work."""
+        tracer = RoutingTraceabilityEvents(
+            routing_trace_data,
+            id_uuid="id_signal",
+            routing_uuid="state_signal",
+            station_map={10: "Heating", 20: "Holding", 30: "Cooling"},
+        )
+        timeline = tracer.build_routing_timeline()
+        assert len(timeline) == 5
+        assert timeline.iloc[0]["station_name"] == "Heating"
 
     def test_station_sequence_per_item(self, routing_tracer):
         """Each item should have its own sequence numbering."""

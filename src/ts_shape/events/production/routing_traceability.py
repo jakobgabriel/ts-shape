@@ -1,52 +1,74 @@
-"""Routing-based traceability using ID + handover signals.
+"""Routing-based traceability using ID + state/handover signals.
 
-In this pattern a single UUID carries the current item identifier (order number,
-serial code, etc.) and a separate UUID carries a routing / handover integer
-signal whose value indicates which station the item is being sent to.
+In this pattern a single UUID carries the current item identifier (serial
+code, order number, etc.) and a separate UUID carries a state / routing
+signal whose value encodes which process step or station the item is at.
 
-Example: serial code "abc" is active while the handover signal reads 1 → the
-item went to station 1.  Later the handover signal changes to 2 → the item
-is now at station 2.
+The ``state_map`` parameter defines the mapping from signal values to
+station/step names.  This is required because the signal values alone
+don't tell the module what they mean — they could be PLC step numbers,
+recipe phases, station codes, or anything else.
+
+Example::
+
+    State signal value 10 → "Heating"
+    State signal value 20 → "Holding"
+    State signal value 30 → "Cooling"
+
+Or::
+
+    State signal value 1 → "Welding"
+    State signal value 2 → "Painting"
+    State signal value 3 → "Assembly"
 
 This module correlates both signals to reconstruct the full routing path.
 """
 
 import pandas as pd  # type: ignore
 import numpy as np
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 
 from ts_shape.utils.base import Base
 
 
 class RoutingTraceabilityEvents(Base):
-    """Trace item routing using an ID signal paired with a handover signal.
+    """Trace item routing using an ID signal paired with a state/routing signal.
 
     Two UUIDs work together:
-    - **id_uuid**: string signal carrying the current order / serial number.
-    - **routing_uuid**: integer/numeric signal whose value encodes the
-      destination station (e.g., 1 = Station 1, 2 = Station 2).
+    - **id_uuid**: string signal carrying the current identifier
+      (serial number, order ID, batch code, etc.).
+    - **routing_uuid**: signal whose value encodes the current process
+      step or station.
 
-    An optional ``station_map`` translates numeric values to human-readable
-    station names.
+    A ``state_map`` translates signal values to human-readable station
+    or step names.  Without it, raw values are used as labels.
 
-    Example usage:
+    Example usage::
+
+        # PLC step numbers mapped to process steps
+        trace = RoutingTraceabilityEvents(
+            df,
+            id_uuid='serial_code_signal',
+            routing_uuid='step_chain_signal',
+            state_map={
+                10: 'Heating',
+                20: 'Holding',
+                30: 'Cooling',
+                40: 'Discharge',
+            },
+        )
+
+        # Station handover signal mapped to stations
         trace = RoutingTraceabilityEvents(
             df,
             id_uuid='serial_code_signal',
             routing_uuid='handover_signal',
-            station_map={1: 'Welding', 2: 'Painting', 3: 'Assembly'},
+            state_map={1: 'Welding', 2: 'Painting', 3: 'Assembly'},
         )
 
-        # Full routing timeline
         timeline = trace.build_routing_timeline()
-
-        # Lead time per item
         lead = trace.lead_time()
-
-        # Station visit statistics
         stats = trace.station_statistics()
-
-        # Routing path frequency (which paths are most common)
         paths = trace.routing_paths()
     """
 
@@ -56,7 +78,8 @@ class RoutingTraceabilityEvents(Base):
         id_uuid: str,
         routing_uuid: str,
         *,
-        station_map: Optional[Dict[int, str]] = None,
+        state_map: Optional[Dict[Union[int, float, str], str]] = None,
+        station_map: Optional[Dict[Union[int, float, str], str]] = None,
         event_uuid: str = "prod:routing_trace",
         id_value_column: str = "value_string",
         routing_value_column: str = "value_integer",
@@ -66,19 +89,25 @@ class RoutingTraceabilityEvents(Base):
 
         Args:
             dataframe: Input DataFrame with timeseries data.
-            id_uuid: UUID of the signal carrying order/serial IDs.
-            routing_uuid: UUID of the handover/routing signal (integer values).
-            station_map: Optional mapping from routing integer to station name.
-                         e.g. {1: 'Welding', 2: 'Painting', 3: 'Assembly'}
+            id_uuid: UUID of the signal carrying item identifiers.
+            routing_uuid: UUID of the state/routing signal.
+            state_map: Mapping from signal value to station/step name.
+                       e.g. {10: 'Heating', 20: 'Holding', 30: 'Cooling'}
+                       or {1: 'Welding', 2: 'Painting', 3: 'Assembly'}
+                       Values can be int, float, or str keys.
+                       If not provided, raw signal values are used as labels.
+            station_map: Deprecated alias for state_map (for backwards
+                         compatibility). Use state_map instead.
             event_uuid: UUID to tag derived events with.
-            id_value_column: Column holding the order/serial ID string.
-            routing_value_column: Column holding the routing integer value.
+            id_value_column: Column holding the item ID string.
+            routing_value_column: Column holding the state/routing value.
             time_column: Name of timestamp column.
         """
         super().__init__(dataframe, column_name=time_column)
         self.id_uuid = id_uuid
         self.routing_uuid = routing_uuid
-        self.station_map = station_map or {}
+        # state_map takes priority; fall back to station_map for backwards compat
+        self.state_map: Dict[Union[int, float, str], str] = state_map or station_map or {}
         self.event_uuid = event_uuid
         self.id_value_column = id_value_column
         self.routing_value_column = routing_value_column
@@ -101,36 +130,55 @@ class RoutingTraceabilityEvents(Base):
             self.routing_data[self.time_column]
         )
 
-    def _station_name(self, value: Any) -> str:
-        """Resolve a routing value to a station name."""
+    def _resolve_state(self, value: Any) -> str:
+        """Resolve a routing/state signal value to a station/step name.
+
+        Lookup order:
+        1. Try the value as-is in state_map.
+        2. Try converting to int.
+        3. Try converting to str.
+        4. Fall back to "State {value}".
+        """
+        if value in self.state_map:
+            return self.state_map[value]
         try:
             v = int(value)
+            if v in self.state_map:
+                return self.state_map[v]
         except (ValueError, TypeError):
-            v = value
-        if v in self.station_map:
-            return self.station_map[v]
-        return f"Station {v}"
+            pass
+        s = str(value)
+        if s in self.state_map:
+            return self.state_map[s]
+        # Format cleanly: 5.0 -> "State 5", 3.14 -> "State 3.14"
+        try:
+            v_float = float(value)
+            if v_float == int(v_float):
+                return f"State {int(v_float)}"
+            return f"State {v_float}"
+        except (ValueError, TypeError):
+            return f"State {value}"
 
     # ------------------------------------------------------------------
     # build_routing_timeline
     # ------------------------------------------------------------------
 
     def build_routing_timeline(self) -> pd.DataFrame:
-        """Correlate the ID signal with the routing signal to build a timeline.
+        """Correlate the ID signal with the state/routing signal to build a timeline.
 
         For each sample of the routing signal, the *current* item ID is
         determined via backward-fill merge (most recent ID at that timestamp).
-        Contiguous intervals where the same (item_id, station) pair holds
+        Contiguous intervals where the same (item_id, state) pair holds
         are grouped into single events.
 
         Returns:
             DataFrame with columns:
-            - item_id: Order / serial number string.
-            - routing_value: Raw routing signal value.
-            - station_name: Human-readable station name.
+            - item_id: Identifier string.
+            - routing_value: Raw signal value.
+            - station_name: Resolved station/step name from state_map.
             - start: First timestamp of interval.
             - end: Last timestamp of interval.
-            - duration_seconds: Time at the station.
+            - duration_seconds: Time at this state.
             - sample_count: Number of routing samples in interval.
             - station_sequence: Visit order per item (1-based).
             - uuid: Event UUID.
@@ -188,7 +236,7 @@ class RoutingTraceabilityEvents(Base):
             rows.append({
                 "item_id": item_id,
                 "routing_value": routing_val,
-                "station_name": self._station_name(routing_val),
+                "station_name": self._resolve_state(routing_val),
                 "start": start,
                 "end": end,
                 "duration_seconds": (end - start).total_seconds(),
@@ -212,12 +260,12 @@ class RoutingTraceabilityEvents(Base):
         Returns:
             DataFrame with columns:
             - item_id
-            - first_station: Name of first station visited.
-            - last_station: Name of last station visited.
+            - first_station: Name of first station/step visited.
+            - last_station: Name of last station/step visited.
             - first_seen: Earliest timestamp.
             - last_seen: Latest timestamp.
             - lead_time_seconds: Total elapsed time.
-            - stations_visited: Number of distinct stations.
+            - stations_visited: Number of distinct stations/steps.
             - routing_path: Ordered station names joined by " -> ".
             - uuid: Event UUID.
         """
@@ -257,7 +305,7 @@ class RoutingTraceabilityEvents(Base):
     # ------------------------------------------------------------------
 
     def station_statistics(self) -> pd.DataFrame:
-        """Compute dwell-time statistics per station across all items.
+        """Compute dwell-time statistics per station/step across all items.
 
         Returns:
             DataFrame with columns:
