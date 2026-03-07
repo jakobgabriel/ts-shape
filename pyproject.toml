@@ -28,7 +28,6 @@ dependencies = [
     "numpy>=1.26.4",
     "requests>=2.32.3",
     "pytz>=2024.1",
-    "psycopg2-binary>=2.9.9",
     "sqlalchemy>=2.0.32",
     "azure-storage-blob>=12.19.1",
 ]
@@ -41,6 +40,9 @@ Repository = "https://github.com/jakobgabriel/ts-shape"
 [project.optional-dependencies]
 azure = [
     "azure-storage-blob>=12.19.1",
+]
+postgres = [
+    "psycopg2-binary>=2.9.9",
 ]
 docs = [
     "mkdocs>=1.5",

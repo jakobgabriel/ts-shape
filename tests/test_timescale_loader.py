@@ -3,10 +3,16 @@ import pandas as pd  # type: ignore
 
 pytest.importorskip("sqlalchemy")
 
-from ts_shape.loader.timeseries.timescale_loader import TimescaleDBDataAccess
-
 
 def test_timescale_fetch_dataframe_monkeypatched(monkeypatch):
+    # Patch create_engine before importing the loader class to avoid psycopg2 import
+    monkeypatch.setattr(
+        "ts_shape.loader.timeseries.timescale_loader.create_engine",
+        lambda *args, **kwargs: None,
+    )
+
+    from ts_shape.loader.timeseries.timescale_loader import TimescaleDBDataAccess
+
     loader = TimescaleDBDataAccess(
         start_timestamp='2024-01-01 00:00:00',
         end_timestamp='2024-01-01 01:00:00',
@@ -25,4 +31,3 @@ def test_timescale_fetch_dataframe_monkeypatched(monkeypatch):
     df = loader.fetch_data_as_dataframe()
     assert set(df['uuid']) == {'u1', 'u2'}
     assert len(df) == 4
-

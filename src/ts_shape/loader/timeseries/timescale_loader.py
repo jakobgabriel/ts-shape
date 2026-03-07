@@ -10,7 +10,7 @@ class TimescaleDBDataAccess:
         self.uuids = uuids
         self.db_config = db_config
         self.engine = create_engine(
-            f'postgresql+psycopg2://{db_config["db_user"]}:{db_config["db_pass"]}@{db_config["db_host"]}/{db_config["db_name"]}'
+            f'postgresql://{db_config["db_user"]}:{db_config["db_pass"]}@{db_config["db_host"]}/{db_config["db_name"]}'
         )
 
     def _fetch_data(self, uuid: str) -> pd.DataFrame:

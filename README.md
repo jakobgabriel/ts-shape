@@ -37,7 +37,7 @@ Optional integrations:
 | Azure Blob Storage | `pip install azure-storage-blob` |
 | Azure AAD + management | `pip install azure-identity azure-mgmt-storage` |
 | S3 proxy access | Included via `s3fs` |
-| TimescaleDB | `pip install sqlalchemy psycopg2-binary` |
+| TimescaleDB / PostgreSQL | `pip install ts-shape[postgres]` or any SQLAlchemy-compatible driver |
 
 ---
 

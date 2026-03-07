@@ -1,6 +1,6 @@
 import pandas as pd  # type: ignore
-import psycopg2
 import json
+from sqlalchemy import create_engine, text
 from typing import List, Dict
 
 
@@ -34,41 +34,35 @@ class DatapointDB:
 
     def _db_access(self) -> None:
         """Connect to the database and retrieve metadata for each device."""
-        conn = psycopg2.connect(
-            dbname="config_repository",
-            user=self.db_user,
-            password=self.db_pass,
-            host=self.db_host,
-            port=5432
+        engine = create_engine(
+            f'postgresql://{self.db_user}:{self.db_pass}@{self.db_host}:5432/config_repository'
         )
-        cursor = conn.cursor()
 
-        for device_name in self.device_names:
-            query = """
-                SELECT dp.uuid, dp.label, dp.config
-                FROM data_points dp
-                INNER JOIN devices dev ON dev.id = dp.device_id
-                WHERE dev.name = %s
-            """
-            if self.filter_enabled:
-                query += " AND dp.enabled = true AND dp.archived = false"
+        with engine.connect() as conn:
+            for device_name in self.device_names:
+                query = """
+                    SELECT dp.uuid, dp.label, dp.config
+                    FROM data_points dp
+                    INNER JOIN devices dev ON dev.id = dp.device_id
+                    WHERE dev.name = :device_name
+                """
+                if self.filter_enabled:
+                    query += " AND dp.enabled = true AND dp.archived = false"
 
-            cursor.execute(query, (device_name,))
-            data_points = [{"uuid": r[0], "label": r[1], "config": r[2]} for r in cursor.fetchall()]
+                result = conn.execute(text(query), {"device_name": device_name})
+                data_points = [{"uuid": r[0], "label": r[1], "config": r[2]} for r in result.fetchall()]
 
-            # Convert to DataFrame and filter by required UUIDs if necessary
-            metadata_df = pd.DataFrame(data_points)
-            if not metadata_df.empty and self.required_uuid_list:
-                metadata_df = metadata_df[metadata_df["uuid"].isin(self.required_uuid_list)]
+                # Convert to DataFrame and filter by required UUIDs if necessary
+                metadata_df = pd.DataFrame(data_points)
+                if not metadata_df.empty and self.required_uuid_list:
+                    metadata_df = metadata_df[metadata_df["uuid"].isin(self.required_uuid_list)]
 
-            # Store metadata and UUIDs for the device
-            self.device_metadata[device_name] = metadata_df
-            self.device_uuids[device_name] = metadata_df["uuid"].tolist()
+                # Store metadata and UUIDs for the device
+                self.device_metadata[device_name] = metadata_df
+                self.device_uuids[device_name] = metadata_df["uuid"].tolist()
 
-            # Export to JSON file
-            self._export_json(metadata_df.to_dict(orient="records"), device_name)
-
-        conn.close()
+                # Export to JSON file
+                self._export_json(metadata_df.to_dict(orient="records"), device_name)
 
     def _export_json(self, data_points: List[Dict[str, str]], device_name: str) -> None:
         """Export data points to a JSON file for the specified device."""

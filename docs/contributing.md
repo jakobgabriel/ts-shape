@@ -24,7 +24,6 @@ The table below lists every runtime dependency declared in `pyproject.toml`, its
 | **numpy** | >= 1.26.4 | BSD-3-Clause | Numerical computations |
 | **scipy** | >= 1.13.1 | BSD-3-Clause | Scientific and statistical functions |
 | **sqlalchemy** | >= 2.0.32 | MIT | Database connectivity (TimescaleDB loader) |
-| **psycopg2-binary** | >= 2.9.9 | LGPL-2.1 | PostgreSQL adapter |
 | **azure-storage-blob** | >= 12.19.1 | MIT | Azure Blob Storage loader |
 | **s3fs** | >= 2024.10.0 | BSD-3-Clause | S3 file system access |
 | **requests** | >= 2.32.3 | Apache-2.0 | HTTP requests |
@@ -32,12 +31,13 @@ The table below lists every runtime dependency declared in `pyproject.toml`, its
 
 ### License Compatibility
 
-All dependencies are **compatible with the MIT License**:
+All dependencies are **compatible with the MIT License** and use permissive licenses:
 
 - **BSD-3-Clause** (pandas, numpy, scipy, s3fs) — permissive, no restrictions beyond attribution.
 - **MIT** (sqlalchemy, azure-storage-blob, pytz) — same terms as ts-shape itself.
 - **Apache-2.0** (requests) — permissive, compatible with MIT distribution.
-- **LGPL-2.1** (psycopg2-binary) — the only copyleft dependency. Since ts-shape uses psycopg2 as an unmodified library installed via pip (dynamic linking), no LGPL obligations are triggered for ts-shape users or distributors.
+
+PostgreSQL connectivity is handled through SQLAlchemy, which supports any DB-API 2.0 compatible driver. Users can install the driver of their choice (e.g. `pip install ts-shape[postgres]` for psycopg2-binary, or install psycopg, pg8000, etc.).
 
 ### Guidelines for Adding New Dependencies
 

@@ -1,31 +1,39 @@
 import pytest
 import pandas as pd  # type: ignore
 
-psycopg2 = pytest.importorskip("psycopg2")
+sqlalchemy = pytest.importorskip("sqlalchemy")
 
 from ts_shape.loader.metadata.metadata_db_loader import DatapointDB
 
 
-class DummyCursor:
+class DummyResult:
     def __init__(self, rows):
         self._rows = rows
-
-    def execute(self, query, params):
-        self._last = (query, params)
 
     def fetchall(self):
         return self._rows
 
 
-class DummyConn:
+class DummyConnection:
     def __init__(self, rows):
         self._rows = rows
 
-    def cursor(self):
-        return DummyCursor(self._rows)
+    def execute(self, query, params=None):
+        return DummyResult(self._rows)
 
-    def close(self):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
         pass
+
+
+class DummyEngine:
+    def __init__(self, rows):
+        self._rows = rows
+
+    def connect(self):
+        return DummyConnection(self._rows)
 
 
 def test_metadata_db_loader_monkeypatched(monkeypatch, tmp_path):
@@ -34,7 +42,10 @@ def test_metadata_db_loader_monkeypatched(monkeypatch, tmp_path):
         ("u2", "L2", {"x": 2}),
     ]
 
-    monkeypatch.setattr(psycopg2, "connect", lambda **kwargs: DummyConn(rows))
+    monkeypatch.setattr(
+        "ts_shape.loader.metadata.metadata_db_loader.create_engine",
+        lambda *args, **kwargs: DummyEngine(rows),
+    )
 
     db = DatapointDB(
         device_names=["Device A"],
@@ -48,4 +59,3 @@ def test_metadata_db_loader_monkeypatched(monkeypatch, tmp_path):
     # Device key present and filtered
     assert list(uuids.keys()) == ["Device A"]
     assert uuids["Device A"] == ["u1"]
-
