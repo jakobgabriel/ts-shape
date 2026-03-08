@@ -30,16 +30,20 @@ class GaugeRepeatabilityEvents(Base):
         signal_uuid: str,
         *,
         part_column: str = "value_string",
+        part_uuid: Optional[str] = None,
         value_column: str = "value_double",
         operator_column: Optional[str] = None,
+        operator_uuid: Optional[str] = None,
         event_uuid: str = "quality:gauge_rr",
         time_column: str = "systime",
     ) -> None:
         super().__init__(dataframe, column_name=time_column)
         self.signal_uuid = signal_uuid
         self.part_column = part_column
+        self.part_uuid = part_uuid
         self.value_column = value_column
         self.operator_column = operator_column
+        self.operator_uuid = operator_uuid
         self.event_uuid = event_uuid
         self.time_column = time_column
 
@@ -48,6 +52,41 @@ class GaugeRepeatabilityEvents(Base):
             self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
             .copy()
             .sort_values(self.time_column)
+        )
+        self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
+
+        # If part_uuid provided, merge part identifiers via time-alignment
+        if self.part_uuid is not None:
+            self._merge_uuid_column(self.part_uuid, "_part_id")
+            self.part_column = "_part_id"
+
+        # If operator_uuid provided, merge operator identifiers
+        if self.operator_uuid is not None:
+            self._merge_uuid_column(self.operator_uuid, "_operator_id")
+            self.operator_column = "_operator_id"
+
+    def _merge_uuid_column(self, uuid: str, target_col: str) -> None:
+        """Merge a UUID signal's values into self.signal as a new column."""
+        ref = self.dataframe[self.dataframe["uuid"] == uuid].copy()
+        if ref.empty:
+            self.signal[target_col] = None
+            return
+        ref[self.time_column] = pd.to_datetime(ref[self.time_column])
+        ref = ref.sort_values(self.time_column)
+        # Use value_string if available, otherwise value_double as str
+        if "value_string" in ref.columns and ref["value_string"].notna().any():
+            val_col = "value_string"
+        else:
+            val_col = self.value_column
+        ref_slim = ref[[self.time_column, val_col]].rename(
+            columns={val_col: target_col}
+        )
+        self.signal = pd.merge_asof(
+            self.signal.sort_values(self.time_column),
+            ref_slim.sort_values(self.time_column),
+            on=self.time_column,
+            direction="nearest",
+            tolerance=pd.Timedelta("5min"),
         )
 
     def repeatability(self, n_trials: Optional[int] = None) -> pd.DataFrame:

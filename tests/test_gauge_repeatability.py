@@ -157,6 +157,35 @@ class TestMeasurementBias:
         for _, row in result.iterrows():
             assert abs(row["bias"]) < 0.5
 
+    def test_bias_with_part_uuid(self):
+        """Test measurement_bias using part_uuid instead of part_column."""
+        np.random.seed(42)
+        base = pd.Timestamp("2024-01-01")
+        rows = []
+        parts = {"part_A": 10.0, "part_B": 20.0}
+        for i in range(30):
+            part = "part_A" if i < 15 else "part_B"
+            target = parts[part]
+            rows.append({
+                "systime": base + pd.Timedelta(seconds=i),
+                "uuid": "gauge_1",
+                "value_double": target + np.random.randn() * 0.05,
+            })
+            rows.append({
+                "systime": base + pd.Timedelta(seconds=i),
+                "uuid": "part_signal",
+                "value_string": part,
+                "value_double": 0.0,
+            })
+        df = pd.DataFrame(rows)
+        grr = GaugeRepeatabilityEvents(
+            df, "gauge_1", part_uuid="part_signal",
+        )
+        result = grr.measurement_bias(parts)
+        assert len(result) == 2
+        for _, row in result.iterrows():
+            assert abs(row["bias"]) < 0.5
+
     def test_partial_references(self, gauge_rr_df):
         grr = GaugeRepeatabilityEvents(
             gauge_rr_df, "gauge_1",
