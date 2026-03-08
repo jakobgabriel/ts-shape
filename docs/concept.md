@@ -6,22 +6,51 @@ ts-shape is a lightweight toolkit for shaping timeseries data into analysis-read
 
 ```mermaid
 flowchart LR
-    subgraph Load
-        L1[Parquet]
-        L2[S3/Azure]
-        L3[TimescaleDB]
-        L4[Metadata]
+    subgraph ACQ["<b>Data Acquisition</b><br/><i>8 loaders</i>"]
+        L1["Parquet"]
+        L2["S3 / Azure"]
+        L3["TimescaleDB"]
+        L4["Metadata"]
     end
 
-    L1 --> C[Combine]
-    L2 --> C
-    L3 --> C
-    L4 --> C
+    subgraph COND["<b>Signal Conditioning</b><br/><i>9 classes</i>"]
+        T["Filters &<br/>Calculations"]
+    end
 
-    C --> T[Transform]
-    T --> F[Features]
-    F --> E[Events]
-    E --> O[Output]
+    subgraph ANA["<b>Signal Analytics</b><br/><i>5 classes</i>"]
+        F["Statistics &<br/>Cycles"]
+    end
+
+    subgraph EVT["<b>Event Detection</b>"]
+        E1["Quality & SPC<br/><i>8 classes</i>"]
+        E2["Production<br/><i>28 classes</i>"]
+        E3["Engineering<br/><i>2 classes</i>"]
+        E4["Maintenance /<br/>Energy / Supply"]
+    end
+
+    subgraph RPT["<b>Reports</b>"]
+        R1["Shift Handover"]
+        R2["Period Summary"]
+    end
+
+    L1 --> T
+    L2 --> T
+    L3 --> T
+    L4 --> T
+
+    T --> F --> E1
+    F --> E2
+    F --> E3
+    F --> E4
+
+    E2 --> R1
+    E2 --> R2
+
+    style ACQ fill:#0f2a3d,stroke:#38bdf8,color:#e0f2fe
+    style COND fill:#1a3a4a,stroke:#2dd4bf,color:#e0f2fe
+    style ANA fill:#1a3a4a,stroke:#2dd4bf,color:#e0f2fe
+    style EVT fill:#1a3a4a,stroke:#f59e0b,color:#fef3c7
+    style RPT fill:#14532d,stroke:#22c55e,color:#dcfce7
 ```
 
 ## Core Principles
@@ -99,17 +128,61 @@ flowchart LR
 | `StatisticalProcessControl` | Western Electric Rules, CUSUM shifts |
 | `ToleranceDeviation` | Specification violations, Cp/Cpk indices |
 
-### Events - Production (Traceability)
+### Events - Production (Event Detection)
+
+| Module | Purpose |
+|--------|---------|
+| `MachineStateEvents` | Run/idle intervals, state transitions, rapid change detection |
+| `LineThroughputEvents` | Parts per window, takt adherence, throughput trends |
+| `ChangeoverEvents` | Product changeover detection, stability-based windows |
+| `FlowConstraintEvents` | Blocked/starved detection between stations |
+
+### Events - Production (Daily Tracking)
 
 | Module | Purpose |
 |--------|---------|
 | `PartProductionTracking` | Production by part, daily summaries, totals |
-| `QualityTracking` | NOK/scrap analysis, FPY, defect reasons |
 | `CycleTimeTracking` | Cycle times, slow cycles, trends |
 | `DowntimeTracking` | Downtime by shift/reason, availability |
+| `QualityTracking` | NOK/scrap analysis, FPY, defect reasons |
 | `ShiftReporting` | Shift production, targets, comparisons |
-| `MachineStateEvents` | Run/idle intervals, transitions |
-| `ChangeoverEvents` | Product changeover detection, windows |
+
+### Events - Production (OEE & Advanced)
+
+| Module | Purpose |
+|--------|---------|
+| `OEECalculator` | Availability x Performance x Quality — daily OEE |
+| `AlarmManagementEvents` | ISA-18.2 alarm analysis, chattering, standing alarms |
+| `BatchTrackingEvents` | Batch detection, duration stats, yield, transition matrix |
+| `BottleneckDetectionEvents` | Station utilization, shifting bottleneck detection |
+| `MicroStopEvents` | Brief idle intervals, frequency, impact analysis |
+| `DutyCycleEvents` | On/off patterns, excessive cycling detection |
+
+### Events - Production (Traceability)
+
+| Module | Purpose |
+|--------|---------|
+| `ValueTraceabilityEvents` | Single ID tracking across stations |
+| `RoutingTraceabilityEvents` | ID + routing/state signal correlation, lead times |
+| `MultiProcessTraceabilityEvents` | Parallel process lines with handover events |
+
+### Events - Production (Performance & Targets)
+
+| Module | Purpose |
+|--------|---------|
+| `PerformanceLossTracking` | Speed loss vs target cycle time per shift |
+| `ScrapTracking` | Material waste by shift, reason, and monetary cost |
+| `TargetTracking` | Actual vs target comparison, hit rate |
+| `SetupTimeTracking` | SMED analysis — setup durations by product transition |
+| `OperatorPerformanceTracking` | Operator output, efficiency, quality comparison |
+| `ReworkTracking` | Rework rates by shift/reason, cost analysis |
+
+### Events - Production (Reporting)
+
+| Module | Purpose |
+|--------|---------|
+| `ShiftHandoverReport` | Auto-generated shift reports with issue highlighting |
+| `PeriodSummary` | Weekly/monthly aggregation, period comparison |
 
 ### Events - Engineering
 
@@ -148,17 +221,51 @@ flowchart LR
 | Overlap Detection | `detect_overlapping_cycles()` | Find and resolve overlaps |
 | Extraction Stats | `get_extraction_stats()` | Track success rate |
 
-### Production Traceability
+### Production Tracking
 
 | Feature | Module | Key Methods |
 |---------|--------|-------------|
+| Machine State | `MachineStateEvents` | `detect_run_idle()`, `transition_events()`, `state_quality_metrics()` |
+| Line Throughput | `LineThroughputEvents` | `count_parts()`, `takt_adherence()`, `throughput_trends()` |
+| Changeovers | `ChangeoverEvents` | `detect_changeover()`, `changeover_window()` |
+| Flow Constraints | `FlowConstraintEvents` | `blocked_events()`, `starved_events()`, `flow_constraint_analytics()` |
 | Part Tracking | `PartProductionTracking` | `production_by_part()`, `daily_production_summary()` |
-| Quality/NOK | `QualityTracking` | `nok_by_shift()`, `quality_by_part()`, `nok_by_reason()` |
 | Cycle Times | `CycleTimeTracking` | `cycle_time_statistics()`, `detect_slow_cycles()`, `cycle_time_trend()` |
 | Downtime | `DowntimeTracking` | `downtime_by_shift()`, `downtime_by_reason()`, `availability_trend()` |
+| Quality/NOK | `QualityTracking` | `nok_by_shift()`, `quality_by_part()`, `nok_by_reason()` |
 | Shift Reports | `ShiftReporting` | `shift_production()`, `shift_targets()`, `shift_comparison()` |
-| Machine State | `MachineStateEvents` | `detect_run_idle()`, `transition_events()`, `state_quality_metrics()` |
-| Changeovers | `ChangeoverEvents` | `detect_changeover()`, `changeover_window()` |
+
+### OEE & Plant Analytics
+
+| Feature | Module | Key Methods |
+|---------|--------|-------------|
+| OEE | `OEECalculator` | `calculate_oee()`, `calculate_availability()`, `calculate_performance()` |
+| Alarms | `AlarmManagementEvents` | `alarm_frequency()`, `chattering_detection()`, `standing_alarms()` |
+| Batches | `BatchTrackingEvents` | `detect_batches()`, `batch_duration_stats()`, `batch_yield()` |
+| Bottlenecks | `BottleneckDetectionEvents` | `detect_bottleneck()`, `shifting_bottleneck()`, `station_utilization()` |
+| Micro-Stops | `MicroStopEvents` | `detect_micro_stops()`, `micro_stop_frequency()`, `micro_stop_impact()` |
+| Duty Cycles | `DutyCycleEvents` | `on_off_intervals()`, `duty_cycle_per_window()`, `excessive_cycling()` |
+
+### Traceability
+
+| Feature | Module | Key Methods |
+|---------|--------|-------------|
+| Value Trace | `ValueTraceabilityEvents` | `build_timeline()`, `lead_time()`, `station_statistics()` |
+| Routing Trace | `RoutingTraceabilityEvents` | `build_routing_timeline()`, `lead_time()`, `routing_paths()` |
+| Multi-Process | `MultiProcessTraceabilityEvents` | `build_timeline()`, `parallel_activity()`, `handover_log()` |
+
+### Performance & Targets
+
+| Feature | Module | Key Methods |
+|---------|--------|-------------|
+| Performance Loss | `PerformanceLossTracking` | `performance_by_shift()`, `slow_periods()`, `performance_trend()` |
+| Scrap | `ScrapTracking` | `scrap_by_shift()`, `scrap_by_reason()`, `scrap_cost()` |
+| Targets | `TargetTracking` | `compare_to_target()`, `target_achievement_summary()`, `target_hit_rate()` |
+| Setup Time | `SetupTimeTracking` | `setup_durations()`, `setup_by_product()`, `setup_trend()` |
+| Operator | `OperatorPerformanceTracking` | `production_by_operator()`, `operator_efficiency()`, `quality_by_operator()` |
+| Rework | `ReworkTracking` | `rework_by_shift()`, `rework_by_reason()`, `rework_cost()` |
+| Shift Handover | `ShiftHandoverReport` | `generate_report()`, `highlight_issues()`, `from_shift_data()` |
+| Period Summary | `PeriodSummary` | `weekly_summary()`, `monthly_summary()`, `compare_periods()` |
 
 ### Control Quality KPIs
 

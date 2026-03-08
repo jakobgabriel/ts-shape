@@ -90,5 +90,5 @@ pip install pyarrow  # Faster parquet loading
 ## Next Steps
 
 - [Quick Start](quick_start.md) - Get started in 5 minutes
-- [Usage Examples](../usage/index.md) - Practical examples
+- [Guides](../guides/index.md) - Topic-focused guides from data acquisition to shift reports
 - [Concept Guide](../concept.md) - Architecture overview

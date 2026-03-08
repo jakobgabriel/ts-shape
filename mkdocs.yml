@@ -21,7 +21,17 @@ nav:
 - Getting Started:
   - Installation: user_guide/installation.md
   - Quick Start: user_guide/quick_start.md
-- Usage: usage/index.md
+- Guides:
+  - Overview: guides/index.md
+  - Data Acquisition: guides/loading.md
+  - Signal Conditioning: guides/transforms.md
+  - Signal Analytics: guides/statistics.md
+  - Quality Control & SPC: guides/quality.md
+  - Production Monitoring: guides/production.md
+  - OEE & Plant Analytics: guides/oee-analytics.md
+  - Product Traceability: guides/traceability.md
+  - Process Engineering: guides/engineering.md
+  - Shift Reports & KPIs: guides/reporting.md
 - API Reference: reference/
 - Development:
   - Contributing: contributing.md

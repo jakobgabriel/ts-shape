@@ -1,5 +1,8 @@
 # Usage Examples
 
+!!! note "These examples have moved to the new **[Guides](../guides/index.md)** section"
+    The guides are organized by topic — [Data Acquisition](../guides/loading.md), [Signal Conditioning](../guides/transforms.md), [Quality Control](../guides/quality.md), [Production Monitoring](../guides/production.md), [OEE](../guides/oee-analytics.md), [Traceability](../guides/traceability.md), [Engineering](../guides/engineering.md), and [Reporting](../guides/reporting.md). This page is kept for backward compatibility.
+
 Practical examples for common timeseries data tasks.
 
 ## Loading Data

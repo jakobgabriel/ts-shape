@@ -109,6 +109,26 @@ Traceability:
   - station_statistics: Per-station/cell dwell-time stats.
   - routing_paths: Path frequency analysis with parallel flag.
 
+Setup, Rework, and Operator Tracking:
+- SetupTimeTracking: Analyze changeover/setup durations for SMED improvement.
+  - setup_durations: List every setup interval with duration.
+  - setup_by_product: Setup time by product transition (from → to).
+  - setup_statistics: Overall setup time stats (count, avg, median, std, % of available time).
+  - setup_trend: Track setup time improvement over time.
+
+- OperatorPerformanceTracking: Compare production output and quality across operators.
+  - production_by_operator: Parts produced per operator.
+  - operator_efficiency: Operator efficiency vs per-shift target.
+  - quality_by_operator: Quality metrics (FPY) per operator.
+  - operator_comparison: Ranked operator performance comparison.
+
+- ReworkTracking: Track parts requiring rework (re-processing).
+  - rework_by_shift: Rework count per shift.
+  - rework_by_reason: Rework by reason code.
+  - rework_rate: Rework rate as % of total production.
+  - rework_cost: Convert rework counts to monetary cost.
+  - rework_trend: Rework trend over time.
+
 Performance and Target Tracking:
 - PerformanceLossTracking: Track speed losses against target cycle times.
   - performance_by_shift: Performance % per shift.
@@ -162,6 +182,11 @@ from .order_traceability import ValueTraceabilityEvents, OrderTraceabilityEvents
 from .routing_traceability import RoutingTraceabilityEvents
 from .multi_process_traceability import MultiProcessTraceabilityEvents
 
+# Setup, Rework, and Operator Tracking
+from .setup_time_tracking import SetupTimeTracking
+from .operator_performance import OperatorPerformanceTracking
+from .rework_tracking import ReworkTracking
+
 # Performance, Target, and Reporting
 from .performance_loss import PerformanceLossTracking
 from .scrap_tracking import ScrapTracking
@@ -194,6 +219,10 @@ __all__ = [
     "OrderTraceabilityEvents",  # backwards-compatible alias
     "RoutingTraceabilityEvents",
     "MultiProcessTraceabilityEvents",
+    # Setup, Rework, and Operator Tracking
+    "SetupTimeTracking",
+    "OperatorPerformanceTracking",
+    "ReworkTracking",
     # Performance, Target, and Reporting
     "PerformanceLossTracking",
     "ScrapTracking",
