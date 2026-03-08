@@ -36,4 +36,28 @@ Classes:
   - sampling_regularity: Inter-sample interval statistics per window.
   - detect_out_of_range: Flag values outside physical/expected bounds.
   - data_completeness: Percentage of expected samples received per window.
+
+- CapabilityTrendingEvents: Track process capability over rolling time windows.
+  - capability_over_time: Cp/Cpk/Pp/Ppk per time window.
+  - detect_capability_drop: Alert when Cpk falls below threshold.
+  - capability_forecast: Extrapolate Cpk trend to predict threshold breach.
+  - yield_estimate: Estimated yield, DPMO, and sigma level per window.
+
+- SensorDriftEvents: Detect calibration drift in inline sensors.
+  - detect_zero_drift: Track mean offset from baseline per window.
+  - detect_span_drift: Track measurement sensitivity changes over time.
+  - drift_trend: Rolling linear trend analysis on signal statistics.
+  - calibration_health: Composite health score per window.
+
+- MultiSensorValidationEvents: Cross-validate redundant inline sensors.
+  - detect_disagreement: Flag windows where sensor spread exceeds threshold.
+  - pairwise_bias: Mean difference between each sensor pair per window.
+  - consensus_score: Per-window measurement consensus across sensors.
+  - identify_outlier_sensor: Find the sensor furthest from the group.
+
+- GaugeRepeatabilityEvents: Measurement System Analysis (Gauge R&R).
+  - repeatability: Equipment Variation (EV) per part.
+  - reproducibility: Appraiser Variation (AV) across operators.
+  - gauge_rr_summary: Full Gauge R&R table with %GRR and ndc.
+  - measurement_bias: Compare measurements to known reference values.
 """

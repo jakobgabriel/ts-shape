@@ -43,8 +43,8 @@ pip install s3fs
 # Azure Blob storage
 pip install azure-storage-blob
 
-# TimescaleDB
-pip install sqlalchemy psycopg2-binary
+# TimescaleDB / PostgreSQL
+pip install ts-shape[postgres]
 ```
 
 ## Development Installation
