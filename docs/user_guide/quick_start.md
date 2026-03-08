@@ -82,6 +82,6 @@ df = DataIntegratorHybrid.combine_data(
 
 ## Next Steps
 
-- [Usage Examples](../usage/index.md) - More detailed examples
+- [Guides](../guides/index.md) - Topic-focused guides from data acquisition to shift reports
 - [Concept Guide](../concept.md) - Architecture overview
 - [API Reference](../reference/) - Complete API docs

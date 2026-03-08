@@ -24,7 +24,7 @@ hide:
 **Load, transform, and analyze timeseries data with a clean, composable API.**
 
 [Get Started](user_guide/installation.md){ .md-button .md-button--primary }
-[Usage Examples](usage/index.md){ .md-button }
+[Guides](guides/index.md){ .md-button }
 
 </div>
 
@@ -145,11 +145,13 @@ flowchart LR
 
 <div markdown>
 
-### :material-alert-circle: Events
+### :material-factory: Events
 
-- **Quality** - Outliers, SPC
-- **Engineering** - Setpoints, startup
-- **Production** - Cycles, downtime
+- **Quality & SPC** - Outliers, control charts, Cp/Cpk
+- **Production** - Machine states, downtime, changeovers
+- **OEE** - Availability, performance, quality
+- **Traceability** - Part tracking across stations
+- **Engineering** - Setpoints, startup detection
 
 </div>
 
@@ -185,13 +187,13 @@ ts-shape uses a simple schema:
 
     [:octicons-arrow-right-24: Learn more](concept.md)
 
--   :material-code-tags:{ .lg .middle } **Usage**
+-   :material-code-tags:{ .lg .middle } **Guides**
 
     ---
 
-    Practical examples and patterns.
+    Topic-focused guides from data acquisition to shift reports.
 
-    [:octicons-arrow-right-24: See examples](usage/index.md)
+    [:octicons-arrow-right-24: See guides](guides/index.md)
 
 -   :material-api:{ .lg .middle } **API Reference**
 
