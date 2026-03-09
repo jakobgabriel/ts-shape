@@ -168,6 +168,22 @@ else:
 
 ---
 
+## Module Deep Dives
+
+| Module | Description |
+|--------|-------------|
+| [Outlier Detection](../modules/quality/outlier-detection.md) | Z-score, IQR, MAD, Isolation Forest |
+| [Statistical Process Control](../modules/quality/spc.md) | 8 Western Electric rules, CUSUM |
+| [Tolerance Deviation](../modules/quality/tolerance-deviation.md) | Spec limits, severity, Cp/Cpk |
+| [Anomaly Classification](../modules/quality/anomaly-classification.md) | Spike, drift, oscillation, flatline |
+| [Signal Quality](../modules/quality/signal-quality.md) | Gaps, sampling regularity, completeness |
+| [Sensor Drift](../modules/quality/sensor-drift.md) | Zero drift, span drift, calibration health |
+| [Multi-Sensor Validation](../modules/quality/multi-sensor-validation.md) | Cross-validate redundant sensors |
+| [Gauge R&R](../modules/quality/gauge-rr.md) | Repeatability, reproducibility, MSA |
+| [Capability Trending](../modules/quality/capability-trending.md) | Cpk trends, yield forecast |
+
+---
+
 ## Next Steps
 
 - [Production Monitoring](production.md) — Machine states and production tracking

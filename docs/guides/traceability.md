@@ -153,6 +153,12 @@ flowchart TD
 
 ---
 
+## Module Deep Dives
+
+**Traceability:** [Value Traceability](../modules/production/order-traceability.md) | [Routing Traceability](../modules/production/routing-traceability.md) | [Multi-Process Traceability](../modules/production/multi-process-traceability.md)
+
+---
+
 ## Next Steps
 
 - [Production Monitoring](production.md) — Machine states and line throughput

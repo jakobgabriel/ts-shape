@@ -224,6 +224,12 @@ combined = DataIntegratorHybrid.combine_data(
 
 ---
 
+## Module Deep Dives
+
+**Supply Chain:** [Inventory Monitoring](../modules/supplychain/inventory-monitoring.md) | [Lead Time Analysis](../modules/supplychain/lead-time-analysis.md) | [Demand Patterns](../modules/supplychain/demand-patterns.md)
+
+---
+
 ## Next Steps
 
 - [Signal Conditioning](transforms.md) — Clean and filter the loaded data

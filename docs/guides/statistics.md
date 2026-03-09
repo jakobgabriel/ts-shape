@@ -102,6 +102,12 @@ print(f"Total: {stats['total_cycles']}, Complete: {stats['complete_cycles']}")
 
 ---
 
+## Module Deep Dives
+
+**Correlation:** [Signal Correlation](../modules/correlation/signal-correlation.md) | [Anomaly Correlation](../modules/correlation/anomaly-correlation.md)
+
+---
+
 ## Next Steps
 
 - [Quality Control & SPC](quality.md) — Outlier detection and process control

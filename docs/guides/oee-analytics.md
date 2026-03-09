@@ -236,6 +236,12 @@ excessive = duty.excessive_cycling(max_transitions=20, window='1h')
 
 ---
 
+## Module Deep Dives
+
+**OEE & Advanced:** [OEE Calculator](../modules/production/oee-calculator.md) | [Alarm Management](../modules/production/alarm-management.md) | [Batch Tracking](../modules/production/batch-tracking.md) | [Bottleneck Detection](../modules/production/bottleneck-detection.md) | [Micro-Stop Detection](../modules/production/micro-stops.md) | [Duty Cycle](../modules/production/duty-cycle.md)
+
+---
+
 ## Next Steps
 
 - [Production Monitoring](production.md) — Machine states and shop floor tracking

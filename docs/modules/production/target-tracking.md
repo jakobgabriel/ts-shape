@@ -1,0 +1,74 @@
+# TargetTracking
+
+> Compare any production metric to targets — every plant has daily/shift targets.
+
+**Module:** `ts_shape.events.production.target_tracking`
+**Guide:** [Reporting Guide](../../guides/reporting.md)
+
+---
+
+## When to Use
+
+Use as a generic target vs actual comparison module. Works with any production metric (output, quality, OEE) against per-shift or daily targets. This is the go-to module when management sets numeric goals and you need to report achievement rates over time.
+
+---
+
+## Quick Example
+
+```python
+from ts_shape.events.production.target_tracking import TargetTracking
+
+tracker = TargetTracking(
+    df=production_df,
+    start_time="2024-01-01",
+    end_time="2024-01-31"
+)
+
+# Compare actual production to shift targets
+shift_targets = {"morning": 500, "afternoon": 480, "night": 400}
+comparison = tracker.compare_to_target(
+    metric_uuid="counter-001",
+    targets=shift_targets
+)
+
+# Achievement summary over time
+summary = tracker.target_achievement_summary(
+    metric_uuid="counter-001",
+    daily_target=1400
+)
+
+# How often do we hit the daily target?
+hit_rate = tracker.target_hit_rate(
+    metric_uuid="counter-001",
+    daily_target=1400
+)
+```
+
+---
+
+## Key Methods
+
+| Method | Purpose | Returns |
+|--------|---------|---------|
+| `compare_to_target(metric_uuid, targets)` | Actual vs target per shift with delta and percentage | `DataFrame` |
+| `target_achievement_summary(metric_uuid, daily_target)` | Daily achievement percentage over the analysis period | `DataFrame` |
+| `target_hit_rate(metric_uuid, daily_target)` | Percentage of days/shifts where target was met or exceeded | `float` |
+
+---
+
+## Tips & Notes
+
+!!! tip "Adjust targets for product mix"
+    A flat daily target works when producing a single product. If your line runs multiple variants with different cycle times, pass product-weighted targets to get meaningful achievement rates.
+
+!!! info "Related modules"
+    - [Shift Reporting](shift-reporting.md) — shift-level production with target comparison
+    - [Period Summary](period-summary.md) — roll up target achievement into weekly/monthly views
+    - [Operator Performance](operator-performance.md) — operator efficiency vs targets
+
+---
+
+## See Also
+
+- [Reporting Guide](../../guides/reporting.md)
+- [API Reference](../../reference/ts_shape/events/production/target_tracking/)
