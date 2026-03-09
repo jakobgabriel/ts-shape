@@ -172,6 +172,14 @@ df = LambdaProcessor.apply_function(df, "value_double", lambda x: np.clip(x, 0, 
 
 ---
 
+## Module Deep Dives
+
+**Energy:** [Consumption Analysis](../modules/energy/consumption-analysis.md) | [Efficiency Tracking](../modules/energy/efficiency-tracking.md)
+
+**Maintenance:** [Degradation Detection](../modules/maintenance/degradation-detection.md) | [Failure Prediction](../modules/maintenance/failure-prediction.md) | [Vibration Analysis](../modules/maintenance/vibration-analysis.md)
+
+---
+
 ## Next Steps
 
 - [Signal Analytics](statistics.md) — Compute statistics on conditioned signals

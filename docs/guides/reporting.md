@@ -346,6 +346,14 @@ monthly = PeriodSummary.from_daily_data(
 
 ---
 
+## Module Deep Dives
+
+**Setup & Operators:** [Setup Time (SMED)](../modules/production/setup-time.md) | [Operator Performance](../modules/production/operator-performance.md) | [Rework Tracking](../modules/production/rework-tracking.md)
+
+**Performance & Reporting:** [Performance Loss](../modules/production/performance-loss.md) | [Scrap Tracking](../modules/production/scrap-tracking.md) | [Target Tracking](../modules/production/target-tracking.md) | [Shift Handover](../modules/production/shift-handover.md) | [Period Summary](../modules/production/period-summary.md)
+
+---
+
 ## Next Steps
 
 - [Production Monitoring](production.md) — The tracking classes that feed into these reports

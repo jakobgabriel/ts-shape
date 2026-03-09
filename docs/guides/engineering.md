@@ -205,6 +205,26 @@ phases = detector.track_startup_phases(
 
 ---
 
+## Module Deep Dives
+
+| Module | Description |
+|--------|-------------|
+| [Setpoint Events](../modules/engineering/setpoint-events.md) | Step/ramp detection, settling time, overshoot |
+| [Startup Detection](../modules/engineering/startup-detection.md) | Threshold, slope, multi-signal, adaptive |
+| [Threshold Monitoring](../modules/engineering/threshold-monitoring.md) | Multi-level thresholds with hysteresis |
+| [Rate of Change](../modules/engineering/rate-of-change.md) | Rapid change and step jump detection |
+| [Steady State Detection](../modules/engineering/steady-state.md) | Steady vs transient period segmentation |
+| [Signal Comparison](../modules/engineering/signal-comparison.md) | Setpoint vs actual divergence |
+| [Operating Range](../modules/engineering/operating-range.md) | Operating envelope and regime changes |
+| [Warm-Up Analysis](../modules/engineering/warmup-analysis.md) | Thermal warm-up/cool-down curves |
+| [Process Windows](../modules/engineering/process-windows.md) | Windowed statistics for shift monitoring |
+| [Control Loop Health](../modules/engineering/control-loop-health.md) | PID loop health and oscillation |
+| [Disturbance Recovery](../modules/engineering/disturbance-recovery.md) | Upset detection and recovery time |
+| [Material Balance](../modules/engineering/material-balance.md) | Input/output balance checks |
+| [Process Stability Index](../modules/engineering/process-stability.md) | Single 0-100 stability score |
+
+---
+
 ## Next Steps
 
 - [Production Monitoring](production.md) — Machine states and changeover detection

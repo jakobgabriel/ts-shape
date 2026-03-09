@@ -330,6 +330,14 @@ results = reporter.best_and_worst_shifts(counter_uuid='counter_signal')
 
 ---
 
+## Module Deep Dives
+
+**Event Detection:** [Machine State](../modules/production/machine-state.md) | [Line Throughput](../modules/production/line-throughput.md) | [Changeover](../modules/production/changeover.md) | [Flow Constraints](../modules/production/flow-constraints.md)
+
+**Daily Tracking:** [Part Tracking](../modules/production/part-tracking.md) | [Cycle Time](../modules/production/cycle-time.md) | [Downtime](../modules/production/downtime.md) | [Quality Tracking](../modules/production/quality-tracking.md) | [Shift Reporting](../modules/production/shift-reporting.md)
+
+---
+
 ## Next Steps
 
 - [OEE & Plant Analytics](oee-analytics.md) — Combine availability, performance, quality into OEE

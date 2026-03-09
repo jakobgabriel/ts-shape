@@ -22,10 +22,10 @@ flowchart LR
     end
 
     subgraph EVT["<b>Event Detection</b>"]
-        E1["Quality & SPC<br/><i>8 classes</i>"]
-        E2["Production<br/><i>28 classes</i>"]
-        E3["Engineering<br/><i>2 classes</i>"]
-        E4["Maintenance /<br/>Energy / Supply"]
+        E1["Quality & SPC<br/><i>9 classes</i>"]
+        E2["Production<br/><i>26 classes</i>"]
+        E3["Engineering<br/><i>13 classes</i>"]
+        E4["Maintenance /<br/>Energy / Supply<br/><i>10 classes</i>"]
     end
 
     subgraph RPT["<b>Reports</b>"]
@@ -189,7 +189,18 @@ flowchart LR
 | Module | Purpose |
 |--------|---------|
 | `SetpointChangeEvents` | Step/ramp detection, settling, overshoot |
-| `StartupEvents` | Startup detection |
+| `StartupDetectionEvents` | Threshold, slope, multi-signal startup detection |
+| `ThresholdMonitoringEvents` | Multi-level thresholds with hysteresis |
+| `RateOfChangeEvents` | Rapid change and step jump detection |
+| `SteadyStateDetectionEvents` | Steady vs transient period segmentation |
+| `SignalComparisonEvents` | Setpoint vs actual divergence |
+| `OperatingRangeEvents` | Operating envelope and regime change |
+| `WarmUpCoolDownEvents` | Warm-up/cool-down curve analysis |
+| `ProcessWindowEvents` | Windowed statistics for shift monitoring |
+| `ControlLoopHealthEvents` | PID loop health, oscillation, saturation |
+| `DisturbanceRecoveryEvents` | Upset detection and recovery time |
+| `MaterialBalanceEvents` | Input/output balance checks |
+| `ProcessStabilityIndex` | Composite 0-100 stability score |
 
 ## Advanced Capabilities
 

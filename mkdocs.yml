@@ -32,6 +32,95 @@ nav:
   - Product Traceability: guides/traceability.md
   - Process Engineering: guides/engineering.md
   - Shift Reports & KPIs: guides/reporting.md
+- Module Reference:
+  - Overview: modules/index.md
+  - Quality:
+    - Outlier Detection: modules/quality/outlier-detection.md
+    - Statistical Process Control: modules/quality/spc.md
+    - Tolerance Deviation: modules/quality/tolerance-deviation.md
+    - Anomaly Classification: modules/quality/anomaly-classification.md
+    - Signal Quality: modules/quality/signal-quality.md
+    - Sensor Drift: modules/quality/sensor-drift.md
+    - Multi-Sensor Validation: modules/quality/multi-sensor-validation.md
+    - Gauge R&R: modules/quality/gauge-rr.md
+    - Capability Trending: modules/quality/capability-trending.md
+  - Production:
+    - Event Detection:
+      - Machine State: modules/production/machine-state.md
+      - Line Throughput: modules/production/line-throughput.md
+      - Changeover: modules/production/changeover.md
+      - Flow Constraints: modules/production/flow-constraints.md
+    - Daily Tracking:
+      - Part Tracking: modules/production/part-tracking.md
+      - Cycle Time: modules/production/cycle-time.md
+      - Downtime: modules/production/downtime.md
+      - Quality Tracking: modules/production/quality-tracking.md
+      - Shift Reporting: modules/production/shift-reporting.md
+    - OEE & Advanced:
+      - OEE Calculator: modules/production/oee-calculator.md
+      - Alarm Management: modules/production/alarm-management.md
+      - Batch Tracking: modules/production/batch-tracking.md
+      - Bottleneck Detection: modules/production/bottleneck-detection.md
+      - Micro-Stop Detection: modules/production/micro-stops.md
+      - Duty Cycle: modules/production/duty-cycle.md
+    - Traceability:
+      - Value Traceability: modules/production/order-traceability.md
+      - Routing Traceability: modules/production/routing-traceability.md
+      - Multi-Process Traceability: modules/production/multi-process-traceability.md
+    - Setup & Operators:
+      - Setup Time (SMED): modules/production/setup-time.md
+      - Operator Performance: modules/production/operator-performance.md
+      - Rework Tracking: modules/production/rework-tracking.md
+    - Performance & Reporting:
+      - Performance Loss: modules/production/performance-loss.md
+      - Scrap Tracking: modules/production/scrap-tracking.md
+      - Target Tracking: modules/production/target-tracking.md
+      - Shift Handover: modules/production/shift-handover.md
+      - Period Summary: modules/production/period-summary.md
+  - Engineering:
+    - Setpoint Events: modules/engineering/setpoint-events.md
+    - Startup Detection: modules/engineering/startup-detection.md
+    - Threshold Monitoring: modules/engineering/threshold-monitoring.md
+    - Rate of Change: modules/engineering/rate-of-change.md
+    - Steady State Detection: modules/engineering/steady-state.md
+    - Signal Comparison: modules/engineering/signal-comparison.md
+    - Operating Range: modules/engineering/operating-range.md
+    - Warm-Up Analysis: modules/engineering/warmup-analysis.md
+    - Process Windows: modules/engineering/process-windows.md
+    - Control Loop Health: modules/engineering/control-loop-health.md
+    - Disturbance Recovery: modules/engineering/disturbance-recovery.md
+    - Material Balance: modules/engineering/material-balance.md
+    - Process Stability Index: modules/engineering/process-stability.md
+  - Maintenance:
+    - Degradation Detection: modules/maintenance/degradation-detection.md
+    - Failure Prediction: modules/maintenance/failure-prediction.md
+    - Vibration Analysis: modules/maintenance/vibration-analysis.md
+  - Energy:
+    - Consumption Analysis: modules/energy/consumption-analysis.md
+    - Efficiency Tracking: modules/energy/efficiency-tracking.md
+  - Correlation:
+    - Signal Correlation: modules/correlation/signal-correlation.md
+    - Anomaly Correlation: modules/correlation/anomaly-correlation.md
+  - Supply Chain:
+    - Inventory Monitoring: modules/supplychain/inventory-monitoring.md
+    - Demand Patterns: modules/supplychain/demand-patterns.md
+    - Lead Time Analysis: modules/supplychain/lead-time-analysis.md
+- Examples:
+  - Overview: examples/index.md
+  - Quality Events: examples/quality-events.md
+  - Production Events: examples/production-events.md
+  - Production Tracking: examples/production-tracking.md
+  - Engineering Events: examples/engineering-events.md
+  - Maintenance Events: examples/maintenance-events.md
+  - Energy Events: examples/energy-events.md
+  - Correlation Events: examples/correlation-events.md
+  - Supply Chain Events: examples/supplychain-events.md
+  - Loader Usage: examples/loader-usage.md
+  - Transform Operations: examples/transform-operations.md
+  - Statistics & Features: examples/statistics-features.md
+  - Cycle Extractor: examples/cycle-extractor.md
+  - Context Enricher: examples/context-enricher.md
+  - Statistics (Basic): examples/statistics-basic.md
 - API Reference: reference/
 - Development:
   - Contributing: contributing.md
