@@ -200,3 +200,17 @@ flowchart TB
 
 !!! info "Merge Keys"
     Classes connect through **shared DataFrame columns**: `date`, `shift`, `part_number`, `uuid`. When one class produces a column, the next class can join on it. See each guide for specific merge key documentation.
+
+---
+
+## End-to-End Pipelines
+
+Looking for complete workflows from Azure to results? See the **[Pipelines](../pipelines/index.md)** section — step-by-step use cases where you define just a UUID list and get production KPIs out the other end.
+
+| Pipeline | What you get |
+|----------|-------------|
+| [OEE Dashboard](../pipelines/oee-dashboard.md) | Daily OEE breakdown by shift |
+| [Cycle Time Analysis](../pipelines/cycle-time-analysis.md) | Cycle statistics, slow cycle alerts, trends |
+| [Downtime Pareto](../pipelines/downtime-pareto.md) | Top downtime reasons, availability trends |
+| [Quality & SPC](../pipelines/quality-spc.md) | Control charts, Cp/Cpk, outlier detection |
+| [Process Engineering](../pipelines/process-engineering.md) | Setpoint adherence, stability scores |

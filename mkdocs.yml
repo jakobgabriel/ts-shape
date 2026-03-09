@@ -32,6 +32,13 @@ nav:
   - Product Traceability: guides/traceability.md
   - Process Engineering: guides/engineering.md
   - Shift Reports & KPIs: guides/reporting.md
+- Pipelines:
+  - Overview: pipelines/index.md
+  - OEE Dashboard: pipelines/oee-dashboard.md
+  - Cycle Time Analysis: pipelines/cycle-time-analysis.md
+  - Downtime Pareto: pipelines/downtime-pareto.md
+  - Quality & SPC: pipelines/quality-spc.md
+  - Process Engineering: pipelines/process-engineering.md
 - Module Reference:
   - Overview: modules/index.md
   - Quality:
