@@ -60,10 +60,18 @@ class CycleExtractor(Base):
         return self._generate_cycle_dataframe(cycle_starts, cycle_ends)
 
     def process_separate_start_end_cycle(self) -> pd.DataFrame:
-        """Processes cycles where different variables indicate cycle start and end."""
-        # Assuming dataframe is pre-filtered for both start_uuid and end_uuid
-        cycle_starts = self.df[self.df['value_bool'] == True]
-        cycle_ends = self.df[self.df['value_bool'] == True]
+        """Processes cycles where different variables indicate cycle start and end.
+
+        When the DataFrame contains a 'uuid' column and start_uuid != end_uuid,
+        filters starts by start_uuid and ends by end_uuid. Otherwise falls back
+        to treating all True values as both start and end candidates.
+        """
+        if 'uuid' in self.df.columns and self.start_uuid != self.end_uuid:
+            cycle_starts = self.df[(self.df['uuid'] == self.start_uuid) & (self.df['value_bool'] == True)]
+            cycle_ends = self.df[(self.df['uuid'] == self.end_uuid) & (self.df['value_bool'] == True)]
+        else:
+            cycle_starts = self.df[self.df['value_bool'] == True]
+            cycle_ends = self.df[self.df['value_bool'] == True]
 
         return self._generate_cycle_dataframe(cycle_starts, cycle_ends)
 

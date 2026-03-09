@@ -30,6 +30,11 @@ class MachineStateEvents(Base):
         self.event_uuid = event_uuid
         self.value_column = value_column
         self.time_column = time_column
+        if "uuid" in self.dataframe.columns and run_state_uuid not in self.dataframe["uuid"].values:
+            raise ValueError(
+                f"UUID '{run_state_uuid}' not found in dataframe. "
+                f"Available UUIDs: {list(self.dataframe['uuid'].unique())}"
+            )
         self.series = (
             self.dataframe[self.dataframe["uuid"] == self.run_state_uuid]
             .copy()

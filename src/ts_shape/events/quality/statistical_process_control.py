@@ -154,7 +154,7 @@ class StatisticalProcessControlRuleBased(Base):
         Returns:
             pd.DataFrame: Filtered DataFrame with rule violations.
         """
-        df['alternating'] = df[self.value_column].diff().apply(np.sign)
+        df['alternating'] = np.sign(df[self.value_column].diff())
         df['rule_4'] = df['alternating'].rolling(window=14).apply(lambda x: (x != x.shift()).sum() == 13, raw=True)
         return df[df['rule_4']]
 
@@ -165,11 +165,10 @@ class StatisticalProcessControlRuleBased(Base):
         Returns:
             pd.DataFrame: Filtered DataFrame with rule violations.
         """
-        df['rule_5'] = df[self.value_column].apply(
-            lambda x: 1 if ((x > limits['2sigma_upper'].values[0] and x < limits['3sigma_upper'].values[0]) or 
-                            (x < limits['2sigma_lower'].values[0] and x > limits['3sigma_lower'].values[0])) else 0
-        )
-        df['rule_5'] = df['rule_5'].rolling(window=3).sum() >= 2
+        values = df[self.value_column]
+        beyond_2sigma = ((values > limits['2sigma_upper'].values[0]) & (values < limits['3sigma_upper'].values[0])) | \
+                       ((values < limits['2sigma_lower'].values[0]) & (values > limits['3sigma_lower'].values[0]))
+        df['rule_5'] = beyond_2sigma.astype(int).rolling(window=3).sum() >= 2
         return df[df['rule_5']]
 
     def rule_6(self, df: pd.DataFrame, limits: pd.DataFrame) -> pd.DataFrame:
@@ -179,11 +178,10 @@ class StatisticalProcessControlRuleBased(Base):
         Returns:
             pd.DataFrame: Filtered DataFrame with rule violations.
         """
-        df['rule_6'] = df[self.value_column].apply(
-            lambda x: 1 if ((x > limits['1sigma_upper'].values[0] and x < limits['2sigma_upper'].values[0]) or 
-                            (x < limits['1sigma_lower'].values[0] and x > limits['2sigma_lower'].values[0])) else 0
-        )
-        df['rule_6'] = df['rule_6'].rolling(window=5).sum() >= 4
+        values = df[self.value_column]
+        beyond_1sigma = ((values > limits['1sigma_upper'].values[0]) & (values < limits['2sigma_upper'].values[0])) | \
+                       ((values < limits['1sigma_lower'].values[0]) & (values > limits['2sigma_lower'].values[0]))
+        df['rule_6'] = beyond_1sigma.astype(int).rolling(window=5).sum() >= 4
         return df[df['rule_6']]
 
     def rule_7(self, df: pd.DataFrame, limits: pd.DataFrame) -> pd.DataFrame:
@@ -193,10 +191,9 @@ class StatisticalProcessControlRuleBased(Base):
         Returns:
             pd.DataFrame: Filtered DataFrame with rule violations.
         """
-        df['rule_7'] = df[self.value_column].apply(
-            lambda x: 1 if (x < limits['1sigma_upper'].values[0] and x > limits['1sigma_lower'].values[0]) else 0
-        )
-        df['rule_7'] = df['rule_7'].rolling(window=15).sum() == 15
+        values = df[self.value_column]
+        within_1sigma = (values < limits['1sigma_upper'].values[0]) & (values > limits['1sigma_lower'].values[0])
+        df['rule_7'] = within_1sigma.astype(int).rolling(window=15).sum() == 15
         return df[df['rule_7']]
 
     def rule_8(self, df: pd.DataFrame, limits: pd.DataFrame) -> pd.DataFrame:
@@ -206,10 +203,9 @@ class StatisticalProcessControlRuleBased(Base):
         Returns:
             pd.DataFrame: Filtered DataFrame with rule violations.
         """
-        df['rule_8'] = df[self.value_column].apply(
-            lambda x: 1 if (x < limits['1sigma_upper'].values[0] and x > limits['1sigma_lower'].values[0]) else 0
-        )
-        df['rule_8'] = df['rule_8'].rolling(window=8).sum() == 8
+        values = df[self.value_column]
+        within_1sigma = (values < limits['1sigma_upper'].values[0]) & (values > limits['1sigma_lower'].values[0])
+        df['rule_8'] = within_1sigma.astype(int).rolling(window=8).sum() == 8
         return df[df['rule_8']]
 
     def _calculate_rule_2_7_8_optimized(

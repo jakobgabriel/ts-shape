@@ -48,6 +48,8 @@ class ParquetLoader:
         dataframes = [pd.read_parquet(file) for file in parquet_files]
 
         # Concatenate all DataFrames into a single DataFrame
+        if not dataframes:
+            return pd.DataFrame()
         return pd.concat(dataframes, ignore_index=True)
 
     @classmethod
@@ -87,6 +89,8 @@ class ParquetLoader:
 
         # Load all valid files into pandas DataFrames
         dataframes = [pd.read_parquet(file) for file in valid_files]
+        if not dataframes:
+            return pd.DataFrame()
         return pd.concat(dataframes, ignore_index=True)
 
     @classmethod
@@ -120,6 +124,8 @@ class ParquetLoader:
 
         # Load all valid files into pandas DataFrames
         dataframes = [pd.read_parquet(file) for file in valid_files]
+        if not dataframes:
+            return pd.DataFrame()
         return pd.concat(dataframes, ignore_index=True)
 
     @classmethod
@@ -166,4 +172,6 @@ class ParquetLoader:
 
         # Load all valid files into pandas DataFrames
         dataframes = [pd.read_parquet(file) for file in valid_files]
+        if not dataframes:
+            return pd.DataFrame()
         return pd.concat(dataframes, ignore_index=True)

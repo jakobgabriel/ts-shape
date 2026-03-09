@@ -1,8 +1,11 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from io import BytesIO
 from typing import Iterable, List, Optional, Set, Dict, Any, Callable, Iterator, Tuple
+import logging
 
 import pandas as pd  # type: ignore
+
+logger = logging.getLogger(__name__)
  
 
 
@@ -174,8 +177,8 @@ class AzureBlobParquetLoader:
             downloader = self.container_client.download_blob(blob_name)
             data = downloader.readall()
             return pd.read_parquet(BytesIO(data))
-        except Exception:
-            # Swallow individual blob errors to keep batch resilient
+        except Exception as exc:
+            logger.debug("Failed to download blob '%s': %s", blob_name, exc)
             return None
 
     # ---- Helpers for time-structured containers parquet/YYYY/MM/DD/HH ----

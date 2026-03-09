@@ -121,6 +121,9 @@ class CycleDataProcessor(Base):
                 merged_df.loc[mask, self.cycle_uuid_col] = row[self.cycle_uuid_col]
 
         # Drop rows not assigned to any cycle
+        unassigned_count = merged_df[self.cycle_uuid_col].isna().sum()
+        if unassigned_count > 0:
+            logging.info(f"Dropping {unassigned_count} rows not assigned to any cycle.")
         result = merged_df.dropna(subset=[self.cycle_uuid_col])
         logging.info(f"Merged DataFrame contains {len(result)} records across {result[self.cycle_uuid_col].nunique()} cycles.")
         return result

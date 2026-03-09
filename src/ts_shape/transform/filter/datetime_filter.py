@@ -5,7 +5,7 @@ class DateTimeFilter(Base):
     """
     Provides class methods for filtering time columns in a pandas DataFrame.
     Allows specification of which column to operate on.
-    
+
     Inherits from:
         Base (class): Base class with common initializations for DataFrame handling.
     """
@@ -26,6 +26,9 @@ class DateTimeFilter(Base):
         >>> filtered_data = DateTimeFilter.filter_after_date(df, "systime", "2023-01-01")
         >>> print(filtered_data)
         """
+        if date is None:
+            raise ValueError("date parameter is required")
+        Base._validate_column(dataframe, column_name)
         return dataframe[dataframe[column_name] > pd.to_datetime(date)]
 
     @classmethod
@@ -44,6 +47,9 @@ class DateTimeFilter(Base):
         >>> filtered_data = DateTimeFilter.filter_before_date(df, "systime", "2023-01-01")
         >>> print(filtered_data)
         """
+        if date is None:
+            raise ValueError("date parameter is required")
+        Base._validate_column(dataframe, column_name)
         return dataframe[dataframe[column_name] < pd.to_datetime(date)]
 
     @classmethod
@@ -63,6 +69,9 @@ class DateTimeFilter(Base):
         >>> filtered_data = DateTimeFilter.filter_between_dates(df, "systime", "2023-01-01", "2023-02-01")
         >>> print(filtered_data)
         """
+        if start_date is None or end_date is None:
+            raise ValueError("start_date and end_date parameters are required")
+        Base._validate_column(dataframe, column_name)
         mask = (dataframe[column_name] > pd.to_datetime(start_date)) & (dataframe[column_name] < pd.to_datetime(end_date))
         return dataframe[mask]
 
@@ -82,6 +91,9 @@ class DateTimeFilter(Base):
         >>> filtered_data = DateTimeFilter.filter_after_datetime(df, "systime", "2023-01-01 12:00:00")
         >>> print(filtered_data)
         """
+        if datetime is None:
+            raise ValueError("datetime parameter is required")
+        Base._validate_column(dataframe, column_name)
         return dataframe[dataframe[column_name] > pd.to_datetime(datetime)]
 
     @classmethod
@@ -100,6 +112,9 @@ class DateTimeFilter(Base):
         >>> filtered_data = DateTimeFilter.filter_before_datetime(df, "systime", "2023-01-01 12:00:00")
         >>> print(filtered_data)
         """
+        if datetime is None:
+            raise ValueError("datetime parameter is required")
+        Base._validate_column(dataframe, column_name)
         return dataframe[dataframe[column_name] < pd.to_datetime(datetime)]
 
     @classmethod
@@ -119,5 +134,8 @@ class DateTimeFilter(Base):
         >>> filtered_data = DateTimeFilter.filter_between_datetimes(df, "systime", "2023-01-01 12:00:00", "2023-02-01 12:00:00")
         >>> print(filtered_data)
         """
+        if start_datetime is None or end_datetime is None:
+            raise ValueError("start_datetime and end_datetime parameters are required")
+        Base._validate_column(dataframe, column_name)
         mask = (dataframe[column_name] > pd.to_datetime(start_datetime)) & (dataframe[column_name] < pd.to_datetime(end_datetime))
         return dataframe[mask]
