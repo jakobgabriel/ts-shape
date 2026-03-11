@@ -1,8 +1,11 @@
+import logging
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
 from typing import Optional, List, Dict, Any, Tuple
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class SetpointChangeEvents(Base):
@@ -750,6 +753,7 @@ class SetpointChangeEvents(Base):
                     }
                 )
             except Exception:
+                logger.debug("Exponential decay fit failed for window at %s", t0)
                 rows.append(
                     {
                         "start": t0,

@@ -142,18 +142,26 @@ class ContextEnricher:
             DataFrame with a 'mapped_value' column appended.
         """
         result = self.dataframe.copy()
-        result["mapped_value"] = None
 
-        for uid in result[self.uuid_column].unique():
-            uid_mapping = mapping[mapping[mapping_uuid_col] == uid]
-            if uid_mapping.empty:
-                continue
+        # Build a composite key for vectorized lookup
+        mapping_subset = mapping[[mapping_uuid_col, raw_value_col, mapped_value_col]].copy()
+        mapping_subset = mapping_subset.drop_duplicates(subset=[mapping_uuid_col, raw_value_col])
 
-            value_map = dict(
-                zip(uid_mapping[raw_value_col], uid_mapping[mapped_value_col])
-            )
-            mask = result[self.uuid_column] == uid
-            result.loc[mask, "mapped_value"] = result.loc[mask, value_column].map(value_map)
+        # Merge on UUID + raw value to get mapped values in one operation
+        result = result.merge(
+            mapping_subset.rename(columns={
+                mapping_uuid_col: self.uuid_column,
+                raw_value_col: "__raw_val__",
+                mapped_value_col: "mapped_value",
+            }),
+            left_on=[self.uuid_column, value_column],
+            right_on=[self.uuid_column, "__raw_val__"],
+            how="left",
+        )
+
+        # Clean up temporary column
+        if "__raw_val__" in result.columns:
+            result = result.drop(columns=["__raw_val__"])
 
         return result
 

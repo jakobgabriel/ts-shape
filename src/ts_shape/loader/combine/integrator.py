@@ -1,5 +1,8 @@
+import logging
 import pandas as pd  # type: ignore
 from typing import List, Union, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class DataIntegratorHybrid:
@@ -33,14 +36,14 @@ class DataIntegratorHybrid:
         timeseries_data = cls._combine_timeseries(timeseries_sources, join_key)
 
         if timeseries_data.empty:
-            print("No timeseries data found.")
+            logger.warning("No timeseries data found.")
             return pd.DataFrame()
 
         # Retrieve and combine metadata
         metadata = cls._combine_metadata(metadata_sources, join_key)
 
         if metadata.empty:
-            print("No metadata found.")
+            logger.info("No metadata found.")
             return timeseries_data
 
         missing_timeseries_key = join_key not in timeseries_data.columns
@@ -52,7 +55,7 @@ class DataIntegratorHybrid:
                 missing_parts.append("timeseries data")
             if missing_metadata_key:
                 missing_parts.append("metadata")
-            print(
+            logger.warning(
                 f"Cannot merge because join key '{join_key}' is missing in "
                 f"{', '.join(missing_parts)}."
             )
@@ -87,7 +90,7 @@ class DataIntegratorHybrid:
                 df = source.fetch_data_as_dataframe()
                 frames.append(cls._ensure_join_key_column(df, join_key))
             else:
-                print(f"Unsupported timeseries source: {source}")
+                logger.warning(f"Unsupported timeseries source: {type(source).__name__}")
 
         return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
@@ -111,7 +114,7 @@ class DataIntegratorHybrid:
                 df = source.fetch_metadata()
                 frames.append(cls._ensure_join_key_column(df, join_key))
             else:
-                print(f"Unsupported metadata source: {source}")
+                logger.warning(f"Unsupported metadata source: {type(source).__name__}")
 
         return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
@@ -132,7 +135,7 @@ class DataIntegratorHybrid:
             if df.index.name == join_key:
                 return df.reset_index()
 
-        print(
+        logger.warning(
             f"Join key '{join_key}' not found in columns or index. "
             f"Columns: {list(df.columns)}; index names: {index_names}"
         )

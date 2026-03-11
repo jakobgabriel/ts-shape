@@ -1,8 +1,11 @@
+import logging
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
 from typing import List, Dict, Any
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class FailurePredictionEvents(Base):
@@ -75,6 +78,7 @@ class FailurePredictionEvents(Base):
                     coeffs = np.polyfit(x, y, 1)
                     local_slope = coeffs[0]
                 except (np.linalg.LinAlgError, ValueError):
+                    logger.debug("Polyfit failed for failure prediction; using degradation_rate.")
                     local_slope = degradation_rate
 
                 # Confidence based on fit quality

@@ -19,6 +19,7 @@ class IntegerCalc(Base):
         Returns:
             pd.DataFrame: The DataFrame with the scaled column.
         """
+        dataframe = dataframe.copy()
         dataframe[column_name] = dataframe[column_name] * factor
         return dataframe
 
@@ -35,6 +36,7 @@ class IntegerCalc(Base):
         Returns:
             pd.DataFrame: The DataFrame with the offset column.
         """
+        dataframe = dataframe.copy()
         dataframe[column_name] = dataframe[column_name] + offset_value
         return dataframe
 
@@ -50,7 +52,13 @@ class IntegerCalc(Base):
 
         Returns:
             pd.DataFrame: The DataFrame with the divided column.
+
+        Raises:
+            ValueError: If divisor is zero.
         """
+        if divisor == 0:
+            raise ValueError("divisor cannot be zero")
+        dataframe = dataframe.copy()
         dataframe[column_name] = dataframe[column_name] / divisor
         return dataframe
 
@@ -67,6 +75,7 @@ class IntegerCalc(Base):
         Returns:
             pd.DataFrame: The DataFrame with the subtracted column.
         """
+        dataframe = dataframe.copy()
         dataframe[column_name] = dataframe[column_name] - subtract_value
         return dataframe
 
@@ -84,6 +93,7 @@ class IntegerCalc(Base):
         Returns:
             pd.DataFrame: The DataFrame after applying the calculations.
         """
+        dataframe = dataframe.copy()
         dataframe[column_name] = (dataframe[column_name] * multiply_factor) + add_factor
         return dataframe
 
@@ -99,7 +109,13 @@ class IntegerCalc(Base):
 
         Returns:
             pd.DataFrame: The DataFrame with the modulus operation applied.
+
+        Raises:
+            ValueError: If mod_value is zero.
         """
+        if mod_value == 0:
+            raise ValueError("mod_value cannot be zero")
+        dataframe = dataframe.copy()
         dataframe[column_name] = dataframe[column_name] % mod_value
         return dataframe
 
@@ -116,5 +132,6 @@ class IntegerCalc(Base):
         Returns:
             pd.DataFrame: The DataFrame with the power operation applied.
         """
+        dataframe = dataframe.copy()
         dataframe[column_name] = dataframe[column_name] ** power_value
         return dataframe

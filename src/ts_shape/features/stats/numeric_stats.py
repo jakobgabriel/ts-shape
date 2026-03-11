@@ -71,7 +71,14 @@ class NumericStatistics(Base):
     @classmethod
     def column_mad(cls, dataframe: pd.DataFrame, column_name: str) -> float:
         """Calculate the mean absolute deviation of the column."""
-        return dataframe[column_name].mad()
+        series = dataframe[column_name]
+        return (series - series.mean()).abs().mean()
+
+    @classmethod
+    def column_mode(cls, dataframe: pd.DataFrame, column_name: str):
+        """Calculate the mode of a specified column. Returns None if column is empty."""
+        modes = dataframe[column_name].mode()
+        return modes.iloc[0] if not modes.empty else None
 
     @classmethod
     def coefficient_of_variation(cls, dataframe: pd.DataFrame, column_name: str) -> float:

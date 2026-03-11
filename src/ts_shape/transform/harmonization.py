@@ -1,8 +1,13 @@
+import logging
+import warnings
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
 from typing import Optional, List
 
+from ts_shape.errors import DataQualityWarning
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class DataHarmonizer(Base):
@@ -41,6 +46,14 @@ class DataHarmonizer(Base):
         Returns:
             DataFrame with systime as index and one column per UUID.
         """
+        dupes = self.dataframe.duplicated(subset=[self.time_column, self.uuid_column], keep=False)
+        if dupes.any():
+            warnings.warn(
+                f"Found {dupes.sum()} duplicate (time, uuid) entries; "
+                f"aggregating with '{aggfunc}'.",
+                DataQualityWarning,
+                stacklevel=2,
+            )
         return self.dataframe.pivot_table(
             index=self.time_column,
             columns=self.uuid_column,
@@ -81,12 +94,11 @@ class DataHarmonizer(Base):
         rows = []
 
         for uid, group in self.dataframe.groupby(self.uuid_column):
-            times = group[self.time_column].sort_values()
+            times = group[self.time_column].sort_values().reset_index(drop=True)
             diffs = times.diff()
-            mask = diffs > threshold_td
+            gap_positions = diffs[diffs > threshold_td].index
 
-            for idx in diffs[mask].index:
-                pos = times.index.get_loc(idx)
+            for pos in gap_positions:
                 gap_start = times.iloc[pos - 1]
                 gap_end = times.iloc[pos]
                 rows.append({

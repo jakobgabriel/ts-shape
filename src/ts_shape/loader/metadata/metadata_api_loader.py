@@ -1,7 +1,10 @@
+import logging
 import requests
 import pandas as pd  # type: ignore
 import json
 from typing import List, Dict
+
+logger = logging.getLogger(__name__)
 
 
 class DatapointAPI:
@@ -98,12 +101,12 @@ class DatapointAPI:
         if device_name:
             # Display metadata for a specific device
             if device_name in self.device_metadata:
-                print(f"Metadata for device: {device_name}")
-                print(self.device_metadata[device_name])
+                logger.info("Metadata for device: %s", device_name)
+                logger.info("\n%s", self.device_metadata[device_name])
             else:
-                print(f"No metadata found for device: {device_name}")
+                logger.warning("No metadata found for device: %s", device_name)
         else:
             # Display metadata for all devices
             for device, metadata in self.device_metadata.items():
-                print(f"\nMetadata for device: {device}")
-                print(metadata)
+                logger.info("Metadata for device: %s", device)
+                logger.info("\n%s", metadata)
