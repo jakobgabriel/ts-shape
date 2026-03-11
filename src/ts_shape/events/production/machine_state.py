@@ -1,8 +1,11 @@
+import logging
 import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 from typing import List, Dict, Any, Optional
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class MachineStateEvents(Base):

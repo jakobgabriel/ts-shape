@@ -1,9 +1,12 @@
+import logging
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
 from typing import Optional, List, Dict, Any
 
 from scipy import signal as scipy_signal  # type: ignore
 from scipy import stats as scipy_stats  # type: ignore
+
+logger = logging.getLogger(__name__)
 
 
 class CrossSignalAnalytics:

@@ -8,11 +8,14 @@ Industry-standard metric for manufacturing productivity:
 - Quality: good parts / total parts
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import Optional
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class OEECalculator(Base):

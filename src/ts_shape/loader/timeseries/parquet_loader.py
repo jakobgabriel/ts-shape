@@ -1,5 +1,8 @@
+import logging
 import pandas as pd  # type: ignore
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 class ParquetLoader:
     """

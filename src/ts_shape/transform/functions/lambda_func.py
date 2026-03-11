@@ -1,6 +1,9 @@
+import logging
 import pandas as pd  # type: ignore
 from typing import Callable, Any
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 class LambdaProcessor(Base):
     """

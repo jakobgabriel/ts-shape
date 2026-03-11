@@ -11,12 +11,15 @@ Two modes of operation:
 2. From pre-computed DataFrames: ``from_shift_data(production_df, quality_df, downtime_df)``
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import Optional, Dict, List
 from datetime import date as DateType
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class ShiftHandoverReport(Base):

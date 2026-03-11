@@ -1,5 +1,8 @@
+import logging
 from ts_shape.utils.base import Base
 import pandas as pd  # type: ignore
+
+logger = logging.getLogger(__name__)
 
 class CustomFilter(Base):
     @classmethod

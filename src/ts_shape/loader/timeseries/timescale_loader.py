@@ -1,7 +1,10 @@
+import logging
 from pathlib import Path
 import pandas as pd  # type: ignore
 from sqlalchemy import create_engine
 from typing import List, Dict
+
+logger = logging.getLogger(__name__)
 
 class TimescaleDBDataAccess:
     def __init__(self, start_timestamp: str, end_timestamp: str, uuids: List[str], db_config: Dict[str, str]):

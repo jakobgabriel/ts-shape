@@ -10,11 +10,14 @@ Two modes of operation:
 2. From pre-computed daily DataFrames: ``from_daily_data(daily_df)``
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import Optional, Dict, List
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class PeriodSummary(Base):

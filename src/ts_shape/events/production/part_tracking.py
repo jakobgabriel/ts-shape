@@ -6,11 +6,14 @@ Simple, practical module for daily production reporting:
 - Daily summaries
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import Optional
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class PartProductionTracking(Base):
