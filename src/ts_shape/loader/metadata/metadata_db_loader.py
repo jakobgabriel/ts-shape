@@ -1,7 +1,10 @@
+import logging
 import pandas as pd  # type: ignore
 import json
 from sqlalchemy import create_engine, text
 from typing import List, Dict
+
+logger = logging.getLogger(__name__)
 
 
 class DatapointDB:
@@ -87,15 +90,15 @@ class DatapointDB:
         """
         if aggregate:
             combined_df = pd.concat(self.device_metadata.values(), keys=self.device_metadata.keys())
-            print("Aggregated metadata for all devices:")
-            print(combined_df)
+            logger.info("Aggregated metadata for all devices:")
+            logger.info("\n%s", combined_df)
         elif device_name:
             if device_name in self.device_metadata:
-                print(f"Metadata for device: {device_name}")
-                print(self.device_metadata[device_name])
+                logger.info("Metadata for device: %s", device_name)
+                logger.info("\n%s", self.device_metadata[device_name])
             else:
-                print(f"No metadata found for device: {device_name}")
+                logger.warning("No metadata found for device: %s", device_name)
         else:
             for device, metadata in self.device_metadata.items():
-                print(f"\nMetadata for device: {device}")
-                print(metadata)
+                logger.info("Metadata for device: %s", device)
+                logger.info("\n%s", metadata)

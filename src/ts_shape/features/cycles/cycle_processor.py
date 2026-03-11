@@ -1,8 +1,10 @@
+import logging
 from typing import Dict, List, Optional, Tuple
 import pandas as pd  # type: ignore
 import numpy as np
 from ts_shape.utils.base import Base
-import logging
+
+logger = logging.getLogger(__name__)
 
 
 class CycleDataProcessor(Base):
@@ -36,7 +38,7 @@ class CycleDataProcessor(Base):
         self._cycle_intervals = None
         self._build_interval_index()
 
-        logging.info("CycleDataProcessor initialized with cycles and values DataFrames.")
+        logger.info("CycleDataProcessor initialized with cycles and values DataFrames.")
 
     def _build_interval_index(self) -> None:
         """Build IntervalIndex for efficient cycle lookups."""
@@ -54,7 +56,7 @@ class CycleDataProcessor(Base):
             self.cycles_df[self.cycle_uuid_col].values,
             index=intervals
         )
-        logging.debug(f"Built interval index with {len(intervals)} cycles.")
+        logger.debug(f"Built interval index with {len(intervals)} cycles.")
 
     def split_by_cycle(self) -> Dict[str, pd.DataFrame]:
         """
@@ -65,7 +67,7 @@ class CycleDataProcessor(Base):
             Dictionary where keys are cycle_uuids and values are DataFrames with the corresponding cycle data.
         """
         if self._cycle_intervals is None or self.values_df.empty:
-            logging.warning("No cycles or values available for splitting.")
+            logger.warning("No cycles or values available for splitting.")
             return {}
 
         # Use merge_dataframes_by_cycle to assign cycle_uuids efficiently
@@ -77,7 +79,7 @@ class CycleDataProcessor(Base):
             for cycle_uuid, group in merged.groupby(self.cycle_uuid_col)
         }
 
-        logging.info(f"Split {len(result)} cycles.")
+        logger.info(f"Split {len(result)} cycles.")
         return result
 
     def merge_dataframes_by_cycle(self) -> pd.DataFrame:
@@ -89,7 +91,7 @@ class CycleDataProcessor(Base):
             DataFrame with an added 'cycle_uuid' column.
         """
         if self._cycle_intervals is None or self.values_df.empty:
-            logging.warning("No cycles available for merging.")
+            logger.warning("No cycles available for merging.")
             result = self.values_df.copy()
             result[self.cycle_uuid_col] = None
             return result
@@ -113,7 +115,7 @@ class CycleDataProcessor(Base):
             merged_df[self.cycle_uuid_col] = cycle_assignment
 
         except Exception as e:
-            logging.error(f"Error in vectorized cycle assignment: {e}. Falling back to iterative method.")
+            logger.error(f"Error in vectorized cycle assignment: {e}. Falling back to iterative method.")
             # Fallback to original method if vectorization fails
             merged_df[self.cycle_uuid_col] = None
             for _, row in self.cycles_df.iterrows():
@@ -123,9 +125,9 @@ class CycleDataProcessor(Base):
         # Drop rows not assigned to any cycle
         unassigned_count = merged_df[self.cycle_uuid_col].isna().sum()
         if unassigned_count > 0:
-            logging.info(f"Dropping {unassigned_count} rows not assigned to any cycle.")
+            logger.info(f"Dropping {unassigned_count} rows not assigned to any cycle.")
         result = merged_df.dropna(subset=[self.cycle_uuid_col])
-        logging.info(f"Merged DataFrame contains {len(result)} records across {result[self.cycle_uuid_col].nunique()} cycles.")
+        logger.info(f"Merged DataFrame contains {len(result)} records across {result[self.cycle_uuid_col].nunique()} cycles.")
         return result
 
     def group_by_cycle_uuid(self, data: Optional[pd.DataFrame] = None) -> List[pd.DataFrame]:
@@ -142,11 +144,11 @@ class CycleDataProcessor(Base):
             data = self.values_df
 
         if self.cycle_uuid_col not in data.columns:
-            logging.warning(f"Column '{self.cycle_uuid_col}' not found in data. Cannot group.")
+            logger.warning(f"Column '{self.cycle_uuid_col}' not found in data. Cannot group.")
             return []
 
         grouped_dataframes = [group for _, group in data.groupby(self.cycle_uuid_col)]
-        logging.info(f"Grouped data into {len(grouped_dataframes)} cycle UUID groups.")
+        logger.info(f"Grouped data into {len(grouped_dataframes)} cycle UUID groups.")
         return grouped_dataframes
 
     def split_dataframes_by_group(self, dfs: List[pd.DataFrame], column: str) -> List[pd.DataFrame]:
@@ -164,13 +166,13 @@ class CycleDataProcessor(Base):
         split_dfs = []
         for df in dfs:
             if column not in df.columns:
-                logging.warning(f"Column '{column}' not found in DataFrame. Skipping.")
+                logger.warning(f"Column '{column}' not found in DataFrame. Skipping.")
                 continue
             groups = df.groupby(column)
             for _, group in groups:
                 split_dfs.append(group)
 
-        logging.info(f"Split data into {len(split_dfs)} groups based on column '{column}'.")
+        logger.info(f"Split data into {len(split_dfs)} groups based on column '{column}'.")
         return split_dfs
 
     def _filter_by_time_range(self, start_time: pd.Timestamp, end_time: pd.Timestamp) -> pd.DataFrame:
@@ -225,7 +227,7 @@ class CycleDataProcessor(Base):
             stats.append(stat)
 
         result = pd.DataFrame(stats)
-        logging.info(f"Computed statistics for {len(result)} cycles.")
+        logger.info(f"Computed statistics for {len(result)} cycles.")
         return result
 
     def compare_cycles(self, reference_cycle_uuid: str, metric: str = 'value_double') -> pd.DataFrame:
@@ -240,7 +242,7 @@ class CycleDataProcessor(Base):
             DataFrame with comparison metrics for each cycle
         """
         if reference_cycle_uuid not in self.cycles_df[self.cycle_uuid_col].values:
-            logging.error(f"Reference cycle '{reference_cycle_uuid}' not found.")
+            logger.error(f"Reference cycle '{reference_cycle_uuid}' not found.")
             return pd.DataFrame()
 
         # Get reference cycle data
@@ -249,7 +251,7 @@ class CycleDataProcessor(Base):
         ref_values = self.values_df[ref_mask][metric].dropna()
 
         if ref_values.empty:
-            logging.warning("Reference cycle has no data for the specified metric.")
+            logger.warning("Reference cycle has no data for the specified metric.")
             return pd.DataFrame()
 
         ref_mean = ref_values.mean()
@@ -277,7 +279,7 @@ class CycleDataProcessor(Base):
             comparisons.append(comparison)
 
         result = pd.DataFrame(comparisons)
-        logging.info(f"Compared {len(result)} cycles against reference cycle '{reference_cycle_uuid}'.")
+        logger.info(f"Compared {len(result)} cycles against reference cycle '{reference_cycle_uuid}'.")
         return result
 
     def identify_golden_cycles(self, metric: str = 'value_double', method: str = 'low_variability', top_n: int = 5) -> List[str]:
@@ -295,7 +297,7 @@ class CycleDataProcessor(Base):
         stats = self.compute_cycle_statistics()
 
         if stats.empty:
-            logging.warning("No cycle statistics available.")
+            logger.warning("No cycle statistics available.")
             return []
 
         # Calculate metric-specific scores for each cycle
@@ -321,11 +323,11 @@ class CycleDataProcessor(Base):
             scores.append({'cycle_uuid': cycle_uuid, 'score': score})
 
         if not scores:
-            logging.warning("Could not compute scores for any cycles.")
+            logger.warning("Could not compute scores for any cycles.")
             return []
 
         scores_df = pd.DataFrame(scores).sort_values('score', ascending=False)
         golden_cycles = scores_df.head(top_n)['cycle_uuid'].tolist()
 
-        logging.info(f"Identified {len(golden_cycles)} golden cycles using method '{method}'.")
+        logger.info(f"Identified {len(golden_cycles)} golden cycles using method '{method}'.")
         return golden_cycles

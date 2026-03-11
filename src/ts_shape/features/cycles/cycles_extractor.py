@@ -1,8 +1,10 @@
+import logging
 from typing import Optional, Dict, List, Any
 import pandas as pd  # type: ignore
 import uuid
-import logging
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 class CycleExtractor(Base):
     """Class for processing cycles based on different criteria."""
@@ -41,7 +43,7 @@ class CycleExtractor(Base):
             'warnings': []
         }
 
-        logging.info(f"CycleExtractor initialized with start_uuid: {self.start_uuid} and end_uuid: {self.end_uuid}")
+        logger.info(f"CycleExtractor initialized with start_uuid: {self.start_uuid} and end_uuid: {self.end_uuid}")
 
     def process_persistent_cycle(self) -> pd.DataFrame:
         """Processes cycles where the value of the variable stays true during the cycle."""
@@ -166,7 +168,7 @@ class CycleExtractor(Base):
                     }
                     incomplete_cycles += 1
                     unmatched_starts += 1
-                    logging.warning(f"Incomplete cycle detected: start at {start_time} has no matching end.")
+                    logger.warning(f"Incomplete cycle detected: start at {start_time} has no matching end.")
                     # Continue to process remaining starts
                     continue
 
@@ -185,7 +187,7 @@ class CycleExtractor(Base):
                 unmatched_starts += 1
 
             warning_msg = f"Cycle end data ran out while generating cycles. {incomplete_cycles} cycles marked as incomplete."
-            logging.warning(warning_msg)
+            logger.warning(warning_msg)
             self._stats['warnings'].append(warning_msg)
 
         # Update statistics
@@ -194,7 +196,7 @@ class CycleExtractor(Base):
         self._stats['incomplete_cycles'] = incomplete_cycles
         self._stats['unmatched_starts'] = unmatched_starts
 
-        logging.info(f"Generated {len(cycle_df)} cycles ({complete_cycles} complete, {incomplete_cycles} incomplete).")
+        logger.info(f"Generated {len(cycle_df)} cycles ({complete_cycles} complete, {incomplete_cycles} incomplete).")
         return cycle_df
 
     def _parse_duration(self, duration_str: str) -> pd.Timedelta:
@@ -240,7 +242,7 @@ class CycleExtractor(Base):
             DataFrame with additional 'is_valid' column and 'validation_issue' column
         """
         if cycle_df.empty:
-            logging.warning("Empty cycle DataFrame provided for validation.")
+            logger.warning("Empty cycle DataFrame provided for validation.")
             return cycle_df
 
         # Parse duration constraints
@@ -263,7 +265,7 @@ class CycleExtractor(Base):
             validated_df.loc[incomplete_mask, 'is_valid'] = False
             validated_df.loc[incomplete_mask, 'validation_issue'] = 'incomplete_cycle'
             if warn:
-                logging.warning(f"Found {incomplete_mask.sum()} incomplete cycles.")
+                logger.warning(f"Found {incomplete_mask.sum()} incomplete cycles.")
 
         # Check duration constraints (only for complete cycles)
         complete_mask = validated_df['is_complete']
@@ -274,18 +276,18 @@ class CycleExtractor(Base):
             validated_df.loc[too_short_mask, 'is_valid'] = False
             validated_df.loc[too_short_mask, 'validation_issue'] = validated_df.loc[too_short_mask, 'validation_issue'] + 'too_short;'
             if warn:
-                logging.warning(f"Found {too_short_mask.sum()} cycles shorter than {min_duration}.")
+                logger.warning(f"Found {too_short_mask.sum()} cycles shorter than {min_duration}.")
 
         if too_long_mask.any():
             validated_df.loc[too_long_mask, 'is_valid'] = False
             validated_df.loc[too_long_mask, 'validation_issue'] = validated_df.loc[too_long_mask, 'validation_issue'] + 'too_long;'
             if warn:
-                logging.warning(f"Found {too_long_mask.sum()} cycles longer than {max_duration}.")
+                logger.warning(f"Found {too_long_mask.sum()} cycles longer than {max_duration}.")
 
         valid_count = validated_df['is_valid'].sum()
         invalid_count = (~validated_df['is_valid']).sum()
 
-        logging.info(f"Validation complete: {valid_count} valid cycles, {invalid_count} invalid cycles.")
+        logger.info(f"Validation complete: {valid_count} valid cycles, {invalid_count} invalid cycles.")
 
         return validated_df
 
@@ -300,7 +302,7 @@ class CycleExtractor(Base):
             DataFrame with 'has_overlap' column and potentially filtered rows
         """
         if cycle_df.empty:
-            logging.warning("Empty cycle DataFrame provided for overlap detection.")
+            logger.warning("Empty cycle DataFrame provided for overlap detection.")
             return cycle_df
 
         # Create a copy to avoid modifying the original
@@ -336,7 +338,7 @@ class CycleExtractor(Base):
 
         overlap_count = len(overlaps)
         if overlap_count > 0:
-            logging.warning(f"Detected {overlap_count} overlapping cycle pairs.")
+            logger.warning(f"Detected {overlap_count} overlapping cycle pairs.")
             self._stats['overlapping_cycles'] = overlap_count
 
         # Resolve overlaps based on strategy
@@ -358,7 +360,7 @@ class CycleExtractor(Base):
 
             if indices_to_drop:
                 result_df = result_df.drop(list(indices_to_drop)).reset_index(drop=True)
-                logging.info(f"Resolved overlaps: removed {len(indices_to_drop)} cycles using '{resolve}' strategy.")
+                logger.info(f"Resolved overlaps: removed {len(indices_to_drop)} cycles using '{resolve}' strategy.")
 
         return result_df
 
@@ -432,7 +434,7 @@ class CycleExtractor(Base):
             suggestions['recommended_methods'].append('process_value_change_cycle')
             suggestions['reasoning'].append('Default method: works with any value changes')
 
-        logging.info(f"Method suggestion: {suggestions['recommended_methods']}")
+        logger.info(f"Method suggestion: {suggestions['recommended_methods']}")
         return suggestions
 
     def get_extraction_stats(self) -> Dict[str, Any]:
@@ -469,4 +471,4 @@ class CycleExtractor(Base):
             'overlapping_cycles': 0,
             'warnings': []
         }
-        logging.info("Statistics reset.")
+        logger.info("Statistics reset.")

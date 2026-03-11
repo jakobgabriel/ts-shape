@@ -1,8 +1,11 @@
+import logging
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
 from typing import List, Dict, Any
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class DegradationDetectionEvents(Base):
@@ -81,6 +84,7 @@ class DegradationDetectionEvents(Base):
                 coeffs = np.polyfit(x, y, 1)
                 slopes.append(coeffs[0])
             except (np.linalg.LinAlgError, ValueError):
+                logger.debug("Polyfit failed for degradation slope window.")
                 slopes.append(np.nan)
 
         sig["slope"] = slopes

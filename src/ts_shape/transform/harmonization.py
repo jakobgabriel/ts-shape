@@ -1,8 +1,10 @@
 import logging
+import warnings
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
 from typing import Optional, List
 
+from ts_shape.errors import DataQualityWarning
 from ts_shape.utils.base import Base
 
 logger = logging.getLogger(__name__)
@@ -46,9 +48,11 @@ class DataHarmonizer(Base):
         """
         dupes = self.dataframe.duplicated(subset=[self.time_column, self.uuid_column], keep=False)
         if dupes.any():
-            logger.info(
+            warnings.warn(
                 f"Found {dupes.sum()} duplicate (time, uuid) entries; "
-                f"aggregating with '{aggfunc}'."
+                f"aggregating with '{aggfunc}'.",
+                DataQualityWarning,
+                stacklevel=2,
             )
         return self.dataframe.pivot_table(
             index=self.time_column,

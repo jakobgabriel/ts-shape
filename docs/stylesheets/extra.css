@@ -1,0 +1,87 @@
+/* ── Hero section ─────────────────────────────────────────────── */
+.tx-hero {
+  padding: 3rem 1rem 2.5rem;
+  background: linear-gradient(135deg, #009688 0%, #00695c 100%);
+  color: #fff;
+  text-align: center;
+  border-radius: 0 0 1rem 1rem;
+  margin: -1rem -0.8rem 2rem;
+}
+
+[data-md-color-scheme="slate"] .tx-hero {
+  background: linear-gradient(135deg, #00796b 0%, #004d40 100%);
+}
+
+.tx-hero h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  color: #fff;
+}
+
+.tx-hero .tx-hero__tagline {
+  font-size: 1.25rem;
+  opacity: 0.92;
+  margin-bottom: 1.2rem;
+  font-weight: 300;
+}
+
+.tx-hero .md-button {
+  margin: 0.3rem;
+}
+
+.tx-hero .md-button--primary {
+  background-color: #fff;
+  color: #00695c;
+  border-color: #fff;
+}
+
+.tx-hero .md-button--primary:hover {
+  background-color: #e0f2f1;
+  border-color: #e0f2f1;
+}
+
+.tx-hero .md-button:not(.md-button--primary) {
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #fff;
+}
+
+.tx-hero .md-button:not(.md-button--primary):hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: #fff;
+}
+
+/* ── Badges row inside hero ──────────────────────────────────── */
+.tx-hero__badges {
+  margin: 0.8rem 0 1.2rem;
+}
+
+.tx-hero__badges img {
+  height: 22px;
+  margin: 0 3px;
+}
+
+/* ── Section headings ────────────────────────────────────────── */
+.tx-section-heading {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.tx-section-heading h2 {
+  display: inline-block;
+  border-bottom: 3px solid #009688;
+  padding-bottom: 0.3rem;
+}
+
+[data-md-color-scheme="slate"] .tx-section-heading h2 {
+  border-bottom-color: #80cbc4;
+}
+
+/* ── Pipeline spotlight cards ────────────────────────────────── */
+.tx-pipeline-grid .md-typeset .grid.cards > ul > li {
+  border-left: 3px solid #009688;
+}
+
+[data-md-color-scheme="slate"] .tx-pipeline-grid .md-typeset .grid.cards > ul > li {
+  border-left-color: #80cbc4;
+}

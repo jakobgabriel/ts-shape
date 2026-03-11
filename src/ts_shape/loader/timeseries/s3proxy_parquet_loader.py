@@ -1,7 +1,10 @@
+import logging
 from pathlib import Path
 import pandas as pd  # type: ignore
 import s3fs
 from typing import List, Dict
+
+logger = logging.getLogger(__name__)
 
 class S3ProxyDataAccess:
     """
@@ -55,7 +58,7 @@ class S3ProxyDataAccess:
             with self.s3.open(s3_path, "rb") as remote_file:
                 return pd.read_parquet(remote_file)
         except FileNotFoundError:
-            print(f"Data for UUID {uuid} at {timeslot_dir} not found.")
+            logger.debug("Data for UUID %s at %s not found.", uuid, timeslot_dir)
             return None
 
     def fetch_data_as_parquet(self, output_dir: str):
