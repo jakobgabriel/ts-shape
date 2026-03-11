@@ -7,11 +7,14 @@ Compare production output and quality across operators:
 - Operator ranking/comparison
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import Optional, Dict
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class OperatorPerformanceTracking(Base):

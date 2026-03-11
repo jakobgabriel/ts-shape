@@ -1,8 +1,11 @@
+import logging
 from ts_shape.utils.base import Base
 import pandas as pd  # type: ignore
 import numpy as np
 import operator
 from typing import Callable, Optional, Dict, Tuple
+
+logger = logging.getLogger(__name__)
 
 class ToleranceDeviationEvents(Base):
     """

@@ -17,12 +17,10 @@ Timeseries analytics for manufacturing — from raw signals to production KPIs.
 </div>
 
 <div class="tx-hero__badges">
-
-[![PyPI](https://img.shields.io/pypi/v/ts-shape.svg)](https://pypi.org/project/ts-shape/)
-[![Downloads](https://static.pepy.tech/badge/ts-shape)](https://pepy.tech/projects/ts-shape)
-[![Python](https://img.shields.io/pypi/pyversions/ts-shape.svg)](https://pypi.org/project/ts-shape/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](license.md)
-
+<a href="https://pypi.org/project/ts-shape/"><img src="https://img.shields.io/pypi/v/ts-shape.svg" alt="PyPI"></a>
+<a href="https://pepy.tech/projects/ts-shape"><img src="https://static.pepy.tech/badge/ts-shape" alt="Downloads"></a>
+<a href="https://pypi.org/project/ts-shape/"><img src="https://img.shields.io/pypi/pyversions/ts-shape.svg" alt="Python"></a>
+<a href="license.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
 </div>
 
 [Get Started](user_guide/installation.md){ .md-button .md-button--primary }

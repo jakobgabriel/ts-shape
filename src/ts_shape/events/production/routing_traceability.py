@@ -24,11 +24,14 @@ Or::
 This module correlates both signals to reconstruct the full routing path.
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import List, Dict, Any, Optional, Union
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class RoutingTraceabilityEvents(Base):

@@ -7,11 +7,14 @@ Essential module for daily downtime analysis:
 - Downtime trends
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import Optional, Dict
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class DowntimeTracking(Base):

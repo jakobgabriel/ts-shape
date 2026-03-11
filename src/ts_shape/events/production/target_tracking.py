@@ -6,11 +6,14 @@ Generic module for comparing any metric to targets:
 - Target achievement tracking over time
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import Optional, Dict, Union
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class TargetTracking(Base):

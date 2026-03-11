@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, Union
 import pandas as pd  # type: ignore
 from pandas.api.types import is_numeric_dtype, is_bool_dtype, is_object_dtype
@@ -5,6 +6,8 @@ from pandas.api.types import is_numeric_dtype, is_bool_dtype, is_object_dtype
 from .numeric_stats import NumericStatistics
 from .boolean_stats import BooleanStatistics
 from .string_stats import StringStatistics
+
+logger = logging.getLogger(__name__)
 
 class DescriptiveFeatures:
     """

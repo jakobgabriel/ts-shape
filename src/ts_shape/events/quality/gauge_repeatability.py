@@ -1,8 +1,11 @@
+import logging
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
 from typing import List, Dict, Any, Optional
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 # d2 constants for subgroup sizes 2-10 (AIAG MSA reference)
 _D2 = {2: 1.128, 3: 1.693, 4: 2.059, 5: 2.326, 6: 2.534,

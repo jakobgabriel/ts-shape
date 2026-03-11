@@ -7,11 +7,14 @@ Track setup durations to support Single-Minute Exchange of Die improvement:
 - Setup time trends
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import Optional, Dict
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class SetupTimeTracking(Base):

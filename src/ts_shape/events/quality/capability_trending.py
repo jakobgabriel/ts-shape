@@ -1,9 +1,12 @@
+import logging
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
 from scipy import stats  # type: ignore
 from typing import List, Dict, Any, Optional
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class CapabilityTrendingEvents(Base):

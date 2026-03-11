@@ -1,7 +1,10 @@
+import logging
 import pandas as pd  # type: ignore
 from typing import Dict, Any, List, Optional
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class FlowConstraintEvents(Base):

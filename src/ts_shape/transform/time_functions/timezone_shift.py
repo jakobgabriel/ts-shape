@@ -1,6 +1,9 @@
+import logging
 import pandas as pd  # type: ignore
 import pytz
 from ts_shape.utils.base import Base  # Import Base from the specified path
+
+logger = logging.getLogger(__name__)
 
 class TimezoneShift(Base):
     """

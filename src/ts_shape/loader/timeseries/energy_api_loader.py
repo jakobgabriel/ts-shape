@@ -7,9 +7,12 @@ Classes:
 - EnergyAPILoader: Fetch energy data from REST APIs and return DataFrames.
 """
 
+import logging
 import pandas as pd  # type: ignore
 import requests
 from typing import Optional, Dict, Any, List
+
+logger = logging.getLogger(__name__)
 
 
 class EnergyAPILoader:

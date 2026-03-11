@@ -4,11 +4,14 @@ Aggregates demand by time period, detects demand spikes,
 and summarizes seasonal demand patterns.
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import List, Dict, Any
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class DemandPatternEvents(Base):

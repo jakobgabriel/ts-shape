@@ -10,11 +10,14 @@ identifier to its own UUID.  This module joins those signals to answer
 "when was identifier X at station A, then B, then C?"
 """
 
+import logging
 import pandas as pd  # type: ignore
 import numpy as np
 from typing import List, Dict, Any, Optional
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class ValueTraceabilityEvents(Base):

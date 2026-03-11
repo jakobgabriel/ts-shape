@@ -1,6 +1,9 @@
+import logging
 import json
 from typing import Dict, Any, List, Optional, Iterable
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 
 class MetadataJsonLoader:

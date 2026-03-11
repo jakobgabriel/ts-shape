@@ -1,9 +1,12 @@
+import logging
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
 from itertools import combinations
 from typing import List, Dict, Any
 
 from ts_shape.utils.base import Base
+
+logger = logging.getLogger(__name__)
 
 
 class MultiSensorValidationEvents(Base):
