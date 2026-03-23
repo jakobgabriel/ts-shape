@@ -25,6 +25,12 @@ flowchart LR
         B4["Calculations"]
     end
 
+    subgraph FEAT["<b>Feature Extraction</b>"]
+        direction TB
+        C0["Cycle / Segment Cutting"]
+        C0b["Feature Tables"]
+    end
+
     subgraph ANA["<b>Signal Analytics</b>"]
         direction TB
         C1["Statistics"]
@@ -48,7 +54,9 @@ flowchart LR
         E3["Target Tracking"]
     end
 
-    ACQ --> COND --> ANA --> EVT --> RPT
+    ACQ --> COND --> FEAT --> ANA --> EVT --> RPT
+
+    style FEAT fill:#1a3a4a,stroke:#f59e0b,color:#fef3c7
 
     style ACQ fill:#1a3a4a,stroke:#2dd4bf,color:#e0f2fe
     style COND fill:#1a3a4a,stroke:#2dd4bf,color:#e0f2fe
@@ -80,6 +88,14 @@ Pick the stage that matches where you are in your analysis.
     Clean and prepare raw signals. Filter by range, time window, pattern, or boolean flag. Convert timezones and compute derived values.
 
     `NumericFilter` | `DateTimeFilter` | `StringFilter` | `TimezoneShift` | `NumericCalc`
+
+-   :material-table-pivot:{ .lg .middle } **[Feature Extraction](feature-extraction.md)**
+
+    ---
+
+    Cut timeseries into repeatable units (cycles or segments), then build feature tables with statistical profiles per unit. Discrete parts or continuous orders.
+
+    `CycleExtractor` | `SegmentExtractor` | `SegmentProcessor` | `DescriptiveFeatures` | `ProfileComparison`
 
 -   :material-chart-bell-curve-cumulative:{ .lg .middle } **[Signal Analytics](statistics.md)**
 

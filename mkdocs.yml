@@ -25,6 +25,7 @@ nav:
   - Overview: guides/index.md
   - Data Acquisition: guides/loading.md
   - Signal Conditioning: guides/transforms.md
+  - Feature Extraction: guides/feature-extraction.md
   - Signal Analytics: guides/statistics.md
   - Quality Control & SPC: guides/quality.md
   - Production Monitoring: guides/production.md
