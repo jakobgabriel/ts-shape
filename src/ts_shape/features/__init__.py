@@ -109,12 +109,18 @@ Classes:
   - template_match: Find all occurrences of a reference template.
   - compute_distance_profile: Distance from query to every subsequence.
 
-- MetricPatternAnalysis: Cross-UUID pattern recognition using metric profiles.
-  - compute_metric_profiles: Compute statistical metrics per UUID per time window.
-  - compute_distance_matrix: Pairwise distance matrix between UUID metric profiles.
-  - cluster_uuids: Group UUIDs by metric similarity (hierarchical clustering).
-  - find_similar_uuids: Find UUIDs most similar to a target.
-  - detect_anomalous_uuids: Detect UUIDs with unusual metric profiles.
-  - detect_behavior_changes: Track metric profile changes over time per UUID.
-  - find_similar_windows: Find similar (UUID, window) pairs across all data.
+- SegmentExtractor: Extract time ranges from categorical signals (order/part number).
+  - extract_time_ranges: Detect value transitions and extract segment boundaries.
+
+- SegmentProcessor: Apply time ranges to process data and compute metric profiles.
+  - apply_ranges: Filter data by time ranges, annotate with segment info.
+  - compute_metric_profiles: Compute statistical metrics per UUID per segment.
+
+- ProfileComparison: Distance, clustering, similarity, anomaly on metric profiles.
+  - compute_distance_matrix: Pairwise distance matrix between groups.
+  - cluster: Hierarchical clustering by metric similarity.
+  - find_similar: Top-K most similar items to a target.
+  - detect_anomalous: Flag items with unusual metric profiles.
+  - detect_changes: Track metric shifts across consecutive segments.
+  - find_similar_pairs: Find similar (UUID, segment) pairs across all data.
 """
