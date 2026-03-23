@@ -20,4 +20,8 @@ Classes:
   - detect_anomalous: Flag items with unusual metric profiles.
   - detect_changes: Track metric shifts across consecutive segments per UUID.
   - find_similar_pairs: Find most similar (UUID, segment) pairs across all data.
+
+- TimeWindowedFeatureTable: Build ML-ready feature tables from segmented data.
+  - compute_long: Metrics per (time_window, uuid, segment) in long format.
+  - compute: Wide-format table with one row per time window, columns = {uuid}__{metric}.
 """
