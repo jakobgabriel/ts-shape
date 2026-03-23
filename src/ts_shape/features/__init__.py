@@ -108,4 +108,13 @@ Classes:
   - similarity_search: Find subsequences most similar to a query (DTW).
   - template_match: Find all occurrences of a reference template.
   - compute_distance_profile: Distance from query to every subsequence.
+
+- MetricPatternAnalysis: Cross-UUID pattern recognition using metric profiles.
+  - compute_metric_profiles: Compute statistical metrics per UUID per time window.
+  - compute_distance_matrix: Pairwise distance matrix between UUID metric profiles.
+  - cluster_uuids: Group UUIDs by metric similarity (hierarchical clustering).
+  - find_similar_uuids: Find UUIDs most similar to a target.
+  - detect_anomalous_uuids: Detect UUIDs with unusual metric profiles.
+  - detect_behavior_changes: Track metric profile changes over time per UUID.
+  - find_similar_windows: Find similar (UUID, window) pairs across all data.
 """
