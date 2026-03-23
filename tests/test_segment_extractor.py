@@ -111,3 +111,42 @@ class TestExtractTimeRanges:
         )
         for _, row in result.iterrows():
             assert row['segment_duration'] == row['segment_end'] - row['segment_start']
+
+    def test_nan_values_join_adjacent_segment(self):
+        """NaN rows should be absorbed into the adjacent segment via ffill."""
+        df = pd.DataFrame({
+            'systime': pd.date_range('2024-01-01', periods=8, freq='1s'),
+            'uuid': 'order',
+            'value_string': ['A', 'A', np.nan, np.nan, 'B', 'B', np.nan, 'B'],
+        })
+        result = SegmentExtractor.extract_time_ranges(
+            df, segment_uuid='order'
+        )
+        # NaN after A joins A, NaN after B joins B → 2 segments
+        assert len(result) == 2
+        assert list(result['segment_value']) == ['A', 'B']
+
+    def test_leading_nan_values_skipped(self):
+        """NaN values at the start (before any real value) should be skipped."""
+        df = pd.DataFrame({
+            'systime': pd.date_range('2024-01-01', periods=5, freq='1s'),
+            'uuid': 'order',
+            'value_string': [np.nan, np.nan, 'A', 'A', 'B'],
+        })
+        result = SegmentExtractor.extract_time_ranges(
+            df, segment_uuid='order'
+        )
+        assert len(result) == 2
+        assert list(result['segment_value']) == ['A', 'B']
+
+    def test_single_row_dataframe(self):
+        df = pd.DataFrame({
+            'systime': [pd.Timestamp('2024-01-01')],
+            'uuid': 'order',
+            'value_string': ['X'],
+        })
+        result = SegmentExtractor.extract_time_ranges(
+            df, segment_uuid='order'
+        )
+        assert len(result) == 1
+        assert result.iloc[0]['segment_duration'] == pd.Timedelta(0)
