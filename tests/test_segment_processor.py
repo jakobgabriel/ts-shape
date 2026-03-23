@@ -140,3 +140,27 @@ class TestComputeMetricProfiles:
             SegmentProcessor.compute_metric_profiles(
                 segmented_df, metrics=['nonexistent']
             )
+
+    def test_single_uuid(self, production_df, time_ranges):
+        segmented = SegmentProcessor.apply_ranges(
+            production_df, time_ranges, target_uuids=['temperature'],
+        )
+        result = SegmentProcessor.compute_metric_profiles(segmented)
+        assert result['uuid'].unique().tolist() == ['temperature']
+        assert len(result) == 2  # 1 UUID x 2 segment_values
+
+    def test_overlapping_ranges_warns(self, production_df, caplog):
+        """Overlapping time ranges should produce a warning."""
+        import logging
+        ranges = pd.DataFrame({
+            'segment_value': ['A', 'B'],
+            'segment_start': [pd.Timestamp('2024-01-01 00:00:00'),
+                              pd.Timestamp('2024-01-01 00:00:30')],
+            'segment_end': [pd.Timestamp('2024-01-01 00:01:00'),
+                            pd.Timestamp('2024-01-01 00:01:30')],
+            'segment_duration': [pd.Timedelta('60s'), pd.Timedelta('60s')],
+            'segment_index': [0, 1],
+        })
+        with caplog.at_level(logging.WARNING):
+            SegmentProcessor.apply_ranges(production_df, ranges)
+        assert 'overlapping' in caplog.text.lower()

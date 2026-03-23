@@ -68,8 +68,9 @@ class SegmentExtractor(Base):
         signal = signal.sort_values(time_column).reset_index(drop=True)
         signal[time_column] = pd.to_datetime(signal[time_column])
 
-        # Detect value changes
-        values = signal[value_column]
+        # Detect value changes — forward-fill NaN so NaN rows join the
+        # adjacent segment instead of creating spurious one-row groups.
+        values = signal[value_column].ffill()
         changed = values.ne(values.shift())
         group_ids = changed.cumsum()
 

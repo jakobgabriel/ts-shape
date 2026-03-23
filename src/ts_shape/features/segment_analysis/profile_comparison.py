@@ -117,6 +117,10 @@ class ProfileComparison(Base):
             DataFrame with columns [label, cluster].
         """
         labels = distance_matrix.index.tolist()
+
+        if len(labels) < 2:
+            return pd.DataFrame({'label': labels, 'cluster': [1] * len(labels)})
+
         condensed = squareform(distance_matrix.values, checks=False)
         Z = linkage(condensed, method=linkage_method)
 

@@ -68,6 +68,17 @@ class SegmentProcessor(Base):
         if target_uuids is not None:
             df = df[df[uuid_column].isin(target_uuids)]
 
+        # Warn if time ranges overlap
+        sorted_ranges = time_ranges.sort_values('segment_start')
+        ends = sorted_ranges['segment_end'].values[:-1]
+        starts = sorted_ranges['segment_start'].values[1:]
+        if len(ends) > 0 and (ends > starts).any():
+            overlap_count = int((ends > starts).sum())
+            logger.warning(
+                f"{overlap_count} overlapping time range(s) detected. "
+                f"Overlapping rows will appear multiple times in the output."
+            )
+
         segments = []
         for _, seg in time_ranges.iterrows():
             mask = (

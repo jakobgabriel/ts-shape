@@ -182,6 +182,72 @@ class TestFindSimilarPairs:
         assert list(result['distance']) == sorted(result['distance'])
 
 
+class TestEdgeCases:
+    def test_cluster_single_item(self):
+        """cluster() with 1 item should return single cluster without crashing."""
+        dm = pd.DataFrame([[0.0]], index=['only'], columns=['only'])
+        result = ProfileComparison.cluster(dm, n_clusters=1)
+        assert len(result) == 1
+        assert result.iloc[0]['cluster'] == 1
+
+    def test_cluster_two_items(self):
+        dm = pd.DataFrame(
+            [[0.0, 1.5], [1.5, 0.0]],
+            index=['A', 'B'], columns=['A', 'B'],
+        )
+        result = ProfileComparison.cluster(dm, n_clusters=2)
+        assert len(result) == 2
+        assert result['cluster'].nunique() == 2
+
+    def test_distance_matrix_single_group(self):
+        """Single-group distance matrix should be 1x1 with value 0."""
+        profiles = pd.DataFrame({
+            'uuid': ['A'],
+            'segment_value': ['X'],
+            'sample_count': [10],
+            'mean': [5.0],
+            'std': [1.0],
+        })
+        dm = ProfileComparison.compute_distance_matrix(profiles, group_column='uuid')
+        assert dm.shape == (1, 1)
+        assert dm.iloc[0, 0] == 0.0
+
+    def test_find_similar_single_item(self):
+        dm = pd.DataFrame([[0.0]], index=['only'], columns=['only'])
+        result = ProfileComparison.find_similar(dm, target='only', top_k=5)
+        assert len(result) == 0
+
+    def test_detect_anomalous_all_equal_distances(self):
+        dm = pd.DataFrame(
+            [[0.0, 1.0, 1.0], [1.0, 0.0, 1.0], [1.0, 1.0, 0.0]],
+            index=['A', 'B', 'C'], columns=['A', 'B', 'C'],
+        )
+        result = ProfileComparison.detect_anomalous(dm)
+        assert not result['is_anomalous'].any()
+
+    def test_find_similar_pairs_single_row(self):
+        profiles = pd.DataFrame({
+            'uuid': ['A'],
+            'segment_value': ['X'],
+            'sample_count': [10],
+            'mean': [5.0],
+        })
+        result = ProfileComparison.find_similar_pairs(profiles, top_k=5)
+        assert len(result) == 0
+
+    def test_detect_changes_single_segment(self):
+        """Single segment per UUID → no consecutive pairs → empty result."""
+        profiles = pd.DataFrame({
+            'uuid': ['A', 'B'],
+            'segment_index': [0, 0],
+            'sample_count': [10, 10],
+            'mean': [5.0, 10.0],
+            'std': [1.0, 2.0],
+        })
+        result = ProfileComparison.detect_changes(profiles)
+        assert len(result) == 0
+
+
 class TestEndToEndWorkflow:
     def test_full_pipeline(self, production_df):
         """Complete workflow: extract → apply → profile → compare."""

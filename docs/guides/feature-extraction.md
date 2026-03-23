@@ -110,15 +110,19 @@ from ts_shape.features.stats.feature_table import DescriptiveFeatures
 import pandas as pd
 
 # Option A: Full descriptive features grouped by UUID (per cycle)
+# Note: DescriptiveFeatures expects the standard schema columns
+# (systime, uuid, is_delta, value_double, etc.) in the input DataFrame.
 results = []
 for cycle_uuid, cycle_df in cycle_dict.items():
     features = DescriptiveFeatures(cycle_df)
     stats = features.compute(output_format='dict')
     for uuid_val, uuid_stats in stats.items():
         row = {'cycle_uuid': cycle_uuid, 'uuid': uuid_val}
-        # Flatten numeric stats
-        if 'value_double' in uuid_stats and 'numeric_stats' in uuid_stats['value_double']:
-            row.update(uuid_stats['value_double']['numeric_stats'])
+        # Flatten numeric stats (guard against missing columns)
+        if isinstance(uuid_stats, dict):
+            for col_stats in uuid_stats.values():
+                if isinstance(col_stats, dict) and 'numeric_stats' in col_stats:
+                    row.update(col_stats['numeric_stats'])
         results.append(row)
 
 feature_table = pd.DataFrame(results)
