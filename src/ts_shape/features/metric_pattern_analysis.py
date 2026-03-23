@@ -1,7 +1,7 @@
 import logging
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
-from typing import Optional, List
+from typing import Optional, List, Dict, Union
 
 from scipy.spatial.distance import pdist, squareform  # type: ignore
 from scipy.cluster.hierarchy import linkage, fcluster  # type: ignore
@@ -19,22 +19,186 @@ ALL_METRICS = [
 
 
 class MetricPatternAnalysis(Base):
-    """Cross-UUID pattern recognition using metric profiles.
+    """Pattern recognition across multiple timeseries (UUIDs) using metric profiles.
 
-    Works on standard long-format DataFrames (systime, uuid, value_double, ...).
-    Computes per-UUID, per-window statistical profiles and finds patterns
-    across UUIDs: similarity clustering, anomalous UUID detection, and
-    temporal behavior changes.
+    Designed for production environments where a categorical signal (e.g. order
+    number, part number) defines time ranges that should be applied to process
+    parameter UUIDs for per-segment analysis.
+
+    Workflow:
+    1. extract_time_ranges: Detect when a categorical signal changes and extract
+       time ranges per unique value (order, part number, etc.).
+    2. apply_ranges: Filter other UUIDs' data using those time ranges.
+    3. compute_metric_profiles: Compute statistical metrics per UUID per segment.
+    4. Use distance/clustering/anomaly methods to compare segments and UUIDs.
 
     Methods:
-    - compute_metric_profiles: Compute statistical metrics per UUID per time window.
-    - compute_distance_matrix: Pairwise distance matrix between UUID metric profiles.
-    - cluster_uuids: Group UUIDs by metric similarity using hierarchical clustering.
+    - extract_time_ranges: Extract time ranges from a categorical signal.
+    - apply_ranges: Filter process parameter data by extracted time ranges.
+    - compute_metric_profiles: Compute statistical metrics per UUID per segment.
+    - compute_distance_matrix: Pairwise distance between metric profile vectors.
+    - cluster_uuids: Group UUIDs by metric similarity (hierarchical clustering).
     - find_similar_uuids: Find UUIDs most similar to a target.
     - detect_anomalous_uuids: Detect UUIDs with unusual metric profiles.
-    - detect_behavior_changes: Track metric profile changes over time per UUID.
-    - find_similar_windows: Find similar (UUID, window) pairs across all data.
+    - detect_behavior_changes: Track metric profile changes across segments.
+    - find_similar_windows: Find similar (UUID, segment) pairs across all data.
     """
+
+    @classmethod
+    def extract_time_ranges(
+        cls,
+        dataframe: pd.DataFrame,
+        segment_uuid: str,
+        uuid_column: str = 'uuid',
+        value_column: str = 'value_string',
+        time_column: str = 'systime',
+        min_duration: Optional[str] = None,
+    ) -> pd.DataFrame:
+        """Extract time ranges from a categorical signal that changes over time.
+
+        Given a signal (e.g. order number or part number) whose value changes
+        over time, detects transitions and produces one row per contiguous
+        segment with its start time, end time, and the active value.
+
+        Args:
+            dataframe: Input DataFrame in long format.
+            segment_uuid: The UUID of the categorical signal to segment by
+                (e.g. 'order_number', 'part_number').
+            uuid_column: Column identifying each timeseries.
+            value_column: Column containing the categorical values.
+                Use 'value_string' for string signals, 'value_integer' for int, etc.
+            time_column: Column containing timestamps.
+            min_duration: Optional minimum segment duration (e.g. '10s', '1min').
+                Segments shorter than this are dropped.
+
+        Returns:
+            DataFrame with columns:
+            - segment_value: The active value during this range (order/part number).
+            - segment_start: Start timestamp of the range.
+            - segment_end: End timestamp of the range.
+            - segment_duration: Duration as Timedelta.
+            - segment_index: Sequential index of the segment.
+        """
+        cls._validate_column(dataframe, uuid_column)
+        cls._validate_column(dataframe, value_column)
+        cls._validate_column(dataframe, time_column)
+
+        # Filter to the segment signal only
+        signal = dataframe[dataframe[uuid_column] == segment_uuid].copy()
+        if signal.empty:
+            logger.warning(f"No data found for UUID '{segment_uuid}'.")
+            return pd.DataFrame(columns=[
+                'segment_value', 'segment_start', 'segment_end',
+                'segment_duration', 'segment_index',
+            ])
+
+        signal = signal.sort_values(time_column).reset_index(drop=True)
+        signal[time_column] = pd.to_datetime(signal[time_column])
+
+        # Detect value changes
+        values = signal[value_column]
+        changed = values.ne(values.shift())
+        group_ids = changed.cumsum()
+
+        rows = []
+        for group_id, group in signal.groupby(group_ids):
+            seg_value = group[value_column].iloc[0]
+            # Skip null/empty segments
+            if pd.isna(seg_value) or (isinstance(seg_value, str) and seg_value.strip() == ''):
+                continue
+            seg_start = group[time_column].iloc[0]
+            seg_end = group[time_column].iloc[-1]
+            rows.append({
+                'segment_value': seg_value,
+                'segment_start': seg_start,
+                'segment_end': seg_end,
+                'segment_duration': seg_end - seg_start,
+                'segment_index': len(rows),
+            })
+
+        if not rows:
+            return pd.DataFrame(columns=[
+                'segment_value', 'segment_start', 'segment_end',
+                'segment_duration', 'segment_index',
+            ])
+
+        result = pd.DataFrame(rows)
+
+        if min_duration is not None:
+            min_td = pd.Timedelta(min_duration)
+            result = result[result['segment_duration'] >= min_td].reset_index(drop=True)
+            result['segment_index'] = range(len(result))
+
+        logger.info(
+            f"Extracted {len(result)} segments from UUID '{segment_uuid}' "
+            f"with {result['segment_value'].nunique()} unique values."
+        )
+        return result
+
+    @classmethod
+    def apply_ranges(
+        cls,
+        dataframe: pd.DataFrame,
+        time_ranges: pd.DataFrame,
+        uuid_column: str = 'uuid',
+        time_column: str = 'systime',
+        target_uuids: Optional[List[str]] = None,
+    ) -> pd.DataFrame:
+        """Filter process parameter data by extracted time ranges.
+
+        For each time range (segment), selects the rows from the main DataFrame
+        that fall within [segment_start, segment_end] and annotates them with
+        the segment value and index.
+
+        Args:
+            dataframe: Input DataFrame with process parameter data (all UUIDs).
+            time_ranges: Output from extract_time_ranges.
+            uuid_column: Column identifying each timeseries.
+            time_column: Column containing timestamps.
+            target_uuids: Optional list of UUIDs to include. None keeps all.
+
+        Returns:
+            Input DataFrame filtered to the time ranges, with added columns:
+            - segment_value: The active order/part number for each row.
+            - segment_index: The sequential segment index.
+        """
+        cls._validate_column(dataframe, time_column)
+
+        if time_ranges.empty:
+            logger.warning("No time ranges provided.")
+            result = dataframe.iloc[:0].copy()
+            result['segment_value'] = pd.Series(dtype='object')
+            result['segment_index'] = pd.Series(dtype='int64')
+            return result
+
+        df = dataframe.copy()
+        df[time_column] = pd.to_datetime(df[time_column])
+
+        if target_uuids is not None:
+            df = df[df[uuid_column].isin(target_uuids)]
+
+        # Assign segments via interval lookup
+        segments = []
+        for _, seg in time_ranges.iterrows():
+            mask = (df[time_column] >= seg['segment_start']) & (df[time_column] <= seg['segment_end'])
+            matched = df[mask].copy()
+            matched['segment_value'] = seg['segment_value']
+            matched['segment_index'] = seg['segment_index']
+            segments.append(matched)
+
+        if not segments:
+            logger.warning("No data matched any time range.")
+            result = dataframe.iloc[:0].copy()
+            result['segment_value'] = pd.Series(dtype='object')
+            result['segment_index'] = pd.Series(dtype='int64')
+            return result
+
+        result = pd.concat(segments, ignore_index=True)
+        logger.info(
+            f"Applied {len(time_ranges)} ranges: {len(result)} rows across "
+            f"{result[uuid_column].nunique()} UUIDs."
+        )
+        return result
 
     @classmethod
     def compute_metric_profiles(
@@ -42,26 +206,30 @@ class MetricPatternAnalysis(Base):
         dataframe: pd.DataFrame,
         uuid_column: str = 'uuid',
         value_column: str = 'value_double',
-        time_column: str = 'systime',
-        window: Optional[str] = None,
+        group_column: str = 'segment_value',
         metrics: Optional[List[str]] = None,
     ) -> pd.DataFrame:
-        """Compute statistical metric profiles per UUID per time window.
+        """Compute statistical metrics per UUID per segment.
+
+        Typically called on the output of apply_ranges, where each row is
+        annotated with a segment_value (order/part number). Computes metrics
+        per (UUID, segment) pair using NumericStatistics.
 
         Args:
-            dataframe: Input DataFrame in long format.
+            dataframe: Input DataFrame (output of apply_ranges or similar).
             uuid_column: Column identifying each timeseries.
             value_column: Column containing numeric values.
-            time_column: Column containing timestamps.
-            window: Pandas frequency string for time windows (e.g. '1h', '1D').
-                None computes metrics over the entire range per UUID.
+            group_column: Column to group segments by (e.g. 'segment_value',
+                'segment_index'). Use 'segment_value' to aggregate all ranges
+                of the same order, or 'segment_index' for individual ranges.
             metrics: Subset of metric names to compute. None uses all 19 metrics.
 
         Returns:
-            DataFrame with columns [uuid, window_start, window_end, metric_1, ...].
+            DataFrame with columns [uuid, <group_column>, metric_1, metric_2, ...].
         """
         cls._validate_column(dataframe, uuid_column)
         cls._validate_column(dataframe, value_column)
+        cls._validate_column(dataframe, group_column)
 
         if metrics is not None:
             invalid = set(metrics) - set(ALL_METRICS)
@@ -69,42 +237,24 @@ class MetricPatternAnalysis(Base):
                 raise ValueError(f"Unknown metrics: {invalid}. Available: {ALL_METRICS}")
 
         rows = []
+        for (uuid_val, group_val), group in dataframe.groupby([uuid_column, group_column]):
+            numeric_data = group[value_column].dropna()
+            if len(numeric_data) < 2:
+                continue
 
-        for uuid_val, uuid_group in dataframe.groupby(uuid_column):
-            if window is not None:
-                cls._validate_column(dataframe, time_column)
-                grouped = uuid_group.set_index(time_column).resample(window)
-                for window_label, window_group in grouped:
-                    window_group = window_group.reset_index()
-                    if len(window_group) < 2 or window_group[value_column].isna().all():
-                        continue
-                    stats = NumericStatistics.summary_as_dict(window_group, value_column)
-                    if metrics is not None:
-                        stats = {k: v for k, v in stats.items() if k in metrics}
-                    stats[uuid_column] = uuid_val
-                    stats['window_start'] = window_label
-                    stats['window_end'] = window_label + pd.tseries.frequencies.to_offset(window)
-                    rows.append(stats)
-            else:
-                if len(uuid_group) < 2 or uuid_group[value_column].isna().all():
-                    continue
-                stats = NumericStatistics.summary_as_dict(uuid_group, value_column)
-                if metrics is not None:
-                    stats = {k: v for k, v in stats.items() if k in metrics}
-                stats[uuid_column] = uuid_val
-                if time_column in dataframe.columns:
-                    stats['window_start'] = uuid_group[time_column].min()
-                    stats['window_end'] = uuid_group[time_column].max()
-                rows.append(stats)
+            stats = NumericStatistics.summary_as_dict(group, value_column)
+            if metrics is not None:
+                stats = {k: v for k, v in stats.items() if k in metrics}
+            stats[uuid_column] = uuid_val
+            stats[group_column] = group_val
+            stats['sample_count'] = len(numeric_data)
+            rows.append(stats)
 
         if not rows:
             return pd.DataFrame()
 
         result = pd.DataFrame(rows)
-        # Reorder columns: uuid first, then window columns, then metrics
-        leading = [uuid_column]
-        if 'window_start' in result.columns:
-            leading += ['window_start', 'window_end']
+        leading = [uuid_column, group_column, 'sample_count']
         metric_cols = [c for c in result.columns if c not in leading]
         return result[leading + metric_cols].reset_index(drop=True)
 
@@ -114,9 +264,11 @@ class MetricPatternAnalysis(Base):
         df: pd.DataFrame,
         metric_columns: Optional[List[str]] = None,
     ) -> List[str]:
-        """Identify metric columns from a metric profiles DataFrame."""
-        non_metric = {'uuid', 'window_start', 'window_end'}
-        available = [c for c in df.columns if c not in non_metric and pd.api.types.is_numeric_dtype(df[c])]
+        """Identify numeric metric columns from a profiles DataFrame."""
+        non_metric = {'uuid', 'segment_value', 'segment_index', 'window_start',
+                      'window_end', 'sample_count'}
+        available = [c for c in df.columns
+                     if c not in non_metric and pd.api.types.is_numeric_dtype(df[c])]
         if metric_columns is not None:
             missing = set(metric_columns) - set(available)
             if missing:
@@ -128,34 +280,31 @@ class MetricPatternAnalysis(Base):
     def compute_distance_matrix(
         cls,
         metric_profiles: pd.DataFrame,
-        uuid_column: str = 'uuid',
+        group_column: str = 'uuid',
         metric_columns: Optional[List[str]] = None,
         distance_metric: str = 'euclidean',
         normalize: bool = True,
     ) -> pd.DataFrame:
-        """Compute pairwise distance matrix between UUID metric profiles.
+        """Compute pairwise distance matrix between metric profile vectors.
 
-        If metric_profiles contains multiple windows per UUID, metrics are
-        averaged across windows to produce one vector per UUID.
+        Can compare UUIDs (group_column='uuid') or segments
+        (group_column='segment_value'). When multiple rows exist per group,
+        metrics are averaged.
 
         Args:
             metric_profiles: Output from compute_metric_profiles.
-            uuid_column: Column identifying each timeseries.
+            group_column: Column to group by ('uuid' or 'segment_value').
             metric_columns: Which metric columns to use. None auto-detects.
             distance_metric: 'euclidean', 'cosine', or 'manhattan'.
             normalize: Z-normalize metrics before computing distances.
 
         Returns:
-            Square DataFrame indexed and columned by UUID with pairwise distances.
+            Square DataFrame indexed by group values with pairwise distances.
         """
         cols = cls._get_metric_columns(metric_profiles, metric_columns)
-
-        # Aggregate to one vector per UUID
-        agg = metric_profiles.groupby(uuid_column)[cols].mean()
-        uuids = agg.index.tolist()
+        agg = metric_profiles.groupby(group_column)[cols].mean()
+        labels = agg.index.tolist()
         matrix = agg.values.astype(float)
-
-        # Handle NaN values
         matrix = np.nan_to_num(matrix, nan=0.0)
 
         if normalize and matrix.shape[0] > 1:
@@ -163,14 +312,20 @@ class MetricPatternAnalysis(Base):
             col_std[col_std < 1e-10] = 1.0
             matrix = (matrix - matrix.mean(axis=0)) / col_std
 
-        metric_map = {'euclidean': 'euclidean', 'cosine': 'cosine', 'manhattan': 'cityblock'}
+        metric_map = {
+            'euclidean': 'euclidean',
+            'cosine': 'cosine',
+            'manhattan': 'cityblock',
+        }
         if distance_metric not in metric_map:
-            raise ValueError(f"Unknown distance_metric: {distance_metric}. Use 'euclidean', 'cosine', or 'manhattan'.")
+            raise ValueError(
+                f"Unknown distance_metric: {distance_metric}. "
+                f"Use 'euclidean', 'cosine', or 'manhattan'."
+            )
 
         condensed = pdist(matrix, metric=metric_map[distance_metric])
         dist_matrix = squareform(condensed)
-
-        return pd.DataFrame(dist_matrix, index=uuids, columns=uuids)
+        return pd.DataFrame(dist_matrix, index=labels, columns=labels)
 
     @classmethod
     def cluster_uuids(
@@ -180,29 +335,27 @@ class MetricPatternAnalysis(Base):
         distance_threshold: Optional[float] = None,
         linkage_method: str = 'average',
     ) -> pd.DataFrame:
-        """Group UUIDs by metric similarity using hierarchical clustering.
+        """Group items by metric similarity using hierarchical clustering.
 
         Args:
             distance_matrix: Square distance matrix from compute_distance_matrix.
             n_clusters: Number of clusters. Ignored if distance_threshold is set.
-            distance_threshold: Cut the dendrogram at this distance. Overrides n_clusters.
-            linkage_method: Linkage criterion: 'average', 'complete', 'single', 'ward'.
-                Note: 'ward' requires euclidean distances.
+            distance_threshold: Cut dendrogram at this distance. Overrides n_clusters.
+            linkage_method: 'average', 'complete', 'single', or 'ward'.
 
         Returns:
             DataFrame with columns [uuid, cluster].
         """
-        uuids = distance_matrix.index.tolist()
+        labels = distance_matrix.index.tolist()
         condensed = squareform(distance_matrix.values, checks=False)
-
         Z = linkage(condensed, method=linkage_method)
 
         if distance_threshold is not None:
-            labels = fcluster(Z, t=distance_threshold, criterion='distance')
+            clusters = fcluster(Z, t=distance_threshold, criterion='distance')
         else:
-            labels = fcluster(Z, t=n_clusters, criterion='maxclust')
+            clusters = fcluster(Z, t=n_clusters, criterion='maxclust')
 
-        return pd.DataFrame({'uuid': uuids, 'cluster': labels.astype(int)})
+        return pd.DataFrame({'uuid': labels, 'cluster': clusters.astype(int)})
 
     @classmethod
     def find_similar_uuids(
@@ -211,22 +364,21 @@ class MetricPatternAnalysis(Base):
         target_uuid: str,
         top_k: int = 5,
     ) -> pd.DataFrame:
-        """Find UUIDs most similar to a target based on metric profiles.
+        """Find items most similar to a target based on metric profiles.
 
         Args:
             distance_matrix: Square distance matrix from compute_distance_matrix.
-            target_uuid: UUID to find similarities for.
-            top_k: Number of similar UUIDs to return.
+            target_uuid: Item to find similarities for.
+            top_k: Number of similar items to return.
 
         Returns:
             DataFrame with columns [uuid, distance, rank] sorted by distance.
         """
         if target_uuid not in distance_matrix.index:
-            raise ValueError(f"UUID '{target_uuid}' not found in distance matrix.")
+            raise ValueError(f"'{target_uuid}' not found in distance matrix.")
 
         distances = distance_matrix.loc[target_uuid].drop(target_uuid)
         sorted_dists = distances.sort_values().head(top_k)
-
         return pd.DataFrame({
             'uuid': sorted_dists.index,
             'distance': sorted_dists.values,
@@ -239,10 +391,10 @@ class MetricPatternAnalysis(Base):
         distance_matrix: pd.DataFrame,
         threshold: float = 2.0,
     ) -> pd.DataFrame:
-        """Detect UUIDs with unusual metric profiles.
+        """Detect items with unusual metric profiles.
 
-        Computes the mean distance from each UUID to all others. UUIDs with
-        a z-score above the threshold are flagged as anomalous.
+        Computes the mean distance from each item to all others. Items whose
+        z-score exceeds the threshold are flagged as anomalous.
 
         Args:
             distance_matrix: Square distance matrix from compute_distance_matrix.
@@ -251,10 +403,8 @@ class MetricPatternAnalysis(Base):
         Returns:
             DataFrame with columns [uuid, anomaly_score, z_score, is_anomalous].
         """
-        uuids = distance_matrix.index.tolist()
-        n = len(uuids)
-
-        # Mean distance to all other UUIDs
+        labels = distance_matrix.index.tolist()
+        n = len(labels)
         mean_dists = distance_matrix.values.sum(axis=1) / max(n - 1, 1)
 
         global_mean = mean_dists.mean()
@@ -265,7 +415,7 @@ class MetricPatternAnalysis(Base):
             z_scores = (mean_dists - global_mean) / global_std
 
         return pd.DataFrame({
-            'uuid': uuids,
+            'uuid': labels,
             'anomaly_score': mean_dists,
             'z_score': z_scores,
             'is_anomalous': z_scores > threshold,
@@ -276,30 +426,30 @@ class MetricPatternAnalysis(Base):
         cls,
         metric_profiles: pd.DataFrame,
         uuid_column: str = 'uuid',
-        window_start_column: str = 'window_start',
+        group_column: str = 'segment_index',
         metric_columns: Optional[List[str]] = None,
         normalize: bool = True,
     ) -> pd.DataFrame:
-        """Track how each UUID's metric profile changes between consecutive windows.
+        """Track how each UUID's metrics change across consecutive segments.
 
-        Computes the Euclidean distance between consecutive window metric vectors
-        for each UUID. Large change scores indicate regime changes.
+        Computes the Euclidean distance between consecutive segment metric
+        vectors for each UUID. Large change scores indicate process shifts.
 
         Args:
-            metric_profiles: Output from compute_metric_profiles (must have windows).
+            metric_profiles: Output from compute_metric_profiles.
             uuid_column: Column identifying each timeseries.
-            window_start_column: Column with window start timestamps.
+            group_column: Column ordering the segments (e.g. 'segment_index').
             metric_columns: Which metric columns to use. None auto-detects.
             normalize: Z-normalize metrics before computing change scores.
 
         Returns:
-            DataFrame with columns [uuid, window_start, change_score].
+            DataFrame with columns [uuid, <group_column>, change_score].
         """
         cols = cls._get_metric_columns(metric_profiles, metric_columns)
-
         rows = []
+
         for uuid_val, group in metric_profiles.groupby(uuid_column):
-            group = group.sort_values(window_start_column)
+            group = group.sort_values(group_column)
             matrix = group[cols].values.astype(float)
             matrix = np.nan_to_num(matrix, nan=0.0)
 
@@ -308,18 +458,17 @@ class MetricPatternAnalysis(Base):
                 col_std[col_std < 1e-10] = 1.0
                 matrix = (matrix - matrix.mean(axis=0)) / col_std
 
-            windows = group[window_start_column].values
+            segments = group[group_column].values
             for i in range(1, len(matrix)):
                 dist = float(np.linalg.norm(matrix[i] - matrix[i - 1]))
                 rows.append({
                     uuid_column: uuid_val,
-                    window_start_column: windows[i],
+                    group_column: segments[i],
                     'change_score': dist,
                 })
 
         if not rows:
-            return pd.DataFrame(columns=[uuid_column, window_start_column, 'change_score'])
-
+            return pd.DataFrame(columns=[uuid_column, group_column, 'change_score'])
         return pd.DataFrame(rows).reset_index(drop=True)
 
     @classmethod
@@ -327,26 +476,28 @@ class MetricPatternAnalysis(Base):
         cls,
         metric_profiles: pd.DataFrame,
         uuid_column: str = 'uuid',
-        window_start_column: str = 'window_start',
+        group_column: str = 'segment_value',
         metric_columns: Optional[List[str]] = None,
         normalize: bool = True,
         top_k: int = 10,
     ) -> pd.DataFrame:
-        """Find the most similar (UUID, window) pairs across all data.
+        """Find the most similar (UUID, segment) pairs across all data.
+
+        Useful for finding which process parameters behave similarly across
+        different orders or part numbers.
 
         Args:
-            metric_profiles: Output from compute_metric_profiles (must have windows).
+            metric_profiles: Output from compute_metric_profiles.
             uuid_column: Column identifying each timeseries.
-            window_start_column: Column with window start timestamps.
+            group_column: Column identifying each segment.
             metric_columns: Which metric columns to use. None auto-detects.
             normalize: Z-normalize metrics before computing distances.
             top_k: Number of closest pairs to return.
 
         Returns:
-            DataFrame with columns [uuid_a, window_a, uuid_b, window_b, distance, rank].
+            DataFrame with columns [uuid_a, group_a, uuid_b, group_b, distance, rank].
         """
         cols = cls._get_metric_columns(metric_profiles, metric_columns)
-
         matrix = metric_profiles[cols].values.astype(float)
         matrix = np.nan_to_num(matrix, nan=0.0)
 
@@ -356,27 +507,31 @@ class MetricPatternAnalysis(Base):
             matrix = (matrix - matrix.mean(axis=0)) / col_std
 
         uuids = metric_profiles[uuid_column].values
-        windows = metric_profiles[window_start_column].values
+        groups = metric_profiles[group_column].values
 
         condensed = pdist(matrix, metric='euclidean')
         n = len(matrix)
 
-        # Find top_k smallest distances
+        k = min(top_k, len(condensed))
+        if k == 0:
+            return pd.DataFrame(columns=[
+                'uuid_a', 'group_a', 'uuid_b', 'group_b', 'distance', 'rank',
+            ])
+
         if len(condensed) <= top_k:
             sorted_indices = np.argsort(condensed)
         else:
-            sorted_indices = np.argpartition(condensed, top_k)[:top_k]
+            sorted_indices = np.argpartition(condensed, k)[:k]
             sorted_indices = sorted_indices[np.argsort(condensed[sorted_indices])]
 
         rows = []
         for rank, idx in enumerate(sorted_indices, 1):
-            # Convert condensed index to (i, j)
             i, j = cls._condensed_to_square(idx, n)
             rows.append({
                 'uuid_a': uuids[i],
-                'window_a': windows[i],
+                'group_a': groups[i],
                 'uuid_b': uuids[j],
-                'window_b': windows[j],
+                'group_b': groups[j],
                 'distance': float(condensed[idx]),
                 'rank': rank,
             })
@@ -386,7 +541,6 @@ class MetricPatternAnalysis(Base):
     @staticmethod
     def _condensed_to_square(idx: int, n: int):
         """Convert a condensed distance matrix index to (row, col) pair."""
-        # The condensed index k corresponds to (i, j) where i < j
         i = int(n - 2 - np.floor(np.sqrt(-8 * idx + 4 * n * (n - 1) - 7) / 2.0 - 0.5))
         j = int(idx + i + 1 - n * (n - 1) // 2 + (n - i) * ((n - i) - 1) // 2)
         return i, j
