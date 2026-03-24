@@ -60,4 +60,16 @@ Classes:
   - reproducibility: Appraiser Variation (AV) across operators.
   - gauge_rr_summary: Full Gauge R&R table with %GRR and ndc.
   - measurement_bias: Compare measurements to known reference values.
+
+- DataGapAnalysisEvents: Analyse gaps and coverage in signal data.
+  - find_gaps: Locate all gaps longer than a threshold.
+  - gap_summary: Aggregate statistics across all gaps.
+  - coverage_by_period: Data coverage percentage per time window.
+  - interpolation_candidates: Gaps small enough to interpolate safely.
+
+- ValueDistributionEvents: Examine signal distribution over time.
+  - detect_mode_changes: Detect shifts between distinct operating modes.
+  - detect_bimodal: Test whether the signal has a bimodal distribution.
+  - normality_windows: Flag time windows with non-normal distributions.
+  - percentile_tracking: Track selected percentiles over time windows.
 """
