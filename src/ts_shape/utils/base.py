@@ -1,3 +1,37 @@
+"""Base class and architecture guidelines for ts-shape.
+
+ts-shape uses two complementary patterns for data processing.  Choose
+the right one based on the complexity of the operation:
+
+**Stateless classmethods** — use when:
+
+- The operation is a single, self-contained transformation (filter,
+  calculate, convert, aggregate).
+- There is no shared configuration between methods.
+- The result depends only on the inputs (pure function).
+- Examples: ``IntegerCalc``, ``StringFilter``, ``NumericStatistics``,
+  ``DateTimeFilter``, ``LambdaProcessor``.
+
+**Stateful instance classes** — use when:
+
+- Multiple related methods share configuration (column names, signal
+  UUIDs, thresholds, tolerances).
+- The constructor validates or preprocesses data once for many
+  operations (e.g. sorting, filtering to a specific UUID).
+- The domain workflow has a natural setup phase before analysis
+  (e.g. compute control limits, then apply SPC rules).
+- Examples: ``DataHarmonizer``, ``OutlierDetectionEvents``,
+  ``MachineStateEvents``, ``OEECalculator``, all event classes.
+
+**FeaturePipeline** — use when chaining multiple steps:
+
+- Combines both patterns via ``add_step()`` (classmethods) and
+  ``add_instance_step()`` (instance classes).
+- Supports ``$prev`` / ``$input`` sentinels for multi-DataFrame wiring.
+- Provides logging, timing, and intermediate result capture.
+- See ``ts_shape.features.segment_analysis.feature_pipeline``.
+"""
+
 import logging
 import pandas as pd  # type: ignore
 

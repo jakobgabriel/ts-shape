@@ -9,11 +9,6 @@ logger = logging.getLogger(__name__)
 # Valid sentinel values that can be used in keyword arguments
 _VALID_SENTINELS = frozenset({'$prev', '$input'})
 
-# Instance-based classes in ts-shape (require add_instance_step)
-_KNOWN_INSTANCE_CLASSES = {
-    'DataHarmonizer', 'CrossSignalAnalytics', 'CycleExtractor',
-    'CycleDataProcessor', 'DescriptiveFeatures', 'OEECalculator',
-}
 
 
 class FeaturePipeline:
@@ -43,14 +38,13 @@ class FeaturePipeline:
     - **Pattern recognition:** ``PatternRecognition``
     - **Statistics:** ``NumericStatistics``, ``BooleanStatistics``,
       ``StringStatistics``, ``TimestampStatistics``, ``TimeGroupedStatistics``
-    - **Events:** all 60+ event classes (``ThresholdMonitoringEvents``,
-      ``MachineStateEvents``, ``SteadyStateDetectionEvents``, etc.)
     - **Context:** ``ValueMapper``
 
     **Pattern 2 — Stateful instance classes** (``add_instance_step``)
 
-    A small number of classes that must be instantiated with a DataFrame
-    first.  Methods operate on internal state::
+    Classes that must be instantiated with a DataFrame first.  The
+    constructor stores configuration (column names, UUIDs, thresholds)
+    and methods operate on internal state::
 
         # Must create an object first:
         harmonizer = DataHarmonizer(df, time_column='systime')
@@ -64,6 +58,10 @@ class FeaturePipeline:
     - ``CycleDataProcessor`` — split/merge data by cycle
     - ``DescriptiveFeatures`` — per-group feature tables
     - ``OEECalculator`` — OEE availability/performance/quality
+    - **Events (all 60+ classes):** ``ThresholdMonitoringEvents``,
+      ``MachineStateEvents``, ``SteadyStateDetectionEvents``,
+      ``OutlierDetectionEvents``, ``StatisticalProcessControlRuleBased``,
+      ``DegradationDetectionEvents``, ``EnergyConsumptionEvents``, etc.
 
     **Pattern 3 — Custom functions** (``add_lambda_step``)
 
@@ -530,7 +528,12 @@ def _validate_sentinels(kwargs: Dict[str, Any]) -> None:
 
 
 def _guard_instance_method(method: Any) -> None:
-    """Detect instance methods passed to add_step and raise with guidance."""
+    """Detect instance methods passed to add_step and raise with guidance.
+
+    Uses introspection to determine whether *method* is a plain instance
+    method (which requires ``add_instance_step``) or a ``@classmethod`` /
+    ``@staticmethod`` (which works with ``add_step``).
+    """
     if not hasattr(method, '__qualname__'):
         return
 
@@ -540,38 +543,23 @@ def _guard_instance_method(method: Any) -> None:
 
     owner_name = parts[-2]
 
-    # Check if the owner class is a known instance-based class
-    if owner_name in _KNOWN_INSTANCE_CLASSES:
-        raise TypeError(
-            f"{owner_name}.{method.__name__} belongs to an instance-based "
-            f"class. Use add_instance_step({owner_name}, "
-            f"call='{method.__name__}') instead of add_step()."
-        )
+    # For bound classmethods, __self__ is the class itself
+    if hasattr(method, '__self__') and isinstance(method.__self__, type):
+        return  # It's a proper @classmethod — fine for add_step
 
-    # Heuristic: check if the method is an unbound instance method
-    # (not decorated with @classmethod or @staticmethod)
-    try:
-        # For bound classmethods, __self__ is the class
-        if hasattr(method, '__self__') and isinstance(method.__self__, type):
-            return  # It's a proper @classmethod — fine for add_step
-
-        # For unbound methods accessed on the class, check via the class
-        owner_cls = _resolve_owner_class(method)
-        if owner_cls is not None:
-            attr = inspect.getattr_static(owner_cls, method.__name__, None)
-            if isinstance(attr, classmethod) or isinstance(attr, staticmethod):
-                return  # @classmethod or @staticmethod — fine
-            # If it's a plain function on the class, it's an instance method
-            if callable(attr) and not isinstance(attr, (classmethod, staticmethod)):
-                raise TypeError(
-                    f"{owner_name}.{method.__name__} appears to be an "
-                    f"instance method. Use add_instance_step({owner_name}, "
-                    f"call='{method.__name__}') instead of add_step()."
-                )
-    except TypeError:
-        raise
-    except Exception:
-        pass  # If introspection fails, allow it — runtime will catch errors
+    # Resolve the owner class and inspect the raw attribute
+    owner_cls = _resolve_owner_class(method)
+    if owner_cls is not None:
+        attr = inspect.getattr_static(owner_cls, method.__name__, None)
+        if isinstance(attr, (classmethod, staticmethod)):
+            return  # @classmethod or @staticmethod — fine for add_step
+        # Plain function on the class means it's an instance method
+        if callable(attr):
+            raise TypeError(
+                f"{owner_name}.{method.__name__} is an instance method. "
+                f"Use add_instance_step({owner_name}, "
+                f"call='{method.__name__}') instead of add_step()."
+            )
 
 
 def _resolve_owner_class(method: Any) -> Optional[type]:
