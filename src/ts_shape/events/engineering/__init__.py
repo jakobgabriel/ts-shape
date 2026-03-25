@@ -78,6 +78,12 @@ Classes:
   - score_trend: Is stability improving or degrading?
   - worst_periods: N worst-scoring windows.
   - stability_comparison: Compare each window to best-observed.
+
+- TimeToThresholdEvents: Predictive time-to-threshold analysis.
+  - time_to_threshold: Estimate time until signal reaches a value.
+  - time_to_threshold_windows: Per-window time-to-threshold estimates.
+  - remaining_useful_range: Time until signal leaves acceptable band.
+  - crossing_forecast: Forecast crossing times for multiple thresholds.
 """
 
 from .setpoint_events import SetpointChangeEvents  # re-export
@@ -93,6 +99,7 @@ from .control_loop_health import ControlLoopHealthEvents  # re-export
 from .disturbance_recovery import DisturbanceRecoveryEvents  # re-export
 from .material_balance import MaterialBalanceEvents  # re-export
 from .process_stability_index import ProcessStabilityIndex  # re-export
+from .time_to_threshold import TimeToThresholdEvents  # re-export
 
 __all__ = [
     "SetpointChangeEvents",
@@ -108,4 +115,5 @@ __all__ = [
     "DisturbanceRecoveryEvents",
     "MaterialBalanceEvents",
     "ProcessStabilityIndex",
+    "TimeToThresholdEvents",
 ]

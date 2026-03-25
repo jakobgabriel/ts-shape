@@ -154,6 +154,12 @@ Performance and Target Tracking:
   - weekly_summary: Roll up daily metrics to weekly.
   - monthly_summary: Roll up daily metrics to monthly.
   - compare_periods: Period-over-period comparison.
+
+- OperatingStateEvents: Infer operating states from continuous signals.
+  - infer_states: Cluster the signal into N operating states.
+  - state_duration_stats: Duration statistics per inferred state.
+  - unusual_state_sequence: Detect unexpected state transitions.
+  - dwell_time_violation: Find intervals exceeding max allowed duration in a state.
 """
 
 # Event Detection Classes
@@ -193,6 +199,7 @@ from .scrap_tracking import ScrapTracking
 from .target_tracking import TargetTracking
 from .shift_handover import ShiftHandoverReport
 from .period_summary import PeriodSummary
+from .operating_state import OperatingStateEvents
 
 __all__ = [
     # Event Detection
@@ -229,4 +236,5 @@ __all__ = [
     "TargetTracking",
     "ShiftHandoverReport",
     "PeriodSummary",
+    "OperatingStateEvents",
 ]
