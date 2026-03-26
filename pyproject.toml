@@ -8,15 +8,15 @@ dynamic = ["version"]
 description = "ts-shape filters, transforms and engineers your timeseries dataframe"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [
     { name = "Jakob Gabriel", email = "jakob.gabriel5@googlemail.com" },
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering",
     "Typing :: Typed",
