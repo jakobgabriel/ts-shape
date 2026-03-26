@@ -35,14 +35,10 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install dependencies
+      - name: Install package and dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest pytest-cov
-
-      - name: Install package
-        run: pip install -e .
+          pip install -e ".[dev]"
 
       - name: Run tests
         run: pytest --cov=ts_shape --cov-report=term -v
@@ -109,16 +105,10 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install package dependencies
+      - name: Install package and documentation dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Install documentation dependencies
-        run: pip install -r requirements-docs.txt
-
-      - name: Install package
-        run: pip install .
+          pip install ".[docs]"
 
       - name: Build MkDocs documentation
         run: mkdocs build
