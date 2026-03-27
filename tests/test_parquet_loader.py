@@ -3,10 +3,6 @@ import pandas as pd  # type: ignore
 from ts_shape.loader.timeseries.parquet_loader import ParquetLoader
 
 
-class DummyPath(Path):
-    _flavour = type(Path())._flavour
-
-
 def test_parquet_loader_load_all_and_filters(monkeypatch, tmp_path):
     # Create fake file list
     base = tmp_path

@@ -1,6 +1,6 @@
 import logging
 import pandas as pd  # type: ignore
-import pytz
+from zoneinfo import available_timezones
 from ts_shape.utils.base import Base  
 
 logger = logging.getLogger(__name__)
@@ -31,8 +31,8 @@ class TimestampConverter(Base):
             raise ValueError(f"Invalid unit '{unit}'. Must be one of {valid_units}.")
 
         # Validate timezone
-        if timezone not in pytz.all_timezones:
-            raise ValueError(f"Invalid timezone '{timezone}'. Use a valid timezone name from pytz.all_timezones.")
+        if timezone not in available_timezones():
+            raise ValueError(f"Invalid timezone '{timezone}'. Use a valid timezone name from available_timezones().")
 
         df = dataframe.copy()
         for col in columns:
