@@ -1,5 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": [
+    "Default Renovate preset for jakobgabriel Python projects.",
+    "Covers pep621, pip_requirements, pip_setup, github-actions, and python-version managers.",
+    "To reuse: move this file to a jakobgabriel/renovate-config repo and extend via github>jakobgabriel/renovate-config."
+  ],
   "extends": ["config:recommended"],
   "dependencyDashboard": true,
   "osvVulnerabilityAlerts": true,
@@ -7,6 +12,8 @@
   "prConcurrentLimit": 5,
   "assignees": ["jakobgabriel"],
   "commitMessagePrefix": "chore(deps):",
+  "platformAutomerge": true,
+  "automergeType": "pr",
   "enabledManagers": [
     "pep621",
     "pip_requirements",
@@ -27,25 +34,38 @@
       "description": "Group core runtime dependencies",
       "matchManagers": ["pep621"],
       "matchDepTypes": ["dependencies"],
-      "groupName": "core runtime dependencies"
+      "groupName": "core runtime dependencies",
+      "labels": ["dependencies"]
     },
     {
       "description": "Group scientific stack (numpy, pandas, scipy)",
       "matchPackageNames": ["numpy", "pandas", "scipy"],
-      "groupName": "scientific stack"
+      "groupName": "scientific stack",
+      "labels": ["dependencies", "scientific"]
     },
     {
       "description": "Group cloud storage dependencies (azure-storage-blob, s3fs)",
       "matchPackageNames": ["azure-storage-blob", "s3fs"],
-      "groupName": "cloud storage"
+      "groupName": "cloud storage",
+      "labels": ["dependencies", "cloud"]
     },
     {
-      "description": "Automerge docs dependencies (minor/patch)",
+      "description": "Automerge docs dependencies (minor/patch), monthly schedule",
       "matchManagers": ["pip_requirements"],
       "matchFileNames": ["requirements-docs.txt"],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
-      "groupName": "docs dependencies"
+      "groupName": "docs dependencies",
+      "labels": ["docs"],
+      "schedule": ["before 9am on the first day of the month"]
+    },
+    {
+      "description": "Dev tools on monthly schedule",
+      "matchPackageNames": ["pytest", "pytest-cov", "black", "ruff"],
+      "groupName": "dev tools",
+      "labels": ["dev-tools"],
+      "schedule": ["before 9am on the first day of the month"],
+      "automerge": true
     },
     {
       "description": "Automerge minor and patch updates",
@@ -70,7 +90,8 @@
       "matchManagers": ["github-actions"],
       "pinDigests": true,
       "automerge": true,
-      "groupName": "github actions"
+      "groupName": "github actions",
+      "labels": ["ci"]
     }
   ]
 }
