@@ -1,7 +1,7 @@
 import logging
+from typing import Any
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import List, Dict, Any, Optional, Callable
 
 from ts_shape.utils.base import Base
 
@@ -42,15 +42,9 @@ class ChangeoverEvents(Base):
         Uses a hold check: the new product must persist for at least min_hold
         until the next change.
         """
-        p = (
-            self.dataframe[self.dataframe["uuid"] == product_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        p = self.dataframe[self.dataframe["uuid"] == product_uuid].copy().sort_values(self.time_column)
         if p.empty:
-            return pd.DataFrame(
-                columns=["systime", "uuid", "source_uuid", "is_delta", "new_value"]
-            )
+            return pd.DataFrame(columns=["systime", "uuid", "source_uuid", "is_delta", "new_value"])
         p[self.time_column] = pd.to_datetime(p[self.time_column])
         series = p[value_column]
         changed = series.ne(series.shift())
@@ -59,9 +53,9 @@ class ChangeoverEvents(Base):
         next_change = change_times.shift(-1)
         ok = (next_change - change_times >= min_td) | next_change.isna()
         change_times = change_times[ok]
-        out = p[p[self.time_column].isin(change_times)][
-            [self.time_column, value_column]
-        ].rename(columns={self.time_column: "systime", value_column: "new_value"})
+        out = p[p[self.time_column].isin(change_times)][[self.time_column, value_column]].rename(
+            columns={self.time_column: "systime", value_column: "new_value"}
+        )
         out["uuid"] = self.event_uuid
         out["source_uuid"] = product_uuid
         out["is_delta"] = True
@@ -72,10 +66,10 @@ class ChangeoverEvents(Base):
         product_uuid: str,
         *,
         value_column: str = "value_string",
-        start_time: Optional[pd.Timestamp] = None,
+        start_time: pd.Timestamp | None = None,
         until: str = "fixed_window",
-        config: Optional[Dict[str, Any]] = None,
-        fallback: Optional[Dict[str, Any]] = None,
+        config: dict[str, Any] | None = None,
+        fallback: dict[str, Any] | None = None,
     ) -> pd.DataFrame:
         """Compute changeover windows per product change with enhanced configurability.
 
@@ -101,11 +95,9 @@ class ChangeoverEvents(Base):
         if start_time is not None:
             changes = changes[changes["systime"] >= pd.to_datetime(start_time)]
         if changes.empty:
-            return pd.DataFrame(
-                columns=["start", "end", "uuid", "source_uuid", "is_delta", "method", "completed"]
-            )
+            return pd.DataFrame(columns=["start", "end", "uuid", "source_uuid", "is_delta", "method", "completed"])
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, r in changes.iterrows():
             t0 = pd.to_datetime(r["systime"])
             if until == "fixed_window":
@@ -156,12 +148,12 @@ class ChangeoverEvents(Base):
 
         return pd.DataFrame(rows)
 
-    def _compute_stable_band_end(self, t0: pd.Timestamp, config: Dict[str, Any]) -> Optional[pd.Timestamp]:
+    def _compute_stable_band_end(self, t0: pd.Timestamp, config: dict[str, Any]) -> pd.Timestamp | None:
         """Compute end time for stable_band method with configurable reference methods."""
         metric_defs = config.get("metrics", [])
         reference_method = config.get("reference_method", "expanding_median")
 
-        metric_ends: List[pd.Timestamp] = []
+        metric_ends: list[pd.Timestamp] = []
 
         for mdef in metric_defs:
             uid = mdef["uuid"]
@@ -169,11 +161,7 @@ class ChangeoverEvents(Base):
             band = float(mdef.get("band", 0.0))
             hold_td = pd.to_timedelta(mdef.get("hold", "0s"))
 
-            s = (
-                self.dataframe[self.dataframe["uuid"] == uid]
-                .copy()
-                .sort_values(self.time_column)
-            )
+            s = self.dataframe[self.dataframe["uuid"] == uid].copy().sort_values(self.time_column)
             s[self.time_column] = pd.to_datetime(s[self.time_column])
             s = s[s[self.time_column] >= t0]
 
@@ -190,7 +178,7 @@ class ChangeoverEvents(Base):
 
             # Find first stable period
             gid = (inside.ne(inside.shift())).cumsum()
-            end_found: Optional[pd.Timestamp] = None
+            end_found: pd.Timestamp | None = None
 
             for _, seg in s.groupby(gid):
                 seg_inside = inside.loc[seg.index]
@@ -210,7 +198,9 @@ class ChangeoverEvents(Base):
 
         return None
 
-    def _calculate_reference(self, series: pd.Series, method: str, config: Dict[str, Any], mdef: Dict[str, Any]) -> pd.Series:
+    def _calculate_reference(
+        self, series: pd.Series, method: str, config: dict[str, Any], mdef: dict[str, Any]
+    ) -> pd.Series:
         """Calculate reference values using various methods."""
         if method == "expanding_median":
             return series.expanding(min_periods=3).median()
@@ -247,9 +237,12 @@ class ChangeoverEvents(Base):
         if changes.empty or len(changes) < 2:
             return pd.DataFrame(
                 columns=[
-                    "product", "changeover_count", "avg_time_between_seconds",
-                    "min_time_between_seconds", "max_time_between_seconds",
-                    "std_time_between_seconds"
+                    "product",
+                    "changeover_count",
+                    "avg_time_between_seconds",
+                    "min_time_between_seconds",
+                    "max_time_between_seconds",
+                    "std_time_between_seconds",
                 ]
             )
 
@@ -282,4 +275,3 @@ class ChangeoverEvents(Base):
             product_metrics.append(metrics)
 
         return pd.DataFrame(product_metrics)
-

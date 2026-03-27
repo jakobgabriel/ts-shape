@@ -1,7 +1,7 @@
 import logging
+from typing import Any
+
 import pandas as pd  # type: ignore
-import numpy as np  # type: ignore
-from typing import List, Dict, Any
 
 from ts_shape.utils.base import Base
 
@@ -36,11 +36,7 @@ class DutyCycleEvents(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-        self.series = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.series = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.series[self.time_column] = pd.to_datetime(self.series[self.time_column])
 
     def on_off_intervals(self) -> pd.DataFrame:
@@ -57,17 +53,19 @@ class DutyCycleEvents(Base):
         s["state"] = s[self.value_column].fillna(False).astype(bool)
         state_change = (s["state"] != s["state"].shift()).cumsum()
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, seg in s.groupby(state_change):
             state = bool(seg["state"].iloc[0])
             start = seg[self.time_column].iloc[0]
             end = seg[self.time_column].iloc[-1]
-            rows.append({
-                "start_time": start,
-                "end_time": end,
-                "state": "on" if state else "off",
-                "duration": end - start,
-            })
+            rows.append(
+                {
+                    "start_time": start,
+                    "end_time": end,
+                    "state": "on" if state else "off",
+                    "duration": end - start,
+                }
+            )
 
         return pd.DataFrame(rows, columns=cols) if rows else pd.DataFrame(columns=cols)
 
@@ -91,18 +89,20 @@ class DutyCycleEvents(Base):
         window_td = pd.to_timedelta(window)
         resampled = s["state"].resample(window).mean()
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for ts, pct in resampled.items():
             if pd.isna(pct):
                 continue
             on_time = round(pct * window_td.total_seconds(), 2)
             off_time = round((1 - pct) * window_td.total_seconds(), 2)
-            events.append({
-                "window_start": ts,
-                "on_time": on_time,
-                "off_time": off_time,
-                "duty_cycle_pct": round(pct * 100, 2),
-            })
+            events.append(
+                {
+                    "window_start": ts,
+                    "on_time": on_time,
+                    "off_time": off_time,
+                    "duty_cycle_pct": round(pct * 100, 2),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
@@ -139,9 +139,7 @@ class DutyCycleEvents(Base):
 
         return result[cols]
 
-    def excessive_cycling(
-        self, max_transitions: int = 20, window: str = "1h"
-    ) -> pd.DataFrame:
+    def excessive_cycling(self, max_transitions: int = 20, window: str = "1h") -> pd.DataFrame:
         """Flag windows where transition count exceeds threshold.
 
         Excessive cycling indicates hunting, instability, or wear risk.
@@ -167,14 +165,12 @@ class DutyCycleEvents(Base):
         intervals = self.on_off_intervals()
         window_td = pd.to_timedelta(window)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for _, row in excessive.iterrows():
             w_start = row["window_start"]
             w_end = w_start + window_td
 
-            win_intervals = intervals[
-                (intervals["start_time"] >= w_start) & (intervals["start_time"] < w_end)
-            ]
+            win_intervals = intervals[(intervals["start_time"] >= w_start) & (intervals["start_time"] < w_end)]
 
             on_intervals = win_intervals[win_intervals["state"] == "on"]
             off_intervals = win_intervals[win_intervals["state"] == "off"]
@@ -182,11 +178,13 @@ class DutyCycleEvents(Base):
             avg_on = on_intervals["duration"].mean().total_seconds() if not on_intervals.empty else 0.0
             avg_off = off_intervals["duration"].mean().total_seconds() if not off_intervals.empty else 0.0
 
-            events.append({
-                "window_start": w_start,
-                "transition_count": int(row["total_transitions"]),
-                "avg_on_duration": round(avg_on, 2),
-                "avg_off_duration": round(avg_off, 2),
-            })
+            events.append(
+                {
+                    "window_start": w_start,
+                    "transition_count": int(row["total_transitions"]),
+                    "avg_on_duration": round(avg_on, 2),
+                    "avg_off_duration": round(avg_off, 2),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)

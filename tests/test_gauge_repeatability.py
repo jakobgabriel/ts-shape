@@ -1,6 +1,7 @@
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
+
 from ts_shape.events.quality.gauge_repeatability import GaugeRepeatabilityEvents
 
 
@@ -18,14 +19,16 @@ def gauge_rr_df():
     for part, target in part_targets.items():
         for op in operators:
             op_bias = {"op_1": 0.0, "op_2": 0.1, "op_3": -0.05}[op]
-            for trial in range(n_trials):
-                rows.append({
-                    "systime": base + pd.Timedelta(seconds=idx),
-                    "uuid": "gauge_1",
-                    "value_double": target + op_bias + np.random.randn() * 0.05,
-                    "value_string": part,
-                    "operator": op,
-                })
+            for _trial in range(n_trials):
+                rows.append(
+                    {
+                        "systime": base + pd.Timedelta(seconds=idx),
+                        "uuid": "gauge_1",
+                        "value_double": target + op_bias + np.random.randn() * 0.05,
+                        "value_string": part,
+                        "operator": op,
+                    }
+                )
                 idx += 1
 
     return pd.DataFrame(rows)
@@ -38,26 +41,31 @@ def simple_gauge_df():
     base = pd.Timestamp("2024-01-01")
     rows = []
     for i in range(20):
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=i),
-            "uuid": "gauge_1",
-            "value_double": 50.0 + np.random.randn() * 0.1,
-            "value_string": "part_X",
-        })
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=i),
+                "uuid": "gauge_1",
+                "value_double": 50.0 + np.random.randn() * 0.1,
+                "value_string": "part_X",
+            }
+        )
     for i in range(20):
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=20 + i),
-            "uuid": "gauge_1",
-            "value_double": 60.0 + np.random.randn() * 0.1,
-            "value_string": "part_Y",
-        })
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=20 + i),
+                "uuid": "gauge_1",
+                "value_double": 60.0 + np.random.randn() * 0.1,
+                "value_string": "part_Y",
+            }
+        )
     return pd.DataFrame(rows)
 
 
 class TestRepeatability:
     def test_per_part_ev(self, gauge_rr_df):
         grr = GaugeRepeatabilityEvents(
-            gauge_rr_df, "gauge_1",
+            gauge_rr_df,
+            "gauge_1",
             part_column="value_string",
         )
         result = grr.repeatability()
@@ -68,7 +76,8 @@ class TestRepeatability:
 
     def test_simple(self, simple_gauge_df):
         grr = GaugeRepeatabilityEvents(
-            simple_gauge_df, "gauge_1",
+            simple_gauge_df,
+            "gauge_1",
             part_column="value_string",
         )
         result = grr.repeatability()
@@ -83,7 +92,8 @@ class TestRepeatability:
 class TestReproducibility:
     def test_with_operators(self, gauge_rr_df):
         grr = GaugeRepeatabilityEvents(
-            gauge_rr_df, "gauge_1",
+            gauge_rr_df,
+            "gauge_1",
             part_column="value_string",
             operator_column="operator",
         )
@@ -95,7 +105,8 @@ class TestReproducibility:
 
     def test_no_operator_column(self, simple_gauge_df):
         grr = GaugeRepeatabilityEvents(
-            simple_gauge_df, "gauge_1",
+            simple_gauge_df,
+            "gauge_1",
             part_column="value_string",
         )
         result = grr.reproducibility()
@@ -105,7 +116,8 @@ class TestReproducibility:
 class TestGaugeRRSummary:
     def test_full_summary(self, gauge_rr_df):
         grr = GaugeRepeatabilityEvents(
-            gauge_rr_df, "gauge_1",
+            gauge_rr_df,
+            "gauge_1",
             part_column="value_string",
             operator_column="operator",
         )
@@ -120,7 +132,8 @@ class TestGaugeRRSummary:
 
     def test_with_tolerance(self, gauge_rr_df):
         grr = GaugeRepeatabilityEvents(
-            gauge_rr_df, "gauge_1",
+            gauge_rr_df,
+            "gauge_1",
             part_column="value_string",
             operator_column="operator",
         )
@@ -130,7 +143,8 @@ class TestGaugeRRSummary:
 
     def test_without_operator(self, simple_gauge_df):
         grr = GaugeRepeatabilityEvents(
-            simple_gauge_df, "gauge_1",
+            simple_gauge_df,
+            "gauge_1",
             part_column="value_string",
         )
         result = grr.gauge_rr_summary()
@@ -147,7 +161,8 @@ class TestGaugeRRSummary:
 class TestMeasurementBias:
     def test_bias_calculation(self, gauge_rr_df):
         grr = GaugeRepeatabilityEvents(
-            gauge_rr_df, "gauge_1",
+            gauge_rr_df,
+            "gauge_1",
             part_column="value_string",
         )
         refs = {"part_A": 10.0, "part_B": 20.0, "part_C": 30.0}
@@ -159,7 +174,8 @@ class TestMeasurementBias:
 
     def test_partial_references(self, gauge_rr_df):
         grr = GaugeRepeatabilityEvents(
-            gauge_rr_df, "gauge_1",
+            gauge_rr_df,
+            "gauge_1",
             part_column="value_string",
         )
         refs = {"part_A": 10.0}

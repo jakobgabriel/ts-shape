@@ -7,9 +7,8 @@ Track material waste and scrap (different from NOK parts):
 """
 
 import logging
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import Optional, Dict
 
 from ts_shape.utils.base import Base
 
@@ -61,7 +60,7 @@ class ScrapTracking(Base):
         dataframe: pd.DataFrame,
         *,
         time_column: str = "systime",
-        shift_definitions: Optional[Dict[str, tuple[str, str]]] = None,
+        shift_definitions: dict[str, tuple[str, str]] | None = None,
     ) -> None:
         super().__init__(dataframe, column_name=time_column)
         self.time_column = time_column
@@ -112,11 +111,7 @@ class ScrapTracking(Base):
             DataFrame with columns:
             - date, shift, scrap_quantity
         """
-        data = (
-            self.dataframe[self.dataframe["uuid"] == scrap_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        data = self.dataframe[self.dataframe["uuid"] == scrap_uuid].copy().sort_values(self.time_column)
         if data.empty:
             return pd.DataFrame(columns=["date", "shift", "scrap_quantity"])
 
@@ -127,11 +122,13 @@ class ScrapTracking(Base):
         results = []
         for (date, shift), grp in data.groupby(["date", "shift"]):
             qty = self._get_counter_quantity(grp, value_column)
-            results.append({
-                "date": date,
-                "shift": shift,
-                "scrap_quantity": round(qty, 2),
-            })
+            results.append(
+                {
+                    "date": date,
+                    "shift": shift,
+                    "scrap_quantity": round(qty, 2),
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -155,16 +152,8 @@ class ScrapTracking(Base):
             DataFrame with columns:
             - reason, scrap_quantity, pct_of_total
         """
-        scrap_data = (
-            self.dataframe[self.dataframe["uuid"] == scrap_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
-        reason_data = (
-            self.dataframe[self.dataframe["uuid"] == reason_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        scrap_data = self.dataframe[self.dataframe["uuid"] == scrap_uuid].copy().sort_values(self.time_column)
+        reason_data = self.dataframe[self.dataframe["uuid"] == reason_uuid].copy().sort_values(self.time_column)
 
         if scrap_data.empty or reason_data.empty:
             return pd.DataFrame(columns=["reason", "scrap_quantity", "pct_of_total"])
@@ -179,8 +168,10 @@ class ScrapTracking(Base):
         reason_clean = reason_clean.rename(columns={value_column_reason: "reason"})
 
         merged = pd.merge_asof(
-            scrap_clean, reason_clean,
-            on=self.time_column, direction="backward",
+            scrap_clean,
+            reason_clean,
+            on=self.time_column,
+            direction="backward",
         )
         merged = merged.dropna(subset=["reason"])
 
@@ -198,16 +189,14 @@ class ScrapTracking(Base):
 
         result_df = pd.DataFrame(results)
         total = result_df["scrap_quantity"].sum()
-        result_df["pct_of_total"] = (
-            (result_df["scrap_quantity"] / total * 100).round(1) if total > 0 else 0.0
-        )
+        result_df["pct_of_total"] = (result_df["scrap_quantity"] / total * 100).round(1) if total > 0 else 0.0
         return result_df.sort_values("scrap_quantity", ascending=False).reset_index(drop=True)
 
     def scrap_cost(
         self,
         scrap_uuid: str,
         part_id_uuid: str,
-        material_costs: Dict[str, float],
+        material_costs: dict[str, float],
         *,
         value_column_scrap: str = "value_double",
         value_column_part: str = "value_string",
@@ -225,21 +214,11 @@ class ScrapTracking(Base):
             DataFrame with columns:
             - part_number, scrap_quantity, cost_per_unit, total_cost
         """
-        scrap_data = (
-            self.dataframe[self.dataframe["uuid"] == scrap_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
-        part_data = (
-            self.dataframe[self.dataframe["uuid"] == part_id_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        scrap_data = self.dataframe[self.dataframe["uuid"] == scrap_uuid].copy().sort_values(self.time_column)
+        part_data = self.dataframe[self.dataframe["uuid"] == part_id_uuid].copy().sort_values(self.time_column)
 
         if scrap_data.empty or part_data.empty:
-            return pd.DataFrame(
-                columns=["part_number", "scrap_quantity", "cost_per_unit", "total_cost"]
-            )
+            return pd.DataFrame(columns=["part_number", "scrap_quantity", "cost_per_unit", "total_cost"])
 
         scrap_data[self.time_column] = pd.to_datetime(scrap_data[self.time_column])
         part_data[self.time_column] = pd.to_datetime(part_data[self.time_column])
@@ -251,8 +230,10 @@ class ScrapTracking(Base):
         part_clean = part_clean.rename(columns={value_column_part: "part_number"})
 
         merged = pd.merge_asof(
-            scrap_clean, part_clean,
-            on=self.time_column, direction="backward",
+            scrap_clean,
+            part_clean,
+            on=self.time_column,
+            direction="backward",
         )
         merged = merged.dropna(subset=["part_number"])
 
@@ -260,12 +241,14 @@ class ScrapTracking(Base):
         for part_num, grp in merged.groupby("part_number"):
             qty = self._get_counter_quantity(grp, "scrap_val")
             cost_per_unit = material_costs.get(part_num, 0.0)
-            results.append({
-                "part_number": part_num,
-                "scrap_quantity": round(qty, 2),
-                "cost_per_unit": cost_per_unit,
-                "total_cost": round(qty * cost_per_unit, 2),
-            })
+            results.append(
+                {
+                    "part_number": part_num,
+                    "scrap_quantity": round(qty, 2),
+                    "cost_per_unit": cost_per_unit,
+                    "total_cost": round(qty * cost_per_unit, 2),
+                }
+            )
 
         return pd.DataFrame(results).sort_values("total_cost", ascending=False).reset_index(drop=True)
 
@@ -287,11 +270,7 @@ class ScrapTracking(Base):
             DataFrame with columns:
             - period, scrap_quantity
         """
-        data = (
-            self.dataframe[self.dataframe["uuid"] == scrap_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        data = self.dataframe[self.dataframe["uuid"] == scrap_uuid].copy().sort_values(self.time_column)
         if data.empty:
             return pd.DataFrame(columns=["period", "scrap_quantity"])
 
@@ -303,9 +282,11 @@ class ScrapTracking(Base):
             if grp.empty:
                 continue
             qty = self._get_counter_quantity(grp.reset_index(), value_column)
-            results.append({
-                "period": period,
-                "scrap_quantity": round(qty, 2),
-            })
+            results.append(
+                {
+                    "period": period,
+                    "scrap_quantity": round(qty, 2),
+                }
+            )
 
         return pd.DataFrame(results)

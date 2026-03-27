@@ -11,9 +11,8 @@ Two modes of operation:
 """
 
 import logging
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import Optional, Dict, List
 
 from ts_shape.utils.base import Base
 
@@ -61,11 +60,7 @@ class PeriodSummary(Base):
         value_column: str = "value_integer",
     ) -> pd.DataFrame:
         """Get daily counter deltas."""
-        data = (
-            self.dataframe[self.dataframe["uuid"] == uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        data = self.dataframe[self.dataframe["uuid"] == uuid].copy().sort_values(self.time_column)
         if data.empty:
             return pd.DataFrame(columns=["date", "quantity"])
 
@@ -180,8 +175,8 @@ class PeriodSummary(Base):
     def weekly_summary(
         self,
         counter_uuid: str,
-        ok_counter_uuid: Optional[str] = None,
-        nok_counter_uuid: Optional[str] = None,
+        ok_counter_uuid: str | None = None,
+        nok_counter_uuid: str | None = None,
         *,
         value_column: str = "value_integer",
     ) -> pd.DataFrame:
@@ -244,22 +239,16 @@ class PeriodSummary(Base):
             }
 
             if ok_daily is not None and not ok_daily.empty:
-                ok_week = ok_daily[
-                    (ok_daily["date"] >= week_start) & (ok_daily["date"] <= week_end)
-                ]
+                ok_week = ok_daily[(ok_daily["date"] >= week_start) & (ok_daily["date"] <= week_end)]
                 row["ok_parts"] = int(ok_week["quantity"].sum()) if not ok_week.empty else 0
 
             if nok_daily is not None and not nok_daily.empty:
-                nok_week = nok_daily[
-                    (nok_daily["date"] >= week_start) & (nok_daily["date"] <= week_end)
-                ]
+                nok_week = nok_daily[(nok_daily["date"] >= week_start) & (nok_daily["date"] <= week_end)]
                 row["nok_parts"] = int(nok_week["quantity"].sum()) if not nok_week.empty else 0
 
             if "ok_parts" in row and "nok_parts" in row:
                 total_q = row["ok_parts"] + row["nok_parts"]
-                row["quality_pct"] = round(
-                    row["ok_parts"] / total_q * 100 if total_q > 0 else 0, 1
-                )
+                row["quality_pct"] = round(row["ok_parts"] / total_q * 100 if total_q > 0 else 0, 1)
 
             results.append(row)
 
@@ -268,8 +257,8 @@ class PeriodSummary(Base):
     def monthly_summary(
         self,
         counter_uuid: str,
-        ok_counter_uuid: Optional[str] = None,
-        nok_counter_uuid: Optional[str] = None,
+        ok_counter_uuid: str | None = None,
+        nok_counter_uuid: str | None = None,
         *,
         value_column: str = "value_integer",
     ) -> pd.DataFrame:
@@ -331,22 +320,16 @@ class PeriodSummary(Base):
             }
 
             if ok_daily is not None and not ok_daily.empty:
-                ok_month = ok_daily[
-                    (ok_daily["date"] >= month_start) & (ok_daily["date"] <= month_end)
-                ]
+                ok_month = ok_daily[(ok_daily["date"] >= month_start) & (ok_daily["date"] <= month_end)]
                 row["ok_parts"] = int(ok_month["quantity"].sum()) if not ok_month.empty else 0
 
             if nok_daily is not None and not nok_daily.empty:
-                nok_month = nok_daily[
-                    (nok_daily["date"] >= month_start) & (nok_daily["date"] <= month_end)
-                ]
+                nok_month = nok_daily[(nok_daily["date"] >= month_start) & (nok_daily["date"] <= month_end)]
                 row["nok_parts"] = int(nok_month["quantity"].sum()) if not nok_month.empty else 0
 
             if "ok_parts" in row and "nok_parts" in row:
                 total_q = row["ok_parts"] + row["nok_parts"]
-                row["quality_pct"] = round(
-                    row["ok_parts"] / total_q * 100 if total_q > 0 else 0, 1
-                )
+                row["quality_pct"] = round(row["ok_parts"] / total_q * 100 if total_q > 0 else 0, 1)
 
             results.append(row)
 
@@ -374,9 +357,7 @@ class PeriodSummary(Base):
         """
         daily = self._daily_counter(counter_uuid, value_column)
         if daily.empty:
-            return pd.DataFrame(
-                columns=["metric", "period1_value", "period2_value", "change", "change_pct"]
-            )
+            return pd.DataFrame(columns=["metric", "period1_value", "period2_value", "change", "change_pct"])
 
         daily["date"] = pd.to_datetime(daily["date"]).dt.date
 
@@ -388,10 +369,9 @@ class PeriodSummary(Base):
         p1_data = daily[(daily["date"] >= p1_start) & (daily["date"] <= p1_end)]
         p2_data = daily[(daily["date"] >= p2_start) & (daily["date"] <= p2_end)]
 
-        def _metrics(data: pd.DataFrame) -> Dict[str, float]:
+        def _metrics(data: pd.DataFrame) -> dict[str, float]:
             if data.empty:
-                return {"total_production": 0, "daily_avg": 0.0, "production_days": 0,
-                        "min_daily": 0, "max_daily": 0}
+                return {"total_production": 0, "daily_avg": 0.0, "production_days": 0, "min_daily": 0, "max_daily": 0}
             return {
                 "total_production": int(data["quantity"].sum()),
                 "daily_avg": round(data["quantity"].mean(), 1),
@@ -410,12 +390,14 @@ class PeriodSummary(Base):
             change = v2 - v1
             change_pct = (change / v1 * 100) if v1 != 0 else 0.0
 
-            rows.append({
-                "metric": metric,
-                "period1_value": v1,
-                "period2_value": v2,
-                "change": round(change, 1),
-                "change_pct": round(change_pct, 1),
-            })
+            rows.append(
+                {
+                    "metric": metric,
+                    "period1_value": v1,
+                    "period2_value": v2,
+                    "change": round(change, 1),
+                    "change_pct": round(change_pct, 1),
+                }
+            )
 
         return pd.DataFrame(rows)

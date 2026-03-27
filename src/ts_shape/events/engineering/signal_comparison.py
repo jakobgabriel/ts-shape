@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -37,30 +38,20 @@ class SignalComparisonEvents(Base):
         self.time_column = time_column
 
         self.reference = (
-            self.dataframe[self.dataframe["uuid"] == self.reference_uuid]
-            .copy()
-            .sort_values(self.time_column)
+            self.dataframe[self.dataframe["uuid"] == self.reference_uuid].copy().sort_values(self.time_column)
         )
         self.reference[self.time_column] = pd.to_datetime(self.reference[self.time_column])
 
     def _align(self, actual_uuid: str) -> pd.DataFrame:
         """Align reference and actual signals by nearest timestamp."""
-        actual = (
-            self.dataframe[self.dataframe["uuid"] == actual_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        actual = self.dataframe[self.dataframe["uuid"] == actual_uuid].copy().sort_values(self.time_column)
         actual[self.time_column] = pd.to_datetime(actual[self.time_column])
 
         if self.reference.empty or actual.empty:
             return pd.DataFrame(columns=[self.time_column, "ref", "act"])
 
-        ref = self.reference[[self.time_column, self.value_column]].rename(
-            columns={self.value_column: "ref"}
-        )
-        act = actual[[self.time_column, self.value_column]].rename(
-            columns={self.value_column: "act"}
-        )
+        ref = self.reference[[self.time_column, self.value_column]].rename(columns={self.value_column: "ref"})
+        act = actual[[self.time_column, self.value_column]].rename(columns={self.value_column: "act"})
 
         merged = pd.merge_asof(
             ref.sort_values(self.time_column),
@@ -90,8 +81,13 @@ class SignalComparisonEvents(Base):
             max_deviation, mean_deviation, direction.
         """
         cols = [
-            "start", "end", "uuid", "is_delta",
-            "max_deviation", "mean_deviation", "direction",
+            "start",
+            "end",
+            "uuid",
+            "is_delta",
+            "max_deviation",
+            "mean_deviation",
+            "direction",
         ]
         merged = self._align(actual_uuid)
         if merged.empty:
@@ -103,7 +99,7 @@ class SignalComparisonEvents(Base):
 
         min_td = pd.Timedelta(min_duration)
         groups = (exceeded != exceeded.shift()).cumsum()
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
 
         for _, seg in merged.groupby(groups):
             seg_exc = exceeded.loc[seg.index]
@@ -114,15 +110,17 @@ class SignalComparisonEvents(Base):
             if (end - start) < min_td:
                 continue
             mean_dev = float(seg["deviation"].mean())
-            events.append({
-                "start": start,
-                "end": end,
-                "uuid": self.event_uuid,
-                "is_delta": False,
-                "max_deviation": float(seg["abs_deviation"].max()),
-                "mean_deviation": float(seg["abs_deviation"].mean()),
-                "direction": "above" if mean_dev > 0 else "below",
-            })
+            events.append(
+                {
+                    "start": start,
+                    "end": end,
+                    "uuid": self.event_uuid,
+                    "is_delta": False,
+                    "max_deviation": float(seg["abs_deviation"].max()),
+                    "mean_deviation": float(seg["abs_deviation"].mean()),
+                    "direction": "above" if mean_dev > 0 else "below",
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -144,18 +142,20 @@ class SignalComparisonEvents(Base):
         indexed = merged.set_index(self.time_column)
         groups = indexed.resample(window)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for window_start, group in groups:
             if group.empty:
                 continue
             dev = group["deviation"]
-            events.append({
-                "window_start": window_start,
-                "mae": float(dev.abs().mean()),
-                "max_error": float(dev.abs().max()),
-                "rmse": float(np.sqrt((dev ** 2).mean())),
-                "bias": float(dev.mean()),
-            })
+            events.append(
+                {
+                    "window_start": window_start,
+                    "mae": float(dev.abs().mean()),
+                    "max_error": float(dev.abs().max()),
+                    "rmse": float(np.sqrt((dev**2).mean())),
+                    "bias": float(dev.mean()),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -180,8 +180,7 @@ class SignalComparisonEvents(Base):
         mae_diff = result["mae"].diff()
         result["trend_slope"] = mae_diff
         result["trend_direction"] = np.where(
-            mae_diff > 0.01, "worsening",
-            np.where(mae_diff < -0.01, "improving", "stable")
+            mae_diff > 0.01, "worsening", np.where(mae_diff < -0.01, "improving", "stable")
         )
         return result[cols].dropna().reset_index(drop=True)
 
@@ -203,15 +202,17 @@ class SignalComparisonEvents(Base):
         indexed = merged.set_index(self.time_column)
         groups = indexed.resample(window)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for window_start, group in groups:
             if len(group) < 2:
                 continue
             corr = group["ref"].corr(group["act"])
-            events.append({
-                "window_start": window_start,
-                "correlation": float(corr) if not np.isnan(corr) else 0.0,
-                "sample_count": len(group),
-            })
+            events.append(
+                {
+                    "window_start": window_start,
+                    "correlation": float(corr) if not np.isnan(corr) else 0.0,
+                    "sample_count": len(group),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)

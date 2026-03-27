@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any, Optional
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -33,20 +34,10 @@ class SignalCorrelationEvents(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-    def _align_signals(
-        self, uuid_a: str, uuid_b: str, resample: str = "1min"
-    ) -> pd.DataFrame:
+    def _align_signals(self, uuid_a: str, uuid_b: str, resample: str = "1min") -> pd.DataFrame:
         """Align two signals on a common time index via resampling."""
-        a = (
-            self.dataframe[self.dataframe["uuid"] == uuid_a]
-            .copy()
-            .sort_values(self.time_column)
-        )
-        b = (
-            self.dataframe[self.dataframe["uuid"] == uuid_b]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        a = self.dataframe[self.dataframe["uuid"] == uuid_a].copy().sort_values(self.time_column)
+        b = self.dataframe[self.dataframe["uuid"] == uuid_b].copy().sort_values(self.time_column)
 
         if a.empty or b.empty:
             return pd.DataFrame(columns=["signal_a", "signal_b"])
@@ -84,14 +75,16 @@ class SignalCorrelationEvents(Base):
         if aligned.empty or len(aligned) < window:
             return pd.DataFrame(
                 columns=[
-                    "systime", "uuid", "source_uuid_a", "source_uuid_b",
-                    "is_delta", "correlation",
+                    "systime",
+                    "uuid",
+                    "source_uuid_a",
+                    "source_uuid_b",
+                    "is_delta",
+                    "correlation",
                 ]
             )
 
-        corr = aligned["signal_a"].rolling(window=window, min_periods=max(2, window // 2)).corr(
-            aligned["signal_b"]
-        )
+        corr = aligned["signal_a"].rolling(window=window, min_periods=max(2, window // 2)).corr(aligned["signal_b"])
         out = pd.DataFrame(
             {
                 "systime": aligned.index,
@@ -130,14 +123,18 @@ class SignalCorrelationEvents(Base):
             DataFrame: start, end, uuid, source_uuid_a, source_uuid_b,
                        is_delta, min_correlation, duration_seconds
         """
-        corr_df = self.rolling_correlation(
-            uuid_a, uuid_b, resample=resample, window=window
-        )
+        corr_df = self.rolling_correlation(uuid_a, uuid_b, resample=resample, window=window)
         if corr_df.empty:
             return pd.DataFrame(
                 columns=[
-                    "start", "end", "uuid", "source_uuid_a", "source_uuid_b",
-                    "is_delta", "min_correlation", "duration_seconds",
+                    "start",
+                    "end",
+                    "uuid",
+                    "source_uuid_a",
+                    "source_uuid_b",
+                    "is_delta",
+                    "min_correlation",
+                    "duration_seconds",
                 ]
             )
 
@@ -145,7 +142,7 @@ class SignalCorrelationEvents(Base):
         corr_df["group"] = (corr_df["below"] != corr_df["below"].shift()).cumsum()
 
         breakdowns = corr_df[corr_df["below"]].groupby("group")
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, grp in breakdowns:
             rows.append(
                 {
@@ -156,9 +153,7 @@ class SignalCorrelationEvents(Base):
                     "source_uuid_b": uuid_b,
                     "is_delta": True,
                     "min_correlation": grp["correlation"].min(),
-                    "duration_seconds": (
-                        grp["systime"].iloc[-1] - grp["systime"].iloc[0]
-                    ).total_seconds(),
+                    "duration_seconds": (grp["systime"].iloc[-1] - grp["systime"].iloc[0]).total_seconds(),
                 }
             )
 
@@ -193,12 +188,12 @@ class SignalCorrelationEvents(Base):
         b = aligned["signal_b"].values
         n = len(a)
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for lag in range(-max_lag, max_lag + 1):
             if lag < 0:
                 corr = np.corrcoef(a[:lag], b[-lag:])[0, 1]
             elif lag > 0:
-                corr = np.corrcoef(a[lag:], b[:n - lag])[0, 1]
+                corr = np.corrcoef(a[lag:], b[: n - lag])[0, 1]
             else:
                 corr = np.corrcoef(a, b)[0, 1]
 

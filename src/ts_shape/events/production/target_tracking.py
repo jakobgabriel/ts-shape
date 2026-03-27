@@ -7,9 +7,8 @@ Generic module for comparing any metric to targets:
 """
 
 import logging
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import Optional, Dict, Union
 
 from ts_shape.utils.base import Base
 
@@ -53,7 +52,7 @@ class TargetTracking(Base):
         dataframe: pd.DataFrame,
         *,
         time_column: str = "systime",
-        shift_definitions: Optional[Dict[str, tuple[str, str]]] = None,
+        shift_definitions: dict[str, tuple[str, str]] | None = None,
     ) -> None:
         super().__init__(dataframe, column_name=time_column)
         self.time_column = time_column
@@ -79,7 +78,7 @@ class TargetTracking(Base):
     def compare_to_target(
         self,
         metric_uuid: str,
-        targets: Dict[str, float],
+        targets: dict[str, float],
         *,
         value_column: str = "value_integer",
     ) -> pd.DataFrame:
@@ -94,16 +93,9 @@ class TargetTracking(Base):
             DataFrame with columns:
             - date, shift, actual, target, variance, achievement_pct, status
         """
-        data = (
-            self.dataframe[self.dataframe["uuid"] == metric_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        data = self.dataframe[self.dataframe["uuid"] == metric_uuid].copy().sort_values(self.time_column)
         if data.empty:
-            return pd.DataFrame(
-                columns=["date", "shift", "actual", "target",
-                         "variance", "achievement_pct", "status"]
-            )
+            return pd.DataFrame(columns=["date", "shift", "actual", "target", "variance", "achievement_pct", "status"])
 
         data[self.time_column] = pd.to_datetime(data[self.time_column])
         data["shift"] = data[self.time_column].apply(self._assign_shift)
@@ -125,15 +117,17 @@ class TargetTracking(Base):
             else:
                 status = "below_target"
 
-            results.append({
-                "date": date,
-                "shift": shift,
-                "actual": int(actual),
-                "target": target,
-                "variance": round(variance, 1),
-                "achievement_pct": round(achievement, 1),
-                "status": status,
-            })
+            results.append(
+                {
+                    "date": date,
+                    "shift": shift,
+                    "actual": int(actual),
+                    "target": target,
+                    "variance": round(variance, 1),
+                    "achievement_pct": round(achievement, 1),
+                    "status": status,
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -155,16 +149,9 @@ class TargetTracking(Base):
             DataFrame with columns:
             - date, actual, target, variance, achievement_pct, status
         """
-        data = (
-            self.dataframe[self.dataframe["uuid"] == metric_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        data = self.dataframe[self.dataframe["uuid"] == metric_uuid].copy().sort_values(self.time_column)
         if data.empty:
-            return pd.DataFrame(
-                columns=["date", "actual", "target", "variance",
-                         "achievement_pct", "status"]
-            )
+            return pd.DataFrame(columns=["date", "actual", "target", "variance", "achievement_pct", "status"])
 
         data[self.time_column] = pd.to_datetime(data[self.time_column])
         data["date"] = data[self.time_column].dt.date
@@ -184,14 +171,16 @@ class TargetTracking(Base):
             else:
                 status = "below_target"
 
-            results.append({
-                "date": date,
-                "actual": int(actual),
-                "target": daily_target,
-                "variance": round(variance, 1),
-                "achievement_pct": round(achievement, 1),
-                "status": status,
-            })
+            results.append(
+                {
+                    "date": date,
+                    "actual": int(actual),
+                    "target": daily_target,
+                    "variance": round(variance, 1),
+                    "achievement_pct": round(achievement, 1),
+                    "status": status,
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -201,7 +190,7 @@ class TargetTracking(Base):
         daily_target: float,
         *,
         value_column: str = "value_integer",
-    ) -> Dict[str, Union[float, int]]:
+    ) -> dict[str, float | int]:
         """How often are targets met?
 
         Args:
@@ -216,9 +205,7 @@ class TargetTracking(Base):
             - hit_rate_pct: Percentage of days meeting target.
             - avg_achievement_pct: Average achievement across days.
         """
-        summary = self.target_achievement_summary(
-            metric_uuid, daily_target, value_column=value_column
-        )
+        summary = self.target_achievement_summary(metric_uuid, daily_target, value_column=value_column)
         if summary.empty:
             return {
                 "total_days": 0,

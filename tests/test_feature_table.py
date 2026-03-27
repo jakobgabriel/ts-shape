@@ -1,7 +1,8 @@
-import pytest
-import pandas as pd
-import numpy as np
 from unittest.mock import patch
+
+import numpy as np
+import pandas as pd
+import pytest
 
 from ts_shape.features.stats.feature_table import DescriptiveFeatures
 
@@ -116,9 +117,7 @@ class TestOverallStats:
         assert stats["is_delta_avg"] == group["is_delta"].mean()
 
         # is_delta_std should be a float (or NaN for constant columns)
-        assert isinstance(stats["is_delta_std"], (float, np.floating)) or pd.isna(
-            stats["is_delta_std"]
-        )
+        assert isinstance(stats["is_delta_std"], (float, np.floating)) or pd.isna(stats["is_delta_std"])
 
 
 class TestInvalidOutputFormat:

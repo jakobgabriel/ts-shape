@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -36,11 +37,7 @@ class ProcessWindowEvents(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-        self.signal = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.signal = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
 
     def windowed_statistics(self, window: str = "1h") -> pd.DataFrame:
@@ -51,8 +48,16 @@ class ProcessWindowEvents(Base):
             min, max, median, p25, p75, range.
         """
         cols = [
-            "window_start", "count", "mean", "std",
-            "min", "max", "median", "p25", "p75", "range",
+            "window_start",
+            "count",
+            "mean",
+            "std",
+            "min",
+            "max",
+            "median",
+            "p25",
+            "p75",
+            "range",
         ]
         if self.signal.empty:
             return pd.DataFrame(columns=cols)
@@ -60,23 +65,25 @@ class ProcessWindowEvents(Base):
         indexed = self.signal.set_index(self.time_column)[self.value_column]
         groups = indexed.resample(window)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for window_start, group in groups:
             vals = group.dropna()
             if vals.empty:
                 continue
-            events.append({
-                "window_start": window_start,
-                "count": len(vals),
-                "mean": float(vals.mean()),
-                "std": float(vals.std()) if len(vals) > 1 else 0.0,
-                "min": float(vals.min()),
-                "max": float(vals.max()),
-                "median": float(vals.median()),
-                "p25": float(np.percentile(vals, 25)),
-                "p75": float(np.percentile(vals, 75)),
-                "range": float(vals.max() - vals.min()),
-            })
+            events.append(
+                {
+                    "window_start": window_start,
+                    "count": len(vals),
+                    "mean": float(vals.mean()),
+                    "std": float(vals.std()) if len(vals) > 1 else 0.0,
+                    "min": float(vals.min()),
+                    "max": float(vals.max()),
+                    "median": float(vals.median()),
+                    "p25": float(np.percentile(vals, 25)),
+                    "p75": float(np.percentile(vals, 75)),
+                    "range": float(vals.max() - vals.min()),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -94,29 +101,36 @@ class ProcessWindowEvents(Base):
             prev_mean, current_mean, shift_sigma.
         """
         cols = [
-            "start", "end", "uuid", "is_delta",
-            "prev_mean", "current_mean", "shift_sigma",
+            "start",
+            "end",
+            "uuid",
+            "is_delta",
+            "prev_mean",
+            "current_mean",
+            "shift_sigma",
         ]
         stats = self.windowed_statistics(window)
         if len(stats) < 2:
             return pd.DataFrame(columns=cols)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for i in range(1, len(stats)):
             prev = stats.iloc[i - 1]
             curr = stats.iloc[i]
             prev_std = prev["std"] if prev["std"] > 0 else 1e-10
             shift = abs(curr["mean"] - prev["mean"]) / prev_std
             if shift >= sensitivity:
-                events.append({
-                    "start": prev["window_start"],
-                    "end": curr["window_start"],
-                    "uuid": self.event_uuid,
-                    "is_delta": False,
-                    "prev_mean": prev["mean"],
-                    "current_mean": curr["mean"],
-                    "shift_sigma": float(shift),
-                })
+                events.append(
+                    {
+                        "start": prev["window_start"],
+                        "end": curr["window_start"],
+                        "uuid": self.event_uuid,
+                        "is_delta": False,
+                        "prev_mean": prev["mean"],
+                        "current_mean": curr["mean"],
+                        "shift_sigma": float(shift),
+                    }
+                )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -135,14 +149,19 @@ class ProcessWindowEvents(Base):
             prev_std, current_std, variance_ratio.
         """
         cols = [
-            "start", "end", "uuid", "is_delta",
-            "prev_std", "current_std", "variance_ratio",
+            "start",
+            "end",
+            "uuid",
+            "is_delta",
+            "prev_std",
+            "current_std",
+            "variance_ratio",
         ]
         stats = self.windowed_statistics(window)
         if len(stats) < 2:
             return pd.DataFrame(columns=cols)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for i in range(1, len(stats)):
             prev = stats.iloc[i - 1]
             curr = stats.iloc[i]
@@ -153,15 +172,17 @@ class ProcessWindowEvents(Base):
             else:
                 ratio = curr["std"] / prev["std"]
             if ratio >= ratio_threshold or (ratio > 0 and ratio <= 1.0 / ratio_threshold):
-                events.append({
-                    "start": prev["window_start"],
-                    "end": curr["window_start"],
-                    "uuid": self.event_uuid,
-                    "is_delta": False,
-                    "prev_std": prev["std"],
-                    "current_std": curr["std"],
-                    "variance_ratio": float(ratio),
-                })
+                events.append(
+                    {
+                        "start": prev["window_start"],
+                        "end": curr["window_start"],
+                        "uuid": self.event_uuid,
+                        "is_delta": False,
+                        "prev_std": prev["std"],
+                        "current_std": curr["std"],
+                        "variance_ratio": float(ratio),
+                    }
+                )
 
         return pd.DataFrame(events, columns=cols)
 

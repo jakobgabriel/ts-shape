@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any, Optional
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -26,7 +27,7 @@ class DisturbanceRecoveryEvents(Base):
         dataframe: pd.DataFrame,
         signal_uuid: str,
         *,
-        setpoint_uuid: Optional[str] = None,
+        setpoint_uuid: str | None = None,
         event_uuid: str = "eng:disturbance_recovery",
         value_column: str = "value_double",
         time_column: str = "systime",
@@ -38,26 +39,16 @@ class DisturbanceRecoveryEvents(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-        self.signal = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.signal = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
 
         if setpoint_uuid:
-            self._sp = (
-                self.dataframe[self.dataframe["uuid"] == setpoint_uuid]
-                .copy()
-                .sort_values(self.time_column)
-            )
+            self._sp = self.dataframe[self.dataframe["uuid"] == setpoint_uuid].copy().sort_values(self.time_column)
             self._sp[self.time_column] = pd.to_datetime(self._sp[self.time_column])
         else:
             self._sp = pd.DataFrame()
 
-    def _compute_baseline_and_deviation(
-        self, baseline_window: str
-    ) -> pd.DataFrame:
+    def _compute_baseline_and_deviation(self, baseline_window: str) -> pd.DataFrame:
         """Compute baseline and deviation for the signal."""
         if self.signal.empty:
             return pd.DataFrame(columns=[self.time_column, "value", "baseline", "deviation", "rolling_std"])
@@ -70,9 +61,11 @@ class DisturbanceRecoveryEvents(Base):
 
         if not self._sp.empty:
             # Use setpoint as baseline
-            sp = self._sp[[self.time_column, self.value_column]].rename(
-                columns={self.value_column: "sp"}
-            ).set_index(self.time_column)
+            sp = (
+                self._sp[[self.time_column, self.value_column]]
+                .rename(columns={self.value_column: "sp"})
+                .set_index(self.time_column)
+            )
             merged = pd.merge_asof(
                 sig.reset_index().sort_values(self.time_column),
                 sp.reset_index().sort_values(self.time_column),
@@ -109,9 +102,15 @@ class DisturbanceRecoveryEvents(Base):
             disturbance_type.
         """
         cols = [
-            "start", "end", "uuid", "is_delta",
-            "peak_deviation", "mean_deviation", "direction",
-            "duration_seconds", "disturbance_type",
+            "start",
+            "end",
+            "uuid",
+            "is_delta",
+            "peak_deviation",
+            "mean_deviation",
+            "direction",
+            "duration_seconds",
+            "disturbance_type",
         ]
         bd = self._compute_baseline_and_deviation(baseline_window)
         if bd.empty:
@@ -124,7 +123,7 @@ class DisturbanceRecoveryEvents(Base):
         min_td = pd.Timedelta(min_duration)
         groups = (exceeded != exceeded.shift()).cumsum()
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for _, seg_idx in exceeded.groupby(groups):
             if not seg_idx.iloc[0]:
                 continue
@@ -157,17 +156,19 @@ class DisturbanceRecoveryEvents(Base):
                 else:
                     dtype = "transient"
 
-            events.append({
-                "start": start,
-                "end": end,
-                "uuid": self.event_uuid,
-                "is_delta": False,
-                "peak_deviation": peak_dev,
-                "mean_deviation": mean_dev,
-                "direction": direction,
-                "duration_seconds": dur_s,
-                "disturbance_type": dtype,
-            })
+            events.append(
+                {
+                    "start": start,
+                    "end": end,
+                    "uuid": self.event_uuid,
+                    "is_delta": False,
+                    "peak_deviation": peak_dev,
+                    "mean_deviation": mean_dev,
+                    "direction": direction,
+                    "duration_seconds": dur_s,
+                    "disturbance_type": dtype,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -191,8 +192,12 @@ class DisturbanceRecoveryEvents(Base):
             post_recovery_mean, residual_offset.
         """
         cols = [
-            "disturbance_start", "disturbance_end", "recovery_time_seconds",
-            "recovered", "pre_disturbance_mean", "post_recovery_mean",
+            "disturbance_start",
+            "disturbance_end",
+            "recovery_time_seconds",
+            "recovered",
+            "pre_disturbance_mean",
+            "post_recovery_mean",
             "residual_offset",
         ]
         disturbances = self.detect_disturbances(baseline_window, threshold_sigma)
@@ -203,7 +208,7 @@ class DisturbanceRecoveryEvents(Base):
         max_td = pd.Timedelta(max_recovery)
         recovery_threshold = 1.0 - recovery_pct
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for _, dist in disturbances.iterrows():
             d_start = dist["start"]
             d_end = dist["end"]
@@ -229,20 +234,22 @@ class DisturbanceRecoveryEvents(Base):
                     recovery_s = (recovery_time - d_end).total_seconds()
                     recovered = True
                     # Post-recovery mean
-                    post_rec = bd.loc[recovery_time:recovery_time + pre_window]
+                    post_rec = bd.loc[recovery_time : recovery_time + pre_window]
                     post_mean = float(post_rec["value"].mean()) if not post_rec.empty else np.nan
 
             residual = post_mean - pre_mean if not np.isnan(post_mean) and not np.isnan(pre_mean) else np.nan
 
-            events.append({
-                "disturbance_start": d_start,
-                "disturbance_end": d_end,
-                "recovery_time_seconds": recovery_s if recovered else np.nan,
-                "recovered": recovered,
-                "pre_disturbance_mean": pre_mean,
-                "post_recovery_mean": post_mean,
-                "residual_offset": residual,
-            })
+            events.append(
+                {
+                    "disturbance_start": d_start,
+                    "disturbance_end": d_end,
+                    "recovery_time_seconds": recovery_s if recovered else np.nan,
+                    "recovered": recovered,
+                    "pre_disturbance_mean": pre_mean,
+                    "post_recovery_mean": post_mean,
+                    "residual_offset": residual,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -260,8 +267,10 @@ class DisturbanceRecoveryEvents(Base):
             avg_recovery_seconds.
         """
         cols = [
-            "window_start", "disturbance_count",
-            "total_disturbance_seconds", "pct_time_disturbed",
+            "window_start",
+            "disturbance_count",
+            "total_disturbance_seconds",
+            "pct_time_disturbed",
             "avg_recovery_seconds",
         ]
         disturbances = self.detect_disturbances(baseline_window, threshold_sigma)
@@ -276,13 +285,11 @@ class DisturbanceRecoveryEvents(Base):
         windows = pd.date_range(start=t_min, end=t_max, freq=window)
         window_td = pd.Timedelta(window)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for ws in windows:
             we = ws + window_td
             if not disturbances.empty:
-                in_window = disturbances[
-                    (disturbances["start"] >= ws) & (disturbances["start"] < we)
-                ]
+                in_window = disturbances[(disturbances["start"] >= ws) & (disturbances["start"] < we)]
                 count = len(in_window)
                 total_dur = float(in_window["duration_seconds"].sum())
             else:
@@ -293,21 +300,21 @@ class DisturbanceRecoveryEvents(Base):
 
             if not recovery.empty:
                 rec_in = recovery[
-                    (recovery["disturbance_start"] >= ws) &
-                    (recovery["disturbance_start"] < we) &
-                    recovery["recovered"]
+                    (recovery["disturbance_start"] >= ws) & (recovery["disturbance_start"] < we) & recovery["recovered"]
                 ]
                 avg_rec = float(rec_in["recovery_time_seconds"].mean()) if not rec_in.empty else 0.0
             else:
                 avg_rec = 0.0
 
-            events.append({
-                "window_start": ws,
-                "disturbance_count": count,
-                "total_disturbance_seconds": total_dur,
-                "pct_time_disturbed": pct,
-                "avg_recovery_seconds": avg_rec,
-            })
+            events.append(
+                {
+                    "window_start": ws,
+                    "disturbance_count": count,
+                    "total_disturbance_seconds": total_dur,
+                    "pct_time_disturbed": pct,
+                    "avg_recovery_seconds": avg_rec,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -324,8 +331,13 @@ class DisturbanceRecoveryEvents(Base):
             pre_std, post_std, mean_shift, variance_ratio.
         """
         cols = [
-            "disturbance_start", "pre_mean", "post_mean",
-            "pre_std", "post_std", "mean_shift", "variance_ratio",
+            "disturbance_start",
+            "pre_mean",
+            "post_mean",
+            "pre_std",
+            "post_std",
+            "mean_shift",
+            "variance_ratio",
         ]
         disturbances = self.detect_disturbances(baseline_window, threshold_sigma)
         if disturbances.empty or self.signal.empty:
@@ -334,7 +346,7 @@ class DisturbanceRecoveryEvents(Base):
         sig = self.signal.set_index(self.time_column)[self.value_column]
         comp_td = pd.Timedelta(comparison_window)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for _, dist in disturbances.iterrows():
             d_start = dist["start"]
             d_end = dist["end"]
@@ -350,14 +362,16 @@ class DisturbanceRecoveryEvents(Base):
             pre_std = float(pre.std())
             post_std = float(post.std())
 
-            events.append({
-                "disturbance_start": d_start,
-                "pre_mean": pre_mean,
-                "post_mean": post_mean,
-                "pre_std": pre_std,
-                "post_std": post_std,
-                "mean_shift": post_mean - pre_mean,
-                "variance_ratio": post_std / pre_std if pre_std > 0 else float("inf"),
-            })
+            events.append(
+                {
+                    "disturbance_start": d_start,
+                    "pre_mean": pre_mean,
+                    "post_mean": post_mean,
+                    "pre_std": pre_std,
+                    "post_std": post_std,
+                    "mean_shift": post_mean - pre_mean,
+                    "variance_ratio": post_std / pre_std if pre_std > 0 else float("inf"),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)

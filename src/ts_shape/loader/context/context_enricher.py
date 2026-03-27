@@ -1,6 +1,6 @@
 import logging
+
 import pandas as pd  # type: ignore
-from typing import Optional, List, Dict, Any
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ class ContextEnricher:
         metadata: pd.DataFrame,
         *,
         metadata_uuid_col: str = "uuid",
-        columns: Optional[List[str]] = None,
+        columns: list[str] | None = None,
     ) -> pd.DataFrame:
         """Join metadata columns onto timeseries by UUID.
 
@@ -68,9 +68,7 @@ class ContextEnricher:
         if columns is None:
             columns = [c for c in metadata.columns if c != metadata_uuid_col]
 
-        meta_subset = metadata[[metadata_uuid_col] + columns].drop_duplicates(
-            subset=[metadata_uuid_col]
-        )
+        meta_subset = metadata[[metadata_uuid_col] + columns].drop_duplicates(subset=[metadata_uuid_col])
 
         result = self.dataframe.merge(
             meta_subset,
@@ -104,9 +102,7 @@ class ContextEnricher:
         Returns:
             DataFrame with tolerance columns appended.
         """
-        tol_subset = tolerances[
-            [tolerance_uuid_col, low_col, high_col]
-        ].drop_duplicates(subset=[tolerance_uuid_col])
+        tol_subset = tolerances[[tolerance_uuid_col, low_col, high_col]].drop_duplicates(subset=[tolerance_uuid_col])
 
         result = self.dataframe.merge(
             tol_subset,
@@ -152,11 +148,13 @@ class ContextEnricher:
 
         # Merge on UUID + raw value to get mapped values in one operation
         result = result.merge(
-            mapping_subset.rename(columns={
-                mapping_uuid_col: self.uuid_column,
-                raw_value_col: "__raw_val__",
-                mapped_value_col: "mapped_value",
-            }),
+            mapping_subset.rename(
+                columns={
+                    mapping_uuid_col: self.uuid_column,
+                    raw_value_col: "__raw_val__",
+                    mapped_value_col: "mapped_value",
+                }
+            ),
             left_on=[self.uuid_column, value_column],
             right_on=[self.uuid_column, "__raw_val__"],
             how="left",

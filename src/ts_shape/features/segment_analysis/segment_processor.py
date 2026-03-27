@@ -1,16 +1,32 @@
 import logging
-import pandas as pd  # type: ignore
-from typing import Optional, List
 
-from ts_shape.utils.base import Base
+import pandas as pd  # type: ignore
+
 from ts_shape.features.stats.numeric_stats import NumericStatistics
+from ts_shape.utils.base import Base
 
 logger = logging.getLogger(__name__)
 
 ALL_METRICS = [
-    'min', 'max', 'mean', 'median', 'std', 'var', 'sum',
-    'kurtosis', 'skewness', 'q1', 'q3', 'iqr', 'range',
-    'mad', 'coeff_var', 'sem', 'mode', 'percentile_90', 'percentile_10',
+    "min",
+    "max",
+    "mean",
+    "median",
+    "std",
+    "var",
+    "sum",
+    "kurtosis",
+    "skewness",
+    "q1",
+    "q3",
+    "iqr",
+    "range",
+    "mad",
+    "coeff_var",
+    "sem",
+    "mode",
+    "percentile_90",
+    "percentile_10",
 ]
 
 
@@ -31,9 +47,9 @@ class SegmentProcessor(Base):
         cls,
         dataframe: pd.DataFrame,
         time_ranges: pd.DataFrame,
-        uuid_column: str = 'uuid',
-        time_column: str = 'systime',
-        target_uuids: Optional[List[str]] = None,
+        uuid_column: str = "uuid",
+        time_column: str = "systime",
+        target_uuids: list[str] | None = None,
     ) -> pd.DataFrame:
         """Filter process parameter data by extracted time ranges.
 
@@ -58,8 +74,8 @@ class SegmentProcessor(Base):
         if time_ranges.empty:
             logger.warning("No time ranges provided.")
             result = dataframe.iloc[:0].copy()
-            result['segment_value'] = pd.Series(dtype='object')
-            result['segment_index'] = pd.Series(dtype='int64')
+            result["segment_value"] = pd.Series(dtype="object")
+            result["segment_index"] = pd.Series(dtype="int64")
             return result
 
         df = dataframe.copy()
@@ -69,9 +85,9 @@ class SegmentProcessor(Base):
             df = df[df[uuid_column].isin(target_uuids)]
 
         # Warn if time ranges overlap
-        sorted_ranges = time_ranges.sort_values('segment_start')
-        ends = sorted_ranges['segment_end'].values[:-1]
-        starts = sorted_ranges['segment_start'].values[1:]
+        sorted_ranges = time_ranges.sort_values("segment_start")
+        ends = sorted_ranges["segment_end"].values[:-1]
+        starts = sorted_ranges["segment_start"].values[1:]
         if len(ends) > 0 and (ends > starts).any():
             overlap_count = int((ends > starts).sum())
             logger.warning(
@@ -81,26 +97,22 @@ class SegmentProcessor(Base):
 
         segments = []
         for _, seg in time_ranges.iterrows():
-            mask = (
-                (df[time_column] >= seg['segment_start'])
-                & (df[time_column] <= seg['segment_end'])
-            )
+            mask = (df[time_column] >= seg["segment_start"]) & (df[time_column] <= seg["segment_end"])
             matched = df[mask].copy()
-            matched['segment_value'] = seg['segment_value']
-            matched['segment_index'] = seg['segment_index']
+            matched["segment_value"] = seg["segment_value"]
+            matched["segment_index"] = seg["segment_index"]
             segments.append(matched)
 
         if not segments:
             logger.warning("No data matched any time range.")
             result = dataframe.iloc[:0].copy()
-            result['segment_value'] = pd.Series(dtype='object')
-            result['segment_index'] = pd.Series(dtype='int64')
+            result["segment_value"] = pd.Series(dtype="object")
+            result["segment_index"] = pd.Series(dtype="int64")
             return result
 
         result = pd.concat(segments, ignore_index=True)
         logger.info(
-            f"Applied {len(time_ranges)} ranges: {len(result)} rows across "
-            f"{result[uuid_column].nunique()} UUIDs."
+            f"Applied {len(time_ranges)} ranges: {len(result)} rows across " f"{result[uuid_column].nunique()} UUIDs."
         )
         return result
 
@@ -108,10 +120,10 @@ class SegmentProcessor(Base):
     def compute_metric_profiles(
         cls,
         dataframe: pd.DataFrame,
-        uuid_column: str = 'uuid',
-        value_column: str = 'value_double',
-        group_column: str = 'segment_value',
-        metrics: Optional[List[str]] = None,
+        uuid_column: str = "uuid",
+        value_column: str = "value_double",
+        group_column: str = "segment_value",
+        metrics: list[str] | None = None,
     ) -> pd.DataFrame:
         """Compute statistical metrics per UUID per segment.
 
@@ -137,9 +149,7 @@ class SegmentProcessor(Base):
         if metrics is not None:
             invalid = set(metrics) - set(ALL_METRICS)
             if invalid:
-                raise ValueError(
-                    f"Unknown metrics: {invalid}. Available: {ALL_METRICS}"
-                )
+                raise ValueError(f"Unknown metrics: {invalid}. Available: {ALL_METRICS}")
 
         rows = []
         for (uuid_val, group_val), group in dataframe.groupby([uuid_column, group_column]):
@@ -152,13 +162,13 @@ class SegmentProcessor(Base):
                 stats = {k: v for k, v in stats.items() if k in metrics}
             stats[uuid_column] = uuid_val
             stats[group_column] = group_val
-            stats['sample_count'] = len(numeric_data)
+            stats["sample_count"] = len(numeric_data)
             rows.append(stats)
 
         if not rows:
             return pd.DataFrame()
 
         result = pd.DataFrame(rows)
-        leading = [uuid_column, group_column, 'sample_count']
+        leading = [uuid_column, group_column, "sample_count"]
         metric_cols = [c for c in result.columns if c not in leading]
         return result[leading + metric_cols].reset_index(drop=True)

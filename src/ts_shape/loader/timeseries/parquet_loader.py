@@ -1,8 +1,10 @@
 import logging
-import pandas as pd  # type: ignore
 from pathlib import Path
 
+import pandas as pd  # type: ignore
+
 logger = logging.getLogger(__name__)
+
 
 class ParquetLoader:
     """
@@ -132,7 +134,9 @@ class ParquetLoader:
         return pd.concat(dataframes, ignore_index=True)
 
     @classmethod
-    def load_files_by_time_range_and_uuids(cls, base_path: str, start_time: pd.Timestamp, end_time: pd.Timestamp, uuid_list: list) -> pd.DataFrame:
+    def load_files_by_time_range_and_uuids(
+        cls, base_path: str, start_time: pd.Timestamp, end_time: pd.Timestamp, uuid_list: list
+    ) -> pd.DataFrame:
         """
         Loads parquet files that fall within a specified time range and match any UUID in the list.
 

@@ -8,9 +8,8 @@ Essential module for daily downtime analysis:
 """
 
 import logging
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import Optional, Dict
 
 from ts_shape.utils.base import Base
 
@@ -56,7 +55,7 @@ class DowntimeTracking(Base):
         dataframe: pd.DataFrame,
         *,
         time_column: str = "systime",
-        shift_definitions: Optional[Dict[str, tuple[str, str]]] = None,
+        shift_definitions: dict[str, tuple[str, str]] | None = None,
     ) -> None:
         """Initialize downtime tracker.
 
@@ -123,16 +122,11 @@ class DowntimeTracking(Base):
             1   2024-01-01  shift_2  480            67.5             412.5           85.9
             2   2024-01-01  shift_3  480            92.0             388.0           80.8
         """
-        state_data = (
-            self.dataframe[self.dataframe["uuid"] == state_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        state_data = self.dataframe[self.dataframe["uuid"] == state_uuid].copy().sort_values(self.time_column)
 
         if state_data.empty:
             return pd.DataFrame(
-                columns=["date", "shift", "total_minutes", "downtime_minutes",
-                        "uptime_minutes", "availability_pct"]
+                columns=["date", "shift", "total_minutes", "downtime_minutes", "uptime_minutes", "availability_pct"]
             )
 
         state_data[self.time_column] = pd.to_datetime(state_data[self.time_column])
@@ -144,9 +138,8 @@ class DowntimeTracking(Base):
         # Calculate duration for each state
         state_data["next_time"] = state_data[self.time_column].shift(-1)
         state_data["duration_minutes"] = (
-            (state_data["next_time"] - state_data[self.time_column])
-            .dt.total_seconds() / 60
-        )
+            state_data["next_time"] - state_data[self.time_column]
+        ).dt.total_seconds() / 60
 
         # Mark running vs downtime
         state_data["is_running"] = state_data[value_column] == running_value
@@ -169,14 +162,16 @@ class DowntimeTracking(Base):
 
             availability_pct = (uptime_minutes / total_minutes * 100) if total_minutes > 0 else 0
 
-            results.append({
-                "date": date,
-                "shift": shift,
-                "total_minutes": round(total_minutes, 1),
-                "downtime_minutes": round(downtime_minutes, 1),
-                "uptime_minutes": round(uptime_minutes, 1),
-                "availability_pct": round(availability_pct, 1),
-            })
+            results.append(
+                {
+                    "date": date,
+                    "shift": shift,
+                    "total_minutes": round(total_minutes, 1),
+                    "downtime_minutes": round(downtime_minutes, 1),
+                    "uptime_minutes": round(uptime_minutes, 1),
+                    "availability_pct": round(availability_pct, 1),
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -213,22 +208,12 @@ class DowntimeTracking(Base):
             1   Tool_Change         8            98.2          12.3         23.8
             2   Quality_Issue       5            76.0          15.2         18.4
         """
-        state_data = (
-            self.dataframe[self.dataframe["uuid"] == state_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        state_data = self.dataframe[self.dataframe["uuid"] == state_uuid].copy().sort_values(self.time_column)
 
-        reason_data = (
-            self.dataframe[self.dataframe["uuid"] == reason_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        reason_data = self.dataframe[self.dataframe["uuid"] == reason_uuid].copy().sort_values(self.time_column)
 
         if state_data.empty or reason_data.empty:
-            return pd.DataFrame(
-                columns=["reason", "occurrences", "total_minutes", "avg_minutes", "pct_of_total"]
-            )
+            return pd.DataFrame(columns=["reason", "occurrences", "total_minutes", "avg_minutes", "pct_of_total"])
 
         state_data[self.time_column] = pd.to_datetime(state_data[self.time_column])
         reason_data[self.time_column] = pd.to_datetime(reason_data[self.time_column])
@@ -241,49 +226,43 @@ class DowntimeTracking(Base):
         reason_clean = reason_data[[self.time_column, value_column_reason]].copy()
         reason_clean = reason_clean.rename(columns={value_column_reason: "reason"})
 
-        merged = pd.merge_asof(
-            state_clean,
-            reason_clean,
-            on=self.time_column,
-            direction="backward"
-        )
+        merged = pd.merge_asof(state_clean, reason_clean, on=self.time_column, direction="backward")
 
         # Filter for stopped states
         stopped = merged[merged["state"] == stopped_value].copy()
 
         if stopped.empty:
-            return pd.DataFrame(
-                columns=["reason", "occurrences", "total_minutes", "avg_minutes", "pct_of_total"]
-            )
+            return pd.DataFrame(columns=["reason", "occurrences", "total_minutes", "avg_minutes", "pct_of_total"])
 
         # Calculate duration
         stopped = stopped.sort_values(self.time_column)
         stopped["next_time"] = stopped[self.time_column].shift(-1)
-        stopped["duration_minutes"] = (
-            (stopped["next_time"] - stopped[self.time_column])
-            .dt.total_seconds() / 60
-        )
+        stopped["duration_minutes"] = (stopped["next_time"] - stopped[self.time_column]).dt.total_seconds() / 60
 
         # Remove NaN durations
         stopped = stopped[stopped["duration_minutes"].notna()]
 
         if stopped.empty:
-            return pd.DataFrame(
-                columns=["reason", "occurrences", "total_minutes", "avg_minutes", "pct_of_total"]
-            )
+            return pd.DataFrame(columns=["reason", "occurrences", "total_minutes", "avg_minutes", "pct_of_total"])
 
         # Group by reason
-        reason_stats = stopped.groupby("reason")["duration_minutes"].agg([
-            ("occurrences", "count"),
-            ("total_minutes", "sum"),
-            ("avg_minutes", "mean"),
-        ]).reset_index()
+        reason_stats = (
+            stopped.groupby("reason")["duration_minutes"]
+            .agg(
+                [
+                    ("occurrences", "count"),
+                    ("total_minutes", "sum"),
+                    ("avg_minutes", "mean"),
+                ]
+            )
+            .reset_index()
+        )
 
         # Calculate percentage of total
         total_downtime = reason_stats["total_minutes"].sum()
         reason_stats["pct_of_total"] = (
-            reason_stats["total_minutes"] / total_downtime * 100
-        ) if total_downtime > 0 else 0
+            (reason_stats["total_minutes"] / total_downtime * 100) if total_downtime > 0 else 0
+        )
 
         # Round values
         reason_stats["total_minutes"] = reason_stats["total_minutes"].round(1)
@@ -334,9 +313,7 @@ class DowntimeTracking(Base):
         )
 
         if reason_stats.empty:
-            return pd.DataFrame(
-                columns=["reason", "total_minutes", "pct_of_total", "cumulative_pct"]
-            )
+            return pd.DataFrame(columns=["reason", "total_minutes", "pct_of_total", "cumulative_pct"])
 
         # Get top N
         top_reasons = reason_stats.head(top_n).copy()
@@ -376,25 +353,18 @@ class DowntimeTracking(Base):
             1   2024-01-02  91.2             1313.3          126.7
             2   2024-01-03  85.8             1235.5          204.5
         """
-        state_data = (
-            self.dataframe[self.dataframe["uuid"] == state_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        state_data = self.dataframe[self.dataframe["uuid"] == state_uuid].copy().sort_values(self.time_column)
 
         if state_data.empty:
-            return pd.DataFrame(
-                columns=["period", "availability_pct", "uptime_minutes", "downtime_minutes"]
-            )
+            return pd.DataFrame(columns=["period", "availability_pct", "uptime_minutes", "downtime_minutes"])
 
         state_data[self.time_column] = pd.to_datetime(state_data[self.time_column])
 
         # Calculate duration for each state
         state_data["next_time"] = state_data[self.time_column].shift(-1)
         state_data["duration_minutes"] = (
-            (state_data["next_time"] - state_data[self.time_column])
-            .dt.total_seconds() / 60
-        )
+            state_data["next_time"] - state_data[self.time_column]
+        ).dt.total_seconds() / 60
 
         # Mark running vs downtime
         state_data["is_running"] = state_data[value_column] == running_value
@@ -403,9 +373,7 @@ class DowntimeTracking(Base):
         state_data = state_data[state_data["duration_minutes"].notna()]
 
         if state_data.empty:
-            return pd.DataFrame(
-                columns=["period", "availability_pct", "uptime_minutes", "downtime_minutes"]
-            )
+            return pd.DataFrame(columns=["period", "availability_pct", "uptime_minutes", "downtime_minutes"])
 
         # Group by time window
         state_data = state_data.set_index(self.time_column)
@@ -421,11 +389,13 @@ class DowntimeTracking(Base):
 
             availability = (uptime / total * 100) if total > 0 else 0
 
-            results.append({
-                "period": period,
-                "availability_pct": round(availability, 1),
-                "uptime_minutes": round(uptime, 1),
-                "downtime_minutes": round(downtime, 1),
-            })
+            results.append(
+                {
+                    "period": period,
+                    "availability_pct": round(availability, 1),
+                    "uptime_minutes": round(uptime, 1),
+                    "downtime_minutes": round(downtime, 1),
+                }
+            )
 
         return pd.DataFrame(results)

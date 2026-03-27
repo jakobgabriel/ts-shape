@@ -1,7 +1,7 @@
 import logging
-import pandas as pd  # type: ignore
+
 import numpy as np
-from typing import List, Dict, Any, Optional
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -38,15 +38,9 @@ class LineThroughputEvents(Base):
 
         Returns columns: window_start, uuid, source_uuid, is_delta, count
         """
-        c = (
-            self.dataframe[self.dataframe["uuid"] == counter_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        c = self.dataframe[self.dataframe["uuid"] == counter_uuid].copy().sort_values(self.time_column)
         if c.empty:
-            return pd.DataFrame(
-                columns=["window_start", "uuid", "source_uuid", "is_delta", "count"]
-            )
+            return pd.DataFrame(columns=["window_start", "uuid", "source_uuid", "is_delta", "count"])
         c[self.time_column] = pd.to_datetime(c[self.time_column])
         c = c.set_index(self.time_column)
         # take diff of last values within each window
@@ -73,11 +67,7 @@ class LineThroughputEvents(Base):
 
         Returns: systime (at boundary), uuid, source_uuid, is_delta, cycle_time_seconds, violation
         """
-        s = (
-            self.dataframe[self.dataframe["uuid"] == cycle_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        s = self.dataframe[self.dataframe["uuid"] == cycle_uuid].copy().sort_values(self.time_column)
         if s.empty:
             return pd.DataFrame(
                 columns=[
@@ -131,7 +121,7 @@ class LineThroughputEvents(Base):
         *,
         value_column: str = "value_integer",
         window: str = "1h",
-        target_rate: Optional[float] = None,
+        target_rate: float | None = None,
         availability_threshold: float = 0.95,
     ) -> pd.DataFrame:
         """Calculate Overall Equipment Effectiveness (OEE) metrics.
@@ -154,8 +144,15 @@ class LineThroughputEvents(Base):
         if parts_df.empty:
             return pd.DataFrame(
                 columns=[
-                    "window_start", "uuid", "source_uuid", "is_delta",
-                    "actual_count", "target_count", "availability", "performance", "oee_score"
+                    "window_start",
+                    "uuid",
+                    "source_uuid",
+                    "is_delta",
+                    "actual_count",
+                    "target_count",
+                    "availability",
+                    "performance",
+                    "oee_score",
                 ]
             )
 
@@ -167,25 +164,27 @@ class LineThroughputEvents(Base):
         parts_df["actual_count"] = parts_df["count"]
 
         # Availability: percentage of time equipment was running
-        parts_df["availability"] = np.where(
-            parts_df["count"] > 0,
-            1.0,
-            0.0
-        )
+        parts_df["availability"] = np.where(parts_df["count"] > 0, 1.0, 0.0)
 
         # Performance: actual vs target rate
-        parts_df["performance"] = np.minimum(
-            parts_df["count"] / target_rate,
-            1.0
-        )
+        parts_df["performance"] = np.minimum(parts_df["count"] / target_rate, 1.0)
 
         # OEE score (simplified - assumes quality = 1.0)
         parts_df["oee_score"] = parts_df["availability"] * parts_df["performance"]
 
-        return parts_df[[
-            "window_start", "uuid", "source_uuid", "is_delta",
-            "actual_count", "target_count", "availability", "performance", "oee_score"
-        ]]
+        return parts_df[
+            [
+                "window_start",
+                "uuid",
+                "source_uuid",
+                "is_delta",
+                "actual_count",
+                "target_count",
+                "availability",
+                "performance",
+                "oee_score",
+            ]
+        ]
 
     def throughput_trends(
         self,
@@ -211,8 +210,14 @@ class LineThroughputEvents(Base):
         if parts_df.empty or len(parts_df) < trend_window:
             return pd.DataFrame(
                 columns=[
-                    "window_start", "uuid", "source_uuid", "is_delta", "count",
-                    "moving_avg", "trend_direction", "degradation_detected"
+                    "window_start",
+                    "uuid",
+                    "source_uuid",
+                    "is_delta",
+                    "count",
+                    "moving_avg",
+                    "trend_direction",
+                    "degradation_detected",
                 ]
             )
 
@@ -222,25 +227,31 @@ class LineThroughputEvents(Base):
         # Calculate trend (positive, negative, stable)
         parts_df["trend_slope"] = parts_df["moving_avg"].diff()
         parts_df["trend_direction"] = pd.cut(
-            parts_df["trend_slope"],
-            bins=[-np.inf, -0.5, 0.5, np.inf],
-            labels=["decreasing", "stable", "increasing"]
+            parts_df["trend_slope"], bins=[-np.inf, -0.5, 0.5, np.inf], labels=["decreasing", "stable", "increasing"]
         )
 
         # Detect degradation (current significantly below moving average)
         parts_df["degradation_detected"] = parts_df["count"] < (parts_df["moving_avg"] * 0.85)
 
-        return parts_df[[
-            "window_start", "uuid", "source_uuid", "is_delta", "count",
-            "moving_avg", "trend_direction", "degradation_detected"
-        ]]
+        return parts_df[
+            [
+                "window_start",
+                "uuid",
+                "source_uuid",
+                "is_delta",
+                "count",
+                "moving_avg",
+                "trend_direction",
+                "degradation_detected",
+            ]
+        ]
 
     def cycle_quality_check(
         self,
         cycle_uuid: str,
         *,
         value_column: str = "value_bool",
-        expected_cycle_time: Optional[float] = None,
+        expected_cycle_time: float | None = None,
         tolerance_pct: float = 0.1,
     ) -> pd.DataFrame:
         """Enhanced cycle detection with quality validation.
@@ -254,17 +265,19 @@ class LineThroughputEvents(Base):
         Returns:
             DataFrame with cycle times, validation status, and quality flags
         """
-        s = (
-            self.dataframe[self.dataframe["uuid"] == cycle_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        s = self.dataframe[self.dataframe["uuid"] == cycle_uuid].copy().sort_values(self.time_column)
         if s.empty:
             return pd.DataFrame(
                 columns=[
-                    "systime", "uuid", "source_uuid", "is_delta",
-                    "cycle_time_seconds", "expected_time", "deviation_pct",
-                    "is_valid", "quality_flag"
+                    "systime",
+                    "uuid",
+                    "source_uuid",
+                    "is_delta",
+                    "cycle_time_seconds",
+                    "expected_time",
+                    "deviation_pct",
+                    "is_valid",
+                    "quality_flag",
                 ]
             )
 
@@ -283,9 +296,15 @@ class LineThroughputEvents(Base):
         if len(times) < 2:
             return pd.DataFrame(
                 columns=[
-                    "systime", "uuid", "source_uuid", "is_delta",
-                    "cycle_time_seconds", "expected_time", "deviation_pct",
-                    "is_valid", "quality_flag"
+                    "systime",
+                    "uuid",
+                    "source_uuid",
+                    "is_delta",
+                    "cycle_time_seconds",
+                    "expected_time",
+                    "deviation_pct",
+                    "is_valid",
+                    "quality_flag",
                 ]
             )
 
@@ -302,11 +321,7 @@ class LineThroughputEvents(Base):
         is_valid = deviation_pct <= tolerance_pct
 
         # Quality flags: good, warning, critical
-        quality_flag = pd.cut(
-            deviation_pct,
-            bins=[-np.inf, 0.1, 0.25, np.inf],
-            labels=["good", "warning", "critical"]
-        )
+        quality_flag = pd.cut(deviation_pct, bins=[-np.inf, 0.1, 0.25, np.inf], labels=["good", "warning", "critical"])
 
         out = pd.DataFrame(
             {
@@ -322,4 +337,3 @@ class LineThroughputEvents(Base):
             }
         )
         return out
-

@@ -1,7 +1,7 @@
 import logging
+from typing import Any
+
 import pandas as pd  # type: ignore
-import numpy as np  # type: ignore
-from typing import List, Dict, Any
 
 from ts_shape.utils.base import Base
 
@@ -34,9 +34,7 @@ class BottleneckDetectionEvents(Base):
         self.event_uuid = event_uuid
         self.value_column = value_column
 
-    def station_utilization(
-        self, station_uuids: List[str], window: str = "1h"
-    ) -> pd.DataFrame:
+    def station_utilization(self, station_uuids: list[str], window: str = "1h") -> pd.DataFrame:
         """Per-station uptime percentage per time window.
 
         Args:
@@ -46,7 +44,7 @@ class BottleneckDetectionEvents(Base):
         Returns:
             DataFrame with columns: window_start, uuid, utilization_pct.
         """
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
 
         for uid in station_uuids:
             station = self.dataframe[self.dataframe["uuid"] == uid].copy()
@@ -59,19 +57,17 @@ class BottleneckDetectionEvents(Base):
 
             for ts, pct in resampled.items():
                 if pd.notna(pct):
-                    rows.append({
-                        "window_start": ts,
-                        "uuid": uid,
-                        "utilization_pct": round(pct * 100, 2),
-                    })
+                    rows.append(
+                        {
+                            "window_start": ts,
+                            "uuid": uid,
+                            "utilization_pct": round(pct * 100, 2),
+                        }
+                    )
 
-        return pd.DataFrame(rows) if rows else pd.DataFrame(
-            columns=["window_start", "uuid", "utilization_pct"]
-        )
+        return pd.DataFrame(rows) if rows else pd.DataFrame(columns=["window_start", "uuid", "utilization_pct"])
 
-    def detect_bottleneck(
-        self, station_uuids: List[str], window: str = "1h"
-    ) -> pd.DataFrame:
+    def detect_bottleneck(self, station_uuids: list[str], window: str = "1h") -> pd.DataFrame:
         """Identify the bottleneck station per window.
 
         The bottleneck is the station with the highest utilization —
@@ -86,24 +82,22 @@ class BottleneckDetectionEvents(Base):
         """
         util = self.station_utilization(station_uuids, window)
         if util.empty:
-            return pd.DataFrame(
-                columns=["window_start", "window_end", "bottleneck_uuid", "utilization_pct"]
-            )
+            return pd.DataFrame(columns=["window_start", "window_end", "bottleneck_uuid", "utilization_pct"])
 
         idx = util.groupby("window_start")["utilization_pct"].idxmax()
         bottlenecks = util.loc[idx].copy()
         window_td = pd.to_timedelta(window)
 
-        return pd.DataFrame({
-            "window_start": bottlenecks["window_start"].values,
-            "window_end": bottlenecks["window_start"].values + window_td,
-            "bottleneck_uuid": bottlenecks["uuid"].values,
-            "utilization_pct": bottlenecks["utilization_pct"].values,
-        })
+        return pd.DataFrame(
+            {
+                "window_start": bottlenecks["window_start"].values,
+                "window_end": bottlenecks["window_start"].values + window_td,
+                "bottleneck_uuid": bottlenecks["uuid"].values,
+                "utilization_pct": bottlenecks["utilization_pct"].values,
+            }
+        )
 
-    def shifting_bottleneck(
-        self, station_uuids: List[str], window: str = "1h"
-    ) -> pd.DataFrame:
+    def shifting_bottleneck(self, station_uuids: list[str], window: str = "1h") -> pd.DataFrame:
         """Track when the bottleneck identity changes between stations.
 
         Args:
@@ -116,12 +110,9 @@ class BottleneckDetectionEvents(Base):
         """
         bottlenecks = self.detect_bottleneck(station_uuids, window)
         if bottlenecks.empty or len(bottlenecks) < 2:
-            return pd.DataFrame(
-                columns=["systime", "from_uuid", "to_uuid",
-                         "previous_utilization", "new_utilization"]
-            )
+            return pd.DataFrame(columns=["systime", "from_uuid", "to_uuid", "previous_utilization", "new_utilization"])
 
-        shifts: List[Dict[str, Any]] = []
+        shifts: list[dict[str, Any]] = []
         prev_uuid = bottlenecks.iloc[0]["bottleneck_uuid"]
         prev_util = bottlenecks.iloc[0]["utilization_pct"]
 
@@ -129,24 +120,25 @@ class BottleneckDetectionEvents(Base):
             curr_uuid = bottlenecks.iloc[i]["bottleneck_uuid"]
             curr_util = bottlenecks.iloc[i]["utilization_pct"]
             if curr_uuid != prev_uuid:
-                shifts.append({
-                    "systime": bottlenecks.iloc[i]["window_start"],
-                    "from_uuid": prev_uuid,
-                    "to_uuid": curr_uuid,
-                    "previous_utilization": prev_util,
-                    "new_utilization": curr_util,
-                })
+                shifts.append(
+                    {
+                        "systime": bottlenecks.iloc[i]["window_start"],
+                        "from_uuid": prev_uuid,
+                        "to_uuid": curr_uuid,
+                        "previous_utilization": prev_util,
+                        "new_utilization": curr_util,
+                    }
+                )
             prev_uuid = curr_uuid
             prev_util = curr_util
 
-        return pd.DataFrame(shifts) if shifts else pd.DataFrame(
-            columns=["systime", "from_uuid", "to_uuid",
-                     "previous_utilization", "new_utilization"]
+        return (
+            pd.DataFrame(shifts)
+            if shifts
+            else pd.DataFrame(columns=["systime", "from_uuid", "to_uuid", "previous_utilization", "new_utilization"])
         )
 
-    def throughput_constraint_summary(
-        self, station_uuids: List[str], window: str = "1h"
-    ) -> Dict[str, Any]:
+    def throughput_constraint_summary(self, station_uuids: list[str], window: str = "1h") -> dict[str, Any]:
         """Summary statistics for bottleneck analysis.
 
         Args:

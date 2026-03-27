@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any, Optional
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -36,11 +37,7 @@ class MicroStopEvents(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-        self.series = (
-            self.dataframe[self.dataframe["uuid"] == self.run_state_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.series = self.dataframe[self.dataframe["uuid"] == self.run_state_uuid].copy().sort_values(self.time_column)
         self.series[self.time_column] = pd.to_datetime(self.series[self.time_column])
 
     def _intervalize(self) -> pd.DataFrame:
@@ -52,17 +49,19 @@ class MicroStopEvents(Base):
         s["state"] = s[self.value_column].fillna(False).astype(bool)
         state_change = (s["state"] != s["state"].shift()).cumsum()
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, seg in s.groupby(state_change):
             state = bool(seg["state"].iloc[0])
             start = seg[self.time_column].iloc[0]
             end = seg[self.time_column].iloc[-1]
-            rows.append({
-                "start": start,
-                "end": end,
-                "state": "run" if state else "idle",
-                "duration": end - start,
-            })
+            rows.append(
+                {
+                    "start": start,
+                    "end": end,
+                    "state": "run" if state else "idle",
+                    "duration": end - start,
+                }
+            )
 
         return pd.DataFrame(rows)
 
@@ -89,7 +88,7 @@ class MicroStopEvents(Base):
         max_td = pd.to_timedelta(max_duration)
         min_td = pd.to_timedelta(min_duration)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for i, row in intervals.iterrows():
             if row["state"] != "idle":
                 continue
@@ -104,18 +103,18 @@ class MicroStopEvents(Base):
                 if prev["state"] == "run":
                     preceding_run = prev["duration"]
 
-            events.append({
-                "start_time": row["start"],
-                "end_time": row["end"],
-                "duration": dur,
-                "preceding_run_duration": preceding_run,
-            })
+            events.append(
+                {
+                    "start_time": row["start"],
+                    "end_time": row["end"],
+                    "duration": dur,
+                    "preceding_run_duration": preceding_run,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
-    def micro_stop_frequency(
-        self, window: str = "1h", max_duration: str = "30s"
-    ) -> pd.DataFrame:
+    def micro_stop_frequency(self, window: str = "1h", max_duration: str = "30s") -> pd.DataFrame:
         """Count micro-stops per time window.
 
         Args:
@@ -140,21 +139,19 @@ class MicroStopEvents(Base):
             total_lost_seconds=("duration_seconds", "sum"),
         )
 
-        resampled["pct_of_window"] = round(
-            resampled["total_lost_seconds"] / window_td.total_seconds() * 100, 2
-        )
+        resampled["pct_of_window"] = round(resampled["total_lost_seconds"] / window_td.total_seconds() * 100, 2)
 
         result = resampled.reset_index()
-        result = result.rename(columns={
-            "start_time": "window_start",
-            "total_lost_seconds": "total_lost_time",
-        })
+        result = result.rename(
+            columns={
+                "start_time": "window_start",
+                "total_lost_seconds": "total_lost_time",
+            }
+        )
 
         return result[cols]
 
-    def micro_stop_impact(
-        self, window: str = "1h", max_duration: str = "30s"
-    ) -> pd.DataFrame:
+    def micro_stop_impact(self, window: str = "1h", max_duration: str = "30s") -> pd.DataFrame:
         """Time lost to micro-stops vs total available time per window.
 
         Args:
@@ -172,7 +169,7 @@ class MicroStopEvents(Base):
             return pd.DataFrame(columns=cols)
 
         max_td = pd.to_timedelta(max_duration)
-        window_td = pd.to_timedelta(window)
+        pd.to_timedelta(window)
 
         intervals["dur_seconds"] = intervals["duration"].dt.total_seconds()
         intervals["is_micro_stop"] = (intervals["state"] == "idle") & (intervals["duration"] <= max_td)
@@ -183,10 +180,12 @@ class MicroStopEvents(Base):
         run_time = intervals_indexed.loc[intervals_indexed["is_run"], "dur_seconds"].resample(window).sum()
         micro_time = intervals_indexed.loc[intervals_indexed["is_micro_stop"], "dur_seconds"].resample(window).sum()
 
-        combined = pd.DataFrame({
-            "total_run_time": run_time,
-            "total_micro_stop_time": micro_time,
-        }).fillna(0)
+        combined = pd.DataFrame(
+            {
+                "total_run_time": run_time,
+                "total_micro_stop_time": micro_time,
+            }
+        ).fillna(0)
 
         total_active = combined["total_run_time"] + combined["total_micro_stop_time"]
         combined["availability_loss_pct"] = np.where(
@@ -222,20 +221,30 @@ class MicroStopEvents(Base):
             stops["group"] = stops["start_time"].dt.hour
             stops["date"] = stops["start_time"].dt.date
 
-            daily_counts = stops.groupby(["date", "group"]).agg(
-                count=("duration_seconds", "count"),
-                lost_time=("duration_seconds", "sum"),
-            ).reset_index()
+            daily_counts = (
+                stops.groupby(["date", "group"])
+                .agg(
+                    count=("duration_seconds", "count"),
+                    lost_time=("duration_seconds", "sum"),
+                )
+                .reset_index()
+            )
 
-            result = daily_counts.groupby("group").agg(
-                avg_count=("count", "mean"),
-                avg_lost_time=("lost_time", "mean"),
-            ).reset_index().rename(columns={"group": "hour"})
+            result = (
+                daily_counts.groupby("group")
+                .agg(
+                    avg_count=("count", "mean"),
+                    avg_lost_time=("lost_time", "mean"),
+                )
+                .reset_index()
+                .rename(columns={"group": "hour"})
+            )
 
             result["avg_count"] = result["avg_count"].round(2)
             result["avg_lost_time"] = result["avg_lost_time"].round(2)
             return result
         else:
+
             def assign_shift(hour: int) -> str:
                 if 6 <= hour < 14:
                     return "morning"
@@ -247,15 +256,24 @@ class MicroStopEvents(Base):
             stops["group"] = stops["start_time"].dt.hour.apply(assign_shift)
             stops["date"] = stops["start_time"].dt.date
 
-            daily_counts = stops.groupby(["date", "group"]).agg(
-                count=("duration_seconds", "count"),
-                lost_time=("duration_seconds", "sum"),
-            ).reset_index()
+            daily_counts = (
+                stops.groupby(["date", "group"])
+                .agg(
+                    count=("duration_seconds", "count"),
+                    lost_time=("duration_seconds", "sum"),
+                )
+                .reset_index()
+            )
 
-            result = daily_counts.groupby("group").agg(
-                avg_count=("count", "mean"),
-                avg_lost_time=("lost_time", "mean"),
-            ).reset_index().rename(columns={"group": "shift"})
+            result = (
+                daily_counts.groupby("group")
+                .agg(
+                    avg_count=("count", "mean"),
+                    avg_lost_time=("lost_time", "mean"),
+                )
+                .reset_index()
+                .rename(columns={"group": "shift"})
+            )
 
             result["avg_count"] = result["avg_count"].round(2)
             result["avg_lost_time"] = result["avg_lost_time"].round(2)

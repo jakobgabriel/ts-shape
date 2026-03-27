@@ -1,5 +1,4 @@
 import pandas as pd  # type: ignore
-import numpy as np  # type: ignore
 
 from ts_shape.events.engineering.disturbance_recovery import DisturbanceRecoveryEvents
 
@@ -9,12 +8,14 @@ def _times(start: str, count: int, freq: str) -> pd.DatetimeIndex:
 
 
 def _make_df(uuid: str, times, values) -> pd.DataFrame:
-    return pd.DataFrame({
-        "uuid": [uuid] * len(times),
-        "systime": times,
-        "value_double": values,
-        "is_delta": [True] * len(times),
-    })
+    return pd.DataFrame(
+        {
+            "uuid": [uuid] * len(times),
+            "systime": times,
+            "value_double": values,
+            "is_delta": [True] * len(times),
+        }
+    )
 
 
 def test_detect_disturbance_spike():
@@ -72,9 +73,7 @@ def test_before_after_comparison():
     df = _make_df("sensor", t, vals)
 
     det = DisturbanceRecoveryEvents(df, "sensor")
-    result = det.before_after_comparison(
-        baseline_window="5m", threshold_sigma=2.0, comparison_window="3m"
-    )
+    result = det.before_after_comparison(baseline_window="5m", threshold_sigma=2.0, comparison_window="3m")
     if not result.empty:
         assert "mean_shift" in result.columns
 
@@ -85,14 +84,22 @@ def test_with_setpoint():
     sp_vals = [50.0] * len(t)
     pv_vals = [50.0] * 40 + [90.0] * 10 + [50.0] * 70
 
-    sp_df = pd.DataFrame({
-        "uuid": ["sp"] * len(t), "systime": t,
-        "value_double": sp_vals, "is_delta": True,
-    })
-    pv_df = pd.DataFrame({
-        "uuid": ["pv"] * len(t), "systime": t,
-        "value_double": pv_vals, "is_delta": True,
-    })
+    sp_df = pd.DataFrame(
+        {
+            "uuid": ["sp"] * len(t),
+            "systime": t,
+            "value_double": sp_vals,
+            "is_delta": True,
+        }
+    )
+    pv_df = pd.DataFrame(
+        {
+            "uuid": ["pv"] * len(t),
+            "systime": t,
+            "value_double": pv_vals,
+            "is_delta": True,
+        }
+    )
     df = pd.concat([sp_df, pv_df], ignore_index=True)
 
     det = DisturbanceRecoveryEvents(df, "pv", setpoint_uuid="sp")

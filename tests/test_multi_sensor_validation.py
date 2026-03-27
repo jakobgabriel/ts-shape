@@ -1,6 +1,7 @@
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
+
 from ts_shape.events.quality.multi_sensor_validation import MultiSensorValidationEvents
 
 
@@ -38,7 +39,8 @@ def agreeing_sensors_df():
 class TestDetectDisagreement:
     def test_finds_biased_sensor(self, three_sensor_df):
         msv = MultiSensorValidationEvents(
-            three_sensor_df, ["sensor_1", "sensor_2", "sensor_3"],
+            three_sensor_df,
+            ["sensor_1", "sensor_2", "sensor_3"],
         )
         result = msv.detect_disagreement(threshold=2.0, window="1h")
         assert len(result) > 0
@@ -47,7 +49,8 @@ class TestDetectDisagreement:
 
     def test_no_disagreement(self, agreeing_sensors_df):
         msv = MultiSensorValidationEvents(
-            agreeing_sensors_df, ["s1", "s2"],
+            agreeing_sensors_df,
+            ["s1", "s2"],
         )
         result = msv.detect_disagreement(threshold=1.0, window="1h")
         assert len(result) == 0
@@ -61,7 +64,8 @@ class TestDetectDisagreement:
 class TestPairwiseBias:
     def test_bias_between_pairs(self, three_sensor_df):
         msv = MultiSensorValidationEvents(
-            three_sensor_df, ["sensor_1", "sensor_2", "sensor_3"],
+            three_sensor_df,
+            ["sensor_1", "sensor_2", "sensor_3"],
         )
         result = msv.pairwise_bias(window="2h")
         assert len(result) > 0
@@ -69,16 +73,15 @@ class TestPairwiseBias:
         first_window = result[result["window_start"] == result["window_start"].iloc[0]]
         assert len(first_window) == 3
         # sensor_3 pairs should have higher abs_bias
-        s3_rows = first_window[
-            (first_window["sensor_a"] == "sensor_3") | (first_window["sensor_b"] == "sensor_3")
-        ]
+        s3_rows = first_window[(first_window["sensor_a"] == "sensor_3") | (first_window["sensor_b"] == "sensor_3")]
         assert all(b > 2.0 for b in s3_rows["abs_bias"].tolist())
 
 
 class TestConsensusScore:
     def test_high_consensus(self, agreeing_sensors_df):
         msv = MultiSensorValidationEvents(
-            agreeing_sensors_df, ["s1", "s2"],
+            agreeing_sensors_df,
+            ["s1", "s2"],
         )
         result = msv.consensus_score(window="2h")
         assert len(result) > 0
@@ -86,7 +89,8 @@ class TestConsensusScore:
 
     def test_low_consensus_with_bias(self, three_sensor_df):
         msv = MultiSensorValidationEvents(
-            three_sensor_df, ["sensor_1", "sensor_2", "sensor_3"],
+            three_sensor_df,
+            ["sensor_1", "sensor_2", "sensor_3"],
         )
         result = msv.consensus_score(window="2h")
         assert len(result) > 0
@@ -97,7 +101,8 @@ class TestConsensusScore:
 class TestIdentifyOutlierSensor:
     def test_identifies_biased_sensor(self, three_sensor_df):
         msv = MultiSensorValidationEvents(
-            three_sensor_df, ["sensor_1", "sensor_2", "sensor_3"],
+            three_sensor_df,
+            ["sensor_1", "sensor_2", "sensor_3"],
         )
         result = msv.identify_outlier_sensor(window="2h", method="median")
         assert len(result) > 0
@@ -105,7 +110,8 @@ class TestIdentifyOutlierSensor:
 
     def test_mean_method(self, three_sensor_df):
         msv = MultiSensorValidationEvents(
-            three_sensor_df, ["sensor_1", "sensor_2", "sensor_3"],
+            three_sensor_df,
+            ["sensor_1", "sensor_2", "sensor_3"],
         )
         result = msv.identify_outlier_sensor(window="2h", method="mean")
         assert len(result) > 0
@@ -119,7 +125,6 @@ class TestIdentifyOutlierSensor:
 
 class TestConstructorValidation:
     def test_single_sensor_raises(self):
-        df = pd.DataFrame({"systime": [pd.Timestamp("2024-01-01")],
-                           "uuid": ["s1"], "value_double": [1.0]})
+        df = pd.DataFrame({"systime": [pd.Timestamp("2024-01-01")], "uuid": ["s1"], "value_double": [1.0]})
         with pytest.raises(ValueError, match="At least 2"):
             MultiSensorValidationEvents(df, ["s1"])

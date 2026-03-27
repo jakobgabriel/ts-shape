@@ -8,9 +8,8 @@ Essential module for daily quality analysis:
 """
 
 import logging
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import Optional, Dict
 
 from ts_shape.utils.base import Base
 
@@ -62,7 +61,7 @@ class QualityTracking(Base):
         dataframe: pd.DataFrame,
         *,
         time_column: str = "systime",
-        shift_definitions: Optional[Dict[str, tuple[str, str]]] = None,
+        shift_definitions: dict[str, tuple[str, str]] | None = None,
     ) -> None:
         """Initialize quality tracker.
 
@@ -131,23 +130,22 @@ class QualityTracking(Base):
             2   2024-01-01  shift_3  380       25         405          6.2           93.8
         """
         # Get OK counter data
-        ok_data = (
-            self.dataframe[self.dataframe["uuid"] == ok_counter_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        ok_data = self.dataframe[self.dataframe["uuid"] == ok_counter_uuid].copy().sort_values(self.time_column)
 
         # Get NOK counter data
-        nok_data = (
-            self.dataframe[self.dataframe["uuid"] == nok_counter_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        nok_data = self.dataframe[self.dataframe["uuid"] == nok_counter_uuid].copy().sort_values(self.time_column)
 
         if ok_data.empty and nok_data.empty:
             return pd.DataFrame(
-                columns=["date", "shift", "ok_parts", "nok_parts", "total_parts",
-                        "nok_rate_pct", "first_pass_yield_pct"]
+                columns=[
+                    "date",
+                    "shift",
+                    "ok_parts",
+                    "nok_parts",
+                    "total_parts",
+                    "nok_rate_pct",
+                    "first_pass_yield_pct",
+                ]
             )
 
         # Process OK data
@@ -172,9 +170,9 @@ class QualityTracking(Base):
         # Get all unique date/shift combinations
         date_shifts = set()
         if ok_processed is not None:
-            date_shifts.update(zip(ok_processed["date"], ok_processed["shift"]))
+            date_shifts.update(zip(ok_processed["date"], ok_processed["shift"], strict=False))
         if nok_processed is not None:
-            date_shifts.update(zip(nok_processed["date"], nok_processed["shift"]))
+            date_shifts.update(zip(nok_processed["date"], nok_processed["shift"], strict=False))
 
         for date, shift in sorted(date_shifts):
             ok_parts = 0
@@ -182,9 +180,7 @@ class QualityTracking(Base):
 
             # Calculate OK parts for this shift
             if ok_processed is not None:
-                ok_shift = ok_processed[
-                    (ok_processed["date"] == date) & (ok_processed["shift"] == shift)
-                ]
+                ok_shift = ok_processed[(ok_processed["date"] == date) & (ok_processed["shift"] == shift)]
                 if not ok_shift.empty:
                     first_count = ok_shift[value_column].iloc[0]
                     last_count = ok_shift[value_column].iloc[-1]
@@ -192,9 +188,7 @@ class QualityTracking(Base):
 
             # Calculate NOK parts for this shift
             if nok_processed is not None:
-                nok_shift = nok_processed[
-                    (nok_processed["date"] == date) & (nok_processed["shift"] == shift)
-                ]
+                nok_shift = nok_processed[(nok_processed["date"] == date) & (nok_processed["shift"] == shift)]
                 if not nok_shift.empty:
                     first_count = nok_shift[value_column].iloc[0]
                     last_count = nok_shift[value_column].iloc[-1]
@@ -209,16 +203,18 @@ class QualityTracking(Base):
                 nok_rate = 0
                 fpy = 0
 
-            results.append({
-                "date": date,
-                "shift": shift,
-                "ok_parts": ok_parts,
-                "nok_parts": nok_parts,
-                "total_parts": total_parts,
-                "nok_rate_pct": round(nok_rate, 1),
-                "first_pass_yield_pct": round(fpy, 1),
-                "quality_pct": round(fpy, 1),
-            })
+            results.append(
+                {
+                    "date": date,
+                    "shift": shift,
+                    "ok_parts": ok_parts,
+                    "nok_parts": nok_parts,
+                    "total_parts": total_parts,
+                    "nok_rate_pct": round(nok_rate, 1),
+                    "first_pass_yield_pct": round(fpy, 1),
+                    "quality_pct": round(fpy, 1),
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -256,33 +252,20 @@ class QualityTracking(Base):
             1   PART_B       890       38         928          4.1           95.9
         """
         # Get part ID data
-        part_data = (
-            self.dataframe[self.dataframe["uuid"] == part_id_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        part_data = self.dataframe[self.dataframe["uuid"] == part_id_uuid].copy().sort_values(self.time_column)
 
         if part_data.empty:
             return pd.DataFrame(
-                columns=["part_number", "ok_parts", "nok_parts", "total_parts",
-                        "nok_rate_pct", "first_pass_yield_pct"]
+                columns=["part_number", "ok_parts", "nok_parts", "total_parts", "nok_rate_pct", "first_pass_yield_pct"]
             )
 
         part_data[self.time_column] = pd.to_datetime(part_data[self.time_column])
 
         # Get OK counter data
-        ok_data = (
-            self.dataframe[self.dataframe["uuid"] == ok_counter_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        ok_data = self.dataframe[self.dataframe["uuid"] == ok_counter_uuid].copy().sort_values(self.time_column)
 
         # Get NOK counter data
-        nok_data = (
-            self.dataframe[self.dataframe["uuid"] == nok_counter_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        nok_data = self.dataframe[self.dataframe["uuid"] == nok_counter_uuid].copy().sort_values(self.time_column)
 
         results = []
 
@@ -295,12 +278,7 @@ class QualityTracking(Base):
             ok_subset = ok_data[[self.time_column, value_column_counter]].copy()
             part_subset = part_data[[self.time_column, value_column_part]].copy()
 
-            merged_ok = pd.merge_asof(
-                ok_subset,
-                part_subset,
-                on=self.time_column,
-                direction="backward"
-            )
+            merged_ok = pd.merge_asof(ok_subset, part_subset, on=self.time_column, direction="backward")
 
             merged_ok = merged_ok.rename(columns={value_column_part: "part_number"})
             merged_ok = merged_ok.dropna(subset=["part_number"])
@@ -321,12 +299,7 @@ class QualityTracking(Base):
             nok_subset = nok_data[[self.time_column, value_column_counter]].copy()
             part_subset = part_data[[self.time_column, value_column_part]].copy()
 
-            merged_nok = pd.merge_asof(
-                nok_subset,
-                part_subset,
-                on=self.time_column,
-                direction="backward"
-            )
+            merged_nok = pd.merge_asof(nok_subset, part_subset, on=self.time_column, direction="backward")
 
             merged_nok = merged_nok.rename(columns={value_column_part: "part_number"})
             merged_nok = merged_nok.dropna(subset=["part_number"])
@@ -353,15 +326,17 @@ class QualityTracking(Base):
                 nok_rate = 0
                 fpy = 0
 
-            results.append({
-                "part_number": part_num,
-                "ok_parts": ok_parts,
-                "nok_parts": nok_parts,
-                "total_parts": total_parts,
-                "nok_rate_pct": round(nok_rate, 1),
-                "first_pass_yield_pct": round(fpy, 1),
-                "quality_pct": round(fpy, 1),
-            })
+            results.append(
+                {
+                    "part_number": part_num,
+                    "ok_parts": ok_parts,
+                    "nok_parts": nok_parts,
+                    "total_parts": total_parts,
+                    "nok_rate_pct": round(nok_rate, 1),
+                    "first_pass_yield_pct": round(fpy, 1),
+                    "quality_pct": round(fpy, 1),
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -394,22 +369,12 @@ class QualityTracking(Base):
             1   Surface_Defect      28         25.2
             2   Wrong_Color         22         19.8
         """
-        nok_data = (
-            self.dataframe[self.dataframe["uuid"] == nok_counter_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        nok_data = self.dataframe[self.dataframe["uuid"] == nok_counter_uuid].copy().sort_values(self.time_column)
 
-        reason_data = (
-            self.dataframe[self.dataframe["uuid"] == defect_reason_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        reason_data = self.dataframe[self.dataframe["uuid"] == defect_reason_uuid].copy().sort_values(self.time_column)
 
         if nok_data.empty or reason_data.empty:
-            return pd.DataFrame(
-                columns=["reason", "nok_parts", "pct_of_total"]
-            )
+            return pd.DataFrame(columns=["reason", "nok_parts", "pct_of_total"])
 
         nok_data[self.time_column] = pd.to_datetime(nok_data[self.time_column])
         reason_data[self.time_column] = pd.to_datetime(reason_data[self.time_column])
@@ -421,21 +386,14 @@ class QualityTracking(Base):
         reason_subset = reason_data[[self.time_column, value_column_reason]].copy()
         reason_subset = reason_subset.rename(columns={value_column_reason: "reason"})
 
-        merged = pd.merge_asof(
-            nok_subset,
-            reason_subset,
-            on=self.time_column,
-            direction="backward"
-        )
+        merged = pd.merge_asof(nok_subset, reason_subset, on=self.time_column, direction="backward")
 
         # Filter out empty or NaN reasons
         merged = merged.dropna(subset=["reason"])
         merged = merged[merged["reason"] != ""]
 
         if merged.empty:
-            return pd.DataFrame(
-                columns=["reason", "nok_parts", "pct_of_total"]
-            )
+            return pd.DataFrame(columns=["reason", "nok_parts", "pct_of_total"])
 
         # Calculate NOK parts per reason
         results = []
@@ -445,23 +403,21 @@ class QualityTracking(Base):
                 last_count = group["nok_count"].iloc[-1]
                 nok_parts = max(0, last_count - first_count)
 
-                results.append({
-                    "reason": reason,
-                    "nok_parts": nok_parts,
-                })
+                results.append(
+                    {
+                        "reason": reason,
+                        "nok_parts": nok_parts,
+                    }
+                )
 
         if not results:
-            return pd.DataFrame(
-                columns=["reason", "nok_parts", "pct_of_total"]
-            )
+            return pd.DataFrame(columns=["reason", "nok_parts", "pct_of_total"])
 
         result_df = pd.DataFrame(results)
 
         # Calculate percentage
         total_nok = result_df["nok_parts"].sum()
-        result_df["pct_of_total"] = (
-            result_df["nok_parts"] / total_nok * 100
-        ) if total_nok > 0 else 0
+        result_df["pct_of_total"] = (result_df["nok_parts"] / total_nok * 100) if total_nok > 0 else 0
 
         result_df["pct_of_total"] = result_df["pct_of_total"].round(1)
 
@@ -504,24 +460,33 @@ class QualityTracking(Base):
 
         if shift_quality.empty:
             return pd.DataFrame(
-                columns=["date", "ok_parts", "nok_parts", "total_parts",
-                        "nok_rate_pct", "first_pass_yield_pct", "quality_pct"]
+                columns=[
+                    "date",
+                    "ok_parts",
+                    "nok_parts",
+                    "total_parts",
+                    "nok_rate_pct",
+                    "first_pass_yield_pct",
+                    "quality_pct",
+                ]
             )
 
         # Aggregate by date
-        daily = shift_quality.groupby("date").agg({
-            "ok_parts": "sum",
-            "nok_parts": "sum",
-            "total_parts": "sum",
-        }).reset_index()
+        daily = (
+            shift_quality.groupby("date")
+            .agg(
+                {
+                    "ok_parts": "sum",
+                    "nok_parts": "sum",
+                    "total_parts": "sum",
+                }
+            )
+            .reset_index()
+        )
 
         # Recalculate percentages
-        daily["nok_rate_pct"] = (
-            daily["nok_parts"] / daily["total_parts"] * 100
-        ).round(1)
-        daily["first_pass_yield_pct"] = (
-            daily["ok_parts"] / daily["total_parts"] * 100
-        ).round(1)
+        daily["nok_rate_pct"] = (daily["nok_parts"] / daily["total_parts"] * 100).round(1)
+        daily["first_pass_yield_pct"] = (daily["ok_parts"] / daily["total_parts"] * 100).round(1)
         daily["quality_pct"] = daily["first_pass_yield_pct"]
 
         return daily

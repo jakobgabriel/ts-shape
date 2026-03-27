@@ -1,8 +1,8 @@
-import logging
-import requests
-import pandas as pd  # type: ignore
 import json
-from typing import List, Dict
+import logging
+
+import pandas as pd  # type: ignore
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +12,15 @@ class DatapointAPI:
     Class for accessing datapoints for multiple devices via an API.
     """
 
-    def __init__(self, device_names: List[str], base_url: str, api_token: str, output_path: str = "data", required_uuid_list: List[str] = None, filter_enabled: bool = True):
+    def __init__(
+        self,
+        device_names: list[str],
+        base_url: str,
+        api_token: str,
+        output_path: str = "data",
+        required_uuid_list: list[str] = None,
+        filter_enabled: bool = True,
+    ):
         """
         Initialize the DatapointAPI class.
 
@@ -29,8 +37,8 @@ class DatapointAPI:
         self.output_path = output_path
         self.required_uuid_list = required_uuid_list or []  # Defaults to an empty list if None
         self.filter_enabled = filter_enabled
-        self.device_metadata: Dict[str, pd.DataFrame] = {}  # Store metadata for each device
-        self.device_uuids: Dict[str, List[str]] = {}  # Store UUIDs for each device
+        self.device_metadata: dict[str, pd.DataFrame] = {}  # Store metadata for each device
+        self.device_uuids: dict[str, list[str]] = {}  # Store UUIDs for each device
         self._api_access()
 
     def _api_access(self) -> None:
@@ -77,17 +85,17 @@ class DatapointAPI:
                 # Export JSON file for this device
                 self._export_json(metadata_df.to_dict(orient="records"), device_name)
 
-    def _export_json(self, data_points: List[Dict[str, str]], device_name: str) -> None:
+    def _export_json(self, data_points: list[dict[str, str]], device_name: str) -> None:
         """Export data points to a JSON file for the specified device."""
         file_name = f"{self.output_path}/{device_name.replace(' ', '_')}_data_points.json"
-        with open(file_name, 'w') as f:
+        with open(file_name, "w") as f:
             json.dump(data_points, f, indent=2)
 
-    def get_all_uuids(self) -> Dict[str, List[str]]:
+    def get_all_uuids(self) -> dict[str, list[str]]:
         """Return a dictionary of UUIDs for each device."""
         return self.device_uuids
 
-    def get_all_metadata(self) -> Dict[str, List[Dict[str, str]]]:
+    def get_all_metadata(self) -> dict[str, list[dict[str, str]]]:
         """Return a dictionary of metadata for each device."""
         return {device: metadata.to_dict(orient="records") for device, metadata in self.device_metadata.items()}
 

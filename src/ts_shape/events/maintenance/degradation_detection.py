@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -32,11 +33,7 @@ class DegradationDetectionEvents(Base):
         self.time_column = time_column
 
         # Isolate signal series and ensure proper dtypes/sort
-        self.signal = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.signal = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
 
     def detect_trend_degradation(
@@ -66,7 +63,7 @@ class DegradationDetectionEvents(Base):
         sig["t_seconds"] = (sig[self.time_column] - sig[self.time_column].iloc[0]).dt.total_seconds()
 
         window_td = pd.to_timedelta(window)
-        window_seconds = window_td.total_seconds()
+        window_td.total_seconds()
 
         # Compute rolling slope using time-based windows
         slopes = []
@@ -102,8 +99,8 @@ class DegradationDetectionEvents(Base):
 
         # Group contiguous degrading intervals
         group_id = (degrading != degrading.shift()).cumsum()
-        events: List[Dict[str, Any]] = []
-        for gid, seg in sig.groupby(group_id):
+        events: list[dict[str, Any]] = []
+        for _gid, seg in sig.groupby(group_id):
             seg_deg = degrading.loc[seg.index]
             if not seg_deg.iloc[0]:
                 continue
@@ -112,15 +109,17 @@ class DegradationDetectionEvents(Base):
             avg_slope = float(seg["slope"].mean())
             total_change = float(seg[self.value_column].iloc[-1] - seg[self.value_column].iloc[0])
             duration = (end_time - start_time).total_seconds()
-            events.append({
-                "start": start_time,
-                "end": end_time,
-                "uuid": self.event_uuid,
-                "is_delta": True,
-                "avg_slope": avg_slope,
-                "total_change": total_change,
-                "duration_seconds": duration,
-            })
+            events.append(
+                {
+                    "start": start_time,
+                    "end": end_time,
+                    "uuid": self.event_uuid,
+                    "is_delta": True,
+                    "avg_slope": avg_slope,
+                    "total_change": total_change,
+                    "duration_seconds": duration,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
@@ -179,20 +178,22 @@ class DegradationDetectionEvents(Base):
 
         # Group contiguous exceeded intervals
         group_id = (exceeded != exceeded.shift()).cumsum()
-        events: List[Dict[str, Any]] = []
-        for gid, seg in sig.groupby(group_id):
+        events: list[dict[str, Any]] = []
+        for _gid, seg in sig.groupby(group_id):
             seg_exc = exceeded.loc[seg.index]
             if not seg_exc.iloc[0]:
                 continue
-            events.append({
-                "start": seg[self.time_column].iloc[0],
-                "end": seg[self.time_column].iloc[-1],
-                "uuid": self.event_uuid,
-                "is_delta": True,
-                "baseline_variance": baseline_var,
-                "current_variance": float(seg["current_variance"].mean()),
-                "ratio": float(seg["ratio"].mean()),
-            })
+            events.append(
+                {
+                    "start": seg[self.time_column].iloc[0],
+                    "end": seg[self.time_column].iloc[-1],
+                    "uuid": self.event_uuid,
+                    "is_delta": True,
+                    "baseline_variance": baseline_var,
+                    "current_variance": float(seg["current_variance"].mean()),
+                    "ratio": float(seg["ratio"].mean()),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
@@ -222,7 +223,7 @@ class DegradationDetectionEvents(Base):
         values = sig[self.value_column].values
         times = sig[self.time_column].values
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
 
         # CUSUM-based approach: track cumulative deviation from running mean
         running_mean = values[0]
@@ -248,14 +249,16 @@ class DegradationDetectionEvents(Base):
                     new_mean = float(post_data.mean())
                     shift_mag = new_mean - prev_mean
                     if abs(shift_mag) >= abs(min_shift):
-                        events.append({
-                            "systime": pd.Timestamp(times[i]),
-                            "uuid": self.event_uuid,
-                            "is_delta": True,
-                            "shift_magnitude": shift_mag,
-                            "prev_mean": prev_mean,
-                            "new_mean": new_mean,
-                        })
+                        events.append(
+                            {
+                                "systime": pd.Timestamp(times[i]),
+                                "uuid": self.event_uuid,
+                                "is_delta": True,
+                                "shift_magnitude": shift_mag,
+                                "prev_mean": prev_mean,
+                                "new_mean": new_mean,
+                            }
+                        )
                         # Reset CUSUM and update running mean
                         running_mean = new_mean
                         last_shift_idx = i
@@ -318,7 +321,7 @@ class DegradationDetectionEvents(Base):
             baseline_mean_for_pct = baseline_mean
 
         # Compute rolling metrics
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for i in range(len(sig)):
             t_end = sig[self.time_column].iloc[i]
             t_start = t_end - window_td
@@ -326,15 +329,17 @@ class DegradationDetectionEvents(Base):
             win = sig.loc[mask]
 
             if len(win) < 2:
-                rows.append({
-                    "systime": t_end,
-                    "uuid": self.event_uuid,
-                    "is_delta": True,
-                    "health_score": 100.0,
-                    "mean_drift_pct": 0.0,
-                    "variance_ratio": 1.0,
-                    "trend_slope": 0.0,
-                })
+                rows.append(
+                    {
+                        "systime": t_end,
+                        "uuid": self.event_uuid,
+                        "is_delta": True,
+                        "health_score": 100.0,
+                        "mean_drift_pct": 0.0,
+                        "variance_ratio": 1.0,
+                        "trend_slope": 0.0,
+                    }
+                )
                 continue
 
             current_mean = float(win[self.value_column].mean())
@@ -359,14 +364,16 @@ class DegradationDetectionEvents(Base):
 
             score = max(0.0, min(100.0, 100.0 - drift_penalty - var_penalty - slope_penalty))
 
-            rows.append({
-                "systime": t_end,
-                "uuid": self.event_uuid,
-                "is_delta": True,
-                "health_score": round(score, 2),
-                "mean_drift_pct": round(mean_drift_pct, 4),
-                "variance_ratio": round(variance_ratio, 4),
-                "trend_slope": round(trend_slope, 8),
-            })
+            rows.append(
+                {
+                    "systime": t_end,
+                    "uuid": self.event_uuid,
+                    "is_delta": True,
+                    "health_score": round(score, 2),
+                    "mean_drift_pct": round(mean_drift_pct, 4),
+                    "variance_ratio": round(variance_ratio, 4),
+                    "trend_slope": round(trend_slope, 8),
+                }
+            )
 
         return pd.DataFrame(rows, columns=cols) if rows else pd.DataFrame(columns=cols)

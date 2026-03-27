@@ -1,6 +1,7 @@
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
+
 from ts_shape.events.engineering.threshold_monitoring import ThresholdMonitoringEvents
 
 
@@ -11,11 +12,13 @@ def ramp_df():
     base = pd.Timestamp("2024-01-01")
     rows = []
     for i in range(n):
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=i),
-            "uuid": "temp_sensor",
-            "value_double": float(i) / 10.0,  # 0 to 100
-        })
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=i),
+                "uuid": "temp_sensor",
+                "value_double": float(i) / 10.0,  # 0 to 100
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -27,11 +30,13 @@ def oscillating_df():
     values = 50.0 + 10.0 * np.sin(np.linspace(0, 20 * np.pi, n))
     rows = []
     for i in range(n):
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=i),
-            "uuid": "temp_sensor",
-            "value_double": values[i],
-        })
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=i),
+                "uuid": "temp_sensor",
+                "value_double": values[i],
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -80,8 +85,7 @@ class TestTimeAboveThreshold:
 
     def test_zero_above(self):
         base = pd.Timestamp("2024-01-01")
-        rows = [{"systime": base + pd.Timedelta(seconds=i), "uuid": "s1",
-                 "value_double": 10.0} for i in range(100)]
+        rows = [{"systime": base + pd.Timedelta(seconds=i), "uuid": "s1", "value_double": 10.0} for i in range(100)]
         df = pd.DataFrame(rows)
         detector = ThresholdMonitoringEvents(df, "s1")
         result = detector.time_above_threshold(threshold=50.0, window="1h")

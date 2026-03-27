@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -36,16 +37,10 @@ class SignalQualityEvents(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-        self.signal = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.signal = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
 
-    def detect_missing_data(
-        self, expected_freq: str = "1s", tolerance_factor: float = 2.0
-    ) -> pd.DataFrame:
+    def detect_missing_data(self, expected_freq: str = "1s", tolerance_factor: float = 2.0) -> pd.DataFrame:
         """Find gaps where time between samples exceeds expected frequency.
 
         Args:
@@ -65,17 +60,19 @@ class SignalQualityEvents(Base):
         expected_td = pd.to_timedelta(expected_freq)
         threshold = expected_td * tolerance_factor
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for i, d in enumerate(diffs):
             gap = pd.Timedelta(d)
             if gap > threshold:
                 expected_missing = int(gap / expected_td) - 1
-                events.append({
-                    "gap_start": pd.Timestamp(times[i]),
-                    "gap_end": pd.Timestamp(times[i + 1]),
-                    "gap_duration": gap,
-                    "expected_samples_missing": max(expected_missing, 1),
-                })
+                events.append(
+                    {
+                        "gap_start": pd.Timestamp(times[i]),
+                        "gap_end": pd.Timestamp(times[i + 1]),
+                        "gap_duration": gap,
+                        "expected_samples_missing": max(expected_missing, 1),
+                    }
+                )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
@@ -89,8 +86,7 @@ class SignalQualityEvents(Base):
             DataFrame with columns: window_start, mean_interval, std_interval,
             min_interval, max_interval, regularity_score.
         """
-        cols = ["window_start", "mean_interval", "std_interval",
-                "min_interval", "max_interval", "regularity_score"]
+        cols = ["window_start", "mean_interval", "std_interval", "min_interval", "max_interval", "regularity_score"]
         if self.signal.empty or len(self.signal) < 2:
             return pd.DataFrame(columns=cols)
 
@@ -103,7 +99,7 @@ class SignalQualityEvents(Base):
 
         resampled = sig["interval"].resample(window).agg(["mean", "std", "min", "max", "count"])
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for ts, row in resampled.iterrows():
             if row["count"] < 2 or pd.isna(row["mean"]):
                 continue
@@ -111,20 +107,20 @@ class SignalQualityEvents(Base):
             std_val = row["std"] if pd.notna(row["std"]) else 0.0
             # Regularity score: 1.0 = perfectly regular, 0.0 = very irregular
             regularity = max(0.0, 1.0 - (std_val / (mean_val + 1e-10)))
-            events.append({
-                "window_start": ts,
-                "mean_interval": round(mean_val, 4),
-                "std_interval": round(std_val, 4),
-                "min_interval": round(row["min"], 4),
-                "max_interval": round(row["max"], 4),
-                "regularity_score": round(max(0.0, min(1.0, regularity)), 4),
-            })
+            events.append(
+                {
+                    "window_start": ts,
+                    "mean_interval": round(mean_val, 4),
+                    "std_interval": round(std_val, 4),
+                    "min_interval": round(row["min"], 4),
+                    "max_interval": round(row["max"], 4),
+                    "regularity_score": round(max(0.0, min(1.0, regularity)), 4),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
-    def detect_out_of_range(
-        self, min_value: float, max_value: float
-    ) -> pd.DataFrame:
+    def detect_out_of_range(self, min_value: float, max_value: float) -> pd.DataFrame:
         """Flag intervals where signal is outside expected range.
 
         Args:
@@ -146,7 +142,7 @@ class SignalQualityEvents(Base):
             return pd.DataFrame(columns=cols)
 
         groups = (out_of_range != out_of_range.shift()).cumsum()
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
 
         for _, seg in sig.groupby(groups):
             seg_oor = out_of_range.loc[seg.index]
@@ -164,20 +160,20 @@ class SignalQualityEvents(Base):
             else:
                 direction = "both"
 
-            events.append({
-                "start_time": start,
-                "end_time": end,
-                "duration": end - start,
-                "min_observed": min_obs,
-                "max_observed": max_obs,
-                "direction": direction,
-            })
+            events.append(
+                {
+                    "start_time": start,
+                    "end_time": end,
+                    "duration": end - start,
+                    "min_observed": min_obs,
+                    "max_observed": max_obs,
+                    "direction": direction,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
-    def data_completeness(
-        self, window: str = "1h", expected_freq: str = "1s"
-    ) -> pd.DataFrame:
+    def data_completeness(self, window: str = "1h", expected_freq: str = "1s") -> pd.DataFrame:
         """Percentage of expected samples actually received per window.
 
         Args:
@@ -199,14 +195,16 @@ class SignalQualityEvents(Base):
 
         counts = sig[self.value_column].resample(window).count()
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for ts, actual in counts.items():
             completeness = min(100.0, round(actual / expected_per_window * 100, 2))
-            events.append({
-                "window_start": ts,
-                "expected_count": expected_per_window,
-                "actual_count": int(actual),
-                "completeness_pct": completeness,
-            })
+            events.append(
+                {
+                    "window_start": ts,
+                    "expected_count": expected_per_window,
+                    "actual_count": int(actual),
+                    "completeness_pct": completeness,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)

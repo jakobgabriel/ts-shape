@@ -12,10 +12,8 @@ Two modes of operation:
 """
 
 import logging
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import Optional, Dict, List
-from datetime import date as DateType
 
 from ts_shape.utils.base import Base
 
@@ -61,9 +59,16 @@ class ShiftHandoverReport(Base):
 
     MERGE_KEYS = ["date", "shift"]
     OUTPUT_COLUMNS = [
-        "date", "shift", "production", "production_target",
-        "production_achievement_pct", "ok_parts", "nok_parts",
-        "quality_pct", "availability_pct", "downtime_minutes",
+        "date",
+        "shift",
+        "production",
+        "production_target",
+        "production_achievement_pct",
+        "ok_parts",
+        "nok_parts",
+        "quality_pct",
+        "availability_pct",
+        "downtime_minutes",
     ]
 
     def __init__(
@@ -71,7 +76,7 @@ class ShiftHandoverReport(Base):
         dataframe: pd.DataFrame,
         *,
         time_column: str = "systime",
-        shift_definitions: Optional[Dict[str, tuple[str, str]]] = None,
+        shift_definitions: dict[str, tuple[str, str]] | None = None,
     ) -> None:
         super().__init__(dataframe, column_name=time_column)
         self.time_column = time_column
@@ -100,11 +105,7 @@ class ShiftHandoverReport(Base):
         value_column: str,
     ) -> pd.DataFrame:
         """Get counter deltas grouped by date/shift."""
-        data = (
-            self.dataframe[self.dataframe["uuid"] == uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        data = self.dataframe[self.dataframe["uuid"] == uuid].copy().sort_values(self.time_column)
         if data.empty:
             return pd.DataFrame(columns=["date", "shift", "quantity"])
 
@@ -127,11 +128,7 @@ class ShiftHandoverReport(Base):
         value_column: str,
     ) -> pd.DataFrame:
         """Compute availability grouped by date/shift."""
-        data = (
-            self.dataframe[self.dataframe["uuid"] == state_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        data = self.dataframe[self.dataframe["uuid"] == state_uuid].copy().sort_values(self.time_column)
         if data.empty:
             return pd.DataFrame(columns=["date", "shift", "availability_pct", "downtime_minutes"])
 
@@ -148,12 +145,14 @@ class ShiftHandoverReport(Base):
             down = grp.loc[~grp["is_running"], "duration_s"].sum()
             total = up + down
             avail = (up / total * 100) if total > 0 else 0.0
-            results.append({
-                "date": dt,
-                "shift": shift,
-                "availability_pct": round(avail, 1),
-                "downtime_minutes": round(down / 60, 1),
-            })
+            results.append(
+                {
+                    "date": dt,
+                    "shift": shift,
+                    "availability_pct": round(avail, 1),
+                    "downtime_minutes": round(down / 60, 1),
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -164,11 +163,11 @@ class ShiftHandoverReport(Base):
     @staticmethod
     def from_shift_data(
         production_df: pd.DataFrame,
-        quality_df: Optional[pd.DataFrame] = None,
-        downtime_df: Optional[pd.DataFrame] = None,
+        quality_df: pd.DataFrame | None = None,
+        downtime_df: pd.DataFrame | None = None,
         *,
-        targets: Optional[Dict[str, float]] = None,
-        report_date: Optional[str] = None,
+        targets: dict[str, float] | None = None,
+        report_date: str | None = None,
     ) -> pd.DataFrame:
         """Build a handover report from pre-computed shift-level DataFrames.
 
@@ -206,7 +205,9 @@ class ShiftHandoverReport(Base):
         if report_date:
             target_date = pd.to_datetime(report_date).date()
         else:
-            prod["date"] = pd.to_datetime(prod["date"]).dt.date if not pd.api.types.is_object_dtype(prod["date"]) else prod["date"]
+            prod["date"] = (
+                pd.to_datetime(prod["date"]).dt.date if not pd.api.types.is_object_dtype(prod["date"]) else prod["date"]
+            )
             target_date = prod["date"].max()
 
         result = prod[prod["date"] == target_date].copy()
@@ -253,8 +254,10 @@ class ShiftHandoverReport(Base):
         if targets:
             result["production_target"] = result["shift"].map(targets).fillna(0)
             result["production_achievement_pct"] = (
-                result["production"] / result["production_target"] * 100
-            ).where(result["production_target"] > 0, 0).round(1)
+                (result["production"] / result["production_target"] * 100)
+                .where(result["production_target"] > 0, 0)
+                .round(1)
+            )
         else:
             result["production_target"] = 0.0
             result["production_achievement_pct"] = 0.0
@@ -262,9 +265,7 @@ class ShiftHandoverReport(Base):
         # Ensure quality_pct is computed if we have ok/nok but no quality_pct from upstream
         if (result["quality_pct"] == 0).all() and (result["ok_parts"] > 0).any():
             total = result["ok_parts"] + result["nok_parts"]
-            result["quality_pct"] = (
-                (result["ok_parts"] / total * 100).where(total > 0, 0).round(1)
-            )
+            result["quality_pct"] = (result["ok_parts"] / total * 100).where(total > 0, 0).round(1)
 
         # Return with consistent column order
         for col in output_cols:
@@ -284,13 +285,13 @@ class ShiftHandoverReport(Base):
         nok_counter_uuid: str,
         state_uuid: str,
         *,
-        targets: Optional[Dict[str, float]] = None,
+        targets: dict[str, float] | None = None,
         quality_target_pct: float = 98.0,
         availability_target_pct: float = 90.0,
         running_value: str = "Running",
         value_column_counter: str = "value_integer",
         value_column_state: str = "value_string",
-        report_date: Optional[str] = None,
+        report_date: str | None = None,
     ) -> pd.DataFrame:
         """Generate a shift handover report from raw timeseries signals.
 
@@ -351,7 +352,8 @@ class ShiftHandoverReport(Base):
             avail_filt = avail[avail["date"] == target_date]
             result = result.merge(
                 avail_filt[["date", "shift", "availability_pct", "downtime_minutes"]],
-                on=["date", "shift"], how="left",
+                on=["date", "shift"],
+                how="left",
             )
         else:
             result["availability_pct"] = 0.0
@@ -363,35 +365,35 @@ class ShiftHandoverReport(Base):
         if targets:
             result["production_target"] = result["shift"].map(targets).fillna(0)
             result["production_achievement_pct"] = (
-                result["production"] / result["production_target"] * 100
-            ).where(result["production_target"] > 0, 0).round(1)
+                (result["production"] / result["production_target"] * 100)
+                .where(result["production_target"] > 0, 0)
+                .round(1)
+            )
         else:
             result["production_target"] = 0.0
             result["production_achievement_pct"] = 0.0
 
         # Quality
         total = result["ok_parts"] + result["nok_parts"]
-        result["quality_pct"] = (
-            (result["ok_parts"] / total * 100).where(total > 0, 0).round(1)
-        )
+        result["quality_pct"] = (result["ok_parts"] / total * 100).where(total > 0, 0).round(1)
 
         return result[self.OUTPUT_COLUMNS].reset_index(drop=True)
 
     def highlight_issues(
         self,
-        counter_uuid: Optional[str] = None,
-        ok_counter_uuid: Optional[str] = None,
-        nok_counter_uuid: Optional[str] = None,
-        state_uuid: Optional[str] = None,
+        counter_uuid: str | None = None,
+        ok_counter_uuid: str | None = None,
+        nok_counter_uuid: str | None = None,
+        state_uuid: str | None = None,
         *,
-        report_df: Optional[pd.DataFrame] = None,
-        thresholds: Optional[Dict[str, float]] = None,
-        targets: Optional[Dict[str, float]] = None,
+        report_df: pd.DataFrame | None = None,
+        thresholds: dict[str, float] | None = None,
+        targets: dict[str, float] | None = None,
         running_value: str = "Running",
         value_column_counter: str = "value_integer",
         value_column_state: str = "value_string",
-        report_date: Optional[str] = None,
-    ) -> List[Dict[str, str]]:
+        report_date: str | None = None,
+    ) -> list[dict[str, str]]:
         """Identify issues that need attention.
 
         Can be called in two ways:
@@ -431,7 +433,10 @@ class ShiftHandoverReport(Base):
             report = report_df
         elif counter_uuid and ok_counter_uuid and nok_counter_uuid and state_uuid:
             report = self.generate_report(
-                counter_uuid, ok_counter_uuid, nok_counter_uuid, state_uuid,
+                counter_uuid,
+                ok_counter_uuid,
+                nok_counter_uuid,
+                state_uuid,
                 targets=targets,
                 running_value=running_value,
                 value_column_counter=value_column_counter,
@@ -452,12 +457,14 @@ class ShiftHandoverReport(Base):
                 value = row[metric]
                 if value < threshold:
                     severity = "warning" if value >= threshold * 0.95 else "critical"
-                    issues.append({
-                        "shift": row["shift"],
-                        "metric": metric,
-                        "value": round(float(value), 1),
-                        "threshold": threshold,
-                        "severity": severity,
-                    })
+                    issues.append(
+                        {
+                            "shift": row["shift"],
+                            "metric": metric,
+                            "value": round(float(value), 1),
+                            "threshold": threshold,
+                            "severity": severity,
+                        }
+                    )
 
         return issues

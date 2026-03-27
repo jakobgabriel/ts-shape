@@ -1,8 +1,9 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
+import pandas as pd  # type: ignore
 from scipy import stats  # type: ignore
-from typing import List, Dict, Any, Optional
 
 from ts_shape.utils.base import Base
 
@@ -31,10 +32,10 @@ class CapabilityTrendingEvents(Base):
         dataframe: pd.DataFrame,
         signal_uuid: str,
         *,
-        upper_spec: Optional[float] = None,
-        lower_spec: Optional[float] = None,
-        upper_spec_uuid: Optional[str] = None,
-        lower_spec_uuid: Optional[str] = None,
+        upper_spec: float | None = None,
+        lower_spec: float | None = None,
+        upper_spec_uuid: str | None = None,
+        lower_spec_uuid: str | None = None,
         value_column: str = "value_double",
         event_uuid: str = "quality:capability_trend",
         time_column: str = "systime",
@@ -47,12 +48,12 @@ class CapabilityTrendingEvents(Base):
 
         # Resolve spec limits
         if upper_spec is not None:
-            self.upper_spec_fixed: Optional[float] = float(upper_spec)
+            self.upper_spec_fixed: float | None = float(upper_spec)
         else:
             self.upper_spec_fixed = None
 
         if lower_spec is not None:
-            self.lower_spec_fixed: Optional[float] = float(lower_spec)
+            self.lower_spec_fixed: float | None = float(lower_spec)
         else:
             self.lower_spec_fixed = None
 
@@ -60,20 +61,12 @@ class CapabilityTrendingEvents(Base):
         self.lower_spec_uuid = lower_spec_uuid
 
         if self.upper_spec_fixed is None and self.upper_spec_uuid is None:
-            raise ValueError(
-                "Either upper_spec (float) or upper_spec_uuid must be provided"
-            )
+            raise ValueError("Either upper_spec (float) or upper_spec_uuid must be provided")
         if self.lower_spec_fixed is None and self.lower_spec_uuid is None:
-            raise ValueError(
-                "Either lower_spec (float) or lower_spec_uuid must be provided"
-            )
+            raise ValueError("Either lower_spec (float) or lower_spec_uuid must be provided")
 
         # Extract signal data
-        self.signal = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.signal = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
 
     def _resolve_spec_limits(self, window_df: pd.DataFrame) -> tuple:
@@ -114,7 +107,7 @@ class CapabilityTrendingEvents(Base):
         if overall_std == 0 or pd.isna(overall_std):
             overall_std = np.nan
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for ts, group in sig.resample(window):
             vals = group[self.value_column].dropna()
             n = len(vals)
@@ -146,16 +139,18 @@ class CapabilityTrendingEvents(Base):
                 pp = np.nan
                 ppk = np.nan
 
-            events.append({
-                "window_start": ts,
-                "cp": round(cp, 4) if not np.isnan(cp) else np.nan,
-                "cpk": round(cpk, 4) if not np.isnan(cpk) else np.nan,
-                "pp": round(pp, 4) if not np.isnan(pp) else np.nan,
-                "ppk": round(ppk, 4) if not np.isnan(ppk) else np.nan,
-                "mean": round(mean, 6),
-                "std": round(std, 6),
-                "n_samples": n,
-            })
+            events.append(
+                {
+                    "window_start": ts,
+                    "cp": round(cp, 4) if not np.isnan(cp) else np.nan,
+                    "cpk": round(cpk, 4) if not np.isnan(cpk) else np.nan,
+                    "pp": round(pp, 4) if not np.isnan(pp) else np.nan,
+                    "ppk": round(ppk, 4) if not np.isnan(ppk) else np.nan,
+                    "mean": round(mean, 6),
+                    "std": round(std, 6),
+                    "n_samples": n,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
@@ -181,7 +176,7 @@ class CapabilityTrendingEvents(Base):
             return pd.DataFrame(columns=cols)
 
         cpk_vals = cap["cpk"].values
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
 
         for i in range(len(cap)):
             cpk = cpk_vals[i]
@@ -201,13 +196,15 @@ class CapabilityTrendingEvents(Base):
 
             alert = cpk < min_cpk or drop_pct > 20.0
 
-            events.append({
-                "window_start": cap.iloc[i]["window_start"],
-                "cpk": round(cpk, 4),
-                "prev_avg_cpk": round(prev_avg, 4) if not np.isnan(prev_avg) else np.nan,
-                "drop_pct": drop_pct,
-                "alert": alert,
-            })
+            events.append(
+                {
+                    "window_start": cap.iloc[i]["window_start"],
+                    "cpk": round(cpk, 4),
+                    "prev_avg_cpk": round(prev_avg, 4) if not np.isnan(prev_avg) else np.nan,
+                    "drop_pct": drop_pct,
+                    "alert": alert,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
@@ -242,7 +239,7 @@ class CapabilityTrendingEvents(Base):
         y = cpk_vals[valid_mask]
         slope, intercept, _, _, _ = stats.linregress(x, y)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for i in range(len(cap)):
             cpk = cpk_vals[i]
             if np.isnan(cpk):
@@ -257,13 +254,15 @@ class CapabilityTrendingEvents(Base):
             else:
                 windows_to = np.nan  # Not degrading
 
-            events.append({
-                "window_start": cap.iloc[i]["window_start"],
-                "cpk": round(cpk, 4),
-                "trend_slope": round(slope, 6),
-                "forecast_cpk": round(forecast_cpk, 4),
-                "windows_to_threshold": windows_to,
-            })
+            events.append(
+                {
+                    "window_start": cap.iloc[i]["window_start"],
+                    "cpk": round(cpk, 4),
+                    "trend_slope": round(slope, 6),
+                    "forecast_cpk": round(forecast_cpk, 4),
+                    "windows_to_threshold": windows_to,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
@@ -286,7 +285,7 @@ class CapabilityTrendingEvents(Base):
         sig = self.signal[[self.time_column, self.value_column]].copy()
         sig = sig.set_index(self.time_column)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for ts, group in sig.resample(window):
             vals = group[self.value_column].dropna()
             n = len(vals)
@@ -309,11 +308,13 @@ class CapabilityTrendingEvents(Base):
             dpmo = (1 - yield_pct / 100) * 1_000_000
             sigma_level = stats.norm.ppf(1 - dpmo / 1_000_000) + 1.5 if dpmo > 0 else 6.0
 
-            events.append({
-                "window_start": ts,
-                "estimated_yield_pct": round(yield_pct, 4),
-                "dpmo": round(dpmo, 1),
-                "sigma_level": round(sigma_level, 2),
-            })
+            events.append(
+                {
+                    "window_start": ts,
+                    "estimated_yield_pct": round(yield_pct, 4),
+                    "dpmo": round(dpmo, 1),
+                    "sigma_level": round(sigma_level, 2),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)

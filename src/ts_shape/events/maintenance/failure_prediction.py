@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -30,11 +31,7 @@ class FailurePredictionEvents(Base):
         self.time_column = time_column
 
         # Isolate signal series and ensure proper dtypes/sort
-        self.signal = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.signal = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
 
     def remaining_useful_life(
@@ -62,14 +59,14 @@ class FailurePredictionEvents(Base):
         sig = self.signal[[self.time_column, self.value_column]].copy().reset_index(drop=True)
         sig["t_seconds"] = (sig[self.time_column] - sig[self.time_column].iloc[0]).dt.total_seconds()
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for i in range(len(sig)):
             current_val = float(sig[self.value_column].iloc[i])
             t_now = sig[self.time_column].iloc[i]
 
             # Use recent points (up to last 10) for local slope estimate
             start_idx = max(0, i - 9)
-            recent = sig.iloc[start_idx:i + 1]
+            recent = sig.iloc[start_idx : i + 1]
 
             if len(recent) >= 2:
                 x = recent["t_seconds"].values
@@ -114,15 +111,17 @@ class FailurePredictionEvents(Base):
                     rul_seconds = float(rul_s)
                     rul_hours = float(rul_s / 3600.0)
 
-            rows.append({
-                "systime": t_now,
-                "uuid": self.event_uuid,
-                "is_delta": True,
-                "current_value": current_val,
-                "rul_seconds": rul_seconds,
-                "rul_hours": rul_hours,
-                "confidence": round(confidence, 4),
-            })
+            rows.append(
+                {
+                    "systime": t_now,
+                    "uuid": self.event_uuid,
+                    "is_delta": True,
+                    "current_value": current_val,
+                    "rul_seconds": rul_seconds,
+                    "rul_hours": rul_hours,
+                    "confidence": round(confidence, 4),
+                }
+            )
 
         return pd.DataFrame(rows, columns=cols) if rows else pd.DataFrame(columns=cols)
 
@@ -165,7 +164,7 @@ class FailurePredictionEvents(Base):
         t_max = sig[self.time_column].iloc[-1]
         window_starts = pd.date_range(start=t_min, end=t_max, freq=window_td)
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         prev_warning_count = 0
         prev_critical_count = 0
 
@@ -182,14 +181,16 @@ class FailurePredictionEvents(Base):
             # Escalation: current counts exceed previous window counts
             escalation = (warning_count > prev_warning_count) or (critical_count > prev_critical_count)
 
-            rows.append({
-                "window_start": ws,
-                "uuid": self.event_uuid,
-                "is_delta": True,
-                "warning_count": warning_count,
-                "critical_count": critical_count,
-                "escalation_detected": escalation,
-            })
+            rows.append(
+                {
+                    "window_start": ws,
+                    "uuid": self.event_uuid,
+                    "is_delta": True,
+                    "warning_count": warning_count,
+                    "critical_count": critical_count,
+                    "escalation_detected": escalation,
+                }
+            )
 
             prev_warning_count = warning_count
             prev_critical_count = critical_count
@@ -219,14 +220,14 @@ class FailurePredictionEvents(Base):
         sig = self.signal[[self.time_column, self.value_column]].copy().reset_index(drop=True)
         sig["t_seconds"] = (sig[self.time_column] - sig[self.time_column].iloc[0]).dt.total_seconds()
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for i in range(len(sig)):
             current_val = float(sig[self.value_column].iloc[i])
             t_now = sig[self.time_column].iloc[i]
 
             # Use recent points for rate of change
             start_idx = max(0, i - 9)
-            recent = sig.iloc[start_idx:i + 1]
+            recent = sig.iloc[start_idx : i + 1]
 
             if len(recent) >= 2:
                 x = recent["t_seconds"].values
@@ -247,13 +248,15 @@ class FailurePredictionEvents(Base):
                 est = distance / rate
                 estimated_time = float(est) if est > 0 else 0.0
 
-            rows.append({
-                "systime": t_now,
-                "uuid": self.event_uuid,
-                "is_delta": True,
-                "current_value": current_val,
-                "rate_of_change": rate,
-                "estimated_time_seconds": estimated_time,
-            })
+            rows.append(
+                {
+                    "systime": t_now,
+                    "uuid": self.event_uuid,
+                    "is_delta": True,
+                    "current_value": current_val,
+                    "rate_of_change": rate,
+                    "estimated_time_seconds": estimated_time,
+                }
+            )
 
         return pd.DataFrame(rows, columns=cols) if rows else pd.DataFrame(columns=cols)

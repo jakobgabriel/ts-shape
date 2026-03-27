@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -24,8 +25,8 @@ class MaterialBalanceEvents(Base):
     def __init__(
         self,
         dataframe: pd.DataFrame,
-        input_uuids: List[str],
-        output_uuids: List[str],
+        input_uuids: list[str],
+        output_uuids: list[str],
         *,
         event_uuid: str = "eng:material_balance",
         value_column: str = "value_double",
@@ -38,25 +39,16 @@ class MaterialBalanceEvents(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-        self.dataframe[self.time_column] = pd.to_datetime(
-            self.dataframe[self.time_column]
-        )
+        self.dataframe[self.time_column] = pd.to_datetime(self.dataframe[self.time_column])
 
-    def _resample_signals(
-        self, uuids: List[str], window: str
-    ) -> pd.DataFrame:
+    def _resample_signals(self, uuids: list[str], window: str) -> pd.DataFrame:
         """Resample each UUID to window and return sum per window."""
-        frames: List[pd.Series] = []
+        frames: list[pd.Series] = []
         for uid in uuids:
             sig = self.dataframe[self.dataframe["uuid"] == uid]
             if sig.empty:
                 continue
-            s = (
-                sig.set_index(self.time_column)[self.value_column]
-                .resample(window)
-                .mean()
-                .fillna(0.0)
-            )
+            s = sig.set_index(self.time_column)[self.value_column].resample(window).mean().fillna(0.0)
             frames.append(s.rename(uid))
 
         if not frames:
@@ -81,8 +73,12 @@ class MaterialBalanceEvents(Base):
             total_output, imbalance, imbalance_pct, balanced.
         """
         cols = [
-            "window_start", "total_input", "total_output",
-            "imbalance", "imbalance_pct", "balanced",
+            "window_start",
+            "total_input",
+            "total_output",
+            "imbalance",
+            "imbalance_pct",
+            "balanced",
         ]
         inputs = self._resample_signals(self.input_uuids, window)
         outputs = self._resample_signals(self.output_uuids, window)
@@ -91,8 +87,10 @@ class MaterialBalanceEvents(Base):
             return pd.DataFrame(columns=cols)
 
         # Align indices
-        all_idx = inputs.index.union(outputs.index) if not inputs.empty and not outputs.empty else (
-            inputs.index if not inputs.empty else outputs.index
+        all_idx = (
+            inputs.index.union(outputs.index)
+            if not inputs.empty and not outputs.empty
+            else (inputs.index if not inputs.empty else outputs.index)
         )
 
         if inputs.empty:
@@ -109,14 +107,16 @@ class MaterialBalanceEvents(Base):
         denom = total_in.replace(0, np.nan)
         imbalance_pct = (imbalance.abs() / denom * 100).fillna(0.0)
 
-        result = pd.DataFrame({
-            "window_start": all_idx,
-            "total_input": total_in.values,
-            "total_output": total_out.values,
-            "imbalance": imbalance.values,
-            "imbalance_pct": imbalance_pct.values,
-            "balanced": (imbalance_pct <= tolerance_pct).values,
-        })
+        result = pd.DataFrame(
+            {
+                "window_start": all_idx,
+                "total_input": total_in.values,
+                "total_output": total_out.values,
+                "imbalance": imbalance.values,
+                "imbalance_pct": imbalance_pct.values,
+                "balanced": (imbalance_pct <= tolerance_pct).values,
+            }
+        )
 
         return result[cols].reset_index(drop=True)
 
@@ -136,10 +136,7 @@ class MaterialBalanceEvents(Base):
         result["rolling_avg_imbalance"] = result["imbalance_pct"].rolling(3, min_periods=1).mean()
 
         diff = result["rolling_avg_imbalance"].diff()
-        result["trend_direction"] = np.where(
-            diff > 0.5, "growing",
-            np.where(diff < -0.5, "shrinking", "stable")
-        )
+        result["trend_direction"] = np.where(diff > 0.5, "growing", np.where(diff < -0.5, "shrinking", "stable"))
 
         return result[cols].reset_index(drop=True)
 
@@ -157,9 +154,14 @@ class MaterialBalanceEvents(Base):
             likely_cause.
         """
         cols = [
-            "start", "end", "uuid", "is_delta",
-            "avg_imbalance_pct", "max_imbalance_pct",
-            "duration_seconds", "likely_cause",
+            "start",
+            "end",
+            "uuid",
+            "is_delta",
+            "avg_imbalance_pct",
+            "max_imbalance_pct",
+            "duration_seconds",
+            "likely_cause",
         ]
         bc = self.balance_check(window, tolerance_pct)
         if bc.empty:
@@ -173,7 +175,7 @@ class MaterialBalanceEvents(Base):
         min_td = pd.Timedelta(min_duration)
 
         groups = (unbalanced != unbalanced.shift()).cumsum()
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
 
         for _, seg_idx in unbalanced.groupby(groups):
             if not seg_idx.iloc[0]:
@@ -197,16 +199,18 @@ class MaterialBalanceEvents(Base):
             else:
                 cause = "measurement_error"
 
-            events.append({
-                "start": start,
-                "end": end,
-                "uuid": self.event_uuid,
-                "is_delta": False,
-                "avg_imbalance_pct": avg_pct,
-                "max_imbalance_pct": max_pct,
-                "duration_seconds": dur.total_seconds(),
-                "likely_cause": cause,
-            })
+            events.append(
+                {
+                    "start": start,
+                    "end": end,
+                    "uuid": self.event_uuid,
+                    "is_delta": False,
+                    "avg_imbalance_pct": avg_pct,
+                    "max_imbalance_pct": max_pct,
+                    "duration_seconds": dur.total_seconds(),
+                    "likely_cause": cause,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -224,32 +228,36 @@ class MaterialBalanceEvents(Base):
         if inputs.empty and outputs.empty:
             return pd.DataFrame(columns=cols)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
 
         if not inputs.empty:
             for ws in inputs.index:
                 total = float(inputs.loc[ws].sum())
                 for uid in inputs.columns:
                     val = float(inputs.loc[ws, uid])
-                    events.append({
-                        "window_start": ws,
-                        "uuid": uid,
-                        "role": "input",
-                        "value": val,
-                        "pct_of_total": (val / total * 100) if total > 0 else 0.0,
-                    })
+                    events.append(
+                        {
+                            "window_start": ws,
+                            "uuid": uid,
+                            "role": "input",
+                            "value": val,
+                            "pct_of_total": (val / total * 100) if total > 0 else 0.0,
+                        }
+                    )
 
         if not outputs.empty:
             for ws in outputs.index:
                 total = float(outputs.loc[ws].sum())
                 for uid in outputs.columns:
                     val = float(outputs.loc[ws, uid])
-                    events.append({
-                        "window_start": ws,
-                        "uuid": uid,
-                        "role": "output",
-                        "value": val,
-                        "pct_of_total": (val / total * 100) if total > 0 else 0.0,
-                    })
+                    events.append(
+                        {
+                            "window_start": ws,
+                            "uuid": uid,
+                            "role": "output",
+                            "value": val,
+                            "pct_of_total": (val / total * 100) if total > 0 else 0.0,
+                        }
+                    )
 
         return pd.DataFrame(events, columns=cols)

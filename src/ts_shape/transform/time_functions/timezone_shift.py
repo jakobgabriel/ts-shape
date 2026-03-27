@@ -1,9 +1,12 @@
 import logging
-import pandas as pd  # type: ignore
 from zoneinfo import available_timezones
+
+import pandas as pd  # type: ignore
+
 from ts_shape.utils.base import Base  # Import Base from the specified path
 
 logger = logging.getLogger(__name__)
+
 
 class TimezoneShift(Base):
     """
@@ -11,7 +14,9 @@ class TimezoneShift(Base):
     """
 
     @classmethod
-    def shift_timezone(cls, dataframe: pd.DataFrame, time_column: str, input_timezone: str, target_timezone: str) -> pd.DataFrame:
+    def shift_timezone(
+        cls, dataframe: pd.DataFrame, time_column: str, input_timezone: str, target_timezone: str
+    ) -> pd.DataFrame:
         """
         Shifts timestamps in the specified column of a DataFrame from a given timezone to a target timezone.
 
@@ -33,7 +38,7 @@ class TimezoneShift(Base):
         # Ensure the time column is in datetime format
         if not pd.api.types.is_datetime64_any_dtype(dataframe[time_column]):
             raise ValueError(f"Column '{time_column}' must contain datetime values.")
-        
+
         # Localize to the specified input timezone if timestamps are naive
         dataframe[time_column] = pd.to_datetime(dataframe[time_column])
         if dataframe[time_column].dt.tz is None:
@@ -44,11 +49,13 @@ class TimezoneShift(Base):
 
         # Convert to the target timezone
         dataframe[time_column] = dataframe[time_column].dt.tz_convert(target_timezone)
-        
+
         return dataframe
 
     @classmethod
-    def add_timezone_column(cls, dataframe: pd.DataFrame, time_column: str, input_timezone: str, target_timezone: str) -> pd.DataFrame:
+    def add_timezone_column(
+        cls, dataframe: pd.DataFrame, time_column: str, input_timezone: str, target_timezone: str
+    ) -> pd.DataFrame:
         """
         Creates a new column with timestamps converted from an input timezone to a target timezone, without altering the original column.
 
@@ -98,7 +105,9 @@ class TimezoneShift(Base):
         return dataframe[time_column].dt.tz is not None
 
     @classmethod
-    def revert_to_original_timezone(cls, dataframe: pd.DataFrame, time_column: str, original_timezone: str) -> pd.DataFrame:
+    def revert_to_original_timezone(
+        cls, dataframe: pd.DataFrame, time_column: str, original_timezone: str
+    ) -> pd.DataFrame:
         """
         Reverts a timezone-shifted time column back to the original timezone.
 
@@ -116,38 +125,38 @@ class TimezoneShift(Base):
 
         # Convert to the original timezone
         dataframe[time_column] = dataframe[time_column].dt.tz_convert(original_timezone)
-        
+
         return dataframe
 
     @classmethod
     def calculate_time_difference(cls, dataframe: pd.DataFrame, start_column: str, end_column: str) -> pd.Series:
         """
         Calculates the time difference between two timestamp columns.
-    
+
         Args:
             dataframe (pd.DataFrame): The DataFrame containing the data.
             start_column (str): The name of the start time column.
             end_column (str): The name of the end time column.
-    
+
         Returns:
             pd.Series: A Series with the time differences in seconds.
         """
         # Check if both columns are timezone-aware or both are timezone-naive
         start_is_aware = dataframe[start_column].dt.tz is not None
         end_is_aware = dataframe[end_column].dt.tz is not None
-        
+
         if start_is_aware != end_is_aware:
             raise ValueError("Both columns must be either timezone-aware or timezone-naive.")
-        
+
         # If timezone-aware, convert both columns to UTC for comparison
         if start_is_aware:
-            start_times = dataframe[start_column].dt.tz_convert('UTC')
-            end_times = dataframe[end_column].dt.tz_convert('UTC')
+            start_times = dataframe[start_column].dt.tz_convert("UTC")
+            end_times = dataframe[end_column].dt.tz_convert("UTC")
         else:
             start_times = dataframe[start_column]
             end_times = dataframe[end_column]
-    
+
         # Calculate the difference in seconds
         time_difference = (end_times - start_times).dt.total_seconds()
-    
+
         return time_difference

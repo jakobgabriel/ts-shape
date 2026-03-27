@@ -1,8 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
-import numpy as np  # type: ignore
 from itertools import combinations
-from typing import List, Dict, Any
+from typing import Any
+
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -26,7 +26,7 @@ class MultiSensorValidationEvents(Base):
     def __init__(
         self,
         dataframe: pd.DataFrame,
-        sensor_uuids: List[str],
+        sensor_uuids: list[str],
         *,
         value_column: str = "value_double",
         event_uuid: str = "quality:multi_sensor",
@@ -61,9 +61,7 @@ class MultiSensorValidationEvents(Base):
         pivot = pivot.sort_index().ffill(limit=5)
         return pivot
 
-    def detect_disagreement(
-        self, threshold: float, window: str = "5m"
-    ) -> pd.DataFrame:
+    def detect_disagreement(self, threshold: float, window: str = "5m") -> pd.DataFrame:
         """Flag windows where sensor spread exceeds threshold.
 
         Args:
@@ -78,7 +76,7 @@ class MultiSensorValidationEvents(Base):
         if self._pivot.empty:
             return pd.DataFrame(columns=cols)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for ts, group in self._pivot.resample(window):
             group = group.dropna(how="all")
             if group.empty or len(group) < 1:
@@ -92,14 +90,16 @@ class MultiSensorValidationEvents(Base):
             spread = float(valid_means.max() - valid_means.min())
             if spread > threshold:
                 window_end = ts + pd.to_timedelta(window)
-                events.append({
-                    "window_start": ts,
-                    "window_end": window_end,
-                    "max_spread": round(spread, 6),
-                    "sensor_high": valid_means.idxmax(),
-                    "sensor_low": valid_means.idxmin(),
-                    "duration": window_end - ts,
-                })
+                events.append(
+                    {
+                        "window_start": ts,
+                        "window_end": window_end,
+                        "max_spread": round(spread, 6),
+                        "sensor_high": valid_means.idxmax(),
+                        "sensor_low": valid_means.idxmin(),
+                        "duration": window_end - ts,
+                    }
+                )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
@@ -118,7 +118,7 @@ class MultiSensorValidationEvents(Base):
             return pd.DataFrame(columns=cols)
 
         pairs = list(combinations(self.sensor_uuids, 2))
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
 
         for ts, group in self._pivot.resample(window):
             group = group.dropna(how="all")
@@ -132,13 +132,15 @@ class MultiSensorValidationEvents(Base):
                 if pd.isna(means[a]) or pd.isna(means[b]):
                     continue
                 bias = float(means[a] - means[b])
-                events.append({
-                    "window_start": ts,
-                    "sensor_a": a,
-                    "sensor_b": b,
-                    "bias": round(bias, 6),
-                    "abs_bias": round(abs(bias), 6),
-                })
+                events.append(
+                    {
+                        "window_start": ts,
+                        "sensor_a": a,
+                        "sensor_b": b,
+                        "bias": round(bias, 6),
+                        "abs_bias": round(abs(bias), 6),
+                    }
+                )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
@@ -158,7 +160,7 @@ class MultiSensorValidationEvents(Base):
         if self._pivot.empty:
             return pd.DataFrame(columns=cols)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for ts, group in self._pivot.resample(window):
             group = group.dropna(how="all")
             if group.empty:
@@ -177,18 +179,18 @@ class MultiSensorValidationEvents(Base):
             else:
                 score = max(0.0, 1.0 - spread_std) if spread_std < 1.0 else 0.0
 
-            events.append({
-                "window_start": ts,
-                "consensus_mean": round(consensus_mean, 6),
-                "spread_std": round(spread_std, 6),
-                "consensus_score": round(min(1.0, score), 4),
-            })
+            events.append(
+                {
+                    "window_start": ts,
+                    "consensus_mean": round(consensus_mean, 6),
+                    "spread_std": round(spread_std, 6),
+                    "consensus_score": round(min(1.0, score), 4),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
-    def identify_outlier_sensor(
-        self, window: str = "1h", method: str = "median"
-    ) -> pd.DataFrame:
+    def identify_outlier_sensor(self, window: str = "1h", method: str = "median") -> pd.DataFrame:
         """Identify the sensor furthest from the group per window.
 
         Args:
@@ -203,7 +205,7 @@ class MultiSensorValidationEvents(Base):
         if self._pivot.empty:
             return pd.DataFrame(columns=cols)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for ts, group in self._pivot.resample(window):
             group = group.dropna(how="all")
             if group.empty:
@@ -226,11 +228,13 @@ class MultiSensorValidationEvents(Base):
             others = means.drop(outlier)
             other_mean = float(others.mean())
 
-            events.append({
-                "window_start": ts,
-                "outlier_sensor": outlier,
-                "deviation": round(deviation, 6),
-                "other_sensors_mean": round(other_mean, 6),
-            })
+            events.append(
+                {
+                    "window_start": ts,
+                    "outlier_sensor": outlier,
+                    "deviation": round(deviation, 6),
+                    "other_sensors_mean": round(other_mean, 6),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)

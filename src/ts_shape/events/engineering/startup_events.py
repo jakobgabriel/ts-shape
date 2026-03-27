@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any, Optional
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -33,11 +34,7 @@ class StartupDetectionEvents(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-        self.series = (
-            self.dataframe[self.dataframe["uuid"] == self.target_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.series = self.dataframe[self.dataframe["uuid"] == self.target_uuid].copy().sort_values(self.time_column)
         self.series[self.time_column] = pd.to_datetime(self.series[self.time_column])
 
     def detect_startup_by_threshold(
@@ -67,7 +64,7 @@ class StartupDetectionEvents(Base):
         rising = (~above_enter.shift(fill_value=False)) & above_enter
         rise_times = s.loc[rising, self.time_column]
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for t0 in rise_times:
             # ensure dwell above exit threshold for min_above
             win = s[(s[self.time_column] >= t0) & (s[self.time_column] <= t0 + min_above_td)]
@@ -113,7 +110,7 @@ class StartupDetectionEvents(Base):
 
         gid = (mask != mask.shift()).cumsum()
         min_d = pd.to_timedelta(min_duration)
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for _, seg in s.groupby(gid):
             seg_mask = mask.loc[seg.index]
             if not seg_mask.any():
@@ -139,7 +136,7 @@ class StartupDetectionEvents(Base):
 
     def detect_startup_multi_signal(
         self,
-        signals: Dict[str, Dict[str, Any]],
+        signals: dict[str, dict[str, Any]],
         logic: str = "all",
         *,
         time_tolerance: str = "30s",
@@ -162,7 +159,7 @@ class StartupDetectionEvents(Base):
             raise ValueError(f"logic must be 'all' or 'any', got '{logic}'")
 
         # Detect startups for each signal
-        signal_events: Dict[str, pd.DataFrame] = {}
+        signal_events: dict[str, pd.DataFrame] = {}
         for sig_uuid, config in signals.items():
             # Temporarily store original settings
             orig_uuid = self.target_uuid
@@ -170,11 +167,7 @@ class StartupDetectionEvents(Base):
 
             # Switch to the signal's uuid
             self.target_uuid = sig_uuid
-            self.series = (
-                self.dataframe[self.dataframe["uuid"] == sig_uuid]
-                .copy()
-                .sort_values(self.time_column)
-            )
+            self.series = self.dataframe[self.dataframe["uuid"] == sig_uuid].copy().sort_values(self.time_column)
             self.series[self.time_column] = pd.to_datetime(self.series[self.time_column])
 
             # Detect based on method
@@ -206,24 +199,25 @@ class StartupDetectionEvents(Base):
             all_events = []
             for sig_uuid, events in signal_events.items():
                 for _, event in events.iterrows():
-                    all_events.append({
-                        "start": event["start"],
-                        "end": event["end"],
-                        "uuid": self.event_uuid,
-                        "is_delta": True,
-                        "method": "multi_signal_any",
-                        "signals_triggered": [sig_uuid],
-                        "signal_details": {sig_uuid: event.to_dict()},
-                    })
+                    all_events.append(
+                        {
+                            "start": event["start"],
+                            "end": event["end"],
+                            "uuid": self.event_uuid,
+                            "is_delta": True,
+                            "method": "multi_signal_any",
+                            "signals_triggered": [sig_uuid],
+                            "signal_details": {sig_uuid: event.to_dict()},
+                        }
+                    )
             return pd.DataFrame(all_events)
 
         else:  # logic == "all"
             # Intersection: all signals must detect within time_tolerance
             if not signal_events or any(df.empty for df in signal_events.values()):
-                return pd.DataFrame(columns=[
-                    "start", "end", "uuid", "is_delta", "method",
-                    "signals_triggered", "signal_details"
-                ])
+                return pd.DataFrame(
+                    columns=["start", "end", "uuid", "is_delta", "method", "signals_triggered", "signal_details"]
+                )
 
             tolerance = pd.to_timedelta(time_tolerance)
             combined_events = []
@@ -241,8 +235,7 @@ class StartupDetectionEvents(Base):
                     sig_df = signal_events[sig_uuid]
                     # Find events within tolerance
                     matches = sig_df[
-                        (sig_df["start"] >= ref_start - tolerance) &
-                        (sig_df["start"] <= ref_start + tolerance)
+                        (sig_df["start"] >= ref_start - tolerance) & (sig_df["start"] <= ref_start + tolerance)
                     ]
 
                     if matches.empty:
@@ -258,15 +251,17 @@ class StartupDetectionEvents(Base):
                     all_starts = [matching_signals[sig]["start"] for sig in matching_signals]
                     all_ends = [matching_signals[sig]["end"] for sig in matching_signals]
 
-                    combined_events.append({
-                        "start": min(all_starts),
-                        "end": max(all_ends),
-                        "uuid": self.event_uuid,
-                        "is_delta": True,
-                        "method": "multi_signal_all",
-                        "signals_triggered": list(matching_signals.keys()),
-                        "signal_details": matching_signals,
-                    })
+                    combined_events.append(
+                        {
+                            "start": min(all_starts),
+                            "end": max(all_ends),
+                            "uuid": self.event_uuid,
+                            "is_delta": True,
+                            "method": "multi_signal_all",
+                            "signals_triggered": list(matching_signals.keys()),
+                            "signal_details": matching_signals,
+                        }
+                    )
 
             return pd.DataFrame(combined_events)
 
@@ -292,26 +287,30 @@ class StartupDetectionEvents(Base):
                                     baseline_mean, baseline_std
         """
         if self.series.empty:
-            return pd.DataFrame(columns=[
-                "start", "end", "uuid", "is_delta", "method",
-                "adaptive_threshold", "baseline_mean", "baseline_std"
-            ])
+            return pd.DataFrame(
+                columns=[
+                    "start",
+                    "end",
+                    "uuid",
+                    "is_delta",
+                    "method",
+                    "adaptive_threshold",
+                    "baseline_mean",
+                    "baseline_std",
+                ]
+            )
 
-        window_td = pd.to_timedelta(baseline_window)
+        pd.to_timedelta(baseline_window)
         min_above_td = pd.to_timedelta(min_above)
 
         s = self.series[[self.time_column, self.value_column]].copy()
         s = s.sort_values(self.time_column).reset_index(drop=True)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
 
         # Calculate rolling statistics
-        s["rolling_mean"] = s[self.value_column].rolling(
-            window=lookback_periods, min_periods=1
-        ).mean()
-        s["rolling_std"] = s[self.value_column].rolling(
-            window=lookback_periods, min_periods=1
-        ).std()
+        s["rolling_mean"] = s[self.value_column].rolling(window=lookback_periods, min_periods=1).mean()
+        s["rolling_std"] = s[self.value_column].rolling(window=lookback_periods, min_periods=1).std()
 
         # Calculate adaptive threshold
         s["adaptive_threshold"] = s["rolling_mean"] + sensitivity * s["rolling_std"].fillna(0)
@@ -328,26 +327,25 @@ class StartupDetectionEvents(Base):
             baseline_std = s.loc[idx, "rolling_std"]
 
             # Check if value stays above threshold for min_above duration
-            win = s[
-                (s[self.time_column] >= t0) &
-                (s[self.time_column] <= t0 + min_above_td)
-            ]
+            win = s[(s[self.time_column] >= t0) & (s[self.time_column] <= t0 + min_above_td)]
 
             if win.empty:
                 continue
 
             # Value must stay above the threshold calculated at crossing time
             if (win[self.value_column] >= threshold_at_crossing).all():
-                events.append({
-                    "start": t0,
-                    "end": t0 + min_above_td,
-                    "uuid": self.event_uuid,
-                    "is_delta": True,
-                    "method": "adaptive_threshold",
-                    "adaptive_threshold": float(threshold_at_crossing),
-                    "baseline_mean": float(baseline_mean) if pd.notna(baseline_mean) else None,
-                    "baseline_std": float(baseline_std) if pd.notna(baseline_std) else None,
-                })
+                events.append(
+                    {
+                        "start": t0,
+                        "end": t0 + min_above_td,
+                        "uuid": self.event_uuid,
+                        "is_delta": True,
+                        "method": "adaptive_threshold",
+                        "adaptive_threshold": float(threshold_at_crossing),
+                        "baseline_mean": float(baseline_mean) if pd.notna(baseline_mean) else None,
+                        "baseline_std": float(baseline_std) if pd.notna(baseline_std) else None,
+                    }
+                )
 
         return pd.DataFrame(events)
 
@@ -377,10 +375,19 @@ class StartupDetectionEvents(Base):
                 - stability_score: Measure of how stable the final state is
         """
         if startup_events.empty or self.series.empty:
-            return pd.DataFrame(columns=[
-                "start", "end", "duration", "smoothness_score", "anomaly_flags",
-                "value_change", "avg_rate", "max_value", "stability_score"
-            ])
+            return pd.DataFrame(
+                columns=[
+                    "start",
+                    "end",
+                    "duration",
+                    "smoothness_score",
+                    "anomaly_flags",
+                    "value_change",
+                    "avg_rate",
+                    "max_value",
+                    "stability_score",
+                ]
+            )
 
         quality_results = []
         s = self.series[[self.time_column, self.value_column]].copy()
@@ -390,23 +397,22 @@ class StartupDetectionEvents(Base):
             end = pd.to_datetime(event["end"])
 
             # Extract data for this startup period
-            period_data = s[
-                (s[self.time_column] >= start) &
-                (s[self.time_column] <= end)
-            ].copy()
+            period_data = s[(s[self.time_column] >= start) & (s[self.time_column] <= end)].copy()
 
             if period_data.empty or len(period_data) < 2:
-                quality_results.append({
-                    "start": start,
-                    "end": end,
-                    "duration": pd.Timedelta(0),
-                    "smoothness_score": None,
-                    "anomaly_flags": 0,
-                    "value_change": None,
-                    "avg_rate": None,
-                    "max_value": None,
-                    "stability_score": None,
-                })
+                quality_results.append(
+                    {
+                        "start": start,
+                        "end": end,
+                        "duration": pd.Timedelta(0),
+                        "smoothness_score": None,
+                        "anomaly_flags": 0,
+                        "value_change": None,
+                        "avg_rate": None,
+                        "max_value": None,
+                        "stability_score": None,
+                    }
+                )
                 continue
 
             # Calculate duration
@@ -433,26 +439,28 @@ class StartupDetectionEvents(Base):
             # Stability score: inverse of coefficient of variation in final 20% of period
             final_portion_size = max(1, len(period_data) // 5)
             final_values = values.iloc[-final_portion_size:]
-            cv = final_values.std() / final_values.mean() if final_values.mean() != 0 else float('inf')
+            cv = final_values.std() / final_values.mean() if final_values.mean() != 0 else float("inf")
             stability_score = 1.0 / (1.0 + cv) if np.isfinite(cv) else 0.0
 
-            quality_results.append({
-                "start": start,
-                "end": end,
-                "duration": duration,
-                "smoothness_score": float(smoothness_score) if smoothness_score is not None else None,
-                "anomaly_flags": anomaly_flags,
-                "value_change": float(value_change),
-                "avg_rate": float(avg_rate),
-                "max_value": float(max_value),
-                "stability_score": float(stability_score),
-            })
+            quality_results.append(
+                {
+                    "start": start,
+                    "end": end,
+                    "duration": duration,
+                    "smoothness_score": float(smoothness_score) if smoothness_score is not None else None,
+                    "anomaly_flags": anomaly_flags,
+                    "value_change": float(value_change),
+                    "avg_rate": float(avg_rate),
+                    "max_value": float(max_value),
+                    "stability_score": float(stability_score),
+                }
+            )
 
         return pd.DataFrame(quality_results)
 
     def track_startup_phases(
         self,
-        phases: List[Dict[str, Any]],
+        phases: list[dict[str, Any]],
         *,
         min_phase_duration: str = "5s",
     ) -> pd.DataFrame:
@@ -479,10 +487,9 @@ class StartupDetectionEvents(Base):
                 - completed: Whether full startup sequence completed
         """
         if self.series.empty or not phases:
-            return pd.DataFrame(columns=[
-                "phase_name", "phase_number", "start", "end",
-                "duration", "next_phase", "completed"
-            ])
+            return pd.DataFrame(
+                columns=["phase_name", "phase_number", "start", "end", "duration", "next_phase", "completed"]
+            )
 
         min_duration = pd.to_timedelta(min_phase_duration)
         s = self.series[[self.time_column, self.value_column]].copy()
@@ -517,15 +524,17 @@ class StartupDetectionEvents(Base):
                         next_phase = phases[next_phase_idx]
                         if self._check_phase_condition(row, next_phase):
                             # Record completed phase
-                            phase_results.append({
-                                "phase_name": phase["name"],
-                                "phase_number": current_phase_idx,
-                                "start": phase_start,
-                                "end": row[self.time_column],
-                                "duration": row[self.time_column] - phase_start,
-                                "next_phase": next_phase["name"],
-                                "completed": False,  # Will update at end
-                            })
+                            phase_results.append(
+                                {
+                                    "phase_name": phase["name"],
+                                    "phase_number": current_phase_idx,
+                                    "start": phase_start,
+                                    "end": row[self.time_column],
+                                    "duration": row[self.time_column] - phase_start,
+                                    "next_phase": next_phase["name"],
+                                    "completed": False,  # Will update at end
+                                }
+                            )
                             current_phase_idx = next_phase_idx
                             phase_start = row[self.time_column]
                     else:
@@ -534,33 +543,36 @@ class StartupDetectionEvents(Base):
                         if len(remaining) > 0:
                             # Check stability of last phase
                             stable = all(
-                                self._check_phase_condition(s.iloc[j], phase)
-                                for j in range(i, min(i + 10, len(s)))
+                                self._check_phase_condition(s.iloc[j], phase) for j in range(i, min(i + 10, len(s)))
                             )
                             if stable:
-                                phase_results.append({
-                                    "phase_name": phase["name"],
-                                    "phase_number": current_phase_idx,
-                                    "start": phase_start,
-                                    "end": row[self.time_column],
-                                    "duration": row[self.time_column] - phase_start,
-                                    "next_phase": None,
-                                    "completed": True,
-                                })
+                                phase_results.append(
+                                    {
+                                        "phase_name": phase["name"],
+                                        "phase_number": current_phase_idx,
+                                        "start": phase_start,
+                                        "end": row[self.time_column],
+                                        "duration": row[self.time_column] - phase_start,
+                                        "next_phase": None,
+                                        "completed": True,
+                                    }
+                                )
                                 break
             else:
                 # Lost phase condition
                 if phase_start is not None and row[self.time_column] - phase_start >= min_duration:
                     # Phase was valid but didn't progress - potential failed startup
-                    phase_results.append({
-                        "phase_name": phase["name"],
-                        "phase_number": current_phase_idx,
-                        "start": phase_start,
-                        "end": row[self.time_column],
-                        "duration": row[self.time_column] - phase_start,
-                        "next_phase": None,
-                        "completed": False,
-                    })
+                    phase_results.append(
+                        {
+                            "phase_name": phase["name"],
+                            "phase_number": current_phase_idx,
+                            "start": phase_start,
+                            "end": row[self.time_column],
+                            "duration": row[self.time_column] - phase_start,
+                            "next_phase": None,
+                            "completed": False,
+                        }
+                    )
                 phase_start = None
 
             i += 1
@@ -572,7 +584,7 @@ class StartupDetectionEvents(Base):
 
         return pd.DataFrame(phase_results)
 
-    def _check_phase_condition(self, row: pd.Series, phase: Dict[str, Any]) -> bool:
+    def _check_phase_condition(self, row: pd.Series, phase: dict[str, Any]) -> bool:
         """Helper method to check if a row satisfies a phase condition."""
         condition = phase.get("condition", "threshold")
         value = row[self.value_column]
@@ -599,7 +611,7 @@ class StartupDetectionEvents(Base):
         threshold: float,
         min_rise_duration: str = "5s",
         max_completion_time: str = "5m",
-        completion_threshold: Optional[float] = None,
+        completion_threshold: float | None = None,
         required_stability: str = "10s",
     ) -> pd.DataFrame:
         """
@@ -622,10 +634,18 @@ class StartupDetectionEvents(Base):
                                     max_value_reached, time_to_failure
         """
         if self.series.empty:
-            return pd.DataFrame(columns=[
-                "start", "end", "uuid", "is_delta", "method",
-                "failure_reason", "max_value_reached", "time_to_failure"
-            ])
+            return pd.DataFrame(
+                columns=[
+                    "start",
+                    "end",
+                    "uuid",
+                    "is_delta",
+                    "method",
+                    "failure_reason",
+                    "max_value_reached",
+                    "time_to_failure",
+                ]
+            )
 
         if completion_threshold is None:
             completion_threshold = threshold * 2.0
@@ -641,22 +661,17 @@ class StartupDetectionEvents(Base):
         rising = (~above_threshold.shift(fill_value=False)) & above_threshold
         rise_times = s.loc[rising, self.time_column]
 
-        failed_events: List[Dict[str, Any]] = []
+        failed_events: list[dict[str, Any]] = []
 
         for t0 in rise_times:
             # Get data for potential startup period
-            startup_window = s[
-                (s[self.time_column] >= t0) &
-                (s[self.time_column] <= t0 + max_completion_td)
-            ].copy()
+            startup_window = s[(s[self.time_column] >= t0) & (s[self.time_column] <= t0 + max_completion_td)].copy()
 
             if len(startup_window) < 2:
                 continue
 
             # Check if initially above threshold for min_rise_duration
-            initial_window = startup_window[
-                startup_window[self.time_column] <= t0 + min_rise_td
-            ]
+            initial_window = startup_window[startup_window[self.time_column] <= t0 + min_rise_td]
 
             if initial_window.empty or not (initial_window[self.value_column] >= threshold).all():
                 continue  # Not a valid startup attempt
@@ -689,14 +704,12 @@ class StartupDetectionEvents(Base):
                     failure_time = startup_window[self.time_column].iloc[-1]
                 else:
                     # Reached completion but check stability
-                    completion_idx = startup_window[
-                        startup_window[self.value_column] >= completion_threshold
-                    ].index[0]
+                    completion_idx = startup_window[startup_window[self.value_column] >= completion_threshold].index[0]
                     completion_time = startup_window.loc[completion_idx, self.time_column]
 
                     stability_window = startup_window[
-                        (startup_window[self.time_column] >= completion_time) &
-                        (startup_window[self.time_column] <= completion_time + stability_td)
+                        (startup_window[self.time_column] >= completion_time)
+                        & (startup_window[self.time_column] <= completion_time + stability_td)
                     ]
 
                     if not stability_window.empty:
@@ -708,16 +721,17 @@ class StartupDetectionEvents(Base):
             if failure_detected:
                 time_to_failure = (failure_time - t0).total_seconds() if failure_time else None
 
-                failed_events.append({
-                    "start": t0,
-                    "end": failure_time if failure_time else t0 + max_completion_td,
-                    "uuid": self.event_uuid,
-                    "is_delta": True,
-                    "method": "failed_startup",
-                    "failure_reason": failure_reason,
-                    "max_value_reached": float(max_value),
-                    "time_to_failure": time_to_failure,
-                })
+                failed_events.append(
+                    {
+                        "start": t0,
+                        "end": failure_time if failure_time else t0 + max_completion_td,
+                        "uuid": self.event_uuid,
+                        "is_delta": True,
+                        "method": "failed_startup",
+                        "failure_reason": failure_reason,
+                        "max_value_reached": float(max_value),
+                        "time_to_failure": time_to_failure,
+                    }
+                )
 
         return pd.DataFrame(failed_events)
-

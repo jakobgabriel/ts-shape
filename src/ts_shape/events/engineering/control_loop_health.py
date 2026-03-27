@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any, Optional
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -28,7 +29,7 @@ class ControlLoopHealthEvents(Base):
         setpoint_uuid: str,
         actual_uuid: str,
         *,
-        output_uuid: Optional[str] = None,
+        output_uuid: str | None = None,
         event_uuid: str = "eng:control_loop_health",
         value_column: str = "value_double",
         time_column: str = "systime",
@@ -47,11 +48,7 @@ class ControlLoopHealthEvents(Base):
         self._aligned = self._align()
 
     def _load_signal(self, uuid: str) -> pd.DataFrame:
-        sig = (
-            self.dataframe[self.dataframe["uuid"] == uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        sig = self.dataframe[self.dataframe["uuid"] == uuid].copy().sort_values(self.time_column)
         sig[self.time_column] = pd.to_datetime(sig[self.time_column])
         return sig
 
@@ -60,12 +57,8 @@ class ControlLoopHealthEvents(Base):
         if self._sp.empty or self._pv.empty:
             return pd.DataFrame(columns=[self.time_column, "sp", "pv", "error"])
 
-        sp = self._sp[[self.time_column, self.value_column]].rename(
-            columns={self.value_column: "sp"}
-        )
-        pv = self._pv[[self.time_column, self.value_column]].rename(
-            columns={self.value_column: "pv"}
-        )
+        sp = self._sp[[self.time_column, self.value_column]].rename(columns={self.value_column: "sp"})
+        pv = self._pv[[self.time_column, self.value_column]].rename(columns={self.value_column: "pv"})
         merged = pd.merge_asof(
             sp.sort_values(self.time_column),
             pv.sort_values(self.time_column),
@@ -92,7 +85,7 @@ class ControlLoopHealthEvents(Base):
         df = self._aligned.set_index(self.time_column)
         groups = df.resample(window)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for window_start, group in groups:
             if len(group) < 2:
                 continue
@@ -101,18 +94,20 @@ class ControlLoopHealthEvents(Base):
             t_rel = (group.index - group.index[0]).total_seconds()
 
             iae = float((error.abs() * dt).sum())
-            ise = float((error ** 2 * dt).sum())
+            ise = float((error**2 * dt).sum())
             itae = float((t_rel * error.abs() * dt).sum())
             bias = float(error.mean())
 
-            events.append({
-                "window_start": window_start,
-                "iae": iae,
-                "ise": ise,
-                "itae": itae,
-                "bias": bias,
-                "sample_count": len(group),
-            })
+            events.append(
+                {
+                    "window_start": window_start,
+                    "iae": iae,
+                    "ise": ise,
+                    "itae": itae,
+                    "bias": bias,
+                    "sample_count": len(group),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -133,9 +128,14 @@ class ControlLoopHealthEvents(Base):
             damping_direction.
         """
         cols = [
-            "start", "end", "uuid", "is_delta",
-            "crossing_count", "estimated_period_seconds",
-            "amplitude", "damping_direction",
+            "start",
+            "end",
+            "uuid",
+            "is_delta",
+            "crossing_count",
+            "estimated_period_seconds",
+            "amplitude",
+            "damping_direction",
         ]
         if self._aligned.empty or len(self._aligned) < 4:
             return pd.DataFrame(columns=cols)
@@ -144,7 +144,7 @@ class ControlLoopHealthEvents(Base):
         td = pd.Timedelta(window)
         groups = df.resample(window)
 
-        osc_windows: List[Dict[str, Any]] = []
+        osc_windows: list[dict[str, Any]] = []
         for window_start, group in groups:
             if len(group) < 4:
                 continue
@@ -180,22 +180,24 @@ class ControlLoopHealthEvents(Base):
             else:
                 damping = "sustained"
 
-            osc_windows.append({
-                "start": window_start,
-                "end": window_start + td,
-                "uuid": self.event_uuid,
-                "is_delta": False,
-                "crossing_count": crossings,
-                "estimated_period_seconds": est_period,
-                "amplitude": amplitude,
-                "damping_direction": damping,
-            })
+            osc_windows.append(
+                {
+                    "start": window_start,
+                    "end": window_start + td,
+                    "uuid": self.event_uuid,
+                    "is_delta": False,
+                    "crossing_count": crossings,
+                    "estimated_period_seconds": est_period,
+                    "amplitude": amplitude,
+                    "damping_direction": damping,
+                }
+            )
 
         if not osc_windows:
             return pd.DataFrame(columns=cols)
 
         # Merge contiguous oscillating windows
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         current = osc_windows[0].copy()
         for i in range(1, len(osc_windows)):
             w = osc_windows[i]
@@ -229,8 +231,11 @@ class ControlLoopHealthEvents(Base):
             pct_time_at_low, pct_time_saturated, longest_saturation_seconds.
         """
         cols = [
-            "window_start", "pct_time_at_high", "pct_time_at_low",
-            "pct_time_saturated", "longest_saturation_seconds",
+            "window_start",
+            "pct_time_at_high",
+            "pct_time_at_low",
+            "pct_time_saturated",
+            "longest_saturation_seconds",
         ]
         if self._out.empty:
             return pd.DataFrame(columns=cols)
@@ -239,7 +244,7 @@ class ControlLoopHealthEvents(Base):
         groups = out.resample(window)
         tol = (high_limit - low_limit) * 0.01  # 1% of range
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for window_start, group in groups:
             if group.empty:
                 continue
@@ -258,13 +263,15 @@ class ControlLoopHealthEvents(Base):
             else:
                 longest = 0.0
 
-            events.append({
-                "window_start": window_start,
-                "pct_time_at_high": float(at_high / n * 100),
-                "pct_time_at_low": float(at_low / n * 100),
-                "pct_time_saturated": float((at_high + at_low) / n * 100),
-                "longest_saturation_seconds": longest,
-            })
+            events.append(
+                {
+                    "window_start": window_start,
+                    "pct_time_at_high": float(at_high / n * 100),
+                    "pct_time_at_low": float(at_low / n * 100),
+                    "pct_time_saturated": float((at_high + at_low) / n * 100),
+                    "longest_saturation_seconds": longest,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -276,8 +283,12 @@ class ControlLoopHealthEvents(Base):
             oscillation_count, pct_saturated, health_grade.
         """
         cols = [
-            "window_start", "iae", "bias",
-            "oscillation_count", "pct_saturated", "health_grade",
+            "window_start",
+            "iae",
+            "bias",
+            "oscillation_count",
+            "pct_saturated",
+            "health_grade",
         ]
         integrals = self.error_integrals(window)
         if integrals.empty:
@@ -286,7 +297,7 @@ class ControlLoopHealthEvents(Base):
         osc = self.detect_oscillation()
         sat = self.output_saturation(window=window)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for _, row in integrals.iterrows():
             ws = row["window_start"]
             we = ws + pd.Timedelta(window)
@@ -317,13 +328,15 @@ class ControlLoopHealthEvents(Base):
 
             grade = "good" if issues == 0 else ("fair" if issues == 1 else "poor")
 
-            events.append({
-                "window_start": ws,
-                "iae": row["iae"],
-                "bias": row["bias"],
-                "oscillation_count": osc_count,
-                "pct_saturated": pct_sat,
-                "health_grade": grade,
-            })
+            events.append(
+                {
+                    "window_start": ws,
+                    "iae": row["iae"],
+                    "bias": row["bias"],
+                    "oscillation_count": osc_count,
+                    "pct_saturated": pct_sat,
+                    "health_grade": grade,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)

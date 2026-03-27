@@ -25,9 +25,9 @@ This module correlates both signals to reconstruct the full routing path.
 """
 
 import logging
+from typing import Any
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import List, Dict, Any, Optional, Union
 
 from ts_shape.utils.base import Base
 
@@ -81,8 +81,8 @@ class RoutingTraceabilityEvents(Base):
         id_uuid: str,
         routing_uuid: str,
         *,
-        state_map: Optional[Dict[Union[int, float, str], str]] = None,
-        station_map: Optional[Dict[Union[int, float, str], str]] = None,
+        state_map: dict[int | float | str, str] | None = None,
+        station_map: dict[int | float | str, str] | None = None,
         event_uuid: str = "prod:routing_trace",
         id_value_column: str = "value_string",
         routing_value_column: str = "value_integer",
@@ -110,28 +110,20 @@ class RoutingTraceabilityEvents(Base):
         self.id_uuid = id_uuid
         self.routing_uuid = routing_uuid
         # state_map takes priority; fall back to station_map for backwards compat
-        self.state_map: Dict[Union[int, float, str], str] = state_map or station_map or {}
+        self.state_map: dict[int | float | str, str] = state_map or station_map or {}
         self.event_uuid = event_uuid
         self.id_value_column = id_value_column
         self.routing_value_column = routing_value_column
         self.time_column = time_column
 
         # Pre-filter signals
-        self.id_data = (
-            self.dataframe[self.dataframe["uuid"] == self.id_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.id_data = self.dataframe[self.dataframe["uuid"] == self.id_uuid].copy().sort_values(self.time_column)
         self.id_data[self.time_column] = pd.to_datetime(self.id_data[self.time_column])
 
         self.routing_data = (
-            self.dataframe[self.dataframe["uuid"] == self.routing_uuid]
-            .copy()
-            .sort_values(self.time_column)
+            self.dataframe[self.dataframe["uuid"] == self.routing_uuid].copy().sort_values(self.time_column)
         )
-        self.routing_data[self.time_column] = pd.to_datetime(
-            self.routing_data[self.time_column]
-        )
+        self.routing_data[self.time_column] = pd.to_datetime(self.routing_data[self.time_column])
 
     def _resolve_state(self, value: Any) -> str:
         """Resolve a routing/state signal value to a station/step name.
@@ -189,19 +181,21 @@ class RoutingTraceabilityEvents(Base):
         if self.routing_data.empty or self.id_data.empty:
             return pd.DataFrame(
                 columns=[
-                    "item_id", "routing_value", "station_name",
-                    "start", "end", "duration_seconds", "sample_count",
-                    "station_sequence", "uuid",
+                    "item_id",
+                    "routing_value",
+                    "station_name",
+                    "start",
+                    "end",
+                    "duration_seconds",
+                    "sample_count",
+                    "station_sequence",
+                    "uuid",
                 ]
             )
 
         # Merge: for each routing sample, attach the most-recent item ID
-        routing_subset = self.routing_data[
-            [self.time_column, self.routing_value_column]
-        ].copy()
-        id_subset = self.id_data[
-            [self.time_column, self.id_value_column]
-        ].copy()
+        routing_subset = self.routing_data[[self.time_column, self.routing_value_column]].copy()
+        id_subset = self.id_data[[self.time_column, self.id_value_column]].copy()
 
         merged = pd.merge_asof(
             routing_subset,
@@ -210,19 +204,27 @@ class RoutingTraceabilityEvents(Base):
             direction="backward",
         )
 
-        merged = merged.rename(columns={
-            self.id_value_column: "item_id",
-            self.routing_value_column: "routing_value",
-        })
+        merged = merged.rename(
+            columns={
+                self.id_value_column: "item_id",
+                self.routing_value_column: "routing_value",
+            }
+        )
         merged = merged.dropna(subset=["item_id"])
         merged["item_id"] = merged["item_id"].astype(str)
 
         if merged.empty:
             return pd.DataFrame(
                 columns=[
-                    "item_id", "routing_value", "station_name",
-                    "start", "end", "duration_seconds", "sample_count",
-                    "station_sequence", "uuid",
+                    "item_id",
+                    "routing_value",
+                    "station_name",
+                    "start",
+                    "end",
+                    "duration_seconds",
+                    "sample_count",
+                    "station_sequence",
+                    "uuid",
                 ]
             )
 
@@ -230,21 +232,23 @@ class RoutingTraceabilityEvents(Base):
         merged["combo"] = merged["item_id"] + "|" + merged["routing_value"].astype(str)
         merged["group"] = (merged["combo"] != merged["combo"].shift()).cumsum()
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, seg in merged.groupby("group"):
             item_id = seg["item_id"].iloc[0]
             routing_val = seg["routing_value"].iloc[0]
             start = seg[self.time_column].iloc[0]
             end = seg[self.time_column].iloc[-1]
-            rows.append({
-                "item_id": item_id,
-                "routing_value": routing_val,
-                "station_name": self._resolve_state(routing_val),
-                "start": start,
-                "end": end,
-                "duration_seconds": (end - start).total_seconds(),
-                "sample_count": len(seg),
-            })
+            rows.append(
+                {
+                    "item_id": item_id,
+                    "routing_value": routing_val,
+                    "station_name": self._resolve_state(routing_val),
+                    "start": start,
+                    "end": end,
+                    "duration_seconds": (end - start).total_seconds(),
+                    "sample_count": len(seg),
+                }
+            )
 
         timeline = pd.DataFrame(rows)
         timeline = timeline.sort_values(["item_id", "start"]).reset_index(drop=True)
@@ -277,29 +281,37 @@ class RoutingTraceabilityEvents(Base):
         if timeline.empty:
             return pd.DataFrame(
                 columns=[
-                    "item_id", "first_station", "last_station",
-                    "first_seen", "last_seen", "lead_time_seconds",
-                    "stations_visited", "routing_path", "uuid",
+                    "item_id",
+                    "first_station",
+                    "last_station",
+                    "first_seen",
+                    "last_seen",
+                    "lead_time_seconds",
+                    "stations_visited",
+                    "routing_path",
+                    "uuid",
                 ]
             )
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for item_id, grp in timeline.groupby("item_id"):
             grp = grp.sort_values("start")
             first_seen = grp["start"].iloc[0]
             last_seen = grp["end"].iloc[-1]
             routing_path = " -> ".join(grp["station_name"].tolist())
-            rows.append({
-                "item_id": item_id,
-                "first_station": grp["station_name"].iloc[0],
-                "last_station": grp["station_name"].iloc[-1],
-                "first_seen": first_seen,
-                "last_seen": last_seen,
-                "lead_time_seconds": (last_seen - first_seen).total_seconds(),
-                "stations_visited": grp["station_name"].nunique(),
-                "routing_path": routing_path,
-                "uuid": self.event_uuid,
-            })
+            rows.append(
+                {
+                    "item_id": item_id,
+                    "first_station": grp["station_name"].iloc[0],
+                    "last_station": grp["station_name"].iloc[-1],
+                    "first_seen": first_seen,
+                    "last_seen": last_seen,
+                    "lead_time_seconds": (last_seen - first_seen).total_seconds(),
+                    "stations_visited": grp["station_name"].nunique(),
+                    "routing_path": routing_path,
+                    "uuid": self.event_uuid,
+                }
+            )
 
         return pd.DataFrame(rows)
 
@@ -325,22 +337,29 @@ class RoutingTraceabilityEvents(Base):
         if timeline.empty:
             return pd.DataFrame(
                 columns=[
-                    "station_name", "routing_value", "item_count",
-                    "min_dwell_seconds", "avg_dwell_seconds",
-                    "max_dwell_seconds", "total_dwell_seconds",
+                    "station_name",
+                    "routing_value",
+                    "item_count",
+                    "min_dwell_seconds",
+                    "avg_dwell_seconds",
+                    "max_dwell_seconds",
+                    "total_dwell_seconds",
                 ]
             )
 
-        stats = timeline.groupby(["station_name", "routing_value"]).agg(
-            item_count=("item_id", "nunique"),
-            min_dwell_seconds=("duration_seconds", "min"),
-            avg_dwell_seconds=("duration_seconds", "mean"),
-            max_dwell_seconds=("duration_seconds", "max"),
-            total_dwell_seconds=("duration_seconds", "sum"),
-        ).reset_index()
+        stats = (
+            timeline.groupby(["station_name", "routing_value"])
+            .agg(
+                item_count=("item_id", "nunique"),
+                min_dwell_seconds=("duration_seconds", "min"),
+                avg_dwell_seconds=("duration_seconds", "mean"),
+                max_dwell_seconds=("duration_seconds", "max"),
+                total_dwell_seconds=("duration_seconds", "sum"),
+            )
+            .reset_index()
+        )
 
-        for col in ["min_dwell_seconds", "avg_dwell_seconds",
-                     "max_dwell_seconds", "total_dwell_seconds"]:
+        for col in ["min_dwell_seconds", "avg_dwell_seconds", "max_dwell_seconds", "total_dwell_seconds"]:
             stats[col] = stats[col].round(2)
 
         return stats
@@ -365,22 +384,26 @@ class RoutingTraceabilityEvents(Base):
         if lead.empty:
             return pd.DataFrame(
                 columns=[
-                    "routing_path", "item_count",
+                    "routing_path",
+                    "item_count",
                     "avg_lead_time_seconds",
                     "min_lead_time_seconds",
                     "max_lead_time_seconds",
                 ]
             )
 
-        stats = lead.groupby("routing_path").agg(
-            item_count=("item_id", "nunique"),
-            avg_lead_time_seconds=("lead_time_seconds", "mean"),
-            min_lead_time_seconds=("lead_time_seconds", "min"),
-            max_lead_time_seconds=("lead_time_seconds", "max"),
-        ).reset_index()
+        stats = (
+            lead.groupby("routing_path")
+            .agg(
+                item_count=("item_id", "nunique"),
+                avg_lead_time_seconds=("lead_time_seconds", "mean"),
+                min_lead_time_seconds=("lead_time_seconds", "min"),
+                max_lead_time_seconds=("lead_time_seconds", "max"),
+            )
+            .reset_index()
+        )
 
-        for col in ["avg_lead_time_seconds", "min_lead_time_seconds",
-                     "max_lead_time_seconds"]:
+        for col in ["avg_lead_time_seconds", "min_lead_time_seconds", "max_lead_time_seconds"]:
             stats[col] = stats[col].round(2)
 
         return stats.sort_values("item_count", ascending=False).reset_index(drop=True)

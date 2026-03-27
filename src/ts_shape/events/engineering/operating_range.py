@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -36,11 +37,7 @@ class OperatingRangeEvents(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-        self.signal = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.signal = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
 
     def operating_envelope(self, window: str = "1h") -> pd.DataFrame:
@@ -51,8 +48,13 @@ class OperatingRangeEvents(Base):
             mean_value, p95, max_value, range_width.
         """
         cols = [
-            "window_start", "min_value", "p5", "mean_value",
-            "p95", "max_value", "range_width",
+            "window_start",
+            "min_value",
+            "p5",
+            "mean_value",
+            "p95",
+            "max_value",
+            "range_width",
         ]
         if self.signal.empty:
             return pd.DataFrame(columns=cols)
@@ -60,7 +62,7 @@ class OperatingRangeEvents(Base):
         indexed = self.signal.set_index(self.time_column)[self.value_column]
         groups = indexed.resample(window)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for window_start, group in groups:
             if group.empty:
                 continue
@@ -69,15 +71,17 @@ class OperatingRangeEvents(Base):
                 continue
             p5 = float(np.percentile(vals, 5))
             p95 = float(np.percentile(vals, 95))
-            events.append({
-                "window_start": window_start,
-                "min_value": float(vals.min()),
-                "p5": p5,
-                "mean_value": float(vals.mean()),
-                "p95": p95,
-                "max_value": float(vals.max()),
-                "range_width": float(vals.max() - vals.min()),
-            })
+            events.append(
+                {
+                    "window_start": window_start,
+                    "min_value": float(vals.min()),
+                    "p5": p5,
+                    "mean_value": float(vals.mean()),
+                    "p95": p95,
+                    "max_value": float(vals.max()),
+                    "range_width": float(vals.max() - vals.min()),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -96,8 +100,13 @@ class OperatingRangeEvents(Base):
             prev_mean, new_mean, shift_magnitude.
         """
         cols = [
-            "start", "end", "uuid", "is_delta",
-            "prev_mean", "new_mean", "shift_magnitude",
+            "start",
+            "end",
+            "uuid",
+            "is_delta",
+            "prev_mean",
+            "new_mean",
+            "shift_magnitude",
         ]
         if self.signal.empty:
             return pd.DataFrame(columns=cols)
@@ -105,21 +114,23 @@ class OperatingRangeEvents(Base):
         indexed = self.signal.set_index(self.time_column)[self.value_column]
         groups = indexed.resample(window)
 
-        window_stats: List[Dict[str, Any]] = []
+        window_stats: list[dict[str, Any]] = []
         for window_start, group in groups:
             vals = group.dropna()
             if len(vals) < 2:
                 continue
-            window_stats.append({
-                "window_start": window_start,
-                "mean": float(vals.mean()),
-                "std": float(vals.std()),
-            })
+            window_stats.append(
+                {
+                    "window_start": window_start,
+                    "mean": float(vals.mean()),
+                    "std": float(vals.std()),
+                }
+            )
 
         if len(window_stats) < 2:
             return pd.DataFrame(columns=cols)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for i in range(1, len(window_stats)):
             prev = window_stats[i - 1]
             curr = window_stats[i]
@@ -128,15 +139,17 @@ class OperatingRangeEvents(Base):
                 pooled_std = 1e-10
             shift_mag = abs(curr["mean"] - prev["mean"]) / pooled_std
             if shift_mag >= shift_threshold:
-                events.append({
-                    "start": prev["window_start"],
-                    "end": curr["window_start"],
-                    "uuid": self.event_uuid,
-                    "is_delta": False,
-                    "prev_mean": prev["mean"],
-                    "new_mean": curr["mean"],
-                    "shift_magnitude": float(shift_mag),
-                })
+                events.append(
+                    {
+                        "start": prev["window_start"],
+                        "end": curr["window_start"],
+                        "uuid": self.event_uuid,
+                        "is_delta": False,
+                        "prev_mean": prev["mean"],
+                        "new_mean": curr["mean"],
+                        "shift_magnitude": float(shift_mag),
+                    }
+                )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -159,7 +172,7 @@ class OperatingRangeEvents(Base):
         indexed = self.signal.set_index(self.time_column)[self.value_column]
         groups = indexed.resample(window)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for window_start, group in groups:
             vals = group.dropna()
             if vals.empty:
@@ -168,12 +181,14 @@ class OperatingRangeEvents(Base):
             in_range = ((vals >= lower) & (vals <= upper)).sum()
             below = (vals < lower).sum()
             above = (vals > upper).sum()
-            events.append({
-                "window_start": window_start,
-                "time_in_range_pct": float(in_range / n * 100),
-                "time_below_pct": float(below / n * 100),
-                "time_above_pct": float(above / n * 100),
-            })
+            events.append(
+                {
+                    "window_start": window_start,
+                    "time_in_range_pct": float(in_range / n * 100),
+                    "time_below_pct": float(below / n * 100),
+                    "time_above_pct": float(above / n * 100),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -195,17 +210,19 @@ class OperatingRangeEvents(Base):
         counts, bin_edges = np.histogram(vals, bins=n_bins)
         total = int(counts.sum())
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         cum = 0
         for i in range(len(counts)):
             c = int(counts[i])
             cum += c
-            events.append({
-                "bin_lower": float(bin_edges[i]),
-                "bin_upper": float(bin_edges[i + 1]),
-                "count": c,
-                "pct": float(c / total * 100) if total > 0 else 0.0,
-                "cumulative_pct": float(cum / total * 100) if total > 0 else 0.0,
-            })
+            events.append(
+                {
+                    "bin_lower": float(bin_edges[i]),
+                    "bin_upper": float(bin_edges[i + 1]),
+                    "count": c,
+                    "pct": float(c / total * 100) if total > 0 else 0.0,
+                    "cumulative_pct": float(cum / total * 100) if total > 0 else 0.0,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)

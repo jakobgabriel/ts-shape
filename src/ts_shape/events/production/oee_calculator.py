@@ -9,9 +9,8 @@ Industry-standard metric for manufacturing productivity:
 """
 
 import logging
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import Optional
 
 from ts_shape.utils.base import Base
 
@@ -65,7 +64,7 @@ class OEECalculator(Base):
     def calculate_availability(
         self,
         run_state_uuid: str,
-        planned_time_hours: Optional[float] = None,
+        planned_time_hours: float | None = None,
         *,
         value_column: str = "value_bool",
     ) -> pd.DataFrame:
@@ -88,16 +87,10 @@ class OEECalculator(Base):
             - planned_seconds
             - availability_pct
         """
-        state_data = (
-            self.dataframe[self.dataframe["uuid"] == run_state_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        state_data = self.dataframe[self.dataframe["uuid"] == run_state_uuid].copy().sort_values(self.time_column)
 
         if state_data.empty:
-            return pd.DataFrame(
-                columns=["date", "run_seconds", "planned_seconds", "availability_pct"]
-            )
+            return pd.DataFrame(columns=["date", "run_seconds", "planned_seconds", "availability_pct"])
 
         state_data[self.time_column] = pd.to_datetime(state_data[self.time_column])
         state_data["state"] = state_data[value_column].fillna(False).astype(bool)
@@ -112,9 +105,7 @@ class OEECalculator(Base):
         state_data = state_data[state_data["duration"].notna()]
 
         if state_data.empty:
-            return pd.DataFrame(
-                columns=["date", "run_seconds", "planned_seconds", "availability_pct"]
-            )
+            return pd.DataFrame(columns=["date", "run_seconds", "planned_seconds", "availability_pct"])
 
         results = []
         for date, grp in state_data.groupby("date"):
@@ -126,12 +117,14 @@ class OEECalculator(Base):
 
             availability = (run_seconds / planned_seconds * 100.0) if planned_seconds > 0 else 0.0
 
-            results.append({
-                "date": date,
-                "run_seconds": round(run_seconds, 2),
-                "planned_seconds": round(planned_seconds, 2),
-                "availability_pct": round(min(availability, 100.0), 2),
-            })
+            results.append(
+                {
+                    "date": date,
+                    "run_seconds": round(run_seconds, 2),
+                    "planned_seconds": round(planned_seconds, 2),
+                    "availability_pct": round(min(availability, 100.0), 2),
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -143,7 +136,7 @@ class OEECalculator(Base):
         self,
         counter_uuid: str,
         ideal_cycle_time: float,
-        run_state_uuid: Optional[str] = None,
+        run_state_uuid: str | None = None,
         *,
         value_column: str = "value_integer",
         run_value_column: str = "value_bool",
@@ -169,16 +162,10 @@ class OEECalculator(Base):
             - run_seconds
             - performance_pct
         """
-        counter_data = (
-            self.dataframe[self.dataframe["uuid"] == counter_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        counter_data = self.dataframe[self.dataframe["uuid"] == counter_uuid].copy().sort_values(self.time_column)
 
         if counter_data.empty:
-            return pd.DataFrame(
-                columns=["date", "actual_parts", "ideal_parts", "run_seconds", "performance_pct"]
-            )
+            return pd.DataFrame(columns=["date", "actual_parts", "ideal_parts", "run_seconds", "performance_pct"])
 
         counter_data[self.time_column] = pd.to_datetime(counter_data[self.time_column])
         counter_data["date"] = counter_data[self.time_column].dt.date
@@ -186,9 +173,7 @@ class OEECalculator(Base):
         # Compute run_seconds per day
         run_per_day = {}
         if run_state_uuid is not None:
-            avail_df = self.calculate_availability(
-                run_state_uuid, value_column=run_value_column
-            )
+            avail_df = self.calculate_availability(run_state_uuid, value_column=run_value_column)
             for _, row in avail_df.iterrows():
                 run_per_day[row["date"]] = row["run_seconds"]
 
@@ -211,13 +196,15 @@ class OEECalculator(Base):
                 ideal_parts = 0.0
                 performance = 0.0
 
-            results.append({
-                "date": date,
-                "actual_parts": int(actual_parts),
-                "ideal_parts": round(ideal_parts, 2),
-                "run_seconds": round(run_seconds, 2),
-                "performance_pct": round(min(performance, 100.0), 2),
-            })
+            results.append(
+                {
+                    "date": date,
+                    "actual_parts": int(actual_parts),
+                    "ideal_parts": round(ideal_parts, 2),
+                    "run_seconds": round(run_seconds, 2),
+                    "performance_pct": round(min(performance, 100.0), 2),
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -247,21 +234,11 @@ class OEECalculator(Base):
             - good_parts
             - quality_pct
         """
-        total_data = (
-            self.dataframe[self.dataframe["uuid"] == total_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
-        reject_data = (
-            self.dataframe[self.dataframe["uuid"] == reject_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        total_data = self.dataframe[self.dataframe["uuid"] == total_uuid].copy().sort_values(self.time_column)
+        reject_data = self.dataframe[self.dataframe["uuid"] == reject_uuid].copy().sort_values(self.time_column)
 
         if total_data.empty:
-            return pd.DataFrame(
-                columns=["date", "total_parts", "reject_parts", "good_parts", "quality_pct"]
-            )
+            return pd.DataFrame(columns=["date", "total_parts", "reject_parts", "good_parts", "quality_pct"])
 
         total_data[self.time_column] = pd.to_datetime(total_data[self.time_column])
         total_data["date"] = total_data[self.time_column].dt.date
@@ -282,13 +259,15 @@ class OEECalculator(Base):
             good_parts = max(0, total_parts - reject_parts)
             quality = (good_parts / total_parts * 100.0) if total_parts > 0 else 0.0
 
-            results.append({
-                "date": date,
-                "total_parts": int(total_parts),
-                "reject_parts": int(reject_parts),
-                "good_parts": int(good_parts),
-                "quality_pct": round(min(quality, 100.0), 2),
-            })
+            results.append(
+                {
+                    "date": date,
+                    "total_parts": int(total_parts),
+                    "reject_parts": int(reject_parts),
+                    "good_parts": int(good_parts),
+                    "quality_pct": round(min(quality, 100.0), 2),
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -301,10 +280,10 @@ class OEECalculator(Base):
         run_state_uuid: str,
         counter_uuid: str,
         ideal_cycle_time: float,
-        total_uuid: Optional[str] = None,
-        reject_uuid: Optional[str] = None,
+        total_uuid: str | None = None,
+        reject_uuid: str | None = None,
         *,
-        planned_time_hours: Optional[float] = None,
+        planned_time_hours: float | None = None,
     ) -> pd.DataFrame:
         """Calculate daily OEE = Availability * Performance * Quality.
 
@@ -327,12 +306,8 @@ class OEECalculator(Base):
             - quality_pct
             - oee_pct
         """
-        avail_df = self.calculate_availability(
-            run_state_uuid, planned_time_hours=planned_time_hours
-        )
-        perf_df = self.calculate_performance(
-            counter_uuid, ideal_cycle_time, run_state_uuid=run_state_uuid
-        )
+        avail_df = self.calculate_availability(run_state_uuid, planned_time_hours=planned_time_hours)
+        perf_df = self.calculate_performance(counter_uuid, ideal_cycle_time, run_state_uuid=run_state_uuid)
 
         if total_uuid is not None and reject_uuid is not None:
             qual_df = self.calculate_quality(total_uuid, reject_uuid)
@@ -340,23 +315,17 @@ class OEECalculator(Base):
             qual_df = None
 
         if avail_df.empty and perf_df.empty:
-            return pd.DataFrame(
-                columns=["date", "availability_pct", "performance_pct", "quality_pct", "oee_pct"]
-            )
+            return pd.DataFrame(columns=["date", "availability_pct", "performance_pct", "quality_pct", "oee_pct"])
 
         # Merge on date
         merged = avail_df[["date", "availability_pct"]].copy()
         if not perf_df.empty:
-            merged = merged.merge(
-                perf_df[["date", "performance_pct"]], on="date", how="outer"
-            )
+            merged = merged.merge(perf_df[["date", "performance_pct"]], on="date", how="outer")
         else:
             merged["performance_pct"] = 0.0
 
         if qual_df is not None and not qual_df.empty:
-            merged = merged.merge(
-                qual_df[["date", "quality_pct"]], on="date", how="outer"
-            )
+            merged = merged.merge(qual_df[["date", "quality_pct"]], on="date", how="outer")
         else:
             merged["quality_pct"] = 100.0
 
@@ -369,4 +338,8 @@ class OEECalculator(Base):
             / 10000.0  # three percentages multiplied: /100 /100
         ).round(2)
 
-        return merged[["date", "availability_pct", "performance_pct", "quality_pct", "oee_pct"]].sort_values("date").reset_index(drop=True)
+        return (
+            merged[["date", "availability_pct", "performance_pct", "quality_pct", "oee_pct"]]
+            .sort_values("date")
+            .reset_index(drop=True)
+        )

@@ -8,9 +8,8 @@ Track setup durations to support Single-Minute Exchange of Die improvement:
 """
 
 import logging
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import Optional, Dict
 
 from ts_shape.utils.base import Base
 
@@ -53,7 +52,7 @@ class SetupTimeTracking(Base):
         dataframe: pd.DataFrame,
         *,
         time_column: str = "systime",
-        shift_definitions: Optional[Dict[str, tuple[str, str]]] = None,
+        shift_definitions: dict[str, tuple[str, str]] | None = None,
     ) -> None:
         super().__init__(dataframe, column_name=time_column)
         self.time_column = time_column
@@ -83,11 +82,7 @@ class SetupTimeTracking(Base):
         value_column: str,
     ) -> pd.DataFrame:
         """Extract start/end intervals where state equals the setup value."""
-        data = (
-            self.dataframe[self.dataframe["uuid"] == state_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        data = self.dataframe[self.dataframe["uuid"] == state_uuid].copy().sort_values(self.time_column)
         if data.empty:
             return pd.DataFrame(columns=["start_time", "end_time", "duration_minutes"])
 
@@ -114,11 +109,13 @@ class SetupTimeTracking(Base):
 
             duration = (end - start).total_seconds() / 60
             if duration > 0:
-                intervals.append({
-                    "start_time": start,
-                    "end_time": end,
-                    "duration_minutes": round(duration, 1),
-                })
+                intervals.append(
+                    {
+                        "start_time": start,
+                        "end_time": end,
+                        "duration_minutes": round(duration, 1),
+                    }
+                )
 
         return pd.DataFrame(intervals)
 
@@ -142,9 +139,7 @@ class SetupTimeTracking(Base):
         """
         intervals = self._extract_setup_intervals(state_uuid, setup_value, value_column)
         if intervals.empty:
-            return pd.DataFrame(
-                columns=["start_time", "end_time", "duration_minutes", "date", "shift"]
-            )
+            return pd.DataFrame(columns=["start_time", "end_time", "duration_minutes", "date", "shift"])
 
         intervals["date"] = intervals["start_time"].dt.date
         intervals["shift"] = intervals["start_time"].apply(self._assign_shift)
@@ -176,19 +171,13 @@ class SetupTimeTracking(Base):
         intervals = self._extract_setup_intervals(state_uuid, setup_value, value_column_state)
         if intervals.empty:
             return pd.DataFrame(
-                columns=["from_product", "to_product", "avg_minutes",
-                         "min_minutes", "max_minutes", "count"]
+                columns=["from_product", "to_product", "avg_minutes", "min_minutes", "max_minutes", "count"]
             )
 
-        part_data = (
-            self.dataframe[self.dataframe["uuid"] == part_id_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        part_data = self.dataframe[self.dataframe["uuid"] == part_id_uuid].copy().sort_values(self.time_column)
         if part_data.empty:
             return pd.DataFrame(
-                columns=["from_product", "to_product", "avg_minutes",
-                         "min_minutes", "max_minutes", "count"]
+                columns=["from_product", "to_product", "avg_minutes", "min_minutes", "max_minutes", "count"]
             )
 
         part_data[self.time_column] = pd.to_datetime(part_data[self.time_column])
@@ -202,25 +191,32 @@ class SetupTimeTracking(Base):
             from_product = before[value_column_part].iloc[-1] if not before.empty else "unknown"
             to_product = after[value_column_part].iloc[0] if not after.empty else "unknown"
 
-            rows.append({
-                "from_product": from_product,
-                "to_product": to_product,
-                "duration_minutes": interval["duration_minutes"],
-            })
+            rows.append(
+                {
+                    "from_product": from_product,
+                    "to_product": to_product,
+                    "duration_minutes": interval["duration_minutes"],
+                }
+            )
 
         if not rows:
             return pd.DataFrame(
-                columns=["from_product", "to_product", "avg_minutes",
-                         "min_minutes", "max_minutes", "count"]
+                columns=["from_product", "to_product", "avg_minutes", "min_minutes", "max_minutes", "count"]
             )
 
         transitions = pd.DataFrame(rows)
-        result = transitions.groupby(["from_product", "to_product"])["duration_minutes"].agg([
-            ("avg_minutes", "mean"),
-            ("min_minutes", "min"),
-            ("max_minutes", "max"),
-            ("count", "count"),
-        ]).reset_index()
+        result = (
+            transitions.groupby(["from_product", "to_product"])["duration_minutes"]
+            .agg(
+                [
+                    ("avg_minutes", "mean"),
+                    ("min_minutes", "min"),
+                    ("max_minutes", "max"),
+                    ("count", "count"),
+                ]
+            )
+            .reset_index()
+        )
 
         result["avg_minutes"] = result["avg_minutes"].round(1)
         result["min_minutes"] = result["min_minutes"].round(1)
@@ -250,35 +246,40 @@ class SetupTimeTracking(Base):
         intervals = self._extract_setup_intervals(state_uuid, setup_value, value_column)
         if intervals.empty:
             return pd.DataFrame(
-                columns=["total_setups", "total_minutes", "avg_minutes",
-                         "median_minutes", "std_minutes", "pct_of_available_time"]
+                columns=[
+                    "total_setups",
+                    "total_minutes",
+                    "avg_minutes",
+                    "median_minutes",
+                    "std_minutes",
+                    "pct_of_available_time",
+                ]
             )
 
         durations = intervals["duration_minutes"]
 
         # Calculate total available time from the data
-        state_data = (
-            self.dataframe[self.dataframe["uuid"] == state_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        state_data = self.dataframe[self.dataframe["uuid"] == state_uuid].copy().sort_values(self.time_column)
         state_data[self.time_column] = pd.to_datetime(state_data[self.time_column])
         total_span_minutes = (
-            (state_data[self.time_column].max() - state_data[self.time_column].min())
-            .total_seconds() / 60
-        )
+            state_data[self.time_column].max() - state_data[self.time_column].min()
+        ).total_seconds() / 60
 
         total_setup = durations.sum()
         pct = (total_setup / total_span_minutes * 100) if total_span_minutes > 0 else 0
 
-        return pd.DataFrame([{
-            "total_setups": len(durations),
-            "total_minutes": round(total_setup, 1),
-            "avg_minutes": round(durations.mean(), 1),
-            "median_minutes": round(durations.median(), 1),
-            "std_minutes": round(durations.std(), 1) if len(durations) > 1 else 0.0,
-            "pct_of_available_time": round(pct, 1),
-        }])
+        return pd.DataFrame(
+            [
+                {
+                    "total_setups": len(durations),
+                    "total_minutes": round(total_setup, 1),
+                    "avg_minutes": round(durations.mean(), 1),
+                    "median_minutes": round(durations.median(), 1),
+                    "std_minutes": round(durations.std(), 1) if len(durations) > 1 else 0.0,
+                    "pct_of_available_time": round(pct, 1),
+                }
+            ]
+        )
 
     def setup_trend(
         self,
@@ -302,9 +303,7 @@ class SetupTimeTracking(Base):
         """
         intervals = self._extract_setup_intervals(state_uuid, setup_value, value_column)
         if intervals.empty:
-            return pd.DataFrame(
-                columns=["period", "avg_setup_minutes", "setup_count", "total_setup_minutes"]
-            )
+            return pd.DataFrame(columns=["period", "avg_setup_minutes", "setup_count", "total_setup_minutes"])
 
         intervals = intervals.set_index("start_time")
 
@@ -312,11 +311,13 @@ class SetupTimeTracking(Base):
         for period, grp in intervals.groupby(pd.Grouper(freq=window)):
             if grp.empty:
                 continue
-            results.append({
-                "period": period,
-                "avg_setup_minutes": round(grp["duration_minutes"].mean(), 1),
-                "setup_count": len(grp),
-                "total_setup_minutes": round(grp["duration_minutes"].sum(), 1),
-            })
+            results.append(
+                {
+                    "period": period,
+                    "avg_setup_minutes": round(grp["duration_minutes"].mean(), 1),
+                    "setup_count": len(grp),
+                    "total_setup_minutes": round(grp["duration_minutes"].sum(), 1),
+                }
+            )
 
         return pd.DataFrame(results)

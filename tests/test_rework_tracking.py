@@ -1,7 +1,6 @@
 """Tests for ReworkTracking module."""
 
 import pandas as pd
-import pytest
 
 from ts_shape.events.production.rework_tracking import ReworkTracking
 
@@ -17,13 +16,25 @@ def _make_rework_df():
     for i, t in enumerate(times):
         rows.append({"systime": t, "uuid": "total_counter", "value_integer": 100 + i * 20})
     # Reason codes
-    reasons = ["Dimension", "Dimension", "Surface", "Surface", "Dimension",
-               "Tooling", "Surface", "Dimension", "Dimension", "Surface", "Tooling", "Dimension"]
-    for t, reason in zip(times, reasons):
+    reasons = [
+        "Dimension",
+        "Dimension",
+        "Surface",
+        "Surface",
+        "Dimension",
+        "Tooling",
+        "Surface",
+        "Dimension",
+        "Dimension",
+        "Surface",
+        "Tooling",
+        "Dimension",
+    ]
+    for t, reason in zip(times, reasons, strict=False):
         rows.append({"systime": t, "uuid": "rework_reason", "value_string": reason})
     # Part numbers
     parts = ["PART_A"] * 6 + ["PART_B"] * 6
-    for t, part in zip(times, parts):
+    for t, part in zip(times, parts, strict=False):
         rows.append({"systime": t, "uuid": "part_number", "value_string": part})
     return pd.DataFrame(rows)
 

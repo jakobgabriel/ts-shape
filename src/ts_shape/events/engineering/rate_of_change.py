@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -34,11 +35,7 @@ class RateOfChangeEvents(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-        self.signal = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.signal = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
 
     def _compute_rate(self) -> pd.DataFrame:
@@ -52,9 +49,7 @@ class RateOfChangeEvents(Base):
         sig["rate"] = value_diff / time_diff.replace(0, np.nan)
         return sig.dropna(subset=["rate"])
 
-    def detect_rapid_change(
-        self, threshold: float, window: str = "1m"
-    ) -> pd.DataFrame:
+    def detect_rapid_change(self, threshold: float, window: str = "1m") -> pd.DataFrame:
         """Flag intervals where rate of change exceeds threshold.
 
         Args:
@@ -69,12 +64,12 @@ class RateOfChangeEvents(Base):
         if rate_df.empty:
             return pd.DataFrame(columns=cols)
 
-        rapid = (rate_df["rate"].abs() >= threshold)
+        rapid = rate_df["rate"].abs() >= threshold
         if not rapid.any():
             return pd.DataFrame(columns=cols)
 
         groups = (rapid != rapid.shift()).cumsum()
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
 
         for _, seg in rate_df.groupby(groups):
             seg_rapid = rapid.loc[seg.index]
@@ -85,12 +80,14 @@ class RateOfChangeEvents(Base):
             max_rate_idx = seg["rate"].abs().idxmax()
             max_rate = float(seg.loc[max_rate_idx, "rate"])
 
-            events.append({
-                "start_time": start,
-                "end_time": end,
-                "max_rate": max_rate,
-                "direction": "increasing" if max_rate > 0 else "decreasing",
-            })
+            events.append(
+                {
+                    "start_time": start,
+                    "end_time": end,
+                    "max_rate": max_rate,
+                    "direction": "increasing" if max_rate > 0 else "decreasing",
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
@@ -123,9 +120,7 @@ class RateOfChangeEvents(Base):
 
         return result[cols]
 
-    def detect_step_changes(
-        self, min_delta: float, max_duration: str = "5s"
-    ) -> pd.DataFrame:
+    def detect_step_changes(self, min_delta: float, max_duration: str = "5s") -> pd.DataFrame:
         """Detect sudden value jumps within a short duration.
 
         Args:
@@ -142,7 +137,7 @@ class RateOfChangeEvents(Base):
         sig = self.signal[[self.time_column, self.value_column]].copy().reset_index(drop=True)
         max_td = pd.to_timedelta(max_duration)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         values = sig[self.value_column].values
         times = sig[self.time_column].values
 
@@ -151,12 +146,14 @@ class RateOfChangeEvents(Base):
             duration = pd.Timestamp(times[i]) - pd.Timestamp(times[i - 1])
 
             if abs(delta) >= min_delta and duration <= max_td:
-                events.append({
-                    "time": pd.Timestamp(times[i]),
-                    "value_before": float(values[i - 1]),
-                    "value_after": float(values[i]),
-                    "delta": float(delta),
-                    "duration": duration,
-                })
+                events.append(
+                    {
+                        "time": pd.Timestamp(times[i]),
+                        "value_before": float(values[i - 1]),
+                        "value_after": float(values[i]),
+                        "delta": float(delta),
+                        "duration": duration,
+                    }
+                )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)

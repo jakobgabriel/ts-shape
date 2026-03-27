@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import List, Dict, Any, Optional
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -26,9 +27,9 @@ class ProcessStabilityIndex(Base):
         dataframe: pd.DataFrame,
         signal_uuid: str,
         *,
-        target: Optional[float] = None,
-        lower_spec: Optional[float] = None,
-        upper_spec: Optional[float] = None,
+        target: float | None = None,
+        lower_spec: float | None = None,
+        upper_spec: float | None = None,
         event_uuid: str = "eng:stability_index",
         value_column: str = "value_double",
         time_column: str = "systime",
@@ -42,11 +43,7 @@ class ProcessStabilityIndex(Base):
         self.value_column = value_column
         self.time_column = time_column
 
-        self.signal = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.signal = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
 
         # Compute defaults from data
@@ -80,8 +77,13 @@ class ProcessStabilityIndex(Base):
             grade.
         """
         cols = [
-            "window_start", "stability_score", "variance_score",
-            "bias_score", "excursion_score", "smoothness_score", "grade",
+            "window_start",
+            "stability_score",
+            "variance_score",
+            "bias_score",
+            "excursion_score",
+            "smoothness_score",
+            "grade",
         ]
         if self.signal.empty:
             return pd.DataFrame(columns=cols)
@@ -91,7 +93,7 @@ class ProcessStabilityIndex(Base):
         spec_range = self.upper_spec - self.lower_spec
         half_range = spec_range / 2.0 if spec_range > 0 else 1.0
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for window_start, group in groups:
             vals = group.dropna()
             if len(vals) < 2:
@@ -131,15 +133,17 @@ class ProcessStabilityIndex(Base):
             else:
                 grade = "F"
 
-            events.append({
-                "window_start": window_start,
-                "stability_score": round(total, 1),
-                "variance_score": round(variance_score, 1),
-                "bias_score": round(bias_score, 1),
-                "excursion_score": round(excursion_score, 1),
-                "smoothness_score": round(smoothness_score, 1),
-                "grade": grade,
-            })
+            events.append(
+                {
+                    "window_start": window_start,
+                    "stability_score": round(total, 1),
+                    "variance_score": round(variance_score, 1),
+                    "bias_score": round(bias_score, 1),
+                    "excursion_score": round(excursion_score, 1),
+                    "smoothness_score": round(smoothness_score, 1),
+                    "grade": grade,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols)
 
@@ -155,23 +159,21 @@ class ProcessStabilityIndex(Base):
             rolling_avg, trend_direction, score_change.
         """
         cols = [
-            "window_start", "stability_score", "rolling_avg",
-            "trend_direction", "score_change",
+            "window_start",
+            "stability_score",
+            "rolling_avg",
+            "trend_direction",
+            "score_change",
         ]
         scores = self.stability_score(window)
         if scores.empty or len(scores) < 2:
             return pd.DataFrame(columns=cols)
 
         result = scores[["window_start", "stability_score"]].copy()
-        result["rolling_avg"] = (
-            result["stability_score"]
-            .rolling(n_windows, min_periods=1)
-            .mean()
-        )
+        result["rolling_avg"] = result["stability_score"].rolling(n_windows, min_periods=1).mean()
         result["score_change"] = result["stability_score"].diff()
         result["trend_direction"] = np.where(
-            result["score_change"] > 2, "improving",
-            np.where(result["score_change"] < -2, "degrading", "stable")
+            result["score_change"] > 2, "improving", np.where(result["score_change"] < -2, "degrading", "stable")
         )
 
         return result[cols].dropna(subset=["score_change"]).reset_index(drop=True)
@@ -189,8 +191,12 @@ class ProcessStabilityIndex(Base):
             primary_issue.
         """
         cols = [
-            "window_start", "stability_score", "variance_score",
-            "bias_score", "excursion_score", "smoothness_score",
+            "window_start",
+            "stability_score",
+            "variance_score",
+            "bias_score",
+            "excursion_score",
+            "smoothness_score",
             "primary_issue",
         ]
         scores = self.stability_score(window)
@@ -219,8 +225,11 @@ class ProcessStabilityIndex(Base):
             best_score, gap_to_best, pct_of_best.
         """
         cols = [
-            "window_start", "stability_score", "best_score",
-            "gap_to_best", "pct_of_best",
+            "window_start",
+            "stability_score",
+            "best_score",
+            "gap_to_best",
+            "pct_of_best",
         ]
         scores = self.stability_score(window)
         if scores.empty:
@@ -230,8 +239,6 @@ class ProcessStabilityIndex(Base):
         result = scores[["window_start", "stability_score"]].copy()
         result["best_score"] = best
         result["gap_to_best"] = best - result["stability_score"]
-        result["pct_of_best"] = (
-            result["stability_score"] / best * 100 if best > 0 else 0.0
-        )
+        result["pct_of_best"] = result["stability_score"] / best * 100 if best > 0 else 0.0
 
         return result[cols].reset_index(drop=True)

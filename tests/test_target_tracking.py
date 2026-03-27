@@ -1,7 +1,6 @@
 """Tests for TargetTracking module."""
 
 import pandas as pd
-import pytest
 
 from ts_shape.events.production.target_tracking import TargetTracking
 
@@ -13,11 +12,13 @@ def _make_counter_df():
         base = (day - 1) * 1500
         for hour in range(6, 22):
             t = pd.Timestamp(f"2024-01-0{day} {hour:02d}:00:00")
-            rows.append({
-                "systime": t,
-                "uuid": "prod_counter",
-                "value_integer": base + (hour - 6) * 90 + (10 if day == 2 else 0),
-            })
+            rows.append(
+                {
+                    "systime": t,
+                    "uuid": "prod_counter",
+                    "value_integer": base + (hour - 6) * 90 + (10 if day == 2 else 0),
+                }
+            )
     return pd.DataFrame(rows)
 
 

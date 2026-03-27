@@ -1,6 +1,7 @@
 import logging
+from typing import Any
+
 import pandas as pd  # type: ignore
-from typing import Dict, Any, List, Optional
 
 from ts_shape.utils.base import Base
 
@@ -26,11 +27,7 @@ class FlowConstraintEvents(Base):
         self.event_uuid = event_uuid
 
     def _align_bool(self, uuid: str) -> pd.DataFrame:
-        s = (
-            self.dataframe[self.dataframe["uuid"] == uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        s = self.dataframe[self.dataframe["uuid"] == uuid].copy().sort_values(self.time_column)
         s[self.time_column] = pd.to_datetime(s[self.time_column])
         s["state"] = s["value_bool"].fillna(False).astype(bool)
         return s[[self.time_column, "state"]]
@@ -38,10 +35,10 @@ class FlowConstraintEvents(Base):
     def blocked_events(
         self,
         *,
-        roles: Dict[str, str],
+        roles: dict[str, str],
         tolerance: str = "200ms",
-        tolerance_before: Optional[str] = None,
-        tolerance_after: Optional[str] = None,
+        tolerance_before: str | None = None,
+        tolerance_after: str | None = None,
         min_duration: str = "0s",
     ) -> pd.DataFrame:
         """Blocked: upstream_run=True while downstream_run=False.
@@ -65,8 +62,17 @@ class FlowConstraintEvents(Base):
         dn = self._align_bool(roles["downstream_run"])  # time, state
         if up.empty or dn.empty:
             return pd.DataFrame(
-                columns=["start", "end", "uuid", "source_uuid", "is_delta", "type",
-                        "time_alignment_quality", "duration", "severity"]
+                columns=[
+                    "start",
+                    "end",
+                    "uuid",
+                    "source_uuid",
+                    "is_delta",
+                    "type",
+                    "time_alignment_quality",
+                    "duration",
+                    "severity",
+                ]
             )
 
         # Use directional tolerances if provided, otherwise use single tolerance
@@ -76,33 +82,28 @@ class FlowConstraintEvents(Base):
 
         # Merge with maximum tolerance and track time differences
         merged = pd.merge_asof(
-            up, dn,
-            on=self.time_column,
-            suffixes=("_up", "_dn"),
-            tolerance=max_tol,
-            direction="nearest"
+            up, dn, on=self.time_column, suffixes=("_up", "_dn"), tolerance=max_tol, direction="nearest"
         )
 
         # Store original upstream time for quality calculation
-        merged['time_up'] = up[self.time_column].values
+        merged["time_up"] = up[self.time_column].values
 
         # Apply directional tolerance filtering if asymmetric tolerances are specified
         if tolerance_before or tolerance_after:
-            time_diff = merged[self.time_column + '_dn'] - merged[self.time_column]
+            time_diff = merged[self.time_column + "_dn"] - merged[self.time_column]
             # Keep only records within directional tolerance bounds
-            valid_mask = (
-                ((time_diff <= pd.Timedelta(0)) & (time_diff.abs() <= tol_before)) |
-                ((time_diff >= pd.Timedelta(0)) & (time_diff <= tol_after))
+            valid_mask = ((time_diff <= pd.Timedelta(0)) & (time_diff.abs() <= tol_before)) | (
+                (time_diff >= pd.Timedelta(0)) & (time_diff <= tol_after)
             )
-            merged.loc[~valid_mask, 'state_dn'] = pd.NA
+            merged.loc[~valid_mask, "state_dn"] = pd.NA
 
         # Calculate alignment quality (percentage of records with matches)
-        alignment_quality = merged['state_dn'].notna().sum() / len(merged) if len(merged) > 0 else 0.0
+        alignment_quality = merged["state_dn"].notna().sum() / len(merged) if len(merged) > 0 else 0.0
 
         cond = merged["state_up"] & (~merged["state_dn"].fillna(False))
         gid = (cond.ne(cond.shift())).cumsum()
         min_td = pd.to_timedelta(min_duration)
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, seg in merged.groupby(gid):
             m = cond.loc[seg.index]
             if not m.any():
@@ -134,10 +135,10 @@ class FlowConstraintEvents(Base):
     def starved_events(
         self,
         *,
-        roles: Dict[str, str],
+        roles: dict[str, str],
         tolerance: str = "200ms",
-        tolerance_before: Optional[str] = None,
-        tolerance_after: Optional[str] = None,
+        tolerance_before: str | None = None,
+        tolerance_after: str | None = None,
         min_duration: str = "0s",
     ) -> pd.DataFrame:
         """Starved: downstream_run=True while upstream_run=False.
@@ -161,8 +162,17 @@ class FlowConstraintEvents(Base):
         dn = self._align_bool(roles["downstream_run"])  # time, state
         if up.empty or dn.empty:
             return pd.DataFrame(
-                columns=["start", "end", "uuid", "source_uuid", "is_delta", "type",
-                        "time_alignment_quality", "duration", "severity"]
+                columns=[
+                    "start",
+                    "end",
+                    "uuid",
+                    "source_uuid",
+                    "is_delta",
+                    "type",
+                    "time_alignment_quality",
+                    "duration",
+                    "severity",
+                ]
             )
 
         # Use directional tolerances if provided, otherwise use single tolerance
@@ -172,33 +182,28 @@ class FlowConstraintEvents(Base):
 
         # Merge with maximum tolerance and track time differences
         merged = pd.merge_asof(
-            dn, up,
-            on=self.time_column,
-            suffixes=("_dn", "_up"),
-            tolerance=max_tol,
-            direction="nearest"
+            dn, up, on=self.time_column, suffixes=("_dn", "_up"), tolerance=max_tol, direction="nearest"
         )
 
         # Store original downstream time for quality calculation
-        merged['time_dn'] = dn[self.time_column].values
+        merged["time_dn"] = dn[self.time_column].values
 
         # Apply directional tolerance filtering if asymmetric tolerances are specified
         if tolerance_before or tolerance_after:
-            time_diff = merged[self.time_column + '_up'] - merged[self.time_column]
+            time_diff = merged[self.time_column + "_up"] - merged[self.time_column]
             # Keep only records within directional tolerance bounds
-            valid_mask = (
-                ((time_diff <= pd.Timedelta(0)) & (time_diff.abs() <= tol_before)) |
-                ((time_diff >= pd.Timedelta(0)) & (time_diff <= tol_after))
+            valid_mask = ((time_diff <= pd.Timedelta(0)) & (time_diff.abs() <= tol_before)) | (
+                (time_diff >= pd.Timedelta(0)) & (time_diff <= tol_after)
             )
-            merged.loc[~valid_mask, 'state_up'] = pd.NA
+            merged.loc[~valid_mask, "state_up"] = pd.NA
 
         # Calculate alignment quality (percentage of records with matches)
-        alignment_quality = merged['state_up'].notna().sum() / len(merged) if len(merged) > 0 else 0.0
+        alignment_quality = merged["state_up"].notna().sum() / len(merged) if len(merged) > 0 else 0.0
 
         cond = merged["state_dn"] & (~merged["state_up"].fillna(False))
         gid = (cond.ne(cond.shift())).cumsum()
         min_td = pd.to_timedelta(min_duration)
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, seg in merged.groupby(gid):
             m = cond.loc[seg.index]
             if not m.any():
@@ -256,14 +261,14 @@ class FlowConstraintEvents(Base):
     def flow_constraint_analytics(
         self,
         *,
-        roles: Dict[str, str],
+        roles: dict[str, str],
         tolerance: str = "200ms",
-        tolerance_before: Optional[str] = None,
-        tolerance_after: Optional[str] = None,
+        tolerance_before: str | None = None,
+        tolerance_after: str | None = None,
         min_duration: str = "0s",
         minor_threshold: str = "5s",
         moderate_threshold: str = "30s",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Generate comprehensive analytics for flow constraints (blockages and starvations).
 
         Args:
@@ -314,7 +319,7 @@ class FlowConstraintEvents(Base):
         )
 
         # Calculate summary statistics
-        summary: Dict[str, Any] = {}
+        summary: dict[str, Any] = {}
 
         # Blocked events statistics
         if not blocked_df.empty:
@@ -356,4 +361,3 @@ class FlowConstraintEvents(Base):
             "starved_events": starved_df,
             "summary": summary,
         }
-

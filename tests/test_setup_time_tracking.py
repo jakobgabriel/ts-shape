@@ -1,7 +1,6 @@
 """Tests for SetupTimeTracking module."""
 
 import pandas as pd
-import pytest
 
 from ts_shape.events.production.setup_time_tracking import SetupTimeTracking
 
@@ -12,16 +11,19 @@ def _make_setup_df():
     rows = []
     # Machine state: Running → Setup → Running → Setup → Running ...
     states = (
-        ["Running"] * 4 + ["Setup"] * 2 + ["Running"] * 6
-        + ["Setup"] * 3 + ["Running"] * 5 + ["Setup"] * 2 + ["Running"] * 2
+        ["Running"] * 4
+        + ["Setup"] * 2
+        + ["Running"] * 6
+        + ["Setup"] * 3
+        + ["Running"] * 5
+        + ["Setup"] * 2
+        + ["Running"] * 2
     )
-    for t, state in zip(times, states):
+    for t, state in zip(times, states, strict=False):
         rows.append({"systime": t, "uuid": "machine_state", "value_string": state})
     # Part numbers: changes after each setup
-    parts = (
-        ["PART_A"] * 6 + ["PART_B"] * 12 + ["PART_C"] * 6
-    )
-    for t, part in zip(times, parts):
+    parts = ["PART_A"] * 6 + ["PART_B"] * 12 + ["PART_C"] * 6
+    for t, part in zip(times, parts, strict=False):
         rows.append({"systime": t, "uuid": "part_number", "value_string": part})
     return pd.DataFrame(rows)
 

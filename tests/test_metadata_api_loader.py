@@ -1,5 +1,4 @@
 import pytest
-import pandas as pd  # type: ignore
 
 requests = pytest.importorskip("requests")
 
@@ -45,4 +44,3 @@ def test_metadata_api_loader_monkeypatched(monkeypatch, tmp_path):
     uuids = api.get_all_uuids()
     assert set(uuids.keys()) == {"Device A"}
     assert uuids["Device A"] == ["u1"]
-

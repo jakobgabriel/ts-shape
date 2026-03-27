@@ -1,6 +1,6 @@
-import pytest
 import pandas as pd
-import numpy as np
+import pytest
+
 from ts_shape.events.production.bottleneck_detection import BottleneckDetectionEvents
 
 
@@ -58,9 +58,7 @@ class TestStationUtilization:
 class TestDetectBottleneck:
     def test_highest_utilization_is_bottleneck(self, three_station_df):
         detector = BottleneckDetectionEvents(three_station_df)
-        bottlenecks = detector.detect_bottleneck(
-            ["station_a", "station_b", "station_c"], window="1h"
-        )
+        bottlenecks = detector.detect_bottleneck(["station_a", "station_b", "station_c"], window="1h")
         assert len(bottlenecks) > 0
         assert bottlenecks.iloc[0]["bottleneck_uuid"] == "station_a"
 
@@ -78,9 +76,7 @@ class TestShiftingBottleneck:
 class TestThroughputConstraintSummary:
     def test_summary_structure(self, three_station_df):
         detector = BottleneckDetectionEvents(three_station_df)
-        summary = detector.throughput_constraint_summary(
-            ["station_a", "station_b", "station_c"], window="1h"
-        )
+        summary = detector.throughput_constraint_summary(["station_a", "station_b", "station_c"], window="1h")
         assert "bottleneck_counts" in summary
         assert "most_frequent_bottleneck" in summary
         assert "avg_utilization_per_station" in summary

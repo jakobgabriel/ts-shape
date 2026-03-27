@@ -1,8 +1,9 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
+import pandas as pd  # type: ignore
 from scipy import stats  # type: ignore
-from typing import List, Dict, Any, Optional
 
 from ts_shape.utils.base import Base
 
@@ -30,8 +31,8 @@ class SensorDriftEvents(Base):
         dataframe: pd.DataFrame,
         signal_uuid: str,
         *,
-        reference_uuid: Optional[str] = None,
-        reference_value: Optional[float] = None,
+        reference_uuid: str | None = None,
+        reference_value: float | None = None,
         value_column: str = "value_double",
         event_uuid: str = "quality:sensor_drift",
         time_column: str = "systime",
@@ -44,42 +45,31 @@ class SensorDriftEvents(Base):
         self.event_uuid = event_uuid
         self.time_column = time_column
 
-        self.signal = (
-            self.dataframe[self.dataframe["uuid"] == self.signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.signal = self.dataframe[self.dataframe["uuid"] == self.signal_uuid].copy().sort_values(self.time_column)
         self.signal[self.time_column] = pd.to_datetime(self.signal[self.time_column])
 
         # Build reference series if UUID provided
         if self.reference_uuid is not None:
-            ref = (
-                self.dataframe[self.dataframe["uuid"] == self.reference_uuid]
-                .copy()
-                .sort_values(self.time_column)
-            )
+            ref = self.dataframe[self.dataframe["uuid"] == self.reference_uuid].copy().sort_values(self.time_column)
             ref[self.time_column] = pd.to_datetime(ref[self.time_column])
             self._reference_series = ref
         else:
             self._reference_series = None
 
-    def _get_reference_for_window(self, window_start, window_end) -> Optional[float]:
+    def _get_reference_for_window(self, window_start, window_end) -> float | None:
         """Get reference value for a time window."""
         if self.reference_value is not None:
             return self.reference_value
         if self._reference_series is not None and not self._reference_series.empty:
-            mask = (
-                (self._reference_series[self.time_column] >= window_start)
-                & (self._reference_series[self.time_column] < window_end)
+            mask = (self._reference_series[self.time_column] >= window_start) & (
+                self._reference_series[self.time_column] < window_end
             )
             ref_vals = self._reference_series.loc[mask, self.value_column].dropna()
             if not ref_vals.empty:
                 return float(ref_vals.mean())
         return None
 
-    def detect_zero_drift(
-        self, window: str = "8h", threshold: Optional[float] = None
-    ) -> pd.DataFrame:
+    def detect_zero_drift(self, window: str = "8h", threshold: float | None = None) -> pd.DataFrame:
         """Track mean offset from baseline per window.
 
         Args:
@@ -98,9 +88,9 @@ class SensorDriftEvents(Base):
         sig = self.signal[[self.time_column, self.value_column]].copy()
         sig = sig.set_index(self.time_column)
 
-        events: List[Dict[str, Any]] = []
-        prev_offset: Optional[float] = None
-        auto_threshold: Optional[float] = None
+        events: list[dict[str, Any]] = []
+        prev_offset: float | None = None
+        auto_threshold: float | None = None
 
         for ts, group in sig.resample(window):
             vals = group[self.value_column].dropna()
@@ -187,8 +177,8 @@ class SensorDriftEvents(Base):
         sig = self.signal[[self.time_column, self.value_column]].copy()
         sig = sig.set_index(self.time_column)
 
-        events: List[Dict[str, Any]] = []
-        baseline_sensitivity: Optional[float] = None
+        events: list[dict[str, Any]] = []
+        baseline_sensitivity: float | None = None
 
         for ts, group in sig.resample(window):
             vals = group[self.value_column].dropna()
@@ -207,17 +197,17 @@ class SensorDriftEvents(Base):
 
             change_pct = ((sensitivity - baseline_sensitivity) / abs(baseline_sensitivity)) * 100
 
-            events.append({
-                "window_start": ts,
-                "sensitivity": round(sensitivity, 6),
-                "sensitivity_change_pct": round(change_pct, 4),
-            })
+            events.append(
+                {
+                    "window_start": ts,
+                    "sensitivity": round(sensitivity, 6),
+                    "sensitivity_change_pct": round(change_pct, 4),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
-    def drift_trend(
-        self, window: str = "1D", metric: str = "mean"
-    ) -> pd.DataFrame:
+    def drift_trend(self, window: str = "1D", metric: str = "mean") -> pd.DataFrame:
         """Rolling trend analysis on signal statistics.
 
         Args:
@@ -236,7 +226,7 @@ class SensorDriftEvents(Base):
         sig = sig.set_index(self.time_column)
 
         # Compute per-window metric
-        window_values: List[tuple] = []
+        window_values: list[tuple] = []
         for ts, group in sig.resample(window):
             vals = group[self.value_column].dropna()
             if len(vals) < 2:
@@ -250,12 +240,12 @@ class SensorDriftEvents(Base):
         if len(window_values) < 2:
             return pd.DataFrame(columns=cols)
 
-        timestamps = [wv[0] for wv in window_values]
+        [wv[0] for wv in window_values]
         values = np.array([wv[1] for wv in window_values])
         x = np.arange(len(values), dtype=float)
 
         slope, intercept, r_value, _, _ = stats.linregress(x, values)
-        r_squared = r_value ** 2
+        r_squared = r_value**2
 
         # Direction is "stable" unless there is both a meaningful slope
         # AND a strong fit (R² > 0.8). This avoids labelling random noise
@@ -267,21 +257,21 @@ class SensorDriftEvents(Base):
         else:
             direction = "decreasing"
 
-        events: List[Dict[str, Any]] = []
-        for i, (ts, v) in enumerate(window_values):
-            events.append({
-                "window_start": ts,
-                "value": round(v, 6),
-                "slope": round(slope, 8),
-                "r_squared": round(r_squared, 4),
-                "direction": direction,
-            })
+        events: list[dict[str, Any]] = []
+        for _i, (ts, v) in enumerate(window_values):
+            events.append(
+                {
+                    "window_start": ts,
+                    "value": round(v, 6),
+                    "slope": round(slope, 8),
+                    "r_squared": round(r_squared, 4),
+                    "direction": direction,
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)
 
-    def calibration_health(
-        self, window: str = "8h", tolerance: Optional[float] = None
-    ) -> pd.DataFrame:
+    def calibration_health(self, window: str = "8h", tolerance: float | None = None) -> pd.DataFrame:
         """Composite calibration health score per window.
 
         Args:
@@ -300,7 +290,7 @@ class SensorDriftEvents(Base):
         sig = self.signal[[self.time_column, self.value_column]].copy()
         sig = sig.set_index(self.time_column)
 
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         for ts, group in sig.resample(window):
             vals = group[self.value_column].dropna()
             if len(vals) < 2:
@@ -329,11 +319,13 @@ class SensorDriftEvents(Base):
                 else:
                     health_score = 100.0 if bias == 0 else 50.0
 
-            events.append({
-                "window_start": ts,
-                "bias": round(bias, 6),
-                "precision": round(precision, 6),
-                "health_score": round(health_score, 2),
-            })
+            events.append(
+                {
+                    "window_start": ts,
+                    "bias": round(bias, 6),
+                    "precision": round(precision, 6),
+                    "health_score": round(health_score, 2),
+                }
+            )
 
         return pd.DataFrame(events, columns=cols) if events else pd.DataFrame(columns=cols)

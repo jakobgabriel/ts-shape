@@ -1,7 +1,7 @@
 import logging
+from typing import Any
+
 import pandas as pd  # type: ignore
-import numpy as np  # type: ignore
-from typing import List, Dict, Any, Optional
 
 from ts_shape.utils.base import Base
 
@@ -40,11 +40,7 @@ class AnomalyCorrelationEvents(Base):
         z_threshold: float = 3.0,
     ) -> pd.DataFrame:
         """Internal: detect anomalies in a single signal using Z-score."""
-        s = (
-            self.dataframe[self.dataframe["uuid"] == signal_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        s = self.dataframe[self.dataframe["uuid"] == signal_uuid].copy().sort_values(self.time_column)
         if s.empty or len(s) < 3:
             return pd.DataFrame(columns=[self.time_column, "uuid", self.value_column, "z_score"])
 
@@ -61,7 +57,7 @@ class AnomalyCorrelationEvents(Base):
 
     def coincident_anomalies(
         self,
-        signal_uuids: List[str],
+        signal_uuids: list[str],
         *,
         z_threshold: float = 3.0,
         coincidence_window: str = "5min",
@@ -88,8 +84,12 @@ class AnomalyCorrelationEvents(Base):
         if not all_anomalies:
             return pd.DataFrame(
                 columns=[
-                    "window_start", "window_end", "uuid", "is_delta",
-                    "anomaly_count", "signal_uuids_involved",
+                    "window_start",
+                    "window_end",
+                    "uuid",
+                    "is_delta",
+                    "anomaly_count",
+                    "signal_uuids_involved",
                 ]
             )
 
@@ -97,17 +97,14 @@ class AnomalyCorrelationEvents(Base):
         combined = combined.sort_values(self.time_column)
 
         window_td = pd.to_timedelta(coincidence_window)
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         processed = set()
 
         for i, row in combined.iterrows():
             if i in processed:
                 continue
             t = row[self.time_column]
-            window_mask = (
-                (combined[self.time_column] >= t)
-                & (combined[self.time_column] <= t + window_td)
-            )
+            window_mask = (combined[self.time_column] >= t) & (combined[self.time_column] <= t + window_td)
             window_data = combined[window_mask]
             unique_signals = window_data["uuid"].unique()
 
@@ -155,20 +152,24 @@ class AnomalyCorrelationEvents(Base):
         if leader_anom.empty or follower_anom.empty:
             return pd.DataFrame(
                 columns=[
-                    "leader_time", "follower_time", "uuid", "is_delta",
-                    "leader_uuid", "follower_uuid", "delay_seconds",
+                    "leader_time",
+                    "follower_time",
+                    "uuid",
+                    "is_delta",
+                    "leader_uuid",
+                    "follower_uuid",
+                    "delay_seconds",
                 ]
             )
 
         max_delay_td = pd.to_timedelta(max_delay)
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         used_followers = set()
 
         for _, lrow in leader_anom.iterrows():
             lt = lrow[self.time_column]
             candidates = follower_anom[
-                (follower_anom[self.time_column] > lt)
-                & (follower_anom[self.time_column] <= lt + max_delay_td)
+                (follower_anom[self.time_column] > lt) & (follower_anom[self.time_column] <= lt + max_delay_td)
             ]
             for fidx, frow in candidates.iterrows():
                 if fidx not in used_followers:
@@ -180,9 +181,7 @@ class AnomalyCorrelationEvents(Base):
                             "is_delta": True,
                             "leader_uuid": leader_uuid,
                             "follower_uuid": follower_uuid,
-                            "delay_seconds": (
-                                frow[self.time_column] - lt
-                            ).total_seconds(),
+                            "delay_seconds": (frow[self.time_column] - lt).total_seconds(),
                         }
                     )
                     used_followers.add(fidx)
@@ -192,7 +191,7 @@ class AnomalyCorrelationEvents(Base):
 
     def root_cause_ranking(
         self,
-        signal_uuids: List[str],
+        signal_uuids: list[str],
         *,
         z_threshold: float = 3.0,
         max_delay: str = "10min",
@@ -213,21 +212,15 @@ class AnomalyCorrelationEvents(Base):
                        leader_ratio, rank
         """
         if len(signal_uuids) < 2:
-            return pd.DataFrame(
-                columns=["signal_uuid", "leader_count", "follower_count", "leader_ratio", "rank"]
-            )
+            return pd.DataFrame(columns=["signal_uuid", "leader_count", "follower_count", "leader_ratio", "rank"])
 
-        leader_counts: Dict[str, int] = {uid: 0 for uid in signal_uuids}
-        follower_counts: Dict[str, int] = {uid: 0 for uid in signal_uuids}
+        leader_counts: dict[str, int] = {uid: 0 for uid in signal_uuids}
+        follower_counts: dict[str, int] = {uid: 0 for uid in signal_uuids}
 
         for i, uid_a in enumerate(signal_uuids):
             for uid_b in signal_uuids[i + 1 :]:
-                cascades_ab = self.cascade_detection(
-                    uid_a, uid_b, z_threshold=z_threshold, max_delay=max_delay
-                )
-                cascades_ba = self.cascade_detection(
-                    uid_b, uid_a, z_threshold=z_threshold, max_delay=max_delay
-                )
+                cascades_ab = self.cascade_detection(uid_a, uid_b, z_threshold=z_threshold, max_delay=max_delay)
+                cascades_ba = self.cascade_detection(uid_b, uid_a, z_threshold=z_threshold, max_delay=max_delay)
                 leader_counts[uid_a] += len(cascades_ab)
                 follower_counts[uid_b] += len(cascades_ab)
                 leader_counts[uid_b] += len(cascades_ba)

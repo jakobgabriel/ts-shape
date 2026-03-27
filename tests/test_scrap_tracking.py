@@ -1,7 +1,6 @@
 """Tests for ScrapTracking module."""
 
 import pandas as pd
-import pytest
 
 from ts_shape.events.production.scrap_tracking import ScrapTracking
 
@@ -14,13 +13,25 @@ def _make_scrap_df():
     for i, t in enumerate(times):
         rows.append({"systime": t, "uuid": "scrap_weight", "value_double": 10.0 + i * 2.5})
     # Reason codes
-    reasons = ["Material", "Material", "Tool", "Tool", "Material",
-               "Operator", "Tool", "Material", "Material", "Tool", "Operator", "Material"]
-    for t, reason in zip(times, reasons):
+    reasons = [
+        "Material",
+        "Material",
+        "Tool",
+        "Tool",
+        "Material",
+        "Operator",
+        "Tool",
+        "Material",
+        "Material",
+        "Tool",
+        "Operator",
+        "Material",
+    ]
+    for t, reason in zip(times, reasons, strict=False):
         rows.append({"systime": t, "uuid": "scrap_reason", "value_string": reason})
     # Part numbers
     parts = ["PART_A"] * 6 + ["PART_B"] * 6
-    for t, part in zip(times, parts):
+    for t, part in zip(times, parts, strict=False):
         rows.append({"systime": t, "uuid": "part_number", "value_string": part})
     return pd.DataFrame(rows)
 

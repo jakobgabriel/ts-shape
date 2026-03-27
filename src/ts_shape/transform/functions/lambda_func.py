@@ -1,9 +1,13 @@
 import logging
+from collections.abc import Callable
+from typing import Any
+
 import pandas as pd  # type: ignore
-from typing import Callable, Any
+
 from ts_shape.utils.base import Base
 
 logger = logging.getLogger(__name__)
+
 
 class LambdaProcessor(Base):
     """
@@ -26,6 +30,6 @@ class LambdaProcessor(Base):
         """
         if column_name not in dataframe.columns:
             raise ValueError(f"Column '{column_name}' not found in DataFrame.")
-        
+
         dataframe[column_name] = func(dataframe[column_name].values)
         return dataframe

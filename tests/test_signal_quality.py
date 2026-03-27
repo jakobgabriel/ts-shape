@@ -1,6 +1,7 @@
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
+
 from ts_shape.events.quality.signal_quality import SignalQualityEvents
 
 
@@ -11,19 +12,23 @@ def regular_df():
     base = pd.Timestamp("2024-01-01")
     # First segment: 0-100s
     for i in range(100):
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=i),
-            "uuid": "sensor_1",
-            "value_double": float(i),
-        })
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=i),
+                "uuid": "sensor_1",
+                "value_double": float(i),
+            }
+        )
     # Gap of 30 seconds (100s to 130s missing)
     # Second segment: 130-230s
     for i in range(100):
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=130 + i),
-            "uuid": "sensor_1",
-            "value_double": float(130 + i),
-        })
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=130 + i),
+                "uuid": "sensor_1",
+                "value_double": float(130 + i),
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -35,12 +40,14 @@ def irregular_df():
     intervals = np.random.exponential(scale=2.0, size=100)
     cumulative = np.cumsum(intervals)
     rows = []
-    for i, t in enumerate(cumulative):
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=t),
-            "uuid": "sensor_1",
-            "value_double": np.sin(t),
-        })
+    for _i, t in enumerate(cumulative):
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=t),
+                "uuid": "sensor_1",
+                "value_double": np.sin(t),
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -56,11 +63,13 @@ def out_of_range_df():
     values[150:160] = -10.0
     rows = []
     for i in range(n):
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=i),
-            "uuid": "sensor_1",
-            "value_double": values[i],
-        })
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=i),
+                "uuid": "sensor_1",
+                "value_double": values[i],
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -73,8 +82,7 @@ class TestDetectMissingData:
 
     def test_no_gaps(self):
         base = pd.Timestamp("2024-01-01")
-        rows = [{"systime": base + pd.Timedelta(seconds=i), "uuid": "s1", "value_double": float(i)}
-                for i in range(100)]
+        rows = [{"systime": base + pd.Timedelta(seconds=i), "uuid": "s1", "value_double": float(i)} for i in range(100)]
         df = pd.DataFrame(rows)
         detector = SignalQualityEvents(df, "s1")
         gaps = detector.detect_missing_data(expected_freq="1s")
@@ -85,8 +93,7 @@ class TestSamplingRegularity:
     def test_regular_signal(self):
         # Use a truly regular signal (no gaps)
         base = pd.Timestamp("2024-01-01")
-        rows = [{"systime": base + pd.Timedelta(seconds=i), "uuid": "s1",
-                 "value_double": float(i)} for i in range(200)]
+        rows = [{"systime": base + pd.Timedelta(seconds=i), "uuid": "s1", "value_double": float(i)} for i in range(200)]
         df = pd.DataFrame(rows)
         detector = SignalQualityEvents(df, "s1")
         reg = detector.sampling_regularity(window="1h")

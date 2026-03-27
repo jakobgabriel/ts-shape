@@ -19,9 +19,9 @@ being processed.  Handover signals between cells confirm the transfer.
 """
 
 import logging
+from typing import Any
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import List, Dict, Any, Optional
 
 from ts_shape.utils.base import Base
 
@@ -59,9 +59,9 @@ class MultiProcessTraceabilityEvents(Base):
     def __init__(
         self,
         dataframe: pd.DataFrame,
-        processes: List[Dict[str, str]],
+        processes: list[dict[str, str]],
         *,
-        handovers: Optional[List[Dict[str, str]]] = None,
+        handovers: list[dict[str, str]] | None = None,
         event_uuid: str = "prod:multi_process_trace",
         id_value_column: str = "value_string",
         handover_value_column: str = "value_integer",
@@ -93,32 +93,24 @@ class MultiProcessTraceabilityEvents(Base):
         self.time_column = time_column
 
         # Build station lookup: station_name -> list of id_uuids (parallel cells)
-        self._station_uuids: Dict[str, List[str]] = {}
+        self._station_uuids: dict[str, list[str]] = {}
         for proc in self.processes:
             station = proc["station"]
             self._station_uuids.setdefault(station, []).append(proc["id_uuid"])
 
         # Pre-filter process data per uuid
-        self._process_data: Dict[str, pd.DataFrame] = {}
+        self._process_data: dict[str, pd.DataFrame] = {}
         for proc in self.processes:
             uid = proc["id_uuid"]
-            sdf = (
-                self.dataframe[self.dataframe["uuid"] == uid]
-                .copy()
-                .sort_values(self.time_column)
-            )
+            sdf = self.dataframe[self.dataframe["uuid"] == uid].copy().sort_values(self.time_column)
             sdf[self.time_column] = pd.to_datetime(sdf[self.time_column])
             self._process_data[uid] = sdf
 
         # Pre-filter handover data per uuid
-        self._handover_data: Dict[str, pd.DataFrame] = {}
+        self._handover_data: dict[str, pd.DataFrame] = {}
         for ho in self.handovers:
             uid = ho["uuid"]
-            hdf = (
-                self.dataframe[self.dataframe["uuid"] == uid]
-                .copy()
-                .sort_values(self.time_column)
-            )
+            hdf = self.dataframe[self.dataframe["uuid"] == uid].copy().sort_values(self.time_column)
             hdf[self.time_column] = pd.to_datetime(hdf[self.time_column])
             self._handover_data[uid] = hdf
 
@@ -132,8 +124,13 @@ class MultiProcessTraceabilityEvents(Base):
         if sdf.empty:
             return pd.DataFrame(
                 columns=[
-                    "item_id", "station", "id_uuid",
-                    "start", "end", "duration_seconds", "sample_count",
+                    "item_id",
+                    "station",
+                    "id_uuid",
+                    "start",
+                    "end",
+                    "duration_seconds",
+                    "sample_count",
                 ]
             )
 
@@ -152,22 +149,24 @@ class MultiProcessTraceabilityEvents(Base):
             gap = pd.Series(False, index=s.index)
         s["group"] = (value_change | gap).cumsum()
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, seg in s.groupby("group"):
             item_id = seg["item_id"].iloc[0]
             if item_id == "":
                 continue
             start = seg[self.time_column].iloc[0]
             end = seg[self.time_column].iloc[-1]
-            rows.append({
-                "item_id": item_id,
-                "station": station_name,
-                "id_uuid": id_uuid,
-                "start": start,
-                "end": end,
-                "duration_seconds": (end - start).total_seconds(),
-                "sample_count": len(seg),
-            })
+            rows.append(
+                {
+                    "item_id": item_id,
+                    "station": station_name,
+                    "id_uuid": id_uuid,
+                    "start": start,
+                    "end": end,
+                    "duration_seconds": (end - start).total_seconds(),
+                    "sample_count": len(seg),
+                }
+            )
 
         return pd.DataFrame(rows)
 
@@ -196,7 +195,7 @@ class MultiProcessTraceabilityEvents(Base):
               station for the same item.
             - uuid: Event UUID.
         """
-        all_intervals: List[pd.DataFrame] = []
+        all_intervals: list[pd.DataFrame] = []
         for proc in self.processes:
             intervals = self._detect_intervals(proc["id_uuid"], proc["station"])
             if not intervals.empty:
@@ -205,9 +204,16 @@ class MultiProcessTraceabilityEvents(Base):
         if not all_intervals:
             return pd.DataFrame(
                 columns=[
-                    "item_id", "station", "id_uuid",
-                    "start", "end", "duration_seconds", "sample_count",
-                    "step_sequence", "is_parallel", "uuid",
+                    "item_id",
+                    "station",
+                    "id_uuid",
+                    "start",
+                    "end",
+                    "duration_seconds",
+                    "sample_count",
+                    "step_sequence",
+                    "is_parallel",
+                    "uuid",
                 ]
             )
 
@@ -219,12 +225,12 @@ class MultiProcessTraceabilityEvents(Base):
 
         # Detect parallel activity: for each item, check if any intervals overlap
         timeline["is_parallel"] = False
-        for item_id, grp in timeline.groupby("item_id"):
+        for _item_id, grp in timeline.groupby("item_id"):
             if len(grp) < 2:
                 continue
             idxs = grp.index.tolist()
             for i, idx_i in enumerate(idxs):
-                for idx_j in idxs[i + 1:]:
+                for idx_j in idxs[i + 1 :]:
                     row_i = timeline.loc[idx_i]
                     row_j = timeline.loc[idx_j]
                     # Overlap: start_i < end_j AND start_j < end_i
@@ -260,30 +266,39 @@ class MultiProcessTraceabilityEvents(Base):
         if timeline.empty:
             return pd.DataFrame(
                 columns=[
-                    "item_id", "first_station", "last_station",
-                    "first_seen", "last_seen", "lead_time_seconds",
-                    "stations_visited", "station_path", "has_parallel", "uuid",
+                    "item_id",
+                    "first_station",
+                    "last_station",
+                    "first_seen",
+                    "last_seen",
+                    "lead_time_seconds",
+                    "stations_visited",
+                    "station_path",
+                    "has_parallel",
+                    "uuid",
                 ]
             )
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for item_id, grp in timeline.groupby("item_id"):
             grp = grp.sort_values("start")
             first_seen = grp["start"].iloc[0]
             last_seen = grp["end"].iloc[-1]
             station_path = " -> ".join(grp["station"].tolist())
-            rows.append({
-                "item_id": item_id,
-                "first_station": grp["station"].iloc[0],
-                "last_station": grp["station"].iloc[-1],
-                "first_seen": first_seen,
-                "last_seen": last_seen,
-                "lead_time_seconds": (last_seen - first_seen).total_seconds(),
-                "stations_visited": grp["station"].nunique(),
-                "station_path": station_path,
-                "has_parallel": grp["is_parallel"].any(),
-                "uuid": self.event_uuid,
-            })
+            rows.append(
+                {
+                    "item_id": item_id,
+                    "first_station": grp["station"].iloc[0],
+                    "last_station": grp["station"].iloc[-1],
+                    "first_seen": first_seen,
+                    "last_seen": last_seen,
+                    "lead_time_seconds": (last_seen - first_seen).total_seconds(),
+                    "stations_visited": grp["station"].nunique(),
+                    "station_path": station_path,
+                    "has_parallel": grp["is_parallel"].any(),
+                    "uuid": self.event_uuid,
+                }
+            )
 
         return pd.DataFrame(rows)
 
@@ -309,12 +324,17 @@ class MultiProcessTraceabilityEvents(Base):
         if timeline.empty:
             return pd.DataFrame(
                 columns=[
-                    "item_id", "station_a", "station_b",
-                    "overlap_start", "overlap_end", "overlap_seconds", "uuid",
+                    "item_id",
+                    "station_a",
+                    "station_b",
+                    "overlap_start",
+                    "overlap_end",
+                    "overlap_seconds",
+                    "uuid",
                 ]
             )
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for item_id, grp in timeline.groupby("item_id"):
             if len(grp) < 2:
                 continue
@@ -327,21 +347,32 @@ class MultiProcessTraceabilityEvents(Base):
                     overlap_start = max(ri["start"], rj["start"])
                     overlap_end = min(ri["end"], rj["end"])
                     if overlap_start < overlap_end:
-                        rows.append({
-                            "item_id": item_id,
-                            "station_a": ri["station"],
-                            "station_b": rj["station"],
-                            "overlap_start": overlap_start,
-                            "overlap_end": overlap_end,
-                            "overlap_seconds": (overlap_end - overlap_start).total_seconds(),
-                            "uuid": self.event_uuid,
-                        })
+                        rows.append(
+                            {
+                                "item_id": item_id,
+                                "station_a": ri["station"],
+                                "station_b": rj["station"],
+                                "overlap_start": overlap_start,
+                                "overlap_end": overlap_end,
+                                "overlap_seconds": (overlap_end - overlap_start).total_seconds(),
+                                "uuid": self.event_uuid,
+                            }
+                        )
 
-        return pd.DataFrame(rows) if rows else pd.DataFrame(
-            columns=[
-                "item_id", "station_a", "station_b",
-                "overlap_start", "overlap_end", "overlap_seconds", "uuid",
-            ]
+        return (
+            pd.DataFrame(rows)
+            if rows
+            else pd.DataFrame(
+                columns=[
+                    "item_id",
+                    "station_a",
+                    "station_b",
+                    "overlap_start",
+                    "overlap_end",
+                    "overlap_seconds",
+                    "uuid",
+                ]
+            )
         )
 
     # ------------------------------------------------------------------
@@ -368,12 +399,17 @@ class MultiProcessTraceabilityEvents(Base):
         if not self.handovers:
             return pd.DataFrame(
                 columns=[
-                    "timestamp", "item_id", "from_station", "to_station",
-                    "handover_uuid", "handover_value", "uuid",
+                    "timestamp",
+                    "item_id",
+                    "from_station",
+                    "to_station",
+                    "handover_uuid",
+                    "handover_value",
+                    "uuid",
                 ]
             )
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for ho in self.handovers:
             ho_uuid = ho["uuid"]
             from_station = ho["from_station"]
@@ -425,21 +461,28 @@ class MultiProcessTraceabilityEvents(Base):
                 t = row[self.time_column]
                 trigger_match = triggers[triggers[self.time_column] == t]
                 ho_val = trigger_match["val"].iloc[0] if not trigger_match.empty else 0
-                rows.append({
-                    "timestamp": t,
-                    "item_id": str(item_id),
-                    "from_station": from_station,
-                    "to_station": to_station,
-                    "handover_uuid": ho_uuid,
-                    "handover_value": ho_val,
-                    "uuid": self.event_uuid,
-                })
+                rows.append(
+                    {
+                        "timestamp": t,
+                        "item_id": str(item_id),
+                        "from_station": from_station,
+                        "to_station": to_station,
+                        "handover_uuid": ho_uuid,
+                        "handover_value": ho_val,
+                        "uuid": self.event_uuid,
+                    }
+                )
 
         if not rows:
             return pd.DataFrame(
                 columns=[
-                    "timestamp", "item_id", "from_station", "to_station",
-                    "handover_uuid", "handover_value", "uuid",
+                    "timestamp",
+                    "item_id",
+                    "from_station",
+                    "to_station",
+                    "handover_uuid",
+                    "handover_value",
+                    "uuid",
                 ]
             )
 
@@ -469,22 +512,29 @@ class MultiProcessTraceabilityEvents(Base):
         if timeline.empty:
             return pd.DataFrame(
                 columns=[
-                    "station", "id_uuid", "item_count",
-                    "min_dwell_seconds", "avg_dwell_seconds",
-                    "max_dwell_seconds", "total_dwell_seconds",
+                    "station",
+                    "id_uuid",
+                    "item_count",
+                    "min_dwell_seconds",
+                    "avg_dwell_seconds",
+                    "max_dwell_seconds",
+                    "total_dwell_seconds",
                 ]
             )
 
-        stats = timeline.groupby(["station", "id_uuid"]).agg(
-            item_count=("item_id", "nunique"),
-            min_dwell_seconds=("duration_seconds", "min"),
-            avg_dwell_seconds=("duration_seconds", "mean"),
-            max_dwell_seconds=("duration_seconds", "max"),
-            total_dwell_seconds=("duration_seconds", "sum"),
-        ).reset_index()
+        stats = (
+            timeline.groupby(["station", "id_uuid"])
+            .agg(
+                item_count=("item_id", "nunique"),
+                min_dwell_seconds=("duration_seconds", "min"),
+                avg_dwell_seconds=("duration_seconds", "mean"),
+                max_dwell_seconds=("duration_seconds", "max"),
+                total_dwell_seconds=("duration_seconds", "sum"),
+            )
+            .reset_index()
+        )
 
-        for col in ["min_dwell_seconds", "avg_dwell_seconds",
-                     "max_dwell_seconds", "total_dwell_seconds"]:
+        for col in ["min_dwell_seconds", "avg_dwell_seconds", "max_dwell_seconds", "total_dwell_seconds"]:
             stats[col] = stats[col].round(2)
 
         return stats
@@ -510,22 +560,28 @@ class MultiProcessTraceabilityEvents(Base):
         if lead.empty:
             return pd.DataFrame(
                 columns=[
-                    "station_path", "item_count",
-                    "avg_lead_time_seconds", "min_lead_time_seconds",
-                    "max_lead_time_seconds", "has_parallel_steps",
+                    "station_path",
+                    "item_count",
+                    "avg_lead_time_seconds",
+                    "min_lead_time_seconds",
+                    "max_lead_time_seconds",
+                    "has_parallel_steps",
                 ]
             )
 
-        stats = lead.groupby("station_path").agg(
-            item_count=("item_id", "nunique"),
-            avg_lead_time_seconds=("lead_time_seconds", "mean"),
-            min_lead_time_seconds=("lead_time_seconds", "min"),
-            max_lead_time_seconds=("lead_time_seconds", "max"),
-            has_parallel_steps=("has_parallel", "any"),
-        ).reset_index()
+        stats = (
+            lead.groupby("station_path")
+            .agg(
+                item_count=("item_id", "nunique"),
+                avg_lead_time_seconds=("lead_time_seconds", "mean"),
+                min_lead_time_seconds=("lead_time_seconds", "min"),
+                max_lead_time_seconds=("lead_time_seconds", "max"),
+                has_parallel_steps=("has_parallel", "any"),
+            )
+            .reset_index()
+        )
 
-        for col in ["avg_lead_time_seconds", "min_lead_time_seconds",
-                     "max_lead_time_seconds"]:
+        for col in ["avg_lead_time_seconds", "min_lead_time_seconds", "max_lead_time_seconds"]:
             stats[col] = stats[col].round(2)
 
         return stats.sort_values("item_count", ascending=False).reset_index(drop=True)

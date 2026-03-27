@@ -1,7 +1,8 @@
 import logging
-import pandas as pd  # type: ignore
+from typing import Any
+
 import numpy as np  # type: ignore
-from typing import Optional, List, Dict, Any, Tuple
+import pandas as pd  # type: ignore
 
 from ts_shape.utils.base import Base
 
@@ -34,26 +35,18 @@ class SetpointChangeEvents(Base):
         self.time_column = time_column
 
         # isolate setpoint series and ensure proper dtypes/sort
-        self.sp = (
-            self.dataframe[self.dataframe["uuid"] == self.setpoint_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        self.sp = self.dataframe[self.dataframe["uuid"] == self.setpoint_uuid].copy().sort_values(self.time_column)
         self.sp[self.time_column] = pd.to_datetime(self.sp[self.time_column])
 
         # Cache for performance optimization
-        self._actual_cache: Dict[str, pd.DataFrame] = {}
+        self._actual_cache: dict[str, pd.DataFrame] = {}
 
     def _get_actual(self, actual_uuid: str) -> pd.DataFrame:
         """
         Get and cache actual signal data for performance optimization.
         """
         if actual_uuid not in self._actual_cache:
-            actual = (
-                self.dataframe[self.dataframe["uuid"] == actual_uuid]
-                .copy()
-                .sort_values(self.time_column)
-            )
+            actual = self.dataframe[self.dataframe["uuid"] == actual_uuid].copy().sort_values(self.time_column)
             actual[self.time_column] = pd.to_datetime(actual[self.time_column])
             self._actual_cache[actual_uuid] = actual
         return self._actual_cache[actual_uuid]
@@ -121,7 +114,7 @@ class SetpointChangeEvents(Base):
         hold_ok = (next_change_times - change_times >= min_hold_td) | next_change_times.isna()
         valid_change_times = change_times[hold_ok]
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for t in valid_change_times:
             row = sp.loc[sp[self.time_column] == t].iloc[0]
             rows.append(
@@ -148,9 +141,7 @@ class SetpointChangeEvents(Base):
             avg_rate, delta.
         """
         if self.sp.empty:
-            return pd.DataFrame(
-                columns=["start", "end", "uuid", "is_delta", "change_type", "avg_rate", "delta"]
-            )
+            return pd.DataFrame(columns=["start", "end", "uuid", "is_delta", "change_type", "avg_rate", "delta"])
 
         sp = self.sp[[self.time_column, self.value_column]].copy()
         sp["dt_s"] = sp[self.time_column].diff().dt.total_seconds()
@@ -160,9 +151,9 @@ class SetpointChangeEvents(Base):
 
         # group contiguous True segments
         group_id = (rate_mask != rate_mask.shift()).cumsum()
-        events: List[Dict[str, Any]] = []
+        events: list[dict[str, Any]] = []
         min_d = pd.to_timedelta(min_duration)
-        for gid, seg in sp.groupby(group_id):
+        for _gid, seg in sp.groupby(group_id):
             seg_mask_true = rate_mask.loc[seg.index]
             if not seg_mask_true.any():
                 continue
@@ -191,7 +182,7 @@ class SetpointChangeEvents(Base):
         self,
         *,
         min_delta: float = 0.0,
-        min_rate: Optional[float] = None,
+        min_rate: float | None = None,
         min_hold: str = "0s",
         min_duration: str = "0s",
     ) -> pd.DataFrame:
@@ -236,19 +227,23 @@ class SetpointChangeEvents(Base):
                 ]
             ]
         frames = [df for df in (steps, ramps) if not df.empty]
-        combined = pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(
-            columns=[
-                "start",
-                "end",
-                "uuid",
-                "is_delta",
-                "change_type",
-                "magnitude",
-                "prev_level",
-                "new_level",
-                "avg_rate",
-                "delta",
-            ]
+        combined = (
+            pd.concat(frames, ignore_index=True)
+            if frames
+            else pd.DataFrame(
+                columns=[
+                    "start",
+                    "end",
+                    "uuid",
+                    "is_delta",
+                    "change_type",
+                    "magnitude",
+                    "prev_level",
+                    "new_level",
+                    "avg_rate",
+                    "delta",
+                ]
+            )
         )
         return combined.sort_values(["start", "end"]) if not combined.empty else combined
 
@@ -258,7 +253,7 @@ class SetpointChangeEvents(Base):
         actual_uuid: str,
         *,
         tol: float = 0.0,
-        settle_pct: Optional[float] = None,
+        settle_pct: float | None = None,
         hold: str = "0s",
         lookahead: str = "10m",
     ) -> pd.DataFrame:
@@ -288,9 +283,11 @@ class SetpointChangeEvents(Base):
         sp = self.sp[[self.time_column, self.value_column]].copy()
         sp["prev"] = sp[self.value_column].shift(1)
         sp["delta"] = sp[self.value_column] - sp["prev"]
-        change_times = sp.loc[sp["delta"].abs() > 0, [self.time_column, self.value_column, "delta"]].reset_index(drop=True)
+        change_times = sp.loc[sp["delta"].abs() > 0, [self.time_column, self.value_column, "delta"]].reset_index(
+            drop=True
+        )
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, c in change_times.iterrows():
             t0 = c[self.time_column]
             s_new = float(c[self.value_column])
@@ -304,7 +301,9 @@ class SetpointChangeEvents(Base):
 
             window = actual[(actual[self.time_column] >= t0) & (actual[self.time_column] <= t0 + look_td)]
             if window.empty:
-                rows.append({"start": t0, "uuid": self.event_uuid, "is_delta": True, "t_settle_seconds": None, "settled": False})
+                rows.append(
+                    {"start": t0, "uuid": self.event_uuid, "is_delta": True, "t_settle_seconds": None, "settled": False}
+                )
                 continue
             err = (window[self.value_column] - s_new).abs()
             inside = err <= effective_tol
@@ -383,11 +382,11 @@ class SetpointChangeEvents(Base):
         sp["delta"] = sp[self.value_column] - sp["prev"]
         changes = sp.loc[sp["delta"].abs() > 0, [self.time_column, self.value_column, "delta", "prev"]]
 
-        out_rows: List[Dict[str, Any]] = []
+        out_rows: list[dict[str, Any]] = []
         for _, r in changes.iterrows():
             t0 = r[self.time_column]
             s_new = float(r[self.value_column])
-            s_prev = float(r["prev"]) if pd.notna(r["prev"]) else s_new
+            float(r["prev"]) if pd.notna(r["prev"]) else s_new
             delta = float(r["delta"]) if pd.notna(r["delta"]) else 0.0
             win = actual[(actual[self.time_column] >= t0) & (actual[self.time_column] <= t0 + look_td)]
 
@@ -448,7 +447,9 @@ class SetpointChangeEvents(Base):
                     "overshoot_pct": float(overshoot_pct) if overshoot_pct is not None and overshoot_abs > 0 else None,
                     "t_peak_seconds": (t_peak - t0).total_seconds() if t_peak is not None else None,
                     "undershoot_abs": undershoot_abs if undershoot_abs > 0 else None,
-                    "undershoot_pct": float(undershoot_pct) if undershoot_pct is not None and undershoot_abs > 0 else None,
+                    "undershoot_pct": (
+                        float(undershoot_pct) if undershoot_pct is not None and undershoot_abs > 0 else None
+                    ),
                     "t_undershoot_seconds": (t_undershoot - t0).total_seconds() if t_undershoot is not None else None,
                     "oscillation_count": oscillation_count if oscillation_count > 0 else 0,
                     "oscillation_amplitude": oscillation_amplitude,
@@ -479,9 +480,7 @@ class SetpointChangeEvents(Base):
             DataFrame with columns: start, uuid, is_delta, t_settle_seconds, settled, final_rate.
         """
         if self.sp.empty:
-            return pd.DataFrame(
-                columns=["start", "uuid", "is_delta", "t_settle_seconds", "settled", "final_rate"]
-            )
+            return pd.DataFrame(columns=["start", "uuid", "is_delta", "t_settle_seconds", "settled", "final_rate"])
 
         # Use cached actual data
         actual = self._get_actual(actual_uuid)
@@ -494,7 +493,7 @@ class SetpointChangeEvents(Base):
         sp["delta"] = sp[self.value_column] - sp["prev"]
         change_times = sp.loc[sp["delta"].abs() > 0, [self.time_column, self.value_column]].reset_index(drop=True)
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, c in change_times.iterrows():
             t0 = c[self.time_column]
             window = actual[(actual[self.time_column] >= t0) & (actual[self.time_column] <= t0 + look_td)]
@@ -584,9 +583,7 @@ class SetpointChangeEvents(Base):
             DataFrame with columns: start, uuid, is_delta, rise_time_seconds, reached_end.
         """
         if self.sp.empty:
-            return pd.DataFrame(
-                columns=["start", "uuid", "is_delta", "rise_time_seconds", "reached_end"]
-            )
+            return pd.DataFrame(columns=["start", "uuid", "is_delta", "rise_time_seconds", "reached_end"])
 
         # Use cached actual data
         actual = self._get_actual(actual_uuid)
@@ -595,9 +592,11 @@ class SetpointChangeEvents(Base):
         sp = self.sp[[self.time_column, self.value_column]].copy()
         sp["prev"] = sp[self.value_column].shift(1)
         sp["delta"] = sp[self.value_column] - sp["prev"]
-        changes = sp.loc[sp["delta"].abs() > 0, [self.time_column, self.value_column, "delta", "prev"]].reset_index(drop=True)
+        changes = sp.loc[sp["delta"].abs() > 0, [self.time_column, self.value_column, "delta", "prev"]].reset_index(
+            drop=True
+        )
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, c in changes.iterrows():
             t0 = c[self.time_column]
             s_new = float(c[self.value_column])
@@ -679,9 +678,7 @@ class SetpointChangeEvents(Base):
             DataFrame with columns: start, uuid, is_delta, decay_rate_lambda, fit_quality_r2.
         """
         if self.sp.empty:
-            return pd.DataFrame(
-                columns=["start", "uuid", "is_delta", "decay_rate_lambda", "fit_quality_r2"]
-            )
+            return pd.DataFrame(columns=["start", "uuid", "is_delta", "decay_rate_lambda", "fit_quality_r2"])
 
         # Use cached actual data
         actual = self._get_actual(actual_uuid)
@@ -692,7 +689,7 @@ class SetpointChangeEvents(Base):
         sp["delta"] = sp[self.value_column] - sp["prev"]
         changes = sp.loc[sp["delta"].abs() > 0, [self.time_column, self.value_column]].reset_index(drop=True)
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, c in changes.iterrows():
             t0 = c[self.time_column]
             s_new = float(c[self.value_column])
@@ -786,9 +783,7 @@ class SetpointChangeEvents(Base):
             DataFrame with columns: start, uuid, is_delta, oscillation_freq_hz, period_seconds.
         """
         if self.sp.empty:
-            return pd.DataFrame(
-                columns=["start", "uuid", "is_delta", "oscillation_freq_hz", "period_seconds"]
-            )
+            return pd.DataFrame(columns=["start", "uuid", "is_delta", "oscillation_freq_hz", "period_seconds"])
 
         # Use cached actual data
         actual = self._get_actual(actual_uuid)
@@ -799,7 +794,7 @@ class SetpointChangeEvents(Base):
         sp["delta"] = sp[self.value_column] - sp["prev"]
         changes = sp.loc[sp["delta"].abs() > 0, [self.time_column, self.value_column]].reset_index(drop=True)
 
-        rows: List[Dict[str, Any]] = []
+        rows: list[dict[str, Any]] = []
         for _, c in changes.iterrows():
             t0 = c[self.time_column]
             s_new = float(c[self.value_column])
@@ -873,7 +868,7 @@ class SetpointChangeEvents(Base):
         actual_uuid: str,
         *,
         tol: float = 0.0,
-        settle_pct: Optional[float] = None,
+        settle_pct: float | None = None,
         hold: str = "0s",
         lookahead: str = "10m",
         rate_threshold: float = 0.01,
@@ -928,9 +923,7 @@ class SetpointChangeEvents(Base):
             )
 
         # Compute all individual metrics using cached actual data
-        settle_df = self.time_to_settle(
-            actual_uuid, tol=tol, settle_pct=settle_pct, hold=hold, lookahead=lookahead
-        )
+        settle_df = self.time_to_settle(actual_uuid, tol=tol, settle_pct=settle_pct, hold=hold, lookahead=lookahead)
         settle_deriv_df = self.time_to_settle_derivative(
             actual_uuid, rate_threshold=rate_threshold, lookahead=lookahead, hold=hold
         )
@@ -948,7 +941,7 @@ class SetpointChangeEvents(Base):
         sp["delta"] = sp[self.value_column] - sp["prev"]
         changes = sp.loc[sp["delta"].abs() > 0, [self.time_column, self.value_column]].reset_index(drop=True)
 
-        ss_error_rows: List[Dict[str, Any]] = []
+        ss_error_rows: list[dict[str, Any]] = []
         for _, c in changes.iterrows():
             t0 = c[self.time_column]
             s_new = float(c[self.value_column])
@@ -959,7 +952,7 @@ class SetpointChangeEvents(Base):
             else:
                 # Use last 10% of window for steady-state
                 n_points = len(win)
-                last_10pct = win.iloc[int(n_points * 0.9):]
+                last_10pct = win.iloc[int(n_points * 0.9) :]
                 if len(last_10pct) > 0:
                     ss_error = float((last_10pct[self.value_column] - s_new).abs().mean())
                 else:

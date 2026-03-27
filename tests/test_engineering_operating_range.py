@@ -1,5 +1,5 @@
-import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
+import pandas as pd  # type: ignore
 
 from ts_shape.events.engineering.operating_range import OperatingRangeEvents
 
@@ -9,12 +9,14 @@ def _times(start: str, count: int, freq: str) -> pd.DatetimeIndex:
 
 
 def _make_df(uuid: str, times, values) -> pd.DataFrame:
-    return pd.DataFrame({
-        "uuid": [uuid] * len(times),
-        "systime": times,
-        "value_double": values,
-        "is_delta": [True] * len(times),
-    })
+    return pd.DataFrame(
+        {
+            "uuid": [uuid] * len(times),
+            "systime": times,
+            "value_double": values,
+            "is_delta": [True] * len(times),
+        }
+    )
 
 
 def test_operating_envelope():

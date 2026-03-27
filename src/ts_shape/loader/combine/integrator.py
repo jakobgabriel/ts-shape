@@ -1,6 +1,6 @@
 import logging
+
 import pandas as pd  # type: ignore
-from typing import List, Union, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +16,9 @@ class DataIntegratorHybrid:
     @classmethod
     def combine_data(
         cls,
-        timeseries_sources: Optional[List[Union[pd.DataFrame, object]]] = None,
-        metadata_sources: Optional[List[Union[pd.DataFrame, object]]] = None,
-        uuids: Optional[List[str]] = None,
+        timeseries_sources: list[pd.DataFrame | object] | None = None,
+        metadata_sources: list[pd.DataFrame | object] | None = None,
+        uuids: list[str] | None = None,
         join_key: str = "uuid",
         merge_how: str = "left",
     ) -> pd.DataFrame:
@@ -55,10 +55,7 @@ class DataIntegratorHybrid:
                 missing_parts.append("timeseries data")
             if missing_metadata_key:
                 missing_parts.append("metadata")
-            logger.warning(
-                f"Cannot merge because join key '{join_key}' is missing in "
-                f"{', '.join(missing_parts)}."
-            )
+            logger.warning(f"Cannot merge because join key '{join_key}' is missing in " f"{', '.join(missing_parts)}.")
             return timeseries_data
 
         # Merge timeseries data with metadata
@@ -71,7 +68,7 @@ class DataIntegratorHybrid:
         return combined_data
 
     @classmethod
-    def _combine_timeseries(cls, sources: Optional[List[Union[pd.DataFrame, object]]], join_key: str) -> pd.DataFrame:
+    def _combine_timeseries(cls, sources: list[pd.DataFrame | object] | None, join_key: str) -> pd.DataFrame:
         """
         Combine timeseries data from multiple sources.
 
@@ -95,7 +92,7 @@ class DataIntegratorHybrid:
         return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
     @classmethod
-    def _combine_metadata(cls, sources: Optional[List[Union[pd.DataFrame, object]]], join_key: str) -> pd.DataFrame:
+    def _combine_metadata(cls, sources: list[pd.DataFrame | object] | None, join_key: str) -> pd.DataFrame:
         """
         Combine metadata from multiple sources.
 

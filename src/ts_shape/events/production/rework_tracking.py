@@ -9,9 +9,8 @@ Track rework events and their impact:
 """
 
 import logging
+
 import pandas as pd  # type: ignore
-import numpy as np
-from typing import Optional, Dict
 
 from ts_shape.utils.base import Base
 
@@ -57,7 +56,7 @@ class ReworkTracking(Base):
         dataframe: pd.DataFrame,
         *,
         time_column: str = "systime",
-        shift_definitions: Optional[Dict[str, tuple[str, str]]] = None,
+        shift_definitions: dict[str, tuple[str, str]] | None = None,
     ) -> None:
         super().__init__(dataframe, column_name=time_column)
         self.time_column = time_column
@@ -108,11 +107,7 @@ class ReworkTracking(Base):
             DataFrame with columns:
             - date, shift, rework_count
         """
-        data = (
-            self.dataframe[self.dataframe["uuid"] == rework_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        data = self.dataframe[self.dataframe["uuid"] == rework_uuid].copy().sort_values(self.time_column)
         if data.empty:
             return pd.DataFrame(columns=["date", "shift", "rework_count"])
 
@@ -123,11 +118,13 @@ class ReworkTracking(Base):
         results = []
         for (date, shift), grp in data.groupby(["date", "shift"]):
             qty = self._get_counter_quantity(grp, value_column)
-            results.append({
-                "date": date,
-                "shift": shift,
-                "rework_count": round(qty, 0),
-            })
+            results.append(
+                {
+                    "date": date,
+                    "shift": shift,
+                    "rework_count": round(qty, 0),
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -151,16 +148,8 @@ class ReworkTracking(Base):
             DataFrame with columns:
             - reason, rework_count, pct_of_total
         """
-        rework_data = (
-            self.dataframe[self.dataframe["uuid"] == rework_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
-        reason_data = (
-            self.dataframe[self.dataframe["uuid"] == reason_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        rework_data = self.dataframe[self.dataframe["uuid"] == rework_uuid].copy().sort_values(self.time_column)
+        reason_data = self.dataframe[self.dataframe["uuid"] == reason_uuid].copy().sort_values(self.time_column)
 
         if rework_data.empty or reason_data.empty:
             return pd.DataFrame(columns=["reason", "rework_count", "pct_of_total"])
@@ -175,8 +164,10 @@ class ReworkTracking(Base):
         reason_clean = reason_clean.rename(columns={value_column_reason: "reason"})
 
         merged = pd.merge_asof(
-            rework_clean, reason_clean,
-            on=self.time_column, direction="backward",
+            rework_clean,
+            reason_clean,
+            on=self.time_column,
+            direction="backward",
         )
         merged = merged.dropna(subset=["reason"])
 
@@ -193,9 +184,7 @@ class ReworkTracking(Base):
 
         result_df = pd.DataFrame(results)
         total = result_df["rework_count"].sum()
-        result_df["pct_of_total"] = (
-            (result_df["rework_count"] / total * 100).round(1) if total > 0 else 0.0
-        )
+        result_df["pct_of_total"] = (result_df["rework_count"] / total * 100).round(1) if total > 0 else 0.0
 
         return result_df.sort_values("rework_count", ascending=False).reset_index(drop=True)
 
@@ -219,21 +208,11 @@ class ReworkTracking(Base):
             DataFrame with columns:
             - date, shift, total_produced, rework_count, rework_rate_pct
         """
-        rework_data = (
-            self.dataframe[self.dataframe["uuid"] == rework_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
-        prod_data = (
-            self.dataframe[self.dataframe["uuid"] == total_production_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        rework_data = self.dataframe[self.dataframe["uuid"] == rework_uuid].copy().sort_values(self.time_column)
+        prod_data = self.dataframe[self.dataframe["uuid"] == total_production_uuid].copy().sort_values(self.time_column)
 
         if rework_data.empty or prod_data.empty:
-            return pd.DataFrame(
-                columns=["date", "shift", "total_produced", "rework_count", "rework_rate_pct"]
-            )
+            return pd.DataFrame(columns=["date", "shift", "total_produced", "rework_count", "rework_rate_pct"])
 
         rework_data[self.time_column] = pd.to_datetime(rework_data[self.time_column])
         prod_data[self.time_column] = pd.to_datetime(prod_data[self.time_column])
@@ -244,33 +223,29 @@ class ReworkTracking(Base):
         prod_data["date"] = prod_data[self.time_column].dt.date
 
         # Get all date/shift combos
-        date_shifts = set(
-            zip(rework_data["date"], rework_data["shift"])
-        ) | set(
-            zip(prod_data["date"], prod_data["shift"])
+        date_shifts = set(zip(rework_data["date"], rework_data["shift"], strict=False)) | set(
+            zip(prod_data["date"], prod_data["shift"], strict=False)
         )
 
         results = []
         for date, shift in sorted(date_shifts):
-            rw_grp = rework_data[
-                (rework_data["date"] == date) & (rework_data["shift"] == shift)
-            ]
-            pr_grp = prod_data[
-                (prod_data["date"] == date) & (prod_data["shift"] == shift)
-            ]
+            rw_grp = rework_data[(rework_data["date"] == date) & (rework_data["shift"] == shift)]
+            pr_grp = prod_data[(prod_data["date"] == date) & (prod_data["shift"] == shift)]
 
             rework_count = self._get_counter_quantity(rw_grp, value_column_rework) if not rw_grp.empty else 0
             total_produced = self._get_counter_quantity(pr_grp, value_column_production) if not pr_grp.empty else 0
 
             rate = (rework_count / total_produced * 100) if total_produced > 0 else 0
 
-            results.append({
-                "date": date,
-                "shift": shift,
-                "total_produced": round(total_produced, 0),
-                "rework_count": round(rework_count, 0),
-                "rework_rate_pct": round(rate, 1),
-            })
+            results.append(
+                {
+                    "date": date,
+                    "shift": shift,
+                    "total_produced": round(total_produced, 0),
+                    "rework_count": round(rework_count, 0),
+                    "rework_rate_pct": round(rate, 1),
+                }
+            )
 
         return pd.DataFrame(results)
 
@@ -278,7 +253,7 @@ class ReworkTracking(Base):
         self,
         rework_uuid: str,
         part_id_uuid: str,
-        rework_costs: Dict[str, float],
+        rework_costs: dict[str, float],
         *,
         value_column_rework: str = "value_integer",
         value_column_part: str = "value_string",
@@ -296,21 +271,11 @@ class ReworkTracking(Base):
             DataFrame with columns:
             - part_number, rework_count, cost_per_rework, total_cost
         """
-        rework_data = (
-            self.dataframe[self.dataframe["uuid"] == rework_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
-        part_data = (
-            self.dataframe[self.dataframe["uuid"] == part_id_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        rework_data = self.dataframe[self.dataframe["uuid"] == rework_uuid].copy().sort_values(self.time_column)
+        part_data = self.dataframe[self.dataframe["uuid"] == part_id_uuid].copy().sort_values(self.time_column)
 
         if rework_data.empty or part_data.empty:
-            return pd.DataFrame(
-                columns=["part_number", "rework_count", "cost_per_rework", "total_cost"]
-            )
+            return pd.DataFrame(columns=["part_number", "rework_count", "cost_per_rework", "total_cost"])
 
         rework_data[self.time_column] = pd.to_datetime(rework_data[self.time_column])
         part_data[self.time_column] = pd.to_datetime(part_data[self.time_column])
@@ -322,8 +287,10 @@ class ReworkTracking(Base):
         part_clean = part_clean.rename(columns={value_column_part: "part_number"})
 
         merged = pd.merge_asof(
-            rework_clean, part_clean,
-            on=self.time_column, direction="backward",
+            rework_clean,
+            part_clean,
+            on=self.time_column,
+            direction="backward",
         )
         merged = merged.dropna(subset=["part_number"])
 
@@ -331,18 +298,16 @@ class ReworkTracking(Base):
         for part_num, grp in merged.groupby("part_number"):
             qty = self._get_counter_quantity(grp, "rework_val")
             cost = rework_costs.get(part_num, 0.0)
-            results.append({
-                "part_number": part_num,
-                "rework_count": round(qty, 0),
-                "cost_per_rework": cost,
-                "total_cost": round(qty * cost, 2),
-            })
+            results.append(
+                {
+                    "part_number": part_num,
+                    "rework_count": round(qty, 0),
+                    "cost_per_rework": cost,
+                    "total_cost": round(qty * cost, 2),
+                }
+            )
 
-        return (
-            pd.DataFrame(results)
-            .sort_values("total_cost", ascending=False)
-            .reset_index(drop=True)
-        )
+        return pd.DataFrame(results).sort_values("total_cost", ascending=False).reset_index(drop=True)
 
     def rework_trend(
         self,
@@ -362,11 +327,7 @@ class ReworkTracking(Base):
             DataFrame with columns:
             - period, rework_count
         """
-        data = (
-            self.dataframe[self.dataframe["uuid"] == rework_uuid]
-            .copy()
-            .sort_values(self.time_column)
-        )
+        data = self.dataframe[self.dataframe["uuid"] == rework_uuid].copy().sort_values(self.time_column)
         if data.empty:
             return pd.DataFrame(columns=["period", "rework_count"])
 
@@ -378,9 +339,11 @@ class ReworkTracking(Base):
             if grp.empty:
                 continue
             qty = self._get_counter_quantity(grp.reset_index(), value_column)
-            results.append({
-                "period": period,
-                "rework_count": round(qty, 0),
-            })
+            results.append(
+                {
+                    "period": period,
+                    "rework_count": round(qty, 0),
+                }
+            )
 
         return pd.DataFrame(results)

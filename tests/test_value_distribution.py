@@ -1,6 +1,7 @@
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
+
 from ts_shape.events.quality.value_distribution import ValueDistributionEvents
 
 
@@ -33,11 +34,13 @@ def bimodal_df():
             val = 50.0 + np.random.normal(0, 3)
         else:
             val = 150.0 + np.random.normal(0, 3)
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=i),
-            "uuid": "sensor_1",
-            "value_double": val,
-        })
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=i),
+                "uuid": "sensor_1",
+                "value_double": val,
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -49,18 +52,22 @@ def mode_shift_df():
     rows = []
     # First hour: mode around 100
     for i in range(3600):
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=i),
-            "uuid": "sensor_1",
-            "value_double": 100.0 + np.random.normal(0, 2),
-        })
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=i),
+                "uuid": "sensor_1",
+                "value_double": 100.0 + np.random.normal(0, 2),
+            }
+        )
     # Second hour: mode around 200
     for i in range(3600):
-        rows.append({
-            "systime": base + pd.Timedelta(seconds=3600 + i),
-            "uuid": "sensor_1",
-            "value_double": 200.0 + np.random.normal(0, 2),
-        })
+        rows.append(
+            {
+                "systime": base + pd.Timedelta(seconds=3600 + i),
+                "uuid": "sensor_1",
+                "value_double": 200.0 + np.random.normal(0, 2),
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -104,10 +111,7 @@ class TestDetectBimodal:
 
     def test_too_few_samples(self):
         base = pd.Timestamp("2024-01-01")
-        rows = [
-            {"systime": base + pd.Timedelta(seconds=i), "uuid": "s1", "value_double": float(i)}
-            for i in range(5)
-        ]
+        rows = [{"systime": base + pd.Timedelta(seconds=i), "uuid": "s1", "value_double": float(i)} for i in range(5)]
         df = pd.DataFrame(rows)
         det = ValueDistributionEvents(df, "s1")
         result = det.detect_bimodal(min_samples=30)

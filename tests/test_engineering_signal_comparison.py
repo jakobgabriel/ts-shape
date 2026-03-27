@@ -1,5 +1,5 @@
-import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
+import pandas as pd  # type: ignore
 
 from ts_shape.events.engineering.signal_comparison import SignalComparisonEvents
 
@@ -9,18 +9,22 @@ def _times(start: str, count: int, freq: str) -> pd.DatetimeIndex:
 
 
 def _make_two_signal_df(t, ref_vals, act_vals) -> pd.DataFrame:
-    ref = pd.DataFrame({
-        "uuid": ["ref"] * len(t),
-        "systime": t,
-        "value_double": ref_vals,
-        "is_delta": [True] * len(t),
-    })
-    act = pd.DataFrame({
-        "uuid": ["act"] * len(t),
-        "systime": t,
-        "value_double": act_vals,
-        "is_delta": [True] * len(t),
-    })
+    ref = pd.DataFrame(
+        {
+            "uuid": ["ref"] * len(t),
+            "systime": t,
+            "value_double": ref_vals,
+            "is_delta": [True] * len(t),
+        }
+    )
+    act = pd.DataFrame(
+        {
+            "uuid": ["act"] * len(t),
+            "systime": t,
+            "value_double": act_vals,
+            "is_delta": [True] * len(t),
+        }
+    )
     return pd.concat([ref, act], ignore_index=True)
 
 

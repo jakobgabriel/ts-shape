@@ -1,6 +1,5 @@
-import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
-import pytest
+import pandas as pd  # type: ignore
 
 from ts_shape.events.maintenance import (
     DegradationDetectionEvents,
@@ -8,34 +7,39 @@ from ts_shape.events.maintenance import (
     VibrationAnalysisEvents,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers for synthetic manufacturing data
 # ---------------------------------------------------------------------------
 
+
 def _make_df(times, values, uuid="sig1"):
     """Build a standard ts-shape DataFrame from times and values."""
-    return pd.DataFrame({
-        "systime": times,
-        "uuid": [uuid] * len(times),
-        "value_double": values,
-        "is_delta": [True] * len(times),
-    })
+    return pd.DataFrame(
+        {
+            "systime": times,
+            "uuid": [uuid] * len(times),
+            "value_double": values,
+            "is_delta": [True] * len(times),
+        }
+    )
 
 
 def _empty_df():
     """Return an empty DataFrame with standard columns."""
-    return pd.DataFrame({
-        "systime": pd.Series(dtype="datetime64[ns]"),
-        "uuid": pd.Series(dtype="str"),
-        "value_double": pd.Series(dtype="float64"),
-        "is_delta": pd.Series(dtype="bool"),
-    })
+    return pd.DataFrame(
+        {
+            "systime": pd.Series(dtype="datetime64[ns]"),
+            "uuid": pd.Series(dtype="str"),
+            "value_double": pd.Series(dtype="float64"),
+            "is_delta": pd.Series(dtype="bool"),
+        }
+    )
 
 
 # ===================================================================
 # DegradationDetectionEvents
 # ===================================================================
+
 
 class TestDegradationDetectionEvents:
 
@@ -86,10 +90,12 @@ class TestDegradationDetectionEvents:
         t = pd.date_range("2024-01-01", periods=120, freq="1min")
         np.random.seed(0)
         # Stable at 50 for 60 points, then jumps to 70
-        values = np.concatenate([
-            50.0 + np.random.normal(0, 0.5, 60),
-            70.0 + np.random.normal(0, 0.5, 60),
-        ])
+        values = np.concatenate(
+            [
+                50.0 + np.random.normal(0, 0.5, 60),
+                70.0 + np.random.normal(0, 0.5, 60),
+            ]
+        )
         df = _make_df(t, values)
 
         det = DegradationDetectionEvents(df, signal_uuid="sig1")
@@ -130,6 +136,7 @@ class TestDegradationDetectionEvents:
 # FailurePredictionEvents
 # ===================================================================
 
+
 class TestFailurePredictionEvents:
 
     def test_remaining_useful_life_linear_signal(self):
@@ -155,16 +162,16 @@ class TestFailurePredictionEvents:
         t = pd.date_range("2024-01-01", periods=120, freq="1min")
         np.random.seed(3)
         # First hour: mostly below 80, second hour: many above 80/90
-        values = np.concatenate([
-            70 + np.random.normal(0, 3, 60),
-            85 + np.random.normal(0, 5, 60),
-        ])
+        values = np.concatenate(
+            [
+                70 + np.random.normal(0, 3, 60),
+                85 + np.random.normal(0, 5, 60),
+            ]
+        )
         df = _make_df(t, values)
 
         fpe = FailurePredictionEvents(df, signal_uuid="sig1")
-        result = fpe.detect_exceedance_pattern(
-            warning_threshold=80.0, critical_threshold=90.0, window="1h"
-        )
+        result = fpe.detect_exceedance_pattern(warning_threshold=80.0, critical_threshold=90.0, window="1h")
         assert not result.empty
         assert "warning_count" in result.columns
         assert "critical_count" in result.columns
@@ -182,7 +189,7 @@ class TestFailurePredictionEvents:
         assert "rate_of_change" in result.columns
         assert "estimated_time_seconds" in result.columns
         # Later points should have shorter time to threshold
-        last = result.iloc[-1]
+        result.iloc[-1]
         first_with_est = result.dropna(subset=["estimated_time_seconds"])
         if not first_with_est.empty:
             assert first_with_est.iloc[-1]["estimated_time_seconds"] >= 0
@@ -210,6 +217,7 @@ class TestFailurePredictionEvents:
 # ===================================================================
 # VibrationAnalysisEvents
 # ===================================================================
+
 
 class TestVibrationAnalysisEvents:
 
@@ -296,6 +304,7 @@ class TestVibrationAnalysisEvents:
 # ===================================================================
 # Cross-class: custom event_uuid propagation
 # ===================================================================
+
 
 class TestCustomEventUuid:
 

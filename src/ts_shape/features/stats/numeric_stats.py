@@ -1,10 +1,12 @@
 import logging
+
 import pandas as pd  # type: ignore
 from scipy import stats
-from typing import Dict, Union
+
 from ts_shape.utils.base import Base
 
 logger = logging.getLogger(__name__)
+
 
 class NumericStatistics(Base):
     """
@@ -98,33 +100,33 @@ class NumericStatistics(Base):
     def describe(cls, dataframe: pd.DataFrame) -> pd.DataFrame:
         """Provide a statistical summary for numeric columns in the DataFrame."""
         return dataframe.describe()
-    
+
     @classmethod
-    def summary_as_dict(cls, dataframe: pd.DataFrame, column_name: str) -> Dict[str, Union[float, int]]:
+    def summary_as_dict(cls, dataframe: pd.DataFrame, column_name: str) -> dict[str, float | int]:
         """Returns a dictionary with comprehensive numeric statistics for the specified column."""
-        series = dataframe[column_name]
+        dataframe[column_name]
         return {
-            'min': cls.column_min(dataframe, column_name),
-            'max': cls.column_max(dataframe, column_name),
-            'mean': cls.column_mean(dataframe, column_name),
-            'median': cls.column_median(dataframe, column_name),
-            'std': cls.column_std(dataframe, column_name),
-            'var': cls.column_variance(dataframe, column_name),
-            'sum': cls.column_sum(dataframe, column_name),
-            'kurtosis': cls.column_kurtosis(dataframe, column_name),
-            'skewness': cls.column_skewness(dataframe, column_name),
-            'q1': cls.column_quantile(dataframe, column_name, 0.25),
-            'q3': cls.column_quantile(dataframe, column_name, 0.75),
-            'iqr': cls.column_iqr(dataframe, column_name),
-            'range': cls.column_range(dataframe, column_name),
-            'mad': cls.column_mad(dataframe, column_name),
-            'coeff_var': cls.coefficient_of_variation(dataframe, column_name),
-            'sem': cls.standard_error_mean(dataframe, column_name),
-            'mode': cls.column_mode(dataframe, column_name),
-            'percentile_90': cls.column_quantile(dataframe, column_name, 0.90),
-            'percentile_10': cls.column_quantile(dataframe, column_name, 0.10),
+            "min": cls.column_min(dataframe, column_name),
+            "max": cls.column_max(dataframe, column_name),
+            "mean": cls.column_mean(dataframe, column_name),
+            "median": cls.column_median(dataframe, column_name),
+            "std": cls.column_std(dataframe, column_name),
+            "var": cls.column_variance(dataframe, column_name),
+            "sum": cls.column_sum(dataframe, column_name),
+            "kurtosis": cls.column_kurtosis(dataframe, column_name),
+            "skewness": cls.column_skewness(dataframe, column_name),
+            "q1": cls.column_quantile(dataframe, column_name, 0.25),
+            "q3": cls.column_quantile(dataframe, column_name, 0.75),
+            "iqr": cls.column_iqr(dataframe, column_name),
+            "range": cls.column_range(dataframe, column_name),
+            "mad": cls.column_mad(dataframe, column_name),
+            "coeff_var": cls.coefficient_of_variation(dataframe, column_name),
+            "sem": cls.standard_error_mean(dataframe, column_name),
+            "mode": cls.column_mode(dataframe, column_name),
+            "percentile_90": cls.column_quantile(dataframe, column_name, 0.90),
+            "percentile_10": cls.column_quantile(dataframe, column_name, 0.10),
         }
-    
+
     @classmethod
     def summary_as_dataframe(cls, dataframe: pd.DataFrame, column_name: str) -> pd.DataFrame:
         """Returns a DataFrame with comprehensive numeric statistics for the specified column."""
