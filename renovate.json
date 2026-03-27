@@ -17,9 +17,9 @@
   "enabledManagers": [
     "pep621",
     "pip_requirements",
-    "pip_setup",
     "github-actions",
-    "python-version"
+    "python-version",
+    "pre-commit"
   ],
   "python": {
     "fileMatch": ["(^|/)pyproject\\.toml$"]

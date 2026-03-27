@@ -17,6 +17,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering",
     "Typing :: Typed",
@@ -62,7 +63,7 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools-scm]
+[tool.setuptools_scm]
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
 fallback_version = "0.1.0"
@@ -77,3 +78,25 @@ source = ["ts_shape"]
 [tool.coverage.report]
 show_missing = true
 skip_empty = true
+fail_under = 75
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "SIM"]
+ignore = [
+    "E501",   # line-too-long (black handles this)
+    "E712",   # true-false-comparison (pandas idiom: df[col] == True)
+    "SIM108", # if-else-block-instead-of-if-exp (readability preference)
+    "SIM102", # collapsible-if (readability preference)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E402"]
+
+[tool.black]
+target-version = ["py311"]
+line-length = 120
