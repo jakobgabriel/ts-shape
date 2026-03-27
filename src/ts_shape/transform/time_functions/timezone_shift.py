@@ -1,6 +1,6 @@
 import logging
 import pandas as pd  # type: ignore
-import pytz
+from zoneinfo import available_timezones
 from ts_shape.utils.base import Base  # Import Base from the specified path
 
 logger = logging.getLogger(__name__)
@@ -25,9 +25,9 @@ class TimezoneShift(Base):
             pd.DataFrame: A DataFrame with timestamps converted to the target timezone.
         """
         # Validate timezones
-        if input_timezone not in pytz.all_timezones:
+        if input_timezone not in available_timezones():
             raise ValueError(f"Invalid input timezone: {input_timezone}")
-        if target_timezone not in pytz.all_timezones:
+        if target_timezone not in available_timezones():
             raise ValueError(f"Invalid target timezone: {target_timezone}")
 
         # Ensure the time column is in datetime format
@@ -81,7 +81,7 @@ class TimezoneShift(Base):
         Returns:
             list: A list of strings representing all available timezones.
         """
-        return pytz.all_timezones
+        return available_timezones()
 
     @classmethod
     def detect_timezone_awareness(cls, dataframe: pd.DataFrame, time_column: str) -> bool:
@@ -111,7 +111,7 @@ class TimezoneShift(Base):
             pd.DataFrame: A DataFrame with timestamps reverted to the original timezone.
         """
         # Validate the original timezone
-        if original_timezone not in pytz.all_timezones:
+        if original_timezone not in available_timezones():
             raise ValueError(f"Invalid original timezone: {original_timezone}")
 
         # Convert to the original timezone

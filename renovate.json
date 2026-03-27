@@ -71,14 +71,6 @@
       "pinDigests": true,
       "automerge": true,
       "groupName": "github actions"
-    },
-    {
-      "description": "pytz is replaceable with stdlib zoneinfo (Python 3.9+); flag for review",
-      "matchPackageNames": ["pytz"],
-      "labels": ["tech-debt"],
-      "prBodyNotes": [
-        "**Note:** `pytz` can be replaced with the built-in `zoneinfo` module (Python 3.9+). Consider migrating when convenient."
-      ]
     }
   ]
 }
