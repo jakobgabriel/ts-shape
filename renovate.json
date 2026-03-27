@@ -3,6 +3,10 @@
   "extends": ["config:recommended"],
   "dependencyDashboard": true,
   "osvVulnerabilityAlerts": true,
+  "minimumReleaseAge": "3 days",
+  "prConcurrentLimit": 5,
+  "assignees": ["jakobgabriel"],
+  "commitMessagePrefix": "chore(deps):",
   "enabledManagers": [
     "pep621",
     "pip_requirements",
@@ -14,6 +18,10 @@
     "fileMatch": ["(^|/)pyproject\\.toml$"]
   },
   "schedule": ["before 9am on Monday"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 9am on Monday"]
+  },
   "packageRules": [
     {
       "description": "Group core runtime dependencies",
@@ -25,6 +33,11 @@
       "description": "Group scientific stack (numpy, pandas, scipy)",
       "matchPackageNames": ["numpy", "pandas", "scipy"],
       "groupName": "scientific stack"
+    },
+    {
+      "description": "Group cloud storage dependencies (azure-storage-blob, s3fs)",
+      "matchPackageNames": ["azure-storage-blob", "s3fs"],
+      "groupName": "cloud storage"
     },
     {
       "description": "Automerge docs dependencies (minor/patch)",
@@ -53,10 +66,19 @@
       "automerge": false
     },
     {
-      "description": "Auto-update GitHub Actions",
+      "description": "Pin and auto-update GitHub Actions by SHA digest",
       "matchManagers": ["github-actions"],
+      "pinDigests": true,
       "automerge": true,
       "groupName": "github actions"
+    },
+    {
+      "description": "pytz is replaceable with stdlib zoneinfo (Python 3.9+); flag for review",
+      "matchPackageNames": ["pytz"],
+      "labels": ["tech-debt"],
+      "prBodyNotes": [
+        "**Note:** `pytz` can be replaced with the built-in `zoneinfo` module (Python 3.9+). Consider migrating when convenient."
+      ]
     }
   ]
 }
