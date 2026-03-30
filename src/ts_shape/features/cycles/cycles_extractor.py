@@ -123,78 +123,70 @@ class CycleExtractor(Base):
     def _generate_cycle_dataframe(self, cycle_starts: pd.DataFrame, cycle_ends: pd.DataFrame) -> pd.DataFrame:
         """Generates a DataFrame with cycle start and end times.
 
-        Now tracks incomplete cycles and adds an 'is_complete' flag.
+        Uses a vectorized merge_asof approach (O(n log n)) instead of a Python
+        iterator loop, significantly faster on large datasets.  Tracks incomplete
+        cycles and adds an 'is_complete' flag.
         """
-        # Predefine dtypes to avoid dtype inference warnings in future pandas versions
-        cycle_df = pd.DataFrame({
+        empty = pd.DataFrame({
             'cycle_start': pd.Series(dtype='datetime64[ns]'),
             'cycle_end': pd.Series(dtype='datetime64[ns]'),
             'cycle_uuid': pd.Series(dtype='string'),
-            'is_complete': pd.Series(dtype='bool')
+            'is_complete': pd.Series(dtype='bool'),
         })
 
-        # Reset statistics for this extraction
-        complete_cycles = 0
-        incomplete_cycles = 0
-        unmatched_starts = 0
+        if cycle_starts.empty or 'systime' not in cycle_starts.columns:
+            self._stats.update({'total_cycles': 0, 'complete_cycles': 0,
+                                'incomplete_cycles': 0, 'unmatched_starts': 0})
+            return empty
 
-        cycle_ends_iter = iter(cycle_ends['systime'])
-        start_count = 0
+        starts = (cycle_starts[['systime']]
+                  .dropna(subset=['systime'])
+                  .rename(columns={'systime': 'cycle_start'})
+                  .sort_values('cycle_start')
+                  .reset_index(drop=True))
 
-        try:
-            next_cycle_end = next(cycle_ends_iter)
-            for _, start_row in cycle_starts.iterrows():
-                start_count += 1
-                start_time = start_row['systime']
-                try:
-                    # Find the next valid end time
-                    while next_cycle_end <= start_time:
-                        next_cycle_end = next(cycle_ends_iter)
+        ends_raw = cycle_ends['systime'].dropna() if 'systime' in cycle_ends.columns else pd.Series(dtype='datetime64[ns]')
+        ends = (pd.DataFrame({'cycle_end': ends_raw})
+                .sort_values('cycle_end')
+                .reset_index(drop=True))
 
-                    cycle_df.loc[len(cycle_df)] = {
-                        'cycle_start': start_time,
-                        'cycle_end': next_cycle_end,
-                        'cycle_uuid': str(uuid.uuid4()),
-                        'is_complete': True
-                    }
-                    complete_cycles += 1
-                except StopIteration:
-                    # Mark this cycle as incomplete
-                    cycle_df.loc[len(cycle_df)] = {
-                        'cycle_start': start_time,
-                        'cycle_end': pd.NaT,
-                        'cycle_uuid': str(uuid.uuid4()),
-                        'is_complete': False
-                    }
-                    incomplete_cycles += 1
-                    unmatched_starts += 1
-                    logger.warning(f"Incomplete cycle detected: start at {start_time} has no matching end.")
-                    # Continue to process remaining starts
-                    continue
+        if ends.empty:
+            starts['cycle_end'] = pd.NaT
+            starts['is_complete'] = False
+        else:
+            # For each start, find the nearest end that is >= start (forward match).
+            # merge_asof requires both keys to have the same name; use a temporary key.
+            starts_keyed = starts.rename(columns={'cycle_start': '_key'})
+            ends_keyed = ends.rename(columns={'cycle_end': '_key'})
+            merged = pd.merge_asof(
+                starts_keyed,
+                ends_keyed,
+                on='_key',
+                direction='forward',
+                suffixes=('', '_end'),
+            )
+            starts['cycle_start'] = merged['_key'].values
+            starts['cycle_end'] = merged['_key_end'].values if '_key_end' in merged.columns else pd.NaT
+            # merge_asof forward: unmatched rows have NaT in right key
+            starts['is_complete'] = starts['cycle_end'].notna()
 
-        except StopIteration:
-            # No cycle ends available at all
-            for _, start_row in cycle_starts.iterrows():
-                start_count += 1
-                start_time = start_row['systime']
-                cycle_df.loc[len(cycle_df)] = {
-                    'cycle_start': start_time,
-                    'cycle_end': pd.NaT,
-                    'cycle_uuid': str(uuid.uuid4()),
-                    'is_complete': False
-                }
-                incomplete_cycles += 1
-                unmatched_starts += 1
+        starts['cycle_uuid'] = [str(uuid.uuid4()) for _ in range(len(starts))]
+        cycle_df = starts[['cycle_start', 'cycle_end', 'cycle_uuid', 'is_complete']].reset_index(drop=True)
 
-            warning_msg = f"Cycle end data ran out while generating cycles. {incomplete_cycles} cycles marked as incomplete."
+        complete_cycles = int(cycle_df['is_complete'].sum())
+        incomplete_cycles = int((~cycle_df['is_complete']).sum())
+
+        if incomplete_cycles:
+            warning_msg = f"{incomplete_cycles} cycle(s) have no matching end and are marked incomplete."
             logger.warning(warning_msg)
             self._stats['warnings'].append(warning_msg)
 
-        # Update statistics
-        self._stats['total_cycles'] = len(cycle_df)
-        self._stats['complete_cycles'] = complete_cycles
-        self._stats['incomplete_cycles'] = incomplete_cycles
-        self._stats['unmatched_starts'] = unmatched_starts
+        self._stats.update({
+            'total_cycles': len(cycle_df),
+            'complete_cycles': complete_cycles,
+            'incomplete_cycles': incomplete_cycles,
+            'unmatched_starts': incomplete_cycles,
+        })
 
         logger.info(f"Generated {len(cycle_df)} cycles ({complete_cycles} complete, {incomplete_cycles} incomplete).")
         return cycle_df

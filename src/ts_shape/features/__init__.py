@@ -123,4 +123,8 @@ Classes:
   - detect_anomalous: Flag items with unusual metric profiles.
   - detect_changes: Track metric shifts across consecutive segments.
   - find_similar_pairs: Find similar (UUID, segment) pairs across all data.
+
+- FeatureMatrixExporter: Convert long-format timeseries to wide ML-ready feature matrices.
+  - to_feature_matrix: Pivot by uuid × value_col × agg into {uuid}__{col}__{agg} columns.
+    Supports optional group_col (cycle, batch, segment) as row index.
 """

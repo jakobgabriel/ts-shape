@@ -33,7 +33,9 @@ the right one based on the complexity of the operation:
 """
 
 import logging
+import warnings
 import pandas as pd  # type: ignore
+from ts_shape.errors import DataQualityWarning
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +89,27 @@ class Base:
         # Sort by the datetime column (either specified or detected)
         if column_name in self.dataframe.columns:
             self.dataframe = self.dataframe.sort_values(by=column_name)
+
+        # Warn on duplicate timestamps (per UUID when available)
+        if column_name in self.dataframe.columns:
+            subset = [column_name, 'uuid'] if 'uuid' in self.dataframe.columns else [column_name]
+            dup_count = self.dataframe.duplicated(subset=subset).sum()
+            if dup_count:
+                warnings.warn(
+                    f"DataFrame contains {dup_count} duplicate timestamp(s) "
+                    f"(checked on {subset}). Consider deduplicating before processing.",
+                    DataQualityWarning,
+                    stacklevel=3,
+                )
+
+        # Warn on columns that are entirely NaN
+        all_nan_cols = [col for col in self.dataframe.columns if self.dataframe[col].isna().all()]
+        if all_nan_cols:
+            warnings.warn(
+                f"Column(s) {all_nan_cols} contain only NaN values.",
+                DataQualityWarning,
+                stacklevel=3,
+            )
     
     def get_dataframe(self) -> pd.DataFrame:
         """Returns the processed DataFrame."""
