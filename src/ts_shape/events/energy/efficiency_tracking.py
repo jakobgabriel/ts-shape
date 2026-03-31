@@ -71,8 +71,14 @@ class EnergyEfficiencyEvents(Base):
         if energy_data.empty or counter_data.empty:
             return pd.DataFrame(
                 columns=[
-                    "window_start", "uuid", "source_uuid", "is_delta",
-                    "energy", "units", "efficiency", "rolling_avg_efficiency",
+                    "window_start",
+                    "uuid",
+                    "source_uuid",
+                    "is_delta",
+                    "energy",
+                    "units",
+                    "efficiency",
+                    "rolling_avg_efficiency",
                     "trend_direction",
                 ]
             )
@@ -83,10 +89,16 @@ class EnergyEfficiencyEvents(Base):
         energy_data = energy_data.set_index(self.time_column)
         counter_data = counter_data.set_index(self.time_column)
 
-        energy_agg = energy_data[energy_column].resample(window).sum().to_frame("energy")
-        counter_agg = counter_data[counter_column].resample(window).agg(
-            lambda x: x.max() - x.min() if len(x) > 1 else 0
-        ).clip(lower=0).to_frame("units")
+        energy_agg = (
+            energy_data[energy_column].resample(window).sum().to_frame("energy")
+        )
+        counter_agg = (
+            counter_data[counter_column]
+            .resample(window)
+            .agg(lambda x: x.max() - x.min() if len(x) > 1 else 0)
+            .clip(lower=0)
+            .to_frame("units")
+        )
 
         merged = energy_agg.join(counter_agg, how="inner").reset_index()
         merged = merged.rename(columns={self.time_column: "window_start"})
@@ -94,8 +106,14 @@ class EnergyEfficiencyEvents(Base):
         if merged.empty:
             return pd.DataFrame(
                 columns=[
-                    "window_start", "uuid", "source_uuid", "is_delta",
-                    "energy", "units", "efficiency", "rolling_avg_efficiency",
+                    "window_start",
+                    "uuid",
+                    "source_uuid",
+                    "is_delta",
+                    "energy",
+                    "units",
+                    "efficiency",
+                    "rolling_avg_efficiency",
                     "trend_direction",
                 ]
             )
@@ -107,9 +125,7 @@ class EnergyEfficiencyEvents(Base):
         )
 
         merged["rolling_avg_efficiency"] = (
-            merged["efficiency"]
-            .rolling(window=trend_window, min_periods=1)
-            .mean()
+            merged["efficiency"].rolling(window=trend_window, min_periods=1).mean()
         )
 
         slope = merged["rolling_avg_efficiency"].diff()
@@ -125,8 +141,14 @@ class EnergyEfficiencyEvents(Base):
 
         return merged[
             [
-                "window_start", "uuid", "source_uuid", "is_delta",
-                "energy", "units", "efficiency", "rolling_avg_efficiency",
+                "window_start",
+                "uuid",
+                "source_uuid",
+                "is_delta",
+                "energy",
+                "units",
+                "efficiency",
+                "rolling_avg_efficiency",
                 "trend_direction",
             ]
         ]
@@ -173,8 +195,13 @@ class EnergyEfficiencyEvents(Base):
         if energy.empty or state.empty:
             return pd.DataFrame(
                 columns=[
-                    "window_start", "uuid", "source_uuid", "is_delta",
-                    "energy_consumed", "machine_running_pct", "is_idle_waste",
+                    "window_start",
+                    "uuid",
+                    "source_uuid",
+                    "is_delta",
+                    "energy_consumed",
+                    "machine_running_pct",
+                    "is_idle_waste",
                     "waste_energy",
                 ]
             )
@@ -185,7 +212,9 @@ class EnergyEfficiencyEvents(Base):
         energy = energy.set_index(self.time_column)
         state = state.set_index(self.time_column)
 
-        energy_agg = energy[energy_column].resample(window).sum().to_frame("energy_consumed")
+        energy_agg = (
+            energy[energy_column].resample(window).sum().to_frame("energy_consumed")
+        )
         state_agg = (
             state[state_column]
             .fillna(False)
@@ -199,9 +228,8 @@ class EnergyEfficiencyEvents(Base):
         merged = merged.rename(columns={self.time_column: "window_start"})
 
         # Idle waste: machine mostly idle but still consuming energy
-        merged["is_idle_waste"] = (
-            (merged["machine_running_pct"] < 0.1)
-            & (merged["energy_consumed"] > idle_threshold)
+        merged["is_idle_waste"] = (merged["machine_running_pct"] < 0.1) & (
+            merged["energy_consumed"] > idle_threshold
         )
         merged["waste_energy"] = np.where(
             merged["is_idle_waste"], merged["energy_consumed"], 0.0
@@ -213,8 +241,13 @@ class EnergyEfficiencyEvents(Base):
 
         return merged[
             [
-                "window_start", "uuid", "source_uuid", "is_delta",
-                "energy_consumed", "machine_running_pct", "is_idle_waste",
+                "window_start",
+                "uuid",
+                "source_uuid",
+                "is_delta",
+                "energy_consumed",
+                "machine_running_pct",
+                "is_idle_waste",
                 "waste_energy",
             ]
         ]
@@ -257,8 +290,14 @@ class EnergyEfficiencyEvents(Base):
         if energy.empty or counter.empty:
             return pd.DataFrame(
                 columns=[
-                    "window_start", "uuid", "source_uuid", "is_delta",
-                    "total_energy", "total_output", "sec", "sec_trend",
+                    "window_start",
+                    "uuid",
+                    "source_uuid",
+                    "is_delta",
+                    "total_energy",
+                    "total_output",
+                    "sec",
+                    "sec_trend",
                 ]
             )
 
@@ -268,10 +307,16 @@ class EnergyEfficiencyEvents(Base):
         energy = energy.set_index(self.time_column)
         counter = counter.set_index(self.time_column)
 
-        energy_agg = energy[energy_column].resample(window).sum().to_frame("total_energy")
-        counter_agg = counter[counter_column].resample(window).agg(
-            lambda x: x.max() - x.min() if len(x) > 1 else 0
-        ).clip(lower=0).to_frame("total_output")
+        energy_agg = (
+            energy[energy_column].resample(window).sum().to_frame("total_energy")
+        )
+        counter_agg = (
+            counter[counter_column]
+            .resample(window)
+            .agg(lambda x: x.max() - x.min() if len(x) > 1 else 0)
+            .clip(lower=0)
+            .to_frame("total_output")
+        )
 
         merged = energy_agg.join(counter_agg, how="inner").reset_index()
         merged = merged.rename(columns={self.time_column: "window_start"})
@@ -296,8 +341,14 @@ class EnergyEfficiencyEvents(Base):
 
         return merged[
             [
-                "window_start", "uuid", "source_uuid", "is_delta",
-                "total_energy", "total_output", "sec", "sec_trend",
+                "window_start",
+                "uuid",
+                "source_uuid",
+                "is_delta",
+                "total_energy",
+                "total_output",
+                "sec",
+                "sec_trend",
             ]
         ]
 
@@ -345,8 +396,12 @@ class EnergyEfficiencyEvents(Base):
         if energy.empty or counter.empty:
             return pd.DataFrame(
                 columns=[
-                    "shift", "avg_energy", "avg_output", "avg_efficiency",
-                    "total_energy", "total_output",
+                    "shift",
+                    "avg_energy",
+                    "avg_output",
+                    "avg_efficiency",
+                    "total_energy",
+                    "total_output",
                 ]
             )
 
@@ -370,15 +425,21 @@ class EnergyEfficiencyEvents(Base):
         energy["shift"] = energy[self.time_column].apply(_assign_shift)
         counter["shift"] = counter[self.time_column].apply(_assign_shift)
 
-        energy_by_shift = energy.groupby("shift")[energy_column].agg(
-            total_energy="sum", avg_energy="mean"
-        ).reset_index()
+        energy_by_shift = (
+            energy.groupby("shift")[energy_column]
+            .agg(total_energy="sum", avg_energy="mean")
+            .reset_index()
+        )
 
-        counter_by_shift = counter.groupby("shift")[counter_column].agg(
-            total_output="sum", avg_output="mean"
-        ).reset_index()
+        counter_by_shift = (
+            counter.groupby("shift")[counter_column]
+            .agg(total_output="sum", avg_output="mean")
+            .reset_index()
+        )
 
-        merged = energy_by_shift.merge(counter_by_shift, on="shift", how="outer").fillna(0)
+        merged = energy_by_shift.merge(
+            counter_by_shift, on="shift", how="outer"
+        ).fillna(0)
         merged["avg_efficiency"] = np.where(
             merged["total_energy"] > 0,
             merged["total_output"] / merged["total_energy"],
@@ -387,7 +448,11 @@ class EnergyEfficiencyEvents(Base):
 
         return merged[
             [
-                "shift", "avg_energy", "avg_output", "avg_efficiency",
-                "total_energy", "total_output",
+                "shift",
+                "avg_energy",
+                "avg_output",
+                "avg_efficiency",
+                "total_energy",
+                "total_output",
             ]
         ]

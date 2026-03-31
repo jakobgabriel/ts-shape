@@ -12,7 +12,15 @@ class DatapointAPI:
     Class for accessing datapoints for multiple devices via an API.
     """
 
-    def __init__(self, device_names: List[str], base_url: str, api_token: str, output_path: str = "data", required_uuid_list: List[str] = None, filter_enabled: bool = True):
+    def __init__(
+        self,
+        device_names: List[str],
+        base_url: str,
+        api_token: str,
+        output_path: str = "data",
+        required_uuid_list: List[str] = None,
+        filter_enabled: bool = True,
+    ):
         """
         Initialize the DatapointAPI class.
 
@@ -27,9 +35,13 @@ class DatapointAPI:
         self.base_url = base_url
         self.api_token = api_token
         self.output_path = output_path
-        self.required_uuid_list = required_uuid_list or []  # Defaults to an empty list if None
+        self.required_uuid_list = (
+            required_uuid_list or []
+        )  # Defaults to an empty list if None
         self.filter_enabled = filter_enabled
-        self.device_metadata: Dict[str, pd.DataFrame] = {}  # Store metadata for each device
+        self.device_metadata: Dict[str, pd.DataFrame] = (
+            {}
+        )  # Store metadata for each device
         self.device_uuids: Dict[str, List[str]] = {}  # Store UUIDs for each device
         self._api_access()
 
@@ -45,7 +57,9 @@ class DatapointAPI:
             devices_found = []
 
             for datatron in requests.get(f"{self.base_url}", headers=headers).json():
-                for device in requests.get(f"{self.base_url}/{datatron['id']}/devices", headers=headers).json():
+                for device in requests.get(
+                    f"{self.base_url}/{datatron['id']}/devices", headers=headers
+                ).json():
                     if device["name"] == device_name:
                         datapoints = requests.get(
                             f"{self.base_url}/{datatron['id']}/devices/{device['id']}/data_points",
@@ -68,7 +82,9 @@ class DatapointAPI:
 
                 # Filter metadata by required UUIDs, if any
                 if self.required_uuid_list:
-                    metadata_df = metadata_df[metadata_df["uuid"].isin(self.required_uuid_list)]
+                    metadata_df = metadata_df[
+                        metadata_df["uuid"].isin(self.required_uuid_list)
+                    ]
 
                 # Store processed metadata and UUIDs
                 self.device_metadata[device_name] = metadata_df
@@ -79,8 +95,10 @@ class DatapointAPI:
 
     def _export_json(self, data_points: List[Dict[str, str]], device_name: str) -> None:
         """Export data points to a JSON file for the specified device."""
-        file_name = f"{self.output_path}/{device_name.replace(' ', '_')}_data_points.json"
-        with open(file_name, 'w') as f:
+        file_name = (
+            f"{self.output_path}/{device_name.replace(' ', '_')}_data_points.json"
+        )
+        with open(file_name, "w") as f:
             json.dump(data_points, f, indent=2)
 
     def get_all_uuids(self) -> Dict[str, List[str]]:
@@ -89,7 +107,10 @@ class DatapointAPI:
 
     def get_all_metadata(self) -> Dict[str, List[Dict[str, str]]]:
         """Return a dictionary of metadata for each device."""
-        return {device: metadata.to_dict(orient="records") for device, metadata in self.device_metadata.items()}
+        return {
+            device: metadata.to_dict(orient="records")
+            for device, metadata in self.device_metadata.items()
+        }
 
     def display_dataframe(self, device_name: str = None) -> None:
         """
