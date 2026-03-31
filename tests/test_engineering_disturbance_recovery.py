@@ -1,5 +1,4 @@
 import pandas as pd  # type: ignore
-import numpy as np  # type: ignore
 
 from ts_shape.events.engineering.disturbance_recovery import DisturbanceRecoveryEvents
 
@@ -54,9 +53,7 @@ def test_recovery_time_quick_recovery():
     det = DisturbanceRecoveryEvents(df, "sensor")
     result = det.recovery_time(baseline_window="5m", threshold_sigma=2.0)
     if not result.empty:
-        assert (
-            result["recovered"].iloc[0] is True or result["recovered"].iloc[0] == True
-        )
+        assert result["recovered"].iloc[0] is True or result["recovered"].iloc[0]
 
 
 def test_disturbance_frequency():

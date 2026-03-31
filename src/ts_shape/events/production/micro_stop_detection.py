@@ -1,7 +1,7 @@
 import logging
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 
 from ts_shape.utils.base import Base
 
@@ -185,7 +185,6 @@ class MicroStopEvents(Base):
             return pd.DataFrame(columns=cols)
 
         max_td = pd.to_timedelta(max_duration)
-        window_td = pd.to_timedelta(window)
 
         intervals["dur_seconds"] = intervals["duration"].dt.total_seconds()
         intervals["is_micro_stop"] = (intervals["state"] == "idle") & (

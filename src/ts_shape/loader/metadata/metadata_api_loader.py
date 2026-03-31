@@ -76,7 +76,7 @@ class DatapointAPI:
             metadata_df = pd.DataFrame(metadata)
             if not metadata_df.empty:
                 if self.filter_enabled:
-                    metadata_df = metadata_df[metadata_df["enabled"] == True]
+                    metadata_df = metadata_df[metadata_df["enabled"]]
 
                 metadata_df = metadata_df[["uuid", "label", "config"]]
 

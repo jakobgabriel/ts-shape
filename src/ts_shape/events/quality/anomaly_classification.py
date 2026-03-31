@@ -1,7 +1,7 @@
 import logging
 import pandas as pd  # type: ignore
 import numpy as np  # type: ignore
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 
 from ts_shape.utils.base import Base
 
@@ -250,7 +250,6 @@ class AnomalyClassificationEvents(Base):
 
             values = win.values
             win_std = float(np.std(values))
-            win_mean = float(np.mean(values))
 
             # Check flatline
             if win_std < 1e-8:

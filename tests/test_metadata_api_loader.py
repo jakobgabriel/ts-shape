@@ -1,9 +1,8 @@
 import pytest
-import pandas as pd  # type: ignore
 
 requests = pytest.importorskip("requests")
 
-from ts_shape.loader.metadata.metadata_api_loader import DatapointAPI
+from ts_shape.loader.metadata.metadata_api_loader import DatapointAPI  # noqa: E402
 
 
 class DummyResp:

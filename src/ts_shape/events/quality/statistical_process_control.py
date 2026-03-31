@@ -1,7 +1,7 @@
 import logging
 import pandas as pd  # type: ignore
 import numpy as np
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 from ts_shape.utils.base import Base
 
 logger = logging.getLogger(__name__)
@@ -320,7 +320,6 @@ class StatisticalProcessControlRuleBased(Base):
 
         # Pre-compute values used across multiple rules
         values = df[self.value_column]
-        mean = values.mean()
         upper_3sigma = limits["3sigma_upper"].values[0]
         lower_3sigma = limits["3sigma_lower"].values[0]
         upper_2sigma = limits["2sigma_upper"].values[0]

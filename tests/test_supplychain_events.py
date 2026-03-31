@@ -112,8 +112,6 @@ class TestInventoryMonitoringEvents:
             declining_inventory_df, level_uuid="warehouse_level"
         )
         result = tracker.reorder_point_breach(reorder_level=200, safety_stock=100)
-        # Since inventory goes from 500->20, should eventually breach safety stock
-        safety_breaches = result[result["breach_type"] == "safety_stock"]
         # May or may not have separate safety breach depending on transition
         assert not result.empty
 

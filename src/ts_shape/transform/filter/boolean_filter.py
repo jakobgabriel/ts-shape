@@ -16,7 +16,7 @@ class IsDeltaFilter(Base):
     ) -> pd.DataFrame:
         """Filters rows where 'is_delta' is True."""
         Base._validate_column(dataframe, column_name)
-        return dataframe[dataframe[column_name] == True]
+        return dataframe[dataframe[column_name]]
 
     @classmethod
     def filter_is_delta_false(
@@ -24,7 +24,7 @@ class IsDeltaFilter(Base):
     ) -> pd.DataFrame:
         """Filters rows where 'is_delta' is False."""
         Base._validate_column(dataframe, column_name)
-        return dataframe[dataframe[column_name] == False]
+        return dataframe[~dataframe[column_name]]
 
 
 class BooleanFilter(Base):
@@ -40,7 +40,7 @@ class BooleanFilter(Base):
         """Filters rows where 'value_bool' changes from True to False."""
         Base._validate_column(dataframe, column_name)
         previous = dataframe[column_name].shift(1)
-        return dataframe[(previous == True) & (dataframe[column_name] == False)]
+        return dataframe[(previous) & (~dataframe[column_name])]
 
     @classmethod
     def filter_raising_value_bool(
@@ -49,4 +49,4 @@ class BooleanFilter(Base):
         """Filters rows where 'value_bool' changes from False to True."""
         Base._validate_column(dataframe, column_name)
         previous = dataframe[column_name].shift(1)
-        return dataframe[(previous == False) & (dataframe[column_name] == True)]
+        return dataframe[(~previous) & (dataframe[column_name])]

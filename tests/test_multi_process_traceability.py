@@ -13,9 +13,8 @@ Items:
 """
 
 import pandas as pd  # type: ignore
-import numpy as np
 import pytest
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from ts_shape.events.production import MultiProcessTraceabilityEvents
 
@@ -221,13 +220,13 @@ class TestLeadTime:
         lead = tracer.lead_time()
         sn001 = lead[lead["item_id"] == "SN-001"].iloc[0]
         assert sn001["stations_visited"] == 3
-        assert sn001["has_parallel"] == False
+        assert not sn001["has_parallel"]
         assert sn001["lead_time_seconds"] > 0
 
     def test_parallel_item_flagged(self, tracer):
         lead = tracer.lead_time()
         sn003 = lead[lead["item_id"] == "SN-003"].iloc[0]
-        assert sn003["has_parallel"] == True
+        assert sn003["has_parallel"]
 
     def test_empty_data(self):
         tracer = MultiProcessTraceabilityEvents(
@@ -410,7 +409,7 @@ class TestEdgeCases:
         timeline = tracer.build_timeline()
         assert len(timeline) == 1
         assert timeline.iloc[0]["item_id"] == "ITEM-A"
-        assert timeline.iloc[0]["is_parallel"] == False
+        assert not timeline.iloc[0]["is_parallel"]
 
     def test_many_parallel_cells(self):
         """3 parallel cells of the same station type."""

@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Dict, List, Any
+from typing import Optional, Dict, Any
 import pandas as pd  # type: ignore
 import uuid
 from ts_shape.utils.base import Base
@@ -56,16 +56,16 @@ class CycleExtractor(Base):
     def process_persistent_cycle(self) -> pd.DataFrame:
         """Processes cycles where the value of the variable stays true during the cycle."""
         # Assuming dataframe is pre-filtered
-        cycle_starts = self.df[self.df["value_bool"] == True]
-        cycle_ends = self.df[self.df["value_bool"] == False]
+        cycle_starts = self.df[self.df["value_bool"]]
+        cycle_ends = self.df[~self.df["value_bool"]]
 
         return self._generate_cycle_dataframe(cycle_starts, cycle_ends)
 
     def process_trigger_cycle(self) -> pd.DataFrame:
         """Processes cycles where the value of the variable goes from true to false during the cycle."""
         # Assuming dataframe is pre-filtered
-        cycle_starts = self.df[self.df["value_bool"] == True]
-        cycle_ends = self.df[self.df["value_bool"] == False].shift(-1)
+        cycle_starts = self.df[self.df["value_bool"]]
+        cycle_ends = self.df[~self.df["value_bool"]].shift(-1)
 
         return self._generate_cycle_dataframe(cycle_starts, cycle_ends)
 
@@ -78,14 +78,14 @@ class CycleExtractor(Base):
         """
         if "uuid" in self.df.columns and self.start_uuid != self.end_uuid:
             cycle_starts = self.df[
-                (self.df["uuid"] == self.start_uuid) & (self.df["value_bool"] == True)
+                (self.df["uuid"] == self.start_uuid) & (self.df["value_bool"])
             ]
             cycle_ends = self.df[
-                (self.df["uuid"] == self.end_uuid) & (self.df["value_bool"] == True)
+                (self.df["uuid"] == self.end_uuid) & (self.df["value_bool"])
             ]
         else:
-            cycle_starts = self.df[self.df["value_bool"] == True]
-            cycle_ends = self.df[self.df["value_bool"] == True]
+            cycle_starts = self.df[self.df["value_bool"]]
+            cycle_ends = self.df[self.df["value_bool"]]
 
         return self._generate_cycle_dataframe(cycle_starts, cycle_ends)
 
@@ -135,8 +135,8 @@ class CycleExtractor(Base):
         )
 
         # Define cycle starts and ends based on changes
-        cycle_starts = self.df[self.df["value_change"] == True]
-        cycle_ends = self.df[self.df["value_change"] == True].shift(-1)
+        cycle_starts = self.df[self.df["value_change"]]
+        cycle_ends = self.df[self.df["value_change"]].shift(-1)
 
         return self._generate_cycle_dataframe(cycle_starts, cycle_ends)
 

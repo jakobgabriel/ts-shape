@@ -263,7 +263,6 @@ class SensorDriftEvents(Base):
         if len(window_values) < 2:
             return pd.DataFrame(columns=cols)
 
-        timestamps = [wv[0] for wv in window_values]
         values = np.array([wv[1] for wv in window_values])
         x = np.arange(len(values), dtype=float)
 

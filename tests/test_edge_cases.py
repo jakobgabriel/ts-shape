@@ -9,6 +9,7 @@ import pytest
 from ts_shape.utils.base import Base
 from ts_shape.errors import DataQualityWarning
 from ts_shape.features.export import FeatureMatrixExporter
+from ts_shape.features.cycles.cycles_extractor import CycleExtractor
 
 # ---------------------------------------------------------------------------
 # Base — empty / single-row / all-NaN / duplicate-timestamp inputs
@@ -151,8 +152,6 @@ def test_feature_matrix_empty_df_returns_empty():
 # CycleExtractor — edge cases
 # ---------------------------------------------------------------------------
 
-from ts_shape.features.cycles.cycles_extractor import CycleExtractor
-
 
 def make_cycle_df():
     return pd.DataFrame(
@@ -201,7 +200,7 @@ def test_cycle_extractor_no_ends_marks_incomplete():
     )
     ce = CycleExtractor(df, start_uuid="start")
     result = ce.process_persistent_cycle()
-    assert result["is_complete"].all() == False
+    assert not result["is_complete"].all()
 
 
 def test_cycle_extractor_stats_populated():
