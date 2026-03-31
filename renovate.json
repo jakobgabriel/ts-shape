@@ -24,7 +24,7 @@
   "python": {
     "fileMatch": ["(^|/)pyproject\\.toml$"]
   },
-  "schedule": ["before 9am on Monday"],
+  "schedule": ["before 9am on Monday", "before 9am on Thursday"],
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 9am on Monday"]
@@ -61,7 +61,7 @@
     },
     {
       "description": "Dev tools on monthly schedule",
-      "matchPackageNames": ["pytest", "pytest-cov", "black", "ruff"],
+      "matchPackageNames": ["pytest", "pytest-cov", "black", "ruff", "pre-commit", "mypy"],
       "groupName": "dev tools",
       "labels": ["dev-tools"],
       "schedule": ["before 9am on the first day of the month"],
