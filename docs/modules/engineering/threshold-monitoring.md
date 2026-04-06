@@ -51,7 +51,7 @@ time_above = monitor.time_above_threshold(threshold=85.0, window="1h")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Always use hysteresis for alarms"
     Raw threshold crossings produce noisy on/off chatter when a signal hovers near the limit. Use `threshold_with_hysteresis()` with a dead-band gap of at least 2-5% of the operating range to get clean alarm intervals.

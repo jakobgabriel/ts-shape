@@ -39,7 +39,7 @@ print(f"Cpk: {capability['Cpk']:.2f}, Ppk: {capability['Ppk']:.2f}")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Set a target value for Cpk accuracy"
     When calling `compute_capability_indices`, always provide the `target_value` parameter if your process has a nominal target. Without it, the method assumes the midpoint of the specification range, which may overestimate Cpk for off-center processes.

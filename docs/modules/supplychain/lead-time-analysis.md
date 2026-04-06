@@ -53,7 +53,7 @@ print(f"Anomalous deliveries: {len(anomalies)}")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Segment lead times by supplier or product"
     Global lead time statistics can hide per-supplier variation. Group by supplier before calling `lead_time_statistics()` to identify which vendors are unreliable and which are consistently fast.

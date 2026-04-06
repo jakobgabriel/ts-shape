@@ -46,7 +46,7 @@ print(parts.head())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Handle counter resets"
     Monotonic counters may reset at shift boundaries or after a PLC restart. `count_parts` automatically detects and compensates for resets by looking at negative deltas.

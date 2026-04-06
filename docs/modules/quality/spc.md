@@ -49,7 +49,7 @@ summary = spc.interpret_violations(violations)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Start with the process() method"
     The `process()` method runs the complete pipeline and is the easiest entry point. Use individual rules or `apply_rules_vectorized(selected_rules=...)` only when you need to tune which rules apply to your specific process.

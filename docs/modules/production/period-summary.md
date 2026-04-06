@@ -57,7 +57,7 @@ weekly_from_df = PeriodSummary.from_daily_data(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Align periods to calendar boundaries"
     Use ISO week boundaries (Monday start) or calendar month boundaries for consistency. Partial weeks or months at the edges of your date range can skew averages and make period comparisons misleading.

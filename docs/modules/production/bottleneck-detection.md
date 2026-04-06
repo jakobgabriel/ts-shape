@@ -49,7 +49,7 @@ print(bottleneck)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "The bottleneck has the highest utilization"
     Counter-intuitively, the station with the most uptime (not the most downtime) is usually the bottleneck — it is running flat-out trying to keep up. Stations with lower utilization are often waiting.

@@ -45,7 +45,7 @@ steps = detector.detect_step_changes(min_delta=20.0, max_duration="5s")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Pair with threshold monitoring for defense-in-depth"
     A rapid rate of change often precedes a threshold breach. Use `detect_rapid_change()` as an early warning, and `ThresholdMonitoringEvents` as the definitive alarm. This two-layer approach gives operators more lead time.

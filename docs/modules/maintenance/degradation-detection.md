@@ -50,7 +50,7 @@ print(f"Health score: {score}/100")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Set a meaningful baseline window"
     Use the first stable operating period as your baseline. A poorly chosen baseline will produce false positives from `detect_variance_increase()` and `detect_level_shift()`.

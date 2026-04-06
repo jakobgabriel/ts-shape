@@ -56,7 +56,7 @@ print(by_shift)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use monotonic counters, not deltas"
     Pass cumulative OK and NOK counters — the module computes deltas internally and handles counter resets. If your PLC provides per-cycle OK/NOK flags instead, convert them to cumulative sums first.

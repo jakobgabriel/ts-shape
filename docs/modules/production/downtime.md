@@ -52,7 +52,7 @@ print(pareto)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Define shifts in your configuration"
     Shift boundaries (e.g., 06:00-14:00, 14:00-22:00, 22:00-06:00) should match your plant's actual schedule. Misaligned shift definitions will attribute downtime to the wrong crew.

@@ -55,7 +55,7 @@ failed = detector.detect_failed_startups(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use adaptive detection for varying baselines"
     When the idle-state baseline drifts over time (e.g., ambient temperature changes), use `detect_startup_adaptive()` instead of a fixed threshold. It recalculates the baseline from a rolling window and adapts automatically.

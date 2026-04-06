@@ -43,7 +43,7 @@ print(intervals.head())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Filter short idle gaps"
     Use `min_duration` in `detect_run_idle()` to ignore brief sensor glitches — a 2-5 second threshold works well for most PLCs.

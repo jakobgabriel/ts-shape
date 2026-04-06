@@ -50,7 +50,7 @@ print(f"Time to threshold: {tte}")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Combine with degradation detection"
     Run `DegradationDetectionEvents.detect_trend_degradation()` first to confirm a real trend exists. Calling `remaining_useful_life()` on a stationary signal will return unreliable estimates.

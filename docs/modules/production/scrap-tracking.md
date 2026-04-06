@@ -58,7 +58,7 @@ trend = tracker.scrap_trend(scrap_uuid="scrap-counter-001", window="1D")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Track scrap at the point of generation"
     Place scrap counters as close to the source as possible. If scrap is only counted at end-of-line inspection, you lose visibility into which station generated it. Per-station scrap signals enable root-cause analysis.

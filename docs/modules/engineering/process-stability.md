@@ -49,7 +49,7 @@ comparison = scorer.stability_comparison(window="8h")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use worst_periods to drill down from a low score"
     When the shift-level score drops, call `worst_periods(window='1h', n=5)` to pinpoint the exact hours that dragged the score down. Then use module-specific tools (disturbance recovery, rate of change, etc.) on those windows for root cause analysis.

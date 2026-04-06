@@ -57,7 +57,7 @@ paths = tracer.routing_paths()
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Define your topology explicitly"
     Providing a topology dict lets the module distinguish parallel lines from sequential steps. Without it, the module must infer ordering from timestamps alone, which can be ambiguous.

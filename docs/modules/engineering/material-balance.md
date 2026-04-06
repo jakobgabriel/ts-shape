@@ -52,7 +52,7 @@ breakdown = checker.contribution_breakdown(window="1h")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Start with contribution_breakdown when imbalance is detected"
     When `balance_check()` fails, use `contribution_breakdown()` to identify which specific input or output stream is responsible. This narrows the investigation to one sensor or pipe instead of chasing the entire process.

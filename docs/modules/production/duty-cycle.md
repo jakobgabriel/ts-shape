@@ -51,7 +51,7 @@ print(duty.head())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Set thresholds based on equipment specs"
     Motor contactors and relay-driven heaters have rated cycle counts. Use `excessive_cycling` with the manufacturer's limit to detect wear before failure — for example, many contactors are rated for 100,000 mechanical cycles.

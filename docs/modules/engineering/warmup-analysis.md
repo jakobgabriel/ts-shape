@@ -55,7 +55,7 @@ time_to_temp = analyzer.time_to_target(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Track warm-up consistency for predictive maintenance"
     A gradually increasing time-to-target across weeks indicates degrading heating elements, fouled heat exchangers, or deteriorating insulation. Plot `warmup_consistency()` output over time to set up early maintenance alerts.

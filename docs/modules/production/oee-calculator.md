@@ -52,7 +52,7 @@ print(f"OEE: {result['oee']:.1%}")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Validate each factor independently"
     Always check availability, performance, and quality separately before looking at the combined OEE number. A single factor can mask improvement in the others.

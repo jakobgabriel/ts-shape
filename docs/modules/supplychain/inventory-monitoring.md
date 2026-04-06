@@ -53,7 +53,7 @@ if prediction is not None:
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Account for replenishment events"
     Stock level jumps (replenishments) can skew `consumption_rate()`. Filter out positive deltas or use a median-based rate to get robust consumption estimates that ignore restocking spikes.

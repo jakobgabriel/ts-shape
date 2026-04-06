@@ -52,7 +52,7 @@ print(f"Best lag: {best_lag['lag']} with r={best_lag['correlation']:.3f}")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use lag correlation to find leading indicators"
     `lag_correlation()` can reveal that one signal leads another by a fixed delay. This is valuable for building early warning systems where an upstream variable predicts a downstream change.

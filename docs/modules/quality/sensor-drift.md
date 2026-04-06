@@ -44,7 +44,7 @@ print(health[["window_start", "health_score"]].head())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Align windows with shift schedules"
     Use `window='8h'` to match typical manufacturing shifts. This makes it easy to correlate drift events with shift handovers and track which shifts see the most calibration degradation.

@@ -42,7 +42,7 @@ print(changes)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Combine with machine state"
     Pair changeover detection with `MachineStateEvents` to distinguish changeover downtime from unplanned downtime — changeovers typically show a planned idle pattern.

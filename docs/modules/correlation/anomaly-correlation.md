@@ -52,7 +52,7 @@ print(ranking.head(5)[["signal_name", "precedence_score"]])
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Tune the cascade window carefully"
     A window that is too short misses real cascades; too long produces false associations. Start with the known propagation time of your process (e.g., fluid transit time between sensors) and adjust from there.

@@ -51,7 +51,7 @@ print("Peak hour:", seasonality["hour_of_day"].idxmax())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Remove known promotions before seasonality analysis"
     Promotional events create artificial spikes that distort `seasonality_summary()`. Filter out known promotion dates or use `detect_demand_spikes()` first to identify and exclude outliers before analyzing seasonal patterns.

@@ -56,7 +56,7 @@ correlation = comparator.correlation_windows(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use correlation to catch slow drift"
     `detect_divergence()` catches absolute deviations, but two signals can drift apart slowly while staying within tolerance. Monitor `correlation_windows()` over days — a declining correlation trend signals degrading sensor or actuator performance.

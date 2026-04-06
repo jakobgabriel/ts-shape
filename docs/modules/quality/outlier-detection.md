@@ -43,7 +43,7 @@ outliers_if = detector.detect_outliers_isolation_forest(contamination=0.1)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Choose the right method for your distribution"
     Z-score assumes normality and works best for Gaussian signals. For process data with occasional spikes or skew, prefer IQR or MAD. Use Isolation Forest when you suspect multivariate interactions between features.
