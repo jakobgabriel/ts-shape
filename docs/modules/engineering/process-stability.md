@@ -65,4 +65,4 @@ comparison = scorer.stability_comparison(window="8h")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/process_stability_index/)
+- [API Reference](../../reference/ts_shape/events/engineering/process_stability_index.md)

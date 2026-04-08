@@ -73,4 +73,4 @@ trend = tracker.scrap_trend(scrap_uuid="scrap-counter-001", window="1D")
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/scrap_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/scrap_tracking.md)

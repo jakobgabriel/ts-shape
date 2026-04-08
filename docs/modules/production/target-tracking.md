@@ -71,4 +71,4 @@ hit_rate = tracker.target_hit_rate(
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/target_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/target_tracking.md)

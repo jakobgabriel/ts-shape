@@ -68,4 +68,4 @@ print(f"OEE: {result['oee']:.1%}")
 ## See Also
 
 - [OEE Analytics Guide](../../guides/oee-analytics.md)
-- [API Reference](../../reference/ts_shape/events/production/oee_calculator/)
+- [API Reference](../../reference/ts_shape/events/production/oee_calculator.md)

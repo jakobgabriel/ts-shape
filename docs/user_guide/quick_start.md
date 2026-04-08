@@ -84,4 +84,4 @@ df = DataIntegratorHybrid.combine_data(
 
 - [Guides](../guides/index.md) - Topic-focused guides from data acquisition to shift reports
 - [Concept Guide](../concept.md) - Architecture overview
-- [API Reference](../reference/) - Complete API docs
+- [API Reference](../reference/index.md) - Complete API docs

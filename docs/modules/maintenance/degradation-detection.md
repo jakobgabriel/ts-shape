@@ -64,4 +64,4 @@ print(f"Health score: {score}/100")
 ## See Also
 
 - [Quality Guide](../../guides/quality.md)
-- [API Reference](../../reference/ts_shape/events/maintenance/degradation_detection/)
+- [API Reference](../../reference/ts_shape/events/maintenance/degradation_detection.md)

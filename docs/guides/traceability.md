@@ -164,4 +164,4 @@ flowchart TD
 - [Production Monitoring](production.md) — Machine states and line throughput
 - [OEE & Plant Analytics](oee-analytics.md) — Batch tracking and bottleneck analysis
 - [Shift Reports & KPIs](reporting.md) — Aggregate traceability data into reports
-- [API Reference](../reference/) — Full traceability API documentation
+- [API Reference](../reference/index.md) — Full traceability API documentation

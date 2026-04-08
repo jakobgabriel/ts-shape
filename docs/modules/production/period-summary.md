@@ -72,4 +72,4 @@ weekly_from_df = PeriodSummary.from_daily_data(
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/period_summary/)
+- [API Reference](../../reference/ts_shape/events/production/period_summary.md)

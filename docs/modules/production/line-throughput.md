@@ -61,4 +61,4 @@ print(parts.head())
 ## See Also
 
 - [Production Monitoring Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/line_throughput/)
+- [API Reference](../../reference/ts_shape/events/production/line_throughput.md)

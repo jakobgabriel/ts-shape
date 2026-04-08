@@ -68,4 +68,4 @@ epu = energy.energy_per_unit(production_col="units_produced", window="1D")
 ## See Also
 
 - [Production Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/energy/consumption_analysis/)
+- [API Reference](../../reference/ts_shape/events/energy/consumption_analysis.md)

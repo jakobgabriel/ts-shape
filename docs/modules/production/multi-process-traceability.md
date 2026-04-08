@@ -72,4 +72,4 @@ paths = tracer.routing_paths()
 ## See Also
 
 - [Traceability Guide](../../guides/traceability.md)
-- [API Reference](../../reference/ts_shape/events/production/multi_process_traceability/)
+- [API Reference](../../reference/ts_shape/events/production/multi_process_traceability.md)

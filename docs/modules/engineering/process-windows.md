@@ -67,4 +67,4 @@ comparison = analyzer.window_comparison(window="1h")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/process_window/)
+- [API Reference](../../reference/ts_shape/events/engineering/process_window.md)

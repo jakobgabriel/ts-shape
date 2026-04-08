@@ -61,4 +61,4 @@ completeness = sq.data_completeness(window="1h", expected_freq="1s")
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/signal_quality/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/signal_quality.md) — full parameter docs

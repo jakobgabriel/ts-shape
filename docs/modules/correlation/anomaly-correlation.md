@@ -67,4 +67,4 @@ print(ranking.head(5)[["signal_name", "precedence_score"]])
 ## See Also
 
 - [Statistics Guide](../../guides/statistics.md)
-- [API Reference](../../reference/ts_shape/events/correlation/anomaly_correlation/)
+- [API Reference](../../reference/ts_shape/events/correlation/anomaly_correlation.md)

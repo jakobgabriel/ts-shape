@@ -68,4 +68,4 @@ trend = tracker.setup_trend(state_uuid="machine-state-001", window="1W")
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/setup_time_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/setup_time_tracking.md)

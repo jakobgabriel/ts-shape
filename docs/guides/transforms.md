@@ -184,4 +184,4 @@ df = LambdaProcessor.apply_function(df, "value_double", lambda x: np.clip(x, 0, 
 
 - [Signal Analytics](statistics.md) — Compute statistics on conditioned signals
 - [Quality Control & SPC](quality.md) — Detect outliers and process shifts
-- [API Reference](../reference/) — Full transform API documentation
+- [API Reference](../reference/index.md) — Full transform API documentation

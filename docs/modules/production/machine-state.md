@@ -58,4 +58,4 @@ print(intervals.head())
 ## See Also
 
 - [Production Monitoring Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/machine_state/)
+- [API Reference](../../reference/ts_shape/events/production/machine_state.md)

@@ -66,4 +66,4 @@ status = tracer.current_status()
 ## See Also
 
 - [Traceability Guide](../../guides/traceability.md)
-- [API Reference](../../reference/ts_shape/events/production/order_traceability/)
+- [API Reference](../../reference/ts_shape/events/production/order_traceability.md)

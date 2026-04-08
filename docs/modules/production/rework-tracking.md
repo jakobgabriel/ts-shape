@@ -77,4 +77,4 @@ cost = tracker.rework_cost(
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/rework_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/rework_tracking.md)

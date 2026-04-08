@@ -59,4 +59,4 @@ print(health[["window_start", "health_score"]].head())
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/sensor_drift/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/sensor_drift.md) — full parameter docs

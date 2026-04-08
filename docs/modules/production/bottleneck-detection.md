@@ -64,4 +64,4 @@ print(bottleneck)
 ## See Also
 
 - [OEE Analytics Guide](../../guides/oee-analytics.md)
-- [API Reference](../../reference/ts_shape/events/production/bottleneck_detection/)
+- [API Reference](../../reference/ts_shape/events/production/bottleneck_detection.md)

@@ -70,4 +70,4 @@ time_to_temp = analyzer.time_to_target(
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/warmup_analysis/)
+- [API Reference](../../reference/ts_shape/events/engineering/warmup_analysis.md)

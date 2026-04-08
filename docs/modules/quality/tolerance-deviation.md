@@ -54,4 +54,4 @@ print(f"Cpk: {capability['Cpk']:.2f}, Ppk: {capability['Ppk']:.2f}")
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/tolerance_deviation/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/tolerance_deviation.md) — full parameter docs

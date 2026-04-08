@@ -65,4 +65,4 @@ print(f"Acceptable: {summary['grr_percent'] < 10}")
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/gauge_repeatability/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/gauge_repeatability.md) — full parameter docs

@@ -485,4 +485,4 @@ result = (
 
 - [Feature Extraction](feature-extraction.md) — Detailed guide on cycles vs segments
 - [Feature Pipeline](../pipelines/feature-pipeline.md) — End-to-end pipeline walkthrough
-- [API Reference](../reference/ts_shape/features/segment_analysis/feature_pipeline/) — Full parameter docs
+- [API Reference](../reference/ts_shape/features/segment_analysis/feature_pipeline.md) — Full parameter docs

@@ -64,4 +64,4 @@ print(f"Time to threshold: {tte}")
 ## See Also
 
 - [Quality Guide](../../guides/quality.md)
-- [API Reference](../../reference/ts_shape/events/maintenance/failure_prediction/)
+- [API Reference](../../reference/ts_shape/events/maintenance/failure_prediction.md)

@@ -71,4 +71,4 @@ distribution = analyzer.value_distribution(n_bins=10)
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/operating_range/)
+- [API Reference](../../reference/ts_shape/events/engineering/operating_range.md)

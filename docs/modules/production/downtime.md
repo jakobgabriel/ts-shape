@@ -68,4 +68,4 @@ print(pareto)
 ## See Also
 
 - [Production Monitoring Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/downtime_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/downtime_tracking.md)

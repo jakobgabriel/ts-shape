@@ -62,4 +62,4 @@ print(freq.head())
 ## See Also
 
 - [OEE Analytics Guide](../../guides/oee-analytics.md)
-- [API Reference](../../reference/ts_shape/events/production/alarm_management/)
+- [API Reference](../../reference/ts_shape/events/production/alarm_management.md)

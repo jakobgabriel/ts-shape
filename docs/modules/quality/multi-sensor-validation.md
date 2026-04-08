@@ -62,4 +62,4 @@ print(outlier[["window_start", "outlier_sensor", "deviation"]].head())
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/multi_sensor_validation/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/multi_sensor_validation.md) — full parameter docs

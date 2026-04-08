@@ -342,4 +342,4 @@ results = reporter.best_and_worst_shifts(counter_uuid='counter_signal')
 
 - [OEE & Plant Analytics](oee-analytics.md) — Combine availability, performance, quality into OEE
 - [Shift Reports & KPIs](reporting.md) — Performance loss, scrap, targets, handover reports
-- [API Reference](../reference/) — Full production API documentation
+- [API Reference](../reference/index.md) — Full production API documentation

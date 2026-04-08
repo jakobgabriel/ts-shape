@@ -64,4 +64,4 @@ summary = spc.interpret_violations(violations)
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/statistical_process_control/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/statistical_process_control.md) — full parameter docs

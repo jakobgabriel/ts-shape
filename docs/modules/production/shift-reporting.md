@@ -63,4 +63,4 @@ result = reporter.shift_targets(counter_uuid="counter-001", targets=targets)
 ## See Also
 
 - [Production Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/shift_reporting/)
+- [API Reference](../../reference/ts_shape/events/production/shift_reporting.md)

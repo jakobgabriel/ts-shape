@@ -67,4 +67,4 @@ breakdown = checker.contribution_breakdown(window="1h")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/material_balance/)
+- [API Reference](../../reference/ts_shape/events/engineering/material_balance.md)

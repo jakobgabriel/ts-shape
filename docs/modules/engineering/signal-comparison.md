@@ -71,4 +71,4 @@ correlation = comparator.correlation_windows(
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/signal_comparison/)
+- [API Reference](../../reference/ts_shape/events/engineering/signal_comparison.md)

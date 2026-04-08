@@ -67,4 +67,4 @@ yield_stats = cap.yield_estimate(window="8h")
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/capability_trending/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/capability_trending.md) — full parameter docs

@@ -73,4 +73,4 @@ quality = detector.control_quality_metrics(
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/setpoint_events/)
+- [API Reference](../../reference/ts_shape/events/engineering/setpoint_events.md)

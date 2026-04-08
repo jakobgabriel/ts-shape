@@ -229,4 +229,4 @@ phases = detector.track_startup_phases(
 
 - [Production Monitoring](production.md) — Machine states and changeover detection
 - [OEE & Plant Analytics](oee-analytics.md) — Startup delays feed into availability losses
-- [API Reference](../reference/) — Full engineering API documentation
+- [API Reference](../reference/index.md) — Full engineering API documentation

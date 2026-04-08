@@ -68,4 +68,4 @@ if prediction is not None:
 ## See Also
 
 - [Production Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/supplychain/inventory_monitoring/)
+- [API Reference](../../reference/ts_shape/events/supplychain/inventory_monitoring.md)

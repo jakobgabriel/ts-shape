@@ -66,4 +66,4 @@ stats = tracer.station_statistics()
 ## See Also
 
 - [Traceability Guide](../../guides/traceability.md)
-- [API Reference](../../reference/ts_shape/events/production/routing_traceability/)
+- [API Reference](../../reference/ts_shape/events/production/routing_traceability.md)

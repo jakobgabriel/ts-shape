@@ -70,4 +70,4 @@ failed = detector.detect_failed_startups(
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/startup_events/)
+- [API Reference](../../reference/ts_shape/events/engineering/startup_events.md)

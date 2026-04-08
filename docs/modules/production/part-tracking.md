@@ -61,4 +61,4 @@ print(hourly.head(10))
 ## See Also
 
 - [Production Monitoring Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/part_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/part_tracking.md)

@@ -66,4 +66,4 @@ print("Peak hour:", seasonality["hour_of_day"].idxmax())
 ## See Also
 
 - [Production Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/supplychain/demand_pattern/)
+- [API Reference](../../reference/ts_shape/events/supplychain/demand_pattern.md)

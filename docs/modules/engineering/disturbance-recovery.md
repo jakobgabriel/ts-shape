@@ -70,4 +70,4 @@ comparison = analyzer.before_after_comparison(baseline_window="10m")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/disturbance_recovery/)
+- [API Reference](../../reference/ts_shape/events/engineering/disturbance_recovery.md)

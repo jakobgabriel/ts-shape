@@ -73,4 +73,4 @@ comparison = tracker.efficiency_comparison(
 ## See Also
 
 - [Production Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/energy/efficiency_tracking/)
+- [API Reference](../../reference/ts_shape/events/energy/efficiency_tracking.md)

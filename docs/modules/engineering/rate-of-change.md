@@ -60,4 +60,4 @@ steps = detector.detect_step_changes(min_delta=20.0, max_duration="5s")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/rate_of_change/)
+- [API Reference](../../reference/ts_shape/events/engineering/rate_of_change.md)

@@ -68,4 +68,4 @@ bands = detector.steady_state_value_bands(window="5m")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/steady_state_detection/)
+- [API Reference](../../reference/ts_shape/events/engineering/steady_state_detection.md)

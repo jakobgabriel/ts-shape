@@ -66,4 +66,4 @@ print(duty.head())
 ## See Also
 
 - [OEE Analytics Guide](../../guides/oee-analytics.md)
-- [API Reference](../../reference/ts_shape/events/production/duty_cycle/)
+- [API Reference](../../reference/ts_shape/events/production/duty_cycle.md)

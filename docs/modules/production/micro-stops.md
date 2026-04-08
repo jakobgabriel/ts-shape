@@ -67,4 +67,4 @@ print(impact.head())
 ## See Also
 
 - [OEE Analytics Guide](../../guides/oee-analytics.md)
-- [API Reference](../../reference/ts_shape/events/production/micro_stop_detection/)
+- [API Reference](../../reference/ts_shape/events/production/micro_stop_detection.md)

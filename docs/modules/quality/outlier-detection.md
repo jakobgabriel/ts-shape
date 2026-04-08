@@ -58,4 +58,4 @@ outliers_if = detector.detect_outliers_isolation_forest(contamination=0.1)
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/outlier_detection/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/outlier_detection.md) — full parameter docs

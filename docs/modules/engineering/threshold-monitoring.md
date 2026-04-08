@@ -66,4 +66,4 @@ time_above = monitor.time_above_threshold(threshold=85.0, window="1h")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/threshold_monitoring/)
+- [API Reference](../../reference/ts_shape/events/engineering/threshold_monitoring.md)

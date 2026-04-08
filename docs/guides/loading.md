@@ -233,4 +233,4 @@ combined = DataIntegratorHybrid.combine_data(
 ## Next Steps
 
 - [Signal Conditioning](transforms.md) — Clean and filter the loaded data
-- [API Reference](../reference/) — Full loader API documentation
+- [API Reference](../reference/index.md) — Full loader API documentation

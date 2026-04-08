@@ -64,4 +64,4 @@ print(health[["rms", "peak", "crest_factor", "kurtosis"]].tail())
 ## See Also
 
 - [Quality Guide](../../guides/quality.md)
-- [API Reference](../../reference/ts_shape/events/maintenance/vibration_analysis/)
+- [API Reference](../../reference/ts_shape/events/maintenance/vibration_analysis.md)

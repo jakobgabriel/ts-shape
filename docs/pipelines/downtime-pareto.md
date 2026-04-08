@@ -9,7 +9,7 @@
 | Machine state | `machine_state_str` | `value_string` | "Running", "Stopped", "Idle" |
 | Downtime reason | `downtime_reason` | `value_string` | Reason code (e.g., "Tool_Change", "Material_Shortage") |
 
-**Modules used:** [AzureBlobParquetLoader](../reference/ts_shape/loader/timeseries/azure_blob_loader/) | [MetadataJsonLoader](../reference/ts_shape/loader/metadata/metadata_json_loader/) | [ContextEnricher](../reference/ts_shape/loader/context/context_enricher/) | [DataHarmonizer](../reference/ts_shape/transform/harmonization/) | [MachineStateEvents](../reference/ts_shape/events/production/machine_state/) | [DowntimeTracking](../reference/ts_shape/events/production/downtime_tracking/)
+**Modules used:** [AzureBlobParquetLoader](../reference/ts_shape/loader/timeseries/azure_blob_loader.md) | [MetadataJsonLoader](../reference/ts_shape/loader/metadata/metadata_json_loader.md) | [ContextEnricher](../reference/ts_shape/loader/context/context_enricher.md) | [DataHarmonizer](../reference/ts_shape/transform/harmonization.md) | [MachineStateEvents](../reference/ts_shape/events/production/machine_state.md) | [DowntimeTracking](../reference/ts_shape/events/production/downtime_tracking.md)
 
 ---
 

@@ -188,4 +188,4 @@ else:
 
 - [Production Monitoring](production.md) — Machine states and production tracking
 - [OEE & Plant Analytics](oee-analytics.md) — Quality feeds into OEE calculation
-- [API Reference](../reference/) — Full quality API documentation
+- [API Reference](../reference/index.md) — Full quality API documentation

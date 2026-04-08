@@ -68,4 +68,4 @@ print(f"Anomalous deliveries: {len(anomalies)}")
 ## See Also
 
 - [Production Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/supplychain/lead_time_analysis/)
+- [API Reference](../../reference/ts_shape/events/supplychain/lead_time_analysis.md)

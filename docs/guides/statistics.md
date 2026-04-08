@@ -112,4 +112,4 @@ print(f"Total: {stats['total_cycles']}, Complete: {stats['complete_cycles']}")
 
 - [Quality Control & SPC](quality.md) — Outlier detection and process control
 - [Production Monitoring](production.md) — Machine states and shop floor tracking
-- [API Reference](../reference/) — Full features API documentation
+- [API Reference](../reference/index.md) — Full features API documentation

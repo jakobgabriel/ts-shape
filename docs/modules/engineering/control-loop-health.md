@@ -71,4 +71,4 @@ report = monitor.loop_health_summary(window="8h")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/control_loop_health/)
+- [API Reference](../../reference/ts_shape/events/engineering/control_loop_health.md)

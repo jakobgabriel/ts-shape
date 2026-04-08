@@ -62,4 +62,4 @@ print(batches)
 ## See Also
 
 - [OEE Analytics Guide](../../guides/oee-analytics.md)
-- [API Reference](../../reference/ts_shape/events/production/batch_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/batch_tracking.md)

@@ -72,4 +72,4 @@ print(by_shift)
 ## See Also
 
 - [Production Monitoring Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/quality_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/quality_tracking.md)

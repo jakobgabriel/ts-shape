@@ -71,4 +71,4 @@ handover = ShiftHandoverReport.from_shift_data(
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/shift_handover/)
+- [API Reference](../../reference/ts_shape/events/production/shift_handover.md)

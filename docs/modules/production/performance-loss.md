@@ -72,4 +72,4 @@ trend = tracker.performance_trend(
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/performance_loss/)
+- [API Reference](../../reference/ts_shape/events/production/performance_loss.md)

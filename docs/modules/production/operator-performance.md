@@ -73,4 +73,4 @@ quality = tracker.quality_by_operator(
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/operator_performance/)
+- [API Reference](../../reference/ts_shape/events/production/operator_performance.md)

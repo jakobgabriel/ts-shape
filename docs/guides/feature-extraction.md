@@ -299,4 +299,4 @@ flowchart TD
 - [Production Monitoring](production.md) — Machine states, OEE, and downtime analysis
 - [Process Engineering](engineering.md) — Setpoint tracking and process stability
 - [Pipeline Builder](pipeline-builder.md) — Chain the entire workflow into a single `FeaturePipeline`
-- [API Reference](../reference/) — Full class and method documentation
+- [API Reference](../reference/index.md) — Full class and method documentation

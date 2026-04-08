@@ -25,7 +25,7 @@ Timeseries analytics for manufacturing — from raw signals to production KPIs.
 
 [Get Started](user_guide/installation.md){ .md-button .md-button--primary }
 [Pipelines](pipelines/index.md){ .md-button }
-[API Reference](reference/){ .md-button }
+[API Reference](reference/index.md){ .md-button }
 
 </div>
 
@@ -305,7 +305,7 @@ ts-shape uses a simple long-format schema. Use only the columns you need.
 
     Complete auto-generated API documentation.
 
-    [:octicons-arrow-right-24: Browse API](reference/)
+    [:octicons-arrow-right-24: Browse API](reference/index.md)
 
 -   :material-test-tube:{ .lg .middle } **Examples**
 

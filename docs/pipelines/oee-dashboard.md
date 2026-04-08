@@ -11,7 +11,7 @@
 | Total counter | `total_counter` | `value_integer` | Total parts (good + bad) |
 | Reject counter | `reject_counter` | `value_integer` | Rejected parts counter |
 
-**Modules used:** [AzureBlobParquetLoader](../reference/ts_shape/loader/timeseries/azure_blob_loader/) | [MetadataJsonLoader](../reference/ts_shape/loader/metadata/metadata_json_loader/) | [ContextEnricher](../reference/ts_shape/loader/context/context_enricher/) | [DataHarmonizer](../reference/ts_shape/transform/harmonization/) | [MachineStateEvents](../reference/ts_shape/events/production/machine_state/) | [OEECalculator](../reference/ts_shape/events/production/oee_calculator/) | [ShiftReporting](../reference/ts_shape/events/production/shift_reporting/)
+**Modules used:** [AzureBlobParquetLoader](../reference/ts_shape/loader/timeseries/azure_blob_loader.md) | [MetadataJsonLoader](../reference/ts_shape/loader/metadata/metadata_json_loader.md) | [ContextEnricher](../reference/ts_shape/loader/context/context_enricher.md) | [DataHarmonizer](../reference/ts_shape/transform/harmonization.md) | [MachineStateEvents](../reference/ts_shape/events/production/machine_state.md) | [OEECalculator](../reference/ts_shape/events/production/oee_calculator.md) | [ShiftReporting](../reference/ts_shape/events/production/shift_reporting.md)
 
 ---
 

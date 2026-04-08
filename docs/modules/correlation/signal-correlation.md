@@ -67,4 +67,4 @@ print(f"Best lag: {best_lag['lag']} with r={best_lag['correlation']:.3f}")
 ## See Also
 
 - [Statistics Guide](../../guides/statistics.md)
-- [API Reference](../../reference/ts_shape/events/correlation/signal_correlation/)
+- [API Reference](../../reference/ts_shape/events/correlation/signal_correlation.md)
