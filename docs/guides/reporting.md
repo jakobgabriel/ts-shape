@@ -359,4 +359,4 @@ monthly = PeriodSummary.from_daily_data(
 - [Production Monitoring](production.md) — The tracking classes that feed into these reports
 - [OEE & Plant Analytics](oee-analytics.md) — OEE calculation from the same signals
 - [Product Traceability](traceability.md) — Track individual parts through the process
-- [API Reference](../reference/) — Full reporting API documentation
+- [API Reference](../reference/index.md) — Full reporting API documentation

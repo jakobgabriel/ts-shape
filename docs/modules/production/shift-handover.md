@@ -56,7 +56,7 @@ handover = ShiftHandoverReport.from_shift_data(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Customize thresholds per line"
     Different production lines have different normal operating ranges. Set per-line thresholds in `highlight_issues` so that alerts are meaningful and not ignored due to false positives.
@@ -64,11 +64,11 @@ handover = ShiftHandoverReport.from_shift_data(
 !!! info "Related modules"
     - [Shift Reporting](shift-reporting.md) — production totals feeding into handover reports
     - [Quality Tracking](quality-tracking.md) — quality data for the handover
-    - [Downtime Tracking](downtime-tracking.md) — downtime data for the handover
+    - [Downtime Tracking](downtime.md) — downtime data for the handover
 
 ---
 
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/shift_handover/)
+- [API Reference](../../reference/ts_shape/events/production/shift_handover.md)

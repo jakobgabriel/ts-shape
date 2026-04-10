@@ -42,7 +42,7 @@ drifts = classifier.detect_drift(window="1h", min_slope=0.01)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Run outlier detection first, then classify"
     Use [OutlierDetectionEvents](outlier-detection.md) to flag anomalous regions, then pass those regions to `classify_anomalies()` for root-cause identification. This two-step approach reduces false positives and makes classification more meaningful.
@@ -57,4 +57,4 @@ drifts = classifier.detect_drift(window="1h", min_slope=0.01)
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/anomaly_classification/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/anomaly_classification.md) — full parameter docs

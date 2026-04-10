@@ -48,7 +48,7 @@ result = reporter.shift_targets(counter_uuid="counter-001", targets=targets)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Define shift boundaries consistently"
     Ensure your shift start and end times are aligned with your plant's actual shift calendar. Misaligned boundaries will split production counts incorrectly.
@@ -63,4 +63,4 @@ result = reporter.shift_targets(counter_uuid="counter-001", targets=targets)
 ## See Also
 
 - [Production Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/shift_reporting/)
+- [API Reference](../../reference/ts_shape/events/production/shift_reporting.md)

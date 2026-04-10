@@ -47,7 +47,7 @@ print(outlier[["window_start", "outlier_sensor", "deviation"]].head())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Set threshold from historical data"
     Determine the `detect_disagreement` threshold from a known-good calibration period. Compute the maximum spread during that period and add a small margin — this avoids false alarms from normal sensor-to-sensor variation.
@@ -62,4 +62,4 @@ print(outlier[["window_start", "outlier_sensor", "deviation"]].head())
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/multi_sensor_validation/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/multi_sensor_validation.md) — full parameter docs

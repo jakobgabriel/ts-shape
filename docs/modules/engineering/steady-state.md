@@ -53,7 +53,7 @@ bands = detector.steady_state_value_bands(window="5m")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Tune std_threshold to your process noise"
     The default `std_threshold=1.0` works for many signals, but noisy sensors may need a higher value. Start by looking at `steady_state_statistics()` output and adjust until the detected intervals match your engineering judgment.
@@ -68,4 +68,4 @@ bands = detector.steady_state_value_bands(window="5m")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/steady_state_detection/)
+- [API Reference](../../reference/ts_shape/events/engineering/steady_state_detection.md)

@@ -53,7 +53,7 @@ epu = energy.energy_per_unit(production_col="units_produced", window="1D")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Align windows with shift boundaries"
     Use window sizes that match your operational shifts (e.g., `"8H"` for 8-hour shifts). Misaligned windows split consumption across shifts and obscure real patterns.
@@ -68,4 +68,4 @@ epu = energy.energy_per_unit(production_col="units_produced", window="1D")
 ## See Also
 
 - [Production Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/energy/consumption_analysis/)
+- [API Reference](../../reference/ts_shape/events/energy/consumption_analysis.md)

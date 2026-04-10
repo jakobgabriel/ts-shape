@@ -52,7 +52,7 @@ print(stats)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use threshold_factor relative to each part"
     The `detect_slow_cycles` method computes the threshold per part number, so a 1.5x factor means 1.5 times the average for that specific SKU — no need to hard-code absolute limits for each part.
@@ -68,4 +68,4 @@ print(stats)
 ## See Also
 
 - [Production Monitoring Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/cycle_time_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/cycle_time_tracking.md)

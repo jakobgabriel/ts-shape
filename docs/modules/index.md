@@ -3,7 +3,7 @@
 Focused documentation for every ts-shape class — purpose, usage example, method table, and tips.
 
 For narrative overviews with flow diagrams, see the [Guides](../guides/index.md).
-For exhaustive parameter docs, see the [API Reference](../reference/).
+For exhaustive parameter docs, see the [API Reference](../reference/index.md).
 
 ---
 

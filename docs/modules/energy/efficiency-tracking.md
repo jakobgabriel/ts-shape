@@ -59,7 +59,7 @@ comparison = tracker.efficiency_comparison(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Track idle waste to find quick wins"
     `idle_energy_waste()` often reveals the lowest-hanging fruit for energy savings. Machines left running during breaks or changeovers can account for 10-20% of total consumption.
@@ -73,4 +73,4 @@ comparison = tracker.efficiency_comparison(
 ## See Also
 
 - [Production Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/energy/efficiency_tracking/)
+- [API Reference](../../reference/ts_shape/events/energy/efficiency_tracking.md)

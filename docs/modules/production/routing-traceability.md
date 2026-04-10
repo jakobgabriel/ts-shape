@@ -51,7 +51,7 @@ stats = tracer.station_statistics()
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Map routing codes to readable names"
     Routing signals often carry numeric codes. Map them to human-readable step names before analysis for clearer reports and visualizations.
@@ -59,11 +59,11 @@ stats = tracer.station_statistics()
 !!! info "Related modules"
     - [Order Traceability](order-traceability.md) — simpler tracing without routing signals
     - [Multi-Process Traceability](multi-process-traceability.md) — handles parallel paths and merges
-    - [Cycle Time Tracking](cycle-time-tracking.md) — per-step cycle time analysis
+    - [Cycle Time Tracking](cycle-time.md) — per-step cycle time analysis
 
 ---
 
 ## See Also
 
 - [Traceability Guide](../../guides/traceability.md)
-- [API Reference](../../reference/ts_shape/events/production/routing_traceability/)
+- [API Reference](../../reference/ts_shape/events/production/routing_traceability.md)

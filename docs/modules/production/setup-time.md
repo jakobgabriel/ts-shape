@@ -53,7 +53,7 @@ trend = tracker.setup_trend(state_uuid="machine-state-001", window="1W")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Separate internal and external setup tasks"
     SMED distinguishes between internal setup (machine stopped) and external setup (done while running). If your state signal encodes both, filter for internal-only to get the true changeover impact.
@@ -68,4 +68,4 @@ trend = tracker.setup_trend(state_uuid="machine-state-001", window="1W")
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/setup_time_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/setup_time_tracking.md)

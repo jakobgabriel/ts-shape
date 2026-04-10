@@ -89,4 +89,4 @@ pip install ts-shape
 pip install azure-storage-blob   # for Azure loaders
 ```
 
-For detailed module documentation, see the [API Reference](../reference/) or the [Guides](../guides/index.md).
+For detailed module documentation, see the [API Reference](../reference/index.md) or the [Guides](../guides/index.md).

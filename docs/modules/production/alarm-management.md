@@ -47,7 +47,7 @@ print(freq.head())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Target fewer than 6 alarms per operator per hour"
     ISA-18.2 recommends a manageable alarm rate. Use `alarm_frequency` to check if your plant exceeds this guideline and prioritize chattering alarms for rationalization.
@@ -62,4 +62,4 @@ print(freq.head())
 ## See Also
 
 - [OEE Analytics Guide](../../guides/oee-analytics.md)
-- [API Reference](../../reference/ts_shape/events/production/alarm_management/)
+- [API Reference](../../reference/ts_shape/events/production/alarm_management.md)

@@ -45,7 +45,7 @@ steps = detector.detect_step_changes(min_delta=20.0, max_duration="5s")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Pair with threshold monitoring for defense-in-depth"
     A rapid rate of change often precedes a threshold breach. Use `detect_rapid_change()` as an early warning, and `ThresholdMonitoringEvents` as the definitive alarm. This two-layer approach gives operators more lead time.
@@ -60,4 +60,4 @@ steps = detector.detect_step_changes(min_delta=20.0, max_duration="5s")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/rate_of_change/)
+- [API Reference](../../reference/ts_shape/events/engineering/rate_of_change.md)

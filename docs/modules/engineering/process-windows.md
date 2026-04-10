@@ -52,7 +52,7 @@ comparison = analyzer.window_comparison(window="1h")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Align windows to shift boundaries"
     Use `window='8h'` for 8-hour shifts or `window='12h'` for 12-hour shifts. This ensures each window maps to exactly one shift, making handover reports straightforward. Combine with `detect_mean_shift()` to flag shifts that deviate from normal.
@@ -67,4 +67,4 @@ comparison = analyzer.window_comparison(window="1h")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/process_window/)
+- [API Reference](../../reference/ts_shape/events/engineering/process_window.md)

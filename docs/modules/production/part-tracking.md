@@ -45,7 +45,7 @@ print(hourly.head(10))
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Handle counter resets at part changes"
     When the part number changes, the counter may reset. The module handles this automatically, but verify your counter signal behavior — some PLCs maintain a running total while others reset per batch.
@@ -61,4 +61,4 @@ print(hourly.head(10))
 ## See Also
 
 - [Production Monitoring Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/part_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/part_tracking.md)

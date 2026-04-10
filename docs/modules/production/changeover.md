@@ -42,7 +42,7 @@ print(changes)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Combine with machine state"
     Pair changeover detection with `MachineStateEvents` to distinguish changeover downtime from unplanned downtime — changeovers typically show a planned idle pattern.
@@ -57,4 +57,4 @@ print(changes)
 ## See Also
 
 - [Production Monitoring Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/changeover/)
+- [API Reference](../../reference/ts_shape/events/production/changeover.md)

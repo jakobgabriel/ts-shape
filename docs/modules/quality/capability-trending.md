@@ -52,7 +52,7 @@ yield_stats = cap.yield_estimate(window="8h")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use min_cpk=1.33 as the default threshold"
     A Cpk of 1.33 corresponds to a 4-sigma process (~63 DPMO). For safety-critical processes, raise this to 1.67 (5-sigma). Set `detect_capability_drop` to alert at your threshold so you can intervene before parts go out of spec.
@@ -67,4 +67,4 @@ yield_stats = cap.yield_estimate(window="8h")
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/capability_trending/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/capability_trending.md) — full parameter docs

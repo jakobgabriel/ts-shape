@@ -44,7 +44,7 @@ print(health[["window_start", "health_score"]].head())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Align windows with shift schedules"
     Use `window='8h'` to match typical manufacturing shifts. This makes it easy to correlate drift events with shift handovers and track which shifts see the most calibration degradation.
@@ -59,4 +59,4 @@ print(health[["window_start", "health_score"]].head())
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/sensor_drift/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/sensor_drift.md) — full parameter docs

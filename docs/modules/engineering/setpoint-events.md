@@ -58,7 +58,7 @@ quality = detector.control_quality_metrics(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Combine steps and ramps for full coverage"
     Use `detect_setpoint_changes()` instead of calling steps and ramps separately. This gives you a unified table that captures both instantaneous recipe changes and gradual ramp profiles.
@@ -73,4 +73,4 @@ quality = detector.control_quality_metrics(
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/setpoint_events/)
+- [API Reference](../../reference/ts_shape/events/engineering/setpoint_events.md)

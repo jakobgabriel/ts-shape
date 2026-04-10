@@ -51,7 +51,7 @@ status = tracer.current_status()
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use consistent identifier formats"
     Ensure all stations emit the same identifier format (e.g., zero-padded serial numbers). Mismatched formats will cause the tracer to treat "Order-42" and "Order-042" as different items.
@@ -66,4 +66,4 @@ status = tracer.current_status()
 ## See Also
 
 - [Traceability Guide](../../guides/traceability.md)
-- [API Reference](../../reference/ts_shape/events/production/order_traceability/)
+- [API Reference](../../reference/ts_shape/events/production/order_traceability.md)

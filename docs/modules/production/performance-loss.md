@@ -57,19 +57,19 @@ trend = tracker.performance_trend(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Exclude planned slow-downs"
     If your process has intentional reduced-speed modes (e.g., warm-up, cool-down), filter those periods out before analysis. Otherwise they will appear as false performance losses.
 
 !!! info "Related modules"
-    - [Cycle Time Tracking](cycle-time-tracking.md) — raw cycle time analysis
+    - [Cycle Time Tracking](cycle-time.md) — raw cycle time analysis
     - [OEE Calculator](oee-calculator.md) — performance feeds into the OEE calculation
-    - [Micro-Stop Detection](micro-stop-detection.md) — very short stops that also reduce effective performance
+    - [Micro-Stop Detection](micro-stops.md) — very short stops that also reduce effective performance
 
 ---
 
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/performance_loss/)
+- [API Reference](../../reference/ts_shape/events/production/performance_loss.md)

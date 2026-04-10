@@ -1259,5 +1259,5 @@ print(phases[["phase_name", "start", "end", "duration", "completed"]])
 ## Next Steps
 
 - [Concept Guide](../concept.md) - Understand the architecture
-- [API Reference](../reference/) - Full API documentation
+- [API Reference](../reference/index.md) - Full API documentation
 - [Contributing](../contributing.md) - Contribute to ts-shape

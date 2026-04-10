@@ -49,7 +49,7 @@ print(health[["rms", "peak", "crest_factor", "kurtosis"]].tail())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use ISO 10816 thresholds for RMS baseline"
     For standard industrial motors, ISO 10816 provides vibration severity thresholds by machine class. Use these as your `baseline_rms` and `threshold_factor` values for meaningful alerts.
@@ -64,4 +64,4 @@ print(health[["rms", "peak", "crest_factor", "kurtosis"]].tail())
 ## See Also
 
 - [Quality Guide](../../guides/quality.md)
-- [API Reference](../../reference/ts_shape/events/maintenance/vibration_analysis/)
+- [API Reference](../../reference/ts_shape/events/maintenance/vibration_analysis.md)

@@ -44,7 +44,7 @@ print(blocked.head())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use tolerance to handle signal jitter"
     Set `tolerance` to account for PLC scan-time differences between stations — 200ms to 1s is typical. Without tolerance, you may get false blocked/starved detections from timing mismatches.
@@ -59,4 +59,4 @@ print(blocked.head())
 ## See Also
 
 - [Production Monitoring Guide](../../guides/production.md)
-- [API Reference](../../reference/ts_shape/events/production/flow_constraints/)
+- [API Reference](../../reference/ts_shape/events/production/flow_constraints.md)

@@ -46,7 +46,7 @@ completeness = sq.data_completeness(window="1h", expected_freq="1s")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Set tolerance_factor based on your data source"
     For PLC data with a strict 1-second cycle, a `tolerance_factor=2.0` works well. For historian data that may batch-compress, increase to 3.0 or higher to avoid false gap detections.
@@ -61,4 +61,4 @@ completeness = sq.data_completeness(window="1h", expected_freq="1s")
 ## See Also
 
 - [Quality Control & SPC Guide](../../guides/quality.md) — narrative overview
-- [API Reference](../../reference/ts_shape/events/quality/signal_quality/) — full parameter docs
+- [API Reference](../../reference/ts_shape/events/quality/signal_quality.md) — full parameter docs

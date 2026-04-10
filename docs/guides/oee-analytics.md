@@ -247,4 +247,4 @@ excessive = duty.excessive_cycling(max_transitions=20, window='1h')
 - [Production Monitoring](production.md) — Machine states and shop floor tracking
 - [Shift Reports & KPIs](reporting.md) — Performance loss, scrap, targets
 - [Product Traceability](traceability.md) — Track parts through the process
-- [API Reference](../reference/) — Full OEE API documentation
+- [API Reference](../reference/index.md) — Full OEE API documentation

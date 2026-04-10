@@ -52,7 +52,7 @@ print(impact.head())
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Adjust max_duration to your process"
     The 30-second default works for high-speed discrete manufacturing. For slower processes (e.g., assembly), consider increasing to 60-120 seconds. The key is to capture stops below your standard downtime reporting threshold.
@@ -67,4 +67,4 @@ print(impact.head())
 ## See Also
 
 - [OEE Analytics Guide](../../guides/oee-analytics.md)
-- [API Reference](../../reference/ts_shape/events/production/micro_stop_detection/)
+- [API Reference](../../reference/ts_shape/events/production/micro_stop_detection.md)

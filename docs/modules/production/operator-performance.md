@@ -58,7 +58,7 @@ quality = tracker.quality_by_operator(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Normalize for shift length and product mix"
     Raw output counts can be misleading if operators work different shift lengths or produce different product variants. Use efficiency metrics with appropriate targets per product type for fair comparisons.
@@ -73,4 +73,4 @@ quality = tracker.quality_by_operator(
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/operator_performance/)
+- [API Reference](../../reference/ts_shape/events/production/operator_performance.md)

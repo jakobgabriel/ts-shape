@@ -11,7 +11,7 @@
 | Process param 2 | `pressure` | `value_double` | Numeric measurement |
 | Process param 3 | `speed` | `value_double` | Numeric measurement |
 
-**Modules used:** [FeaturePipeline](../reference/ts_shape/features/segment_analysis/feature_pipeline/) | [DateTimeFilter](../reference/ts_shape/transform/filter/datetime_filter/) | [DoubleFilter](../reference/ts_shape/transform/filter/numeric_filter/) | [DataHarmonizer](../reference/ts_shape/transform/harmonization/) | [SegmentExtractor](../reference/ts_shape/features/segment_analysis/segment_extractor/) | [SegmentProcessor](../reference/ts_shape/features/segment_analysis/segment_processor/) | [TimeWindowedFeatureTable](../reference/ts_shape/features/segment_analysis/time_windowed_features/)
+**Modules used:** [FeaturePipeline](../reference/ts_shape/features/segment_analysis/feature_pipeline.md) | [DateTimeFilter](../reference/ts_shape/transform/filter/datetime_filter.md) | [DoubleFilter](../reference/ts_shape/transform/filter/numeric_filter.md) | [DataHarmonizer](../reference/ts_shape/transform/harmonization.md) | [SegmentExtractor](../reference/ts_shape/features/segment_analysis/segment_extractor.md) | [SegmentProcessor](../reference/ts_shape/features/segment_analysis/segment_processor.md) | [TimeWindowedFeatureTable](../reference/ts_shape/features/segment_analysis/time_windowed_features.md)
 
 ---
 

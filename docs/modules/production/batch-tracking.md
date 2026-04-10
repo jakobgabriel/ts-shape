@@ -47,7 +47,7 @@ print(batches)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Watch for empty or null batch IDs"
     Gaps in the batch-ID signal (empty strings or nulls) often represent cleaning or changeover periods. Filter these out or treat them as explicit changeover events.
@@ -62,4 +62,4 @@ print(batches)
 ## See Also
 
 - [OEE Analytics Guide](../../guides/oee-analytics.md)
-- [API Reference](../../reference/ts_shape/events/production/batch_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/batch_tracking.md)

@@ -62,7 +62,7 @@ cost = tracker.rework_cost(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Combine with Pareto analysis"
     Sort `rework_by_reason` results by count descending to build a Pareto chart. Typically 20% of reason codes drive 80% of rework volume, giving you clear improvement targets.
@@ -77,4 +77,4 @@ cost = tracker.rework_cost(
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/rework_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/rework_tracking.md)

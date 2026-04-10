@@ -56,7 +56,7 @@ report = monitor.loop_health_summary(window="8h")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use IAE trends for early tuning degradation"
     A rising IAE trend across shifts — even when all values are within spec — signals that the loop is slowly losing control authority. Catch this early with `error_integrals()` before operators notice sluggish response or oscillation.
@@ -71,4 +71,4 @@ report = monitor.loop_health_summary(window="8h")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/control_loop_health/)
+- [API Reference](../../reference/ts_shape/events/engineering/control_loop_health.md)

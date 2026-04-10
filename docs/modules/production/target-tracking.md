@@ -56,7 +56,7 @@ hit_rate = tracker.target_hit_rate(
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Adjust targets for product mix"
     A flat daily target works when producing a single product. If your line runs multiple variants with different cycle times, pass product-weighted targets to get meaningful achievement rates.
@@ -71,4 +71,4 @@ hit_rate = tracker.target_hit_rate(
 ## See Also
 
 - [Reporting Guide](../../guides/reporting.md)
-- [API Reference](../../reference/ts_shape/events/production/target_tracking/)
+- [API Reference](../../reference/ts_shape/events/production/target_tracking.md)

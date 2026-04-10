@@ -10,7 +10,7 @@
 | Part number | `part_number_signal` | `value_string` | Current part type being produced |
 | Machine state | `machine_run_state` | `value_bool` | True = running (optional, for filtering) |
 
-**Modules used:** [AzureBlobParquetLoader](../reference/ts_shape/loader/timeseries/azure_blob_loader/) | [MetadataJsonLoader](../reference/ts_shape/loader/metadata/metadata_json_loader/) | [ContextEnricher](../reference/ts_shape/loader/context/context_enricher/) | [DataHarmonizer](../reference/ts_shape/transform/harmonization/) | [CycleExtractor](../reference/ts_shape/features/cycles/cycles_extractor/) | [CycleTimeTracking](../reference/ts_shape/events/production/cycle_time_tracking/) | [CycleDataProcessor](../reference/ts_shape/features/cycles/cycle_processor/)
+**Modules used:** [AzureBlobParquetLoader](../reference/ts_shape/loader/timeseries/azure_blob_loader.md) | [MetadataJsonLoader](../reference/ts_shape/loader/metadata/metadata_json_loader.md) | [ContextEnricher](../reference/ts_shape/loader/context/context_enricher.md) | [DataHarmonizer](../reference/ts_shape/transform/harmonization.md) | [CycleExtractor](../reference/ts_shape/features/cycles/cycles_extractor.md) | [CycleTimeTracking](../reference/ts_shape/events/production/cycle_time_tracking.md) | [CycleDataProcessor](../reference/ts_shape/features/cycles/cycle_processor.md)
 
 ---
 

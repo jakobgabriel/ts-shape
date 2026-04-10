@@ -56,7 +56,7 @@ distribution = analyzer.value_distribution(n_bins=10)
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Use time_in_range for OEE-style metrics"
     `time_in_range()` gives you the fraction of each window spent within spec. Aggregate this over a shift or day to get a process-level "in-spec percentage" that complements OEE availability and quality metrics.
@@ -71,4 +71,4 @@ distribution = analyzer.value_distribution(n_bins=10)
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/operating_range/)
+- [API Reference](../../reference/ts_shape/events/engineering/operating_range.md)

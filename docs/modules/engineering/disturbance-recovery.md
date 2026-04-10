@@ -55,7 +55,7 @@ comparison = analyzer.before_after_comparison(baseline_window="10m")
 
 ---
 
-## Tips & Notes
+## Tips & Hints
 
 !!! tip "Correlate disturbances with upstream events"
     After detecting disturbances, use `before_after_comparison()` to quantify the impact, then cross-reference timestamps with upstream signals or operator logs to identify root causes. Pair with `disturbance_frequency()` to spot recurring patterns.
@@ -70,4 +70,4 @@ comparison = analyzer.before_after_comparison(baseline_window="10m")
 ## See Also
 
 - [Process Engineering Guide](../../guides/engineering.md)
-- [API Reference](../../reference/ts_shape/events/engineering/disturbance_recovery/)
+- [API Reference](../../reference/ts_shape/events/engineering/disturbance_recovery.md)
