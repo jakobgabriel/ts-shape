@@ -28,6 +28,82 @@ def test_machine_state_intervals_and_transitions():
     assert set(transitions['transition'].unique()) == {'idle_to_run', 'run_to_idle'}
 
 
+def test_machine_state_integer_range():
+    t = pd.date_range('2024-01-01 00:00:00', periods=6, freq='30s')
+    rpm = [0, 50, 150, 200, 80, 0]
+    df = pd.DataFrame({
+        'uuid': ['rpm'] * len(t),
+        'systime': t,
+        'value_integer': rpm,
+        'is_delta': [True] * len(t),
+    })
+
+    # running when rpm >= 100
+    mse = MachineStateEvents(df, run_state_uuid='rpm', value_column='value_integer', value_range=(100, None))
+    intervals = mse.detect_run_idle()
+    assert not intervals.empty
+    run_intervals = intervals[intervals['state'] == 'run']
+    assert not run_intervals.empty
+    # only the two points at rpm=150 and rpm=200 are "run"
+    assert all(run_intervals['duration_seconds'] >= 0)
+
+    transitions = mse.transition_events()
+    assert not transitions.empty
+    assert 'idle_to_run' in transitions['transition'].values
+    assert 'run_to_idle' in transitions['transition'].values
+
+
+def test_machine_state_double_range():
+    t = pd.date_range('2024-01-01 00:00:00', periods=6, freq='30s')
+    current = [0.1, 0.3, 1.5, 2.0, 0.4, 0.2]
+    df = pd.DataFrame({
+        'uuid': ['cur'] * len(t),
+        'systime': t,
+        'value_double': current,
+        'is_delta': [True] * len(t),
+    })
+
+    # running when 0.5 <= current <= 3.0
+    mse = MachineStateEvents(df, run_state_uuid='cur', value_column='value_double', value_range=(0.5, 3.0))
+    intervals = mse.detect_run_idle()
+    assert not intervals.empty
+    states = set(intervals['state'].unique())
+    assert 'run' in states
+    assert 'idle' in states
+
+
+def test_machine_state_open_upper_range():
+    t = pd.date_range('2024-01-01 00:00:00', periods=4, freq='30s')
+    df = pd.DataFrame({
+        'uuid': ['s'] * len(t),
+        'systime': t,
+        'value_double': [0.0, 5.0, 10.0, 0.0],
+        'is_delta': [True] * len(t),
+    })
+
+    # running when value >= 5.0 (no upper bound)
+    mse = MachineStateEvents(df, run_state_uuid='s', value_column='value_double', value_range=(5.0, None))
+    intervals = mse.detect_run_idle()
+    run_intervals = intervals[intervals['state'] == 'run']
+    idle_intervals = intervals[intervals['state'] == 'idle']
+    assert not run_intervals.empty
+    assert not idle_intervals.empty
+
+
+def test_machine_state_range_backward_compat():
+    # value_range=None must behave identically to the original boolean path
+    t = pd.date_range('2024-01-01 00:00:00', periods=4, freq='30s')
+    df = pd.DataFrame({
+        'uuid': ['b'] * len(t),
+        'systime': t,
+        'value_bool': [False, True, True, False],
+        'is_delta': [True] * len(t),
+    })
+    mse = MachineStateEvents(df, run_state_uuid='b', value_range=None)
+    intervals = mse.detect_run_idle()
+    assert set(intervals['state'].unique()) == {'run', 'idle'}
+
+
 def test_line_throughput_count_and_takt():
     # Counter increments every minute by 5 parts
     t = pd.date_range('2024-01-01 00:00:00', periods=6, freq='1min')

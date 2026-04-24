@@ -1,7 +1,7 @@
 import logging
 import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 
 from ts_shape.utils.base import Base
 
@@ -27,12 +27,14 @@ class MachineStateEvents(Base):
         event_uuid: str = "prod:run_idle",
         value_column: str = "value_bool",
         time_column: str = "systime",
+        value_range: Optional[Tuple[Optional[float], Optional[float]]] = None,
     ) -> None:
         super().__init__(dataframe, column_name=time_column)
         self.run_state_uuid = run_state_uuid
         self.event_uuid = event_uuid
         self.value_column = value_column
         self.time_column = time_column
+        self.value_range = value_range
         if "uuid" in self.dataframe.columns and run_state_uuid not in self.dataframe["uuid"].values:
             raise ValueError(
                 f"UUID '{run_state_uuid}' not found in dataframe. "
@@ -47,6 +49,21 @@ class MachineStateEvents(Base):
         self._state_groups: Optional[pd.Series] = None
         self._compute_state_groups()
 
+    def _as_state(self, col: pd.Series) -> pd.Series:
+        """Convert a value series to a boolean running/idle state.
+
+        Uses value_range when set (inclusive on both ends); otherwise casts to bool.
+        """
+        if self.value_range is not None:
+            lower, upper = self.value_range
+            mask = pd.Series(True, index=col.index)
+            if lower is not None:
+                mask &= col >= lower
+            if upper is not None:
+                mask &= col <= upper
+            return mask
+        return col.fillna(False).astype(bool)
+
     def detect_run_idle(self, min_duration: str = "0s") -> pd.DataFrame:
         """Return intervals labeled as 'run' or 'idle'.
 
@@ -58,7 +75,7 @@ class MachineStateEvents(Base):
                 columns=["start", "end", "uuid", "source_uuid", "is_delta", "state", "duration_seconds"]
             )
         s = self.series[[self.time_column, self.value_column]].copy()
-        s["state"] = s[self.value_column].fillna(False).astype(bool)
+        s["state"] = self._as_state(s[self.value_column])
         state_change = (s["state"] != s["state"].shift()).cumsum()
         min_td = pd.to_timedelta(min_duration)
         rows: List[Dict[str, Any]] = []
@@ -91,7 +108,7 @@ class MachineStateEvents(Base):
                 columns=["systime", "uuid", "source_uuid", "is_delta", "transition", "time_since_last_transition_seconds"]
             )
         s = self.series[[self.time_column, self.value_column]].copy()
-        s["state"] = s[self.value_column].fillna(False).astype(bool)
+        s["state"] = self._as_state(s[self.value_column])
         s["prev"] = s["state"].shift()
         changes = s[s["state"] != s["prev"]].dropna(subset=["prev"])  # ignore first row
         if changes.empty:
@@ -122,7 +139,7 @@ class MachineStateEvents(Base):
             self._state_groups = None
             return
         s = self.series[[self.time_column, self.value_column]].copy()
-        s["state"] = s[self.value_column].fillna(False).astype(bool)
+        s["state"] = self._as_state(s[self.value_column])
         self._state_groups = (s["state"] != s["state"].shift()).cumsum()
 
     def detect_rapid_transitions(self, threshold: str = "5s", min_count: int = 3) -> pd.DataFrame:
